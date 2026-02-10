@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root,
+:root[data-theme='dark'] {
+  --sl-font: "IBM Plex Mono";
+  --sl-color-accent: hsl(166 96% 62%);
+  --sl-color-accent-high: hsl(198 100% 79%);
+  --sl-color-accent-low: hsl(195 60% 18%);
+  --sl-color-bg: hsl(203 54% 6%);
+  --sl-color-bg-nav: hsl(204 46% 8% / 0.9);
+  --sl-color-bg-sidebar: hsl(204 42% 8%);
+  --sl-color-text: hsl(182 43% 82%);
+  --sl-color-white: hsl(163 79% 92%);
+}
+
+:root[data-theme='light'] {
+  --sl-font: "IBM Plex Mono";
+  --sl-color-accent: hsl(180 90% 32%);
+  --sl-color-accent-high: hsl(206 84% 27%);
+  --sl-color-accent-low: hsl(181 52% 86%);
+  --sl-color-bg: hsl(189 49% 95%);
+  --sl-color-bg-nav: hsl(189 40% 92% / 0.92);
+  --sl-color-bg-sidebar: hsl(193 40% 93%);
+  --sl-color-text: hsl(198 44% 22%);
+  --sl-color-white: hsl(201 53% 14%);
+}
+
+:root[data-theme='dark'] body {
+  background-image:
+    radial-gradient(circle at 15% -5%, hsl(171 92% 33% / 0.25), transparent 48%),
+    radial-gradient(circle at 85% 10%, hsl(209 95% 57% / 0.2), transparent 40%),
+    linear-gradient(180deg, hsl(204 65% 5%), hsl(207 47% 7%));
+}
+
+:root[data-theme='light'] body {
+  background-image:
+    radial-gradient(circle at 10% -8%, hsl(168 68% 72% / 0.5), transparent 46%),
+    radial-gradient(circle at 92% 8%, hsl(206 100% 78% / 0.45), transparent 38%),
+    linear-gradient(180deg, hsl(189 62% 95%), hsl(202 44% 90%));
+}
+
+.hero h1 {
+  font-family: "Chakra Petch", sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px hsl(170 100% 60% / 0.35);
+}
+
+:root[data-theme='light'] .hero h1 {
+  text-shadow: 0 2px 0 hsl(188 38% 73% / 0.35);
+}
+
+.hero {
+  animation: scan-in 560ms ease-out;
+}
+
+.hero .tagline {
+  border-left: 3px solid hsl(171 95% 58%);
+  padding-left: 1rem;
+  max-width: 44ch;
+}
+
+:root[data-theme='light'] .hero .tagline {
+  border-left-color: hsl(181 80% 32%);
+}
+
+.hero .actions a {
+  border-radius: 0.25rem;
+  border: 1px solid hsl(174 88% 66% / 0.35);
+  box-shadow: 0 0 0 1px hsl(171 86% 43% / 0.18), 0 10px 28px hsl(206 100% 9% / 0.42);
+}
+
+:root[data-theme='light'] .hero .actions a {
+  border-color: hsl(183 86% 32% / 0.35);
+  box-shadow: 0 0 0 1px hsl(186 65% 42% / 0.14), 0 10px 24px hsl(205 58% 33% / 0.18);
+}
+
+.sl-markdown-content h2 {
+  font-family: "Chakra Petch", sans-serif;
+  letter-spacing: 0.04em;
+}
+
+@keyframes scan-in {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero {
+    animation: none;
+  }
+}
