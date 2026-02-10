@@ -1,0 +1,16 @@
+[build]
+  command = "bun install --frozen-lockfile && bun run validate && bun run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  BUN_VERSION = "1.2.2"
+
+[context.production]
+  command = "bun install --frozen-lockfile && bun run validate && bun run build"
+
+[context.deploy-preview]
+  command = "bun install --frozen-lockfile && bun run lint && bun run validate:build && bun run validate:links:internal && bun run validate:a11y"
+
+[context.branch-deploy]
+  command = "bun install --frozen-lockfile && bun run lint && bun run validate:build && bun run validate:links:internal"

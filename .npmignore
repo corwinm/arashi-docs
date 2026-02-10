@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.netlify/
+coverage/
+*.log
+.env*
+.github/
+scripts/
+docs/

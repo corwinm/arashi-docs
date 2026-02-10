@@ -1,0 +1,56 @@
+---
+title: Arashi
+description: Command-first documentation for using and contributing to Arashi.
+template: splash
+draft: false
+sidebar:
+  hidden: false
+hero:
+  title: Arashi
+  tagline: We learned git worktrees so you don't have to.
+  image:
+    html: |
+      <svg viewBox="0 0 360 320" role="img" aria-label="Neon signal grid" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#53f5c4"/>
+            <stop offset="100%" stop-color="#58b3ff"/>
+          </linearGradient>
+        </defs>
+        <rect x="16" y="16" width="328" height="288" rx="20" fill="#08141c" stroke="#1b3a4d"/>
+        <g opacity="0.28" stroke="#4df8cc">
+          <path d="M40 64H320"/><path d="M40 96H320"/><path d="M40 128H320"/><path d="M40 160H320"/><path d="M40 192H320"/><path d="M40 224H320"/>
+          <path d="M72 40V280"/><path d="M112 40V280"/><path d="M152 40V280"/><path d="M192 40V280"/><path d="M232 40V280"/><path d="M272 40V280"/>
+        </g>
+        <path d="M46 218C84 198 108 205 138 178C166 153 186 121 228 116C254 113 282 127 316 84" fill="none" stroke="url(#g1)" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="138" cy="178" r="9" fill="#53f5c4"/>
+        <circle cx="228" cy="116" r="9" fill="#58b3ff"/>
+        <circle cx="316" cy="84" r="9" fill="#53f5c4"/>
+      </svg>
+  actions:
+    - text: Start Here
+      link: /getting-started/
+      variant: primary
+    - text: Browse Commands
+      link: /commands/
+      variant: secondary
+---
+
+Welcome to the Arashi Docs.
+
+Arashi is a Git worktree manager that pairs perfectly with a spec-driven development workflow in a multi-repo environment.
+
+## Choose Your Path
+
+- New to Arashi? Open [Getting Started](/getting-started/).
+- Looking for command behavior? Open [Commands](/commands/).
+- Improving docs? Open [Contributing](/contributing/).
+
+## Quick Workflow
+
+```bash
+arashi init
+arashi add git@github.com:your-org/frontend.git
+arashi create feature-doc-improvements
+arashi status
+```
