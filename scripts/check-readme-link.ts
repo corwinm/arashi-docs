@@ -1,7 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { CANONICAL_DOCS_URL } from "./lib/canonical-docs-url";
 
-const canonicalUrl = process.env.CANONICAL_DOCS_URL ?? "https://arashi-docs.netlify.app";
+const canonicalUrl = process.env.CANONICAL_DOCS_URL ?? CANONICAL_DOCS_URL;
 const projectReadmePath = path.resolve("../arashi/README.md");
 
 const failures: string[] = [];
@@ -22,9 +23,14 @@ if (existsSync(projectReadmePath)) {
       `Main project README does not include canonical URL ${canonicalUrl}: ${relative(projectReadmePath)}`
     );
   }
-  if (!/\[Documentation\]\([^\)]+\)/.test(readmeText)) {
+  const docsLink = readmeText.match(/\[Documentation\]\(([^\)]+)\)/);
+  if (!docsLink) {
     failures.push(
       `Main project README is missing a visible Documentation link: ${relative(projectReadmePath)}`
+    );
+  } else if (docsLink[1] !== canonicalUrl) {
+    failures.push(
+      `Main project README Documentation link must target ${canonicalUrl}, found ${docsLink[1]}: ${relative(projectReadmePath)}`
     );
   }
 } else {

@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - "README.md"
       - "docs/**"
       - "scripts/**"
       - "astro.config.mjs"
@@ -15,6 +16,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "README.md"
       - "docs/**"
       - "scripts/**"
       - "astro.config.mjs"
@@ -56,6 +58,9 @@ jobs:
 
       - name: Run accessibility smoke checks
         run: bun run validate:a11y
+
+      - name: Enforce canonical docs domain policy
+        run: bun run validate:docs-domain
 
       - name: Check README documentation link health
         run: bun run validate:readme-link

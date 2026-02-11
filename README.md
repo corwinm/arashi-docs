@@ -2,7 +2,7 @@
 
 Dedicated documentation site repository for Arashi.
 
-- Canonical docs URL: `https://arashi-docs.netlify.app`
+- Canonical docs URL: `https://arashi.haphazard.dev`
 - Source project: `repos/arashi/`
 - Docs content root: `repos/arashi-docs/docs/`
 
@@ -31,7 +31,14 @@ bun run build
 - `bun run validate:links:internal` checks internal links and anchors.
 - `bun run validate:a11y` runs accessibility smoke checks for critical pages.
 - `bun run validate:links:external` checks external links (scheduled, non-blocking).
+- `bun run validate:docs-domain` enforces canonical docs-domain policy and denylist checks.
 - `bun run validate:readme-link` checks canonical docs URL health.
+
+## Migration Audit Artifacts
+
+- Scope inventory: `docs/contributing/docs-domain-migration-scope.md`
+- Evidence record: `docs/contributing/docs-domain-migration-evidence.md`
+- Exceptions register: `docs/contributing/docs-domain-exceptions.md`
 
 ## Publishing
 

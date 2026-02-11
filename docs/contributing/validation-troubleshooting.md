@@ -26,5 +26,11 @@ sidebar:
 ## Canonical docs URL health failure
 
 - Run `bun run validate:readme-link`.
-- Confirm `https://arashi-docs.netlify.app` is reachable.
+- Confirm `https://arashi.haphazard.dev` is reachable.
 - Confirm docs home and `repos/arashi/README.md` use the same canonical URL.
+
+## Canonical docs domain policy failure
+
+- Run `bun run validate:docs-domain`.
+- Replace deprecated docs-domain references with `https://arashi.haphazard.dev`.
+- Ensure the Documentation link in `repos/arashi/README.md` targets `https://arashi.haphazard.dev` exactly.
