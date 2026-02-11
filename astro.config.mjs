@@ -8,9 +8,23 @@ export default defineConfig({
       title: "Arashi",
       description:
         "User and maintainer documentation for Arashi, the Git worktree manager for meta-repositories.",
+      logo: {
+        src: "./src/assets/arashi-logo.svg",
+        alt: "Arashi logo"
+      },
       social: {
         github: "https://github.com/corwinm/arashi"
       },
+      head: [
+        {
+          tag: "link",
+          attrs: {
+            rel: "icon",
+            type: "image/svg+xml",
+            href: "/favicon.svg"
+          }
+        }
+      ],
       customCss: ["/src/styles/theme.css"],
       sidebar: [
         {
