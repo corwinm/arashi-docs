@@ -28,17 +28,35 @@ hero:
         <circle cx="316" cy="84" r="9" fill="#53f5c4"/>
       </svg>
   actions:
-    - text: Start Here
+    - text: Getting Started
       link: /getting-started/
       variant: primary
-    - text: Browse Commands
-      link: /commands/
-      variant: secondary
 ---
 
-Welcome to the Arashi Docs.
+import { TabItem, Tabs } from "@astrojs/starlight/components";
 
 Arashi is a Git worktree manager that pairs perfectly with a spec-driven development workflow in a multi-repo environment.
+
+<Tabs>
+  <TabItem label="curl">
+
+  ```bash
+  curl -fsSL https://arashi.haphazard.dev/install | bash
+  ```
+
+  </TabItem>
+  <TabItem label="npm">
+
+  ```bash
+  npm install -g arashi
+  ```
+
+  </TabItem>
+</Tabs>
+
+```bash
+arashi --version
+```
 
 ## Choose Your Path
 
@@ -49,8 +67,16 @@ Arashi is a Git worktree manager that pairs perfectly with a spec-driven develop
 ## Quick Workflow
 
 ```bash
+# Initial setup
 arashi init
 arashi add git@github.com:your-org/frontend.git
+# Create a new feature branch and worktree
 arashi create feature-doc-improvements
+# View all worktrees
+arashi list
+# Switch to the new worktree
+cd ../feature-doc-improvements
+# Make changes, commit, push, open PR, etc.
+# Check on worktree status
 arashi status
 ```

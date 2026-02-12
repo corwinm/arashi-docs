@@ -80,6 +80,18 @@
   letter-spacing: 0.04em;
 }
 
+.sl-markdown-content h3 + pre {
+  border: 1px solid hsl(174 88% 66% / 0.3);
+  border-radius: 0.75rem;
+  padding: 0.25rem;
+  background: linear-gradient(160deg, hsl(203 58% 10% / 0.92), hsl(208 52% 8% / 0.9));
+}
+
+:root[data-theme='light'] .sl-markdown-content h3 + pre {
+  border-color: hsl(183 86% 32% / 0.35);
+  background: linear-gradient(165deg, hsl(188 55% 94%), hsl(199 51% 90%));
+}
+
 @keyframes scan-in {
   0% {
     opacity: 0;

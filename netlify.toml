@@ -14,3 +14,15 @@
 
 [context.branch-deploy]
   command = "bun install --frozen-lockfile && bun run lint && bun run validate:build && bun run validate:links:internal"
+
+[[redirects]]
+  from = "/install"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/install.sh"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/install/"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/install.sh"
+  status = 302
+  force = true

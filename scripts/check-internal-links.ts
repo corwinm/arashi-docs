@@ -8,7 +8,7 @@ if (!existsSync(docsRoot)) {
   process.exit(1);
 }
 
-const markdownFiles = walk(docsRoot).filter((file) => file.endsWith(".md"));
+const markdownFiles = walk(docsRoot).filter((file) => /\.mdx?$/.test(file));
 const anchorCache = new Map<string, Set<string>>();
 const errors: string[] = [];
 
