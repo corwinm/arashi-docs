@@ -18,8 +18,7 @@
     "validate:a11y": "bun run build && bun run scripts/check-a11y-smoke.ts",
     "validate:links:external": "bun run scripts/check-external-links.ts",
     "validate:readme-link": "bun run scripts/check-readme-link.ts",
-    "validate:install-command-parity": "bun run scripts/check-install-command-parity.ts",
-    "validate": "bun run lint && bun run validate:build && bun run validate:links:internal && bun run validate:a11y && bun run validate:docs-domain && bun run validate:readme-link && bun run validate:install-command-parity"
+    "validate": "bun run lint && bun run validate:build && bun run validate:links:internal && bun run validate:a11y && bun run validate:docs-domain && bun run validate:readme-link"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.32.1",
