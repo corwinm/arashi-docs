@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 const docsRoot = path.resolve("docs");
-const markdownFiles = walk(docsRoot).filter((filePath) => filePath.endsWith(".md"));
+const markdownFiles = walk(docsRoot).filter((filePath) => /\.mdx?$/.test(filePath));
 const linkMap = new Map<string, Set<string>>();
 
 for (const filePath of markdownFiles) {
