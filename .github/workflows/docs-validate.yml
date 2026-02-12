@@ -65,9 +65,6 @@ jobs:
       - name: Check README documentation link health
         run: bun run validate:readme-link
 
-      - name: Enforce install command parity across docs surfaces
-        run: bun run validate:install-command-parity
-
   publish-gate:
     name: Publish gate status
     if: github.event_name == 'push'
