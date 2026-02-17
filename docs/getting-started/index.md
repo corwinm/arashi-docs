@@ -67,6 +67,7 @@ If npm is unavailable or fails in your environment, use the curl installer comma
 arashi init
 arashi add git@github.com:your-org/frontend.git
 arashi create feature-docs-bootstrap
+arashi switch feature-docs-bootstrap
 arashi status
 ```
 
