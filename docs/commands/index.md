@@ -15,6 +15,7 @@ Use this section when you want command-level guidance.
 - [create](/commands/create/) - create coordinated worktrees.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
+- [switch](/commands/switch/) - open a terminal context for a worktree.
 - [remove](/commands/remove/) - remove worktrees and branches.
 - [pull](/commands/pull/) - pull remote updates across repos.
 - [sync](/commands/sync/) - align child repos to parent branch.
@@ -27,6 +28,7 @@ arashi init
 arashi add git@github.com:your-org/frontend.git
 arashi create feature-branch-name
 arashi status
+arashi switch
 ```
 
 ## Related
