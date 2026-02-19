@@ -12,6 +12,7 @@ Use this section when you want command-level guidance.
 
 - [init](/commands/init/) - initialize a workspace.
 - [add](/commands/add/) - add a repository to management.
+- [clone](/commands/clone/) - clone missing configured repositories.
 - [create](/commands/create/) - create coordinated worktrees.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
