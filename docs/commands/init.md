@@ -27,7 +27,6 @@ arashi init [options]
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
 - `--force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.
-- `--auto-setup` or `--no-auto-setup` control setup hook behavior.
 - `--dry-run` preview changes without writing files.
 - `--verbose` print detailed initialization steps.
 
