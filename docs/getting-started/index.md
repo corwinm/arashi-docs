@@ -72,6 +72,7 @@ arashi status
 ```
 
 By default, new managed worktrees are created under `.arashi/worktrees`.
+Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch/launch behavior.
 
 ## Next Steps
 
