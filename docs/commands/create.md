@@ -26,6 +26,11 @@ arashi create <branch> [options]
 
 - `--only <repos>` limit creation to comma-separated repository names.
 - `-i, --interactive` pick repositories interactively.
+- `--switch` switch to the created parent worktree after create.
+- `--no-switch` disable configured create switch defaults for one invocation.
+- `--launch` open a terminal/editor context after create.
+- `--no-launch` disable configured create launch defaults for one invocation.
+- `--sesh` force sesh launch mode (implies launch behavior).
 - `--conflict <strategy>` preselect conflict handling (`ABORT`, `REUSE_EXISTING`).
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
@@ -40,6 +45,12 @@ arashi create feature-auth-refresh
 # Create in specific repositories only
 arashi create feature-auth-refresh --only api,web
 
+# Force launch for this run
+arashi create feature-auth-refresh --launch
+
+# Disable configured launch default for this run
+arashi create feature-auth-refresh --no-launch
+
 # Review the plan first
 arashi create feature-auth-refresh --dry-run
 ```
@@ -48,6 +59,8 @@ arashi create feature-auth-refresh --dry-run
 
 - `create` validates branch names and repository readiness.
 - On failure, coordinated operations can roll back to keep repos consistent.
+- Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
+- Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
 
 ## Related Commands
 

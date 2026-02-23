@@ -27,6 +27,7 @@ arashi switch [filter] [options]
 - `--repos` target child repositories in the current workspace only.
 - `--all` target parent workspaces and nested child repo worktrees.
 - `--sesh` run sesh mode in tmux (requires active tmux session and `sesh`).
+- `--no-default-launch` ignore configured switch launch defaults for one invocation.
 
 ## Examples
 
@@ -42,6 +43,9 @@ arashi switch --all
 
 # Use sesh/tmux switching mode
 arashi switch --sesh
+
+# Ignore configured launch defaults for one run
+arashi switch --no-default-launch
 ```
 
 ## Notes
@@ -51,6 +55,7 @@ arashi switch --sesh
   - exact repo match wins
   - otherwise a unique partial repo match is selected
 - If `--repos` has no repo matches, Arashi prints available child repositories.
+- Configure default launch mode in `.arashi/config.json` under `defaults.switch.launchMode`.
 
 ## Related Commands
 
