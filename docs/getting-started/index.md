@@ -71,6 +71,8 @@ arashi switch feature-docs-bootstrap
 arashi status
 ```
 
+By default, new managed worktrees are created under `.arashi/worktrees`.
+
 ## Next Steps
 
 - Continue to [Commands](/commands/) for command-by-command behavior.

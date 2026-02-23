@@ -25,6 +25,7 @@ arashi init [options]
 ## Key Options
 
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
+- `--worktrees-dir <path>` set a custom worktree base directory (default `.arashi/worktrees`).
 - `--force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.
 - `--dry-run` preview changes without writing files.
@@ -39,6 +40,9 @@ arashi init
 # Use a custom repositories directory
 arashi init --repos-dir ../workspace-repos
 
+# Use a custom worktree base directory
+arashi init --worktrees-dir ../workspace-worktrees
+
 # Reinitialize safely and preview file changes
 arashi init --force --dry-run
 ```
@@ -47,7 +51,10 @@ arashi init --force --dry-run
 
 - Run this command inside a Git repository.
 - `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
+- `init` sets `worktreesDir` to `.arashi/worktrees` by default.
 - It updates `.gitignore` to exclude the configured repositories directory.
+- When the default `worktreesDir` is used, `.gitignore` also includes `.arashi/worktrees/`.
+- Custom `worktreesDir` values are not auto-added to `.gitignore`.
 
 ## Related Commands
 
