@@ -53,7 +53,8 @@ arashi init --force --dry-run
 - `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
 - `init` sets `worktreesDir` to `.arashi/worktrees` by default.
 - It updates `.gitignore` to exclude the configured repositories directory.
-- Worktree paths (default or custom) are not auto-added to `.gitignore`.
+- It also adds the normalized managed worktree directory entry to `.gitignore` when the location is default or a safe repository-relative subdirectory.
+- Broad locations (`.`/`./`) and parent-traversal locations (`../` variants) are not auto-added to `.gitignore`.
 
 ## Related Commands
 
