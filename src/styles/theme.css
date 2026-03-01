@@ -1093,24 +1093,82 @@
     animation: none;
   }
 
-  .demo-sequence * {
+  .demo-toggle:not(:checked) ~ .demo-terminal * {
     animation: none !important;
   }
 
-  .terminal-shell,
-  .tree-output {
+  .demo-toggle:not(:checked) ~ .demo-terminal .terminal-shell,
+  .demo-toggle:not(:checked) ~ .demo-terminal .tree-output {
     min-height: auto;
+    height: auto;
   }
 
-  .terminal-line {
+  .demo-toggle:not(:checked) ~ .demo-terminal .tree-canvas {
+    transform: none;
+    filter: none;
+  }
+
+  .demo-toggle:not(:checked) ~ .demo-terminal .terminal-line {
     position: static;
     opacity: 1;
   }
 
-  .tree-output .node {
+  .demo-toggle:not(:checked) ~ .demo-terminal .terminal-line .typed {
+    width: auto;
+    max-width: none;
+    overflow: visible;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .demo-toggle:not(:checked) ~ .demo-terminal .terminal-line .cursor {
+    display: none;
+  }
+
+  .demo-toggle:not(:checked) ~ .demo-terminal .tree-output .node {
     opacity: 1;
     max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
+  }
+
+  .demo-toggle:checked ~ .demo-terminal * {
+    animation-play-state: running !important;
+  }
+
+  .demo-toggle:checked ~ .demo-terminal .tree-output {
+    height: 17.4em;
+  }
+
+  .demo-toggle:checked ~ .demo-terminal .terminal-line {
+    position: absolute;
+  }
+
+  .demo-toggle:checked ~ .demo-terminal .terminal-line .typed {
+    width: 0;
+    max-width: calc(var(--chars) * 1ch);
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .demo-toggle:checked ~ .demo-terminal .terminal-line .cursor {
+    display: inline-block;
+  }
+
+  .demo-control .demo-icon-pause {
+    display: none;
+  }
+
+  .demo-control .demo-icon-play {
+    display: inline-flex;
+  }
+
+  .demo-toggle:checked ~ .demo-control .demo-icon-play {
+    display: none;
+  }
+
+  .demo-toggle:checked ~ .demo-control .demo-icon-pause {
+    display: inline-flex;
   }
 }
