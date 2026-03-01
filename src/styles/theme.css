@@ -983,12 +983,12 @@
   }
   68%,
   79% {
-    transform: translate(-7.9em, -8.9em) scale(1);
+    transform: translate(-7.9em, -9.5em) scale(1);
     filter: brightness(0.8);
   }
   80%,
   89% {
-    transform: translate(-7.9em, -13.4em) scale(1);
+    transform: translate(-7.9em, -14.1em) scale(1);
     filter: brightness(0.8);
   }
   94%,
@@ -1006,12 +1006,12 @@
   }
   68%,
   79% {
-    transform: translate(-8.1em, -8.8em) scale(1);
+    transform: translate(-8.1em, -9.4em) scale(1);
     filter: brightness(0.8);
   }
   80%,
   89% {
-    transform: translate(-8.1em, -13.2em) scale(1);
+    transform: translate(-8.1em, -13.9em) scale(1);
     filter: brightness(0.8);
   }
   94%,
