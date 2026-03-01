@@ -436,13 +436,15 @@
 .tree-output .auth-tree {
   animation:
     reveal-step-5 var(--demo-cycle) linear infinite both,
-    focus-auth-window var(--demo-cycle) ease infinite;
+    focus-auth-window var(--demo-cycle) ease infinite,
+    auth-dim-on-logs var(--demo-cycle) ease infinite;
 }
 
 .tree-output .logs-tree {
   animation:
     reveal-step-4 var(--demo-cycle) linear infinite both,
-    focus-logs-window var(--demo-cycle) ease infinite;
+    focus-logs-window var(--demo-cycle) ease infinite,
+    logs-dim-on-auth var(--demo-cycle) ease infinite;
 }
 
 .terminal-shell {
@@ -853,13 +855,13 @@
 
 @keyframes reveal-step-4 {
   0%,
-  43% {
+  45% {
     opacity: 0;
     max-height: 0;
     padding-top: 0;
     padding-bottom: 0;
   }
-  44%,
+  46%,
   100% {
     opacity: 1;
     max-height: 1.7em;
@@ -894,13 +896,13 @@
 
 @keyframes reveal-step-5 {
   0%,
-  55% {
+  57% {
     opacity: 0;
     max-height: 0;
     padding-top: 0;
     padding-bottom: 0;
   }
-  56%,
+  58%,
   100% {
     opacity: 1;
     max-height: 1.7em;
@@ -945,12 +947,12 @@
 
 @keyframes focus-auth-window {
   0%,
-  67%,
+  71%,
   100% {
     color: hsl(176 45% 86%);
     text-shadow: none;
   }
-  69%,
+  73%,
   79% {
     color: hsl(166 100% 88%);
     text-shadow: 0 0 9px hsl(165 92% 63% / 0.3);
@@ -959,11 +961,11 @@
 
 @keyframes focus-logs-window {
   0%,
-  79% {
+  81% {
     color: hsl(176 45% 86%);
     text-shadow: none;
   }
-  80%,
+  82%,
   90% {
     color: hsl(166 100% 88%);
     text-shadow: 0 0 9px hsl(165 92% 63% / 0.3);
@@ -975,21 +977,57 @@
   }
 }
 
+@keyframes logs-dim-on-auth {
+  0%,
+  69%,
+  80%,
+  100% {
+    opacity: 1;
+  }
+  70%,
+  79% {
+    opacity: 0.38;
+  }
+}
+
+@keyframes auth-dim-on-logs {
+  0%,
+  79%,
+  91%,
+  100% {
+    opacity: 1;
+  }
+  80%,
+  90% {
+    opacity: 0.38;
+  }
+}
+
 @keyframes tree-root-window {
   0%,
-  67% {
+  69% {
     transform: translate(0, 0) scale(1);
     filter: brightness(1);
   }
-  68%,
-  79% {
-    transform: translate(-7.9em, -9.5em) scale(1);
-    filter: brightness(0.8);
+  70%,
+  71% {
+    transform: translate(0, 0) scale(1);
+    filter: brightness(1);
   }
-  80%,
+  72%,
+  81% {
+    transform: translate(-7.9em, -9.5em) scale(1);
+    filter: brightness(1);
+  }
+  82%,
   89% {
     transform: translate(-7.9em, -14.1em) scale(1);
-    filter: brightness(0.8);
+    filter: brightness(1);
+  }
+  90%,
+  93% {
+    transform: translate(-7.9em, -14.1em) scale(1);
+    filter: brightness(1);
   }
   94%,
   100% {
@@ -1000,19 +1038,29 @@
 
 @keyframes tree-root-window-safari {
   0%,
-  67% {
+  69% {
     transform: translate(0, 0) scale(1);
     filter: brightness(1);
   }
-  68%,
-  79% {
-    transform: translate(-8.1em, -9.4em) scale(1);
-    filter: brightness(0.8);
+  70%,
+  71% {
+    transform: translate(0, 0) scale(1);
+    filter: brightness(1);
   }
-  80%,
+  72%,
+  81% {
+    transform: translate(-8.1em, -9.4em) scale(1);
+    filter: brightness(1);
+  }
+  82%,
   89% {
     transform: translate(-8.1em, -13.9em) scale(1);
-    filter: brightness(0.8);
+    filter: brightness(1);
+  }
+  90%,
+  93% {
+    transform: translate(-8.1em, -13.9em) scale(1);
+    filter: brightness(1);
   }
   94%,
   100% {
