@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 :root,
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
   --sl-font: "IBM Plex Mono";
   --sl-color-accent: hsl(166 96% 62%);
   --sl-color-accent-high: hsl(198 100% 79%);
@@ -13,7 +13,7 @@
   --sl-color-white: hsl(163 79% 92%);
 }
 
-:root[data-theme='light'] {
+:root[data-theme="light"] {
   --sl-font: "IBM Plex Mono";
   --sl-color-accent: hsl(180 90% 32%);
   --sl-color-accent-high: hsl(206 84% 27%);
@@ -25,17 +25,25 @@
   --sl-color-white: hsl(201 53% 14%);
 }
 
-:root[data-theme='dark'] body {
+:root[data-theme="dark"] body {
   background-image:
-    radial-gradient(circle at 15% -5%, hsl(171 92% 33% / 0.25), transparent 48%),
+    radial-gradient(
+      circle at 15% -5%,
+      hsl(171 92% 33% / 0.25),
+      transparent 48%
+    ),
     radial-gradient(circle at 85% 10%, hsl(209 95% 57% / 0.2), transparent 40%),
     linear-gradient(180deg, hsl(204 65% 5%), hsl(207 47% 7%));
 }
 
-:root[data-theme='light'] body {
+:root[data-theme="light"] body {
   background-image:
     radial-gradient(circle at 10% -8%, hsl(168 68% 72% / 0.5), transparent 46%),
-    radial-gradient(circle at 92% 8%, hsl(206 100% 78% / 0.45), transparent 38%),
+    radial-gradient(
+      circle at 92% 8%,
+      hsl(206 100% 78% / 0.45),
+      transparent 38%
+    ),
     linear-gradient(180deg, hsl(189 62% 95%), hsl(202 44% 90%));
 }
 
@@ -46,7 +54,7 @@
   text-shadow: 0 0 20px hsl(170 100% 60% / 0.35);
 }
 
-:root[data-theme='light'] .hero h1 {
+:root[data-theme="light"] .hero h1 {
   text-shadow: 0 2px 0 hsl(188 38% 73% / 0.35);
 }
 
@@ -97,19 +105,23 @@
   max-width: 44ch;
 }
 
-:root[data-theme='light'] .hero .tagline {
+:root[data-theme="light"] .hero .tagline {
   border-left-color: hsl(181 80% 32%);
 }
 
 .hero .actions a {
   border-radius: 0.25rem;
   border: 1px solid hsl(174 88% 66% / 0.35);
-  box-shadow: 0 0 0 1px hsl(171 86% 43% / 0.18), 0 10px 28px hsl(206 100% 9% / 0.42);
+  box-shadow:
+    0 0 0 1px hsl(171 86% 43% / 0.18),
+    0 10px 28px hsl(206 100% 9% / 0.42);
 }
 
-:root[data-theme='light'] .hero .actions a {
+:root[data-theme="light"] .hero .actions a {
   border-color: hsl(183 86% 32% / 0.35);
-  box-shadow: 0 0 0 1px hsl(186 65% 42% / 0.14), 0 10px 24px hsl(205 58% 33% / 0.18);
+  box-shadow:
+    0 0 0 1px hsl(186 65% 42% / 0.14),
+    0 10px 24px hsl(205 58% 33% / 0.18);
 }
 
 @media (min-width: 50rem) {
@@ -182,10 +194,14 @@
   border: 1px solid hsl(174 88% 66% / 0.3);
   border-radius: 0.75rem;
   padding: 0.25rem;
-  background: linear-gradient(160deg, hsl(203 58% 10% / 0.92), hsl(208 52% 8% / 0.9));
+  background: linear-gradient(
+    160deg,
+    hsl(203 58% 10% / 0.92),
+    hsl(208 52% 8% / 0.9)
+  );
 }
 
-:root[data-theme='light'] .sl-markdown-content h3 + pre {
+:root[data-theme="light"] .sl-markdown-content h3 + pre {
   border-color: hsl(183 86% 32% / 0.35);
   background: linear-gradient(165deg, hsl(188 55% 94%), hsl(199 51% 90%));
 }
@@ -231,7 +247,10 @@
   user-select: none;
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
   pointer-events: none;
 }
 
@@ -388,7 +407,7 @@
   display: block;
   white-space: pre;
   color: hsl(177 45% 84%);
-  line-height: 1.08;
+  line-height: 1.14;
   padding: 0.01rem 0.18rem;
   border-radius: 0.35rem;
   opacity: 0;
@@ -398,28 +417,29 @@
 
 .tree-output .node.base {
   opacity: 1;
-  max-height: 1.2em;
+  max-height: 1.45em;
 }
 
-.tree-output .node.reveal-1 { animation: reveal-step-1 var(--demo-cycle) linear infinite both; }
-.tree-output .node.reveal-2 { animation: reveal-step-2 var(--demo-cycle) linear infinite both; }
-.tree-output .node.reveal-3 { animation: reveal-step-3 var(--demo-cycle) linear infinite both; }
-.tree-output .node.reveal-4 { animation: reveal-step-4 var(--demo-cycle) linear infinite both; }
-.tree-output .node.reveal-5 { animation: reveal-step-5 var(--demo-cycle) linear infinite both; }
+.tree-output .node.reveal-1 {
+  animation: reveal-step-1 var(--demo-cycle) linear infinite both;
+}
+.tree-output .node.reveal-2 {
+  animation: reveal-step-2 var(--demo-cycle) linear infinite both;
+}
+.tree-output .node.reveal-3 {
+  animation: reveal-step-3 var(--demo-cycle) linear infinite both;
+}
 
 .tree-output .auth-tree {
   animation:
     reveal-step-5 var(--demo-cycle) linear infinite both,
-    focus-auth-window var(--demo-cycle) ease infinite,
-    auth-dim-on-logs var(--demo-cycle) ease infinite,
-    auth-active-shift var(--demo-cycle) ease infinite;
+    focus-auth-window var(--demo-cycle) ease infinite;
 }
 
 .tree-output .logs-tree {
   animation:
     reveal-step-4 var(--demo-cycle) linear infinite both,
-    focus-logs-window var(--demo-cycle) ease infinite,
-    logs-active-shift var(--demo-cycle) ease infinite;
+    focus-logs-window var(--demo-cycle) ease infinite;
 }
 
 .terminal-shell {
@@ -468,156 +488,280 @@
   animation: blink-cursor 900ms steps(1, end) infinite;
 }
 
-.cmd-1 { --chars: 11; --steps: 11; animation-name: cmd-1-window; }
-.cmd-1 .typed { animation-name: cmd-1-type; }
+.cmd-1 {
+  --chars: 11;
+  --steps: 11;
+  animation-name: cmd-1-window;
+}
+.cmd-1 .typed {
+  animation-name: cmd-1-type;
+}
 
-.cmd-2 { --chars: 42; --steps: 42; animation-name: cmd-2-window; }
-.cmd-2 .typed { animation-name: cmd-2-type; }
+.cmd-2 {
+  --chars: 42;
+  --steps: 42;
+  animation-name: cmd-2-window;
+}
+.cmd-2 .typed {
+  animation-name: cmd-2-type;
+}
 
-.cmd-3 { --chars: 43; --steps: 43; animation-name: cmd-3-window; }
-.cmd-3 .typed { animation-name: cmd-3-type; }
+.cmd-3 {
+  --chars: 43;
+  --steps: 43;
+  animation-name: cmd-3-window;
+}
+.cmd-3 .typed {
+  animation-name: cmd-3-type;
+}
 
-.cmd-4 { --chars: 18; --steps: 18; animation-name: cmd-4-window; }
-.cmd-4 .typed { animation-name: cmd-4-type; }
+.cmd-4 {
+  --chars: 18;
+  --steps: 18;
+  animation-name: cmd-4-window;
+}
+.cmd-4 .typed {
+  animation-name: cmd-4-type;
+}
 
-.cmd-5 { --chars: 18; --steps: 18; animation-name: cmd-5-window; }
-.cmd-5 .typed { animation-name: cmd-5-type; }
+.cmd-5 {
+  --chars: 18;
+  --steps: 18;
+  animation-name: cmd-5-window;
+}
+.cmd-5 .typed {
+  animation-name: cmd-5-type;
+}
 
-.cmd-6 { --chars: 18; --steps: 18; animation-name: cmd-6-window; }
-.cmd-6 .typed { animation-name: cmd-6-type; }
+.cmd-6 {
+  --chars: 18;
+  --steps: 18;
+  animation-name: cmd-6-window;
+}
+.cmd-6 .typed {
+  animation-name: cmd-6-type;
+}
 
-.cmd-7 { --chars: 18; --steps: 18; animation-name: cmd-7-window; }
-.cmd-7 .typed { animation-name: cmd-7-type; }
+.cmd-7 {
+  --chars: 18;
+  --steps: 18;
+  animation-name: cmd-7-window;
+}
+.cmd-7 .typed {
+  animation-name: cmd-7-type;
+}
 
-.cmd-8 { --chars: 18; --steps: 18; animation-name: cmd-8-window; }
-.cmd-8 .typed { animation-name: cmd-8-type; }
+.cmd-8 {
+  --chars: 18;
+  --steps: 18;
+  animation-name: cmd-8-window;
+}
+.cmd-8 .typed {
+  animation-name: cmd-8-type;
+}
 
-:root[data-theme='light'] .demo-terminal {
+:root[data-theme="light"] .demo-terminal {
   border-color: hsl(189 51% 37% / 0.35);
 }
 
 @keyframes cmd-1-window {
   0%,
-  11% { opacity: 1; }
+  11% {
+    opacity: 1;
+  }
   12%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-2-window {
   0%,
-  12% { opacity: 0; }
+  12% {
+    opacity: 0;
+  }
   13%,
-  23% { opacity: 1; }
+  23% {
+    opacity: 1;
+  }
   24%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-3-window {
   0%,
-  24% { opacity: 0; }
+  24% {
+    opacity: 0;
+  }
   25%,
-  35% { opacity: 1; }
+  35% {
+    opacity: 1;
+  }
   36%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-4-window {
   0%,
-  36% { opacity: 0; }
+  36% {
+    opacity: 0;
+  }
   37%,
-  47% { opacity: 1; }
+  47% {
+    opacity: 1;
+  }
   48%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-5-window {
   0%,
-  48% { opacity: 0; }
+  48% {
+    opacity: 0;
+  }
   49%,
-  59% { opacity: 1; }
+  59% {
+    opacity: 1;
+  }
   60%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-6-window {
   0%,
-  60% { opacity: 0; }
+  60% {
+    opacity: 0;
+  }
   61%,
-  71% { opacity: 1; }
+  71% {
+    opacity: 1;
+  }
   72%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-7-window {
   0%,
-  72% { opacity: 0; }
+  72% {
+    opacity: 0;
+  }
   73%,
-  83% { opacity: 1; }
+  83% {
+    opacity: 1;
+  }
   84%,
-  100% { opacity: 0; }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes cmd-8-window {
   0%,
-  84% { opacity: 0; }
+  84% {
+    opacity: 0;
+  }
   85%,
-  100% { opacity: 1; }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes cmd-1-type {
   0%,
-  1% { width: 0; }
+  1% {
+    width: 0;
+  }
   7%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-2-type {
   0%,
-  13% { width: 0; }
+  13% {
+    width: 0;
+  }
   21%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-3-type {
   0%,
-  25% { width: 0; }
+  25% {
+    width: 0;
+  }
   33%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-4-type {
   0%,
-  37% { width: 0; }
+  37% {
+    width: 0;
+  }
   45%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-5-type {
   0%,
-  49% { width: 0; }
+  49% {
+    width: 0;
+  }
   57%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-6-type {
   0%,
-  61% { width: 0; }
+  61% {
+    width: 0;
+  }
   69%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-7-type {
   0%,
-  73% { width: 0; }
+  73% {
+    width: 0;
+  }
   81%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes cmd-8-type {
   0%,
-  85% { width: 0; }
+  85% {
+    width: 0;
+  }
   89%,
-  100% { width: calc(var(--chars) * 1ch); }
+  100% {
+    width: calc(var(--chars) * 1ch);
+  }
 }
 
 @keyframes blink-cursor {
@@ -660,7 +804,7 @@
   8%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -677,7 +821,7 @@
   20%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -694,7 +838,7 @@
   32%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -711,7 +855,7 @@
   44%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -728,7 +872,7 @@
   44%,
   55% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -752,7 +896,7 @@
   56%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -769,7 +913,7 @@
   82%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -786,7 +930,7 @@
   96%,
   100% {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -829,50 +973,6 @@
   }
 }
 
-@keyframes auth-dim-on-logs {
-  0%,
-  79%,
-  100% {
-    opacity: 1;
-  }
-  80%,
-  90% {
-    opacity: 0.36;
-  }
-  91%,
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes auth-active-shift {
-  0%,
-  67%,
-  100% {
-    transform: translateX(0);
-  }
-  69%,
-  79% {
-    transform: translateX(-0.55em);
-  }
-}
-
-@keyframes logs-active-shift {
-  0%,
-  79%,
-  100% {
-    transform: translateX(0);
-  }
-  80%,
-  90% {
-    transform: translateX(-0.55em);
-  }
-  91%,
-  100% {
-    transform: translateX(0);
-  }
-}
-
 @keyframes tree-root-window {
   0%,
   67% {
@@ -881,12 +981,12 @@
   }
   68%,
   79% {
-    transform: translate(-7.1em, -8.2em) scale(1.2);
+    transform: translate(-7.9em, -8.9em);
     filter: brightness(0.8);
   }
   80%,
   89% {
-    transform: translate(-7.1em, -13.9em) scale(1.24);
+    transform: translate(-7.9em, -13.4em);
     filter: brightness(0.8);
   }
   94%,
@@ -930,7 +1030,7 @@
 
   .tree-output .node {
     opacity: 1;
-    max-height: 1.2em;
+    max-height: 1.45em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
