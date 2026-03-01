@@ -10,26 +10,57 @@ hero:
   tagline: We learned git worktrees so you don't have to.
   image:
     html: |
-      <div class="hero-media-shell" role="presentation">
-        <div class="hero-media-frame">
-          <svg class="hero-media-svg" viewBox="0 0 360 320" width="360" height="320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Neon signal grid" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#53f5c4"/>
-                <stop offset="100%" stop-color="#58b3ff"/>
-              </linearGradient>
-            </defs>
-            <rect x="16" y="16" width="328" height="288" rx="20" fill="#08141c" stroke="#1b3a4d"/>
-            <g opacity="0.28" stroke="#4df8cc">
-              <path d="M40 64H320"/><path d="M40 96H320"/><path d="M40 128H320"/><path d="M40 160H320"/><path d="M40 192H320"/><path d="M40 224H320"/>
-              <path d="M72 40V280"/><path d="M112 40V280"/><path d="M152 40V280"/><path d="M192 40V280"/><path d="M232 40V280"/><path d="M272 40V280"/>
-            </g>
-            <path d="M46 218C84 198 108 205 138 178C166 153 186 121 228 116C254 113 282 127 316 84" fill="none" stroke="url(#g1)" stroke-width="8" stroke-linecap="round"/>
-            <circle cx="138" cy="178" r="9" fill="#53f5c4"/>
-            <circle cx="228" cy="116" r="9" fill="#58b3ff"/>
-            <circle cx="316" cy="84" r="9" fill="#53f5c4"/>
-          </svg>
+      <div class="demo-sequence" role="region" aria-label="Animated explainer with one command line and file tree effects.">
+        <input class="demo-toggle" id="hero-demo-toggle" type="checkbox" aria-label="Pause or play demo animation" />
+        <div class="demo-terminal" role="img" aria-label="Terminal-style demo: commands run and tree output updates" tabindex="0">
+          <div class="demo-chrome" aria-hidden="true">
+            <span class="chrome-dot chrome-dot-red"></span>
+            <span class="chrome-dot chrome-dot-yellow"></span>
+            <span class="chrome-dot chrome-dot-green"></span>
+          </div>
+          <div class="demo-body">
+            <div class="tree-output" aria-live="polite">
+              <div class="tree-canvas">
+                <div class="node base">workspace</div>
+                <div class="node reveal-1">├── repos</div>
+                <div class="node reveal-2">│   ├── frontend</div>
+                <div class="node reveal-3">│   └── backend</div>
+                <div class="node reveal-1">└── .arashi</div>
+                <div class="node reveal-1">    ├── config.json</div>
+                <div class="node reveal-1">    └── worktrees</div>
+                <div class="node auth-early">        └── auth</div>
+                <div class="node auth-early">            └── repos</div>
+                <div class="node auth-early">                ├── frontend</div>
+                <div class="node auth-early">                └── backend</div>
+                <div class="node auth-tree auth-late">        ├── auth</div>
+                <div class="node auth-tree auth-late">        │   └── repos</div>
+                <div class="node auth-tree auth-late">        │       ├── frontend</div>
+                <div class="node auth-tree auth-late">        │       └── backend</div>
+                <div class="node reveal-5 logs-tree">        └── logs</div>
+                <div class="node reveal-5 logs-tree">            └── repos</div>
+                <div class="node reveal-5 logs-tree">                ├── frontend</div>
+                <div class="node reveal-5 logs-tree">                └── backend</div>
+                <div class="node reveal-6 focus-auth">        &gt; switched: auth</div>
+                <div class="node reveal-7 focus-logs">        &gt; switched: logs</div>
+              </div>
+            </div>
+            <div class="terminal-shell" aria-live="polite">
+              <div class="terminal-line cmd-1"><span class="prompt">$</span><span class="typed">arashi init</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-2"><span class="prompt">$</span><span class="typed">arashi add git@github.com:acme/frontend.git</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-3"><span class="prompt">$</span><span class="typed">arashi add git@github.com:acme/backend.git</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-4"><span class="prompt">$</span><span class="typed">arashi create auth</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-5"><span class="prompt">$</span><span class="typed">arashi create logs</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-6"><span class="prompt">$</span><span class="typed">arashi switch auth</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-7"><span class="prompt">$</span><span class="typed">arashi switch logs</span><span class="cursor"></span></div>
+            </div>
+          </div>
         </div>
+        <label class="demo-control" for="hero-demo-toggle" aria-label="Pause or play demo animation">
+          <span class="demo-icon demo-icon-pause" aria-hidden="true"><span></span><span></span></span>
+          <span class="demo-icon demo-icon-play" aria-hidden="true"><span></span></span>
+          <span class="demo-sr demo-control-pause">Pause animation</span>
+          <span class="demo-sr demo-control-play">Play animation</span>
+        </label>
       </div>
   actions:
     - text: Getting Started
@@ -78,25 +109,6 @@ Arashi is a Git worktree manager that pairs perfectly with a spec-driven develop
 - New to Arashi? Open [Getting Started](/getting-started/).
 - Looking for command behavior? Open [Commands](/commands/).
 - Improving docs? Open [Contributing](/contributing/).
-
-## Quick Workflow
-
-```bash
-# Initial setup
-arashi init
-arashi add git@github.com:your-org/frontend.git
-# Clone missing configured repositories (team setup / new machine)
-arashi clone --all
-# Create a new feature branch and worktree
-arashi create feature-doc-improvements
-# View all worktrees
-arashi list
-# Open a terminal context for the new worktree
-arashi switch feature-doc-improvements
-# Make changes, commit, push, open PR, etc.
-# Check on worktree status
-arashi status
-```
 
 By default, `arashi create` places managed worktrees under `.arashi/worktrees`.
 You can also set default create/switch behavior in `.arashi/config.json` with `defaults.create` and `defaults.switch`.
