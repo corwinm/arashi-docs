@@ -23,35 +23,30 @@ hero:
               <div class="tree-canvas">
                 <div class="node base">workspace</div>
                 <div class="node reveal-1">├── repos</div>
-                <div class="node reveal-2">│   ├── frontend</div>
-                <div class="node reveal-3">│   └── backend</div>
+                <div class="node reveal-3">│   ├── frontend</div>
+                <div class="node reveal-2">│   └── backend</div>
                 <div class="node reveal-1">└── .arashi</div>
                 <div class="node reveal-1">    ├── config.json</div>
                 <div class="node reveal-1">    └── worktrees</div>
-                <div class="node auth-early">        └── auth</div>
-                <div class="node auth-early">            └── repos</div>
-                <div class="node auth-early">                ├── frontend</div>
-                <div class="node auth-early">                └── backend</div>
-                <div class="node auth-tree auth-late">        ├── auth</div>
-                <div class="node auth-tree auth-late">        │   └── repos</div>
-                <div class="node auth-tree auth-late">        │       ├── frontend</div>
-                <div class="node auth-tree auth-late">        │       └── backend</div>
-                <div class="node reveal-5 logs-tree">        └── logs</div>
-                <div class="node reveal-5 logs-tree">            └── repos</div>
-                <div class="node reveal-5 logs-tree">                ├── frontend</div>
-                <div class="node reveal-5 logs-tree">                └── backend</div>
-                <div class="node reveal-6 focus-auth">        &gt; switched: auth</div>
-                <div class="node reveal-7 focus-logs">        &gt; switched: logs</div>
+                <div class="node reveal-5 auth-tree">        ├── auth</div>
+                <div class="node reveal-5 auth-tree">        │   └── repos</div>
+                <div class="node reveal-5 auth-tree">        │       ├── frontend</div>
+                <div class="node reveal-5 auth-tree">        │       └── backend</div>
+                <div class="node reveal-4 logs-tree">        └── logs</div>
+                <div class="node reveal-4 logs-tree">            └── repos</div>
+                <div class="node reveal-4 logs-tree">                ├── frontend</div>
+                <div class="node reveal-4 logs-tree">                └── backend</div>
               </div>
             </div>
             <div class="terminal-shell" aria-live="polite">
               <div class="terminal-line cmd-1"><span class="prompt">$</span><span class="typed">arashi init</span><span class="cursor"></span></div>
-              <div class="terminal-line cmd-2"><span class="prompt">$</span><span class="typed">arashi add git@github.com:acme/frontend.git</span><span class="cursor"></span></div>
-              <div class="terminal-line cmd-3"><span class="prompt">$</span><span class="typed">arashi add git@github.com:acme/backend.git</span><span class="cursor"></span></div>
-              <div class="terminal-line cmd-4"><span class="prompt">$</span><span class="typed">arashi create auth</span><span class="cursor"></span></div>
-              <div class="terminal-line cmd-5"><span class="prompt">$</span><span class="typed">arashi create logs</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-2"><span class="prompt">$</span><span class="typed">arashi add git@github.com:acme/backend.git</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-3"><span class="prompt">$</span><span class="typed">arashi add git@github.com:acme/frontend.git</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-4"><span class="prompt">$</span><span class="typed">arashi create logs</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-5"><span class="prompt">$</span><span class="typed">arashi create auth</span><span class="cursor"></span></div>
               <div class="terminal-line cmd-6"><span class="prompt">$</span><span class="typed">arashi switch auth</span><span class="cursor"></span></div>
               <div class="terminal-line cmd-7"><span class="prompt">$</span><span class="typed">arashi switch logs</span><span class="cursor"></span></div>
+              <div class="terminal-line cmd-8"><span class="prompt">$</span><span class="typed">arashi switch main</span><span class="cursor"></span></div>
             </div>
           </div>
         </div>
@@ -69,6 +64,8 @@ hero:
 ---
 
 import { TabItem, Tabs } from "@astrojs/starlight/components";
+
+<p class="home-mantra"><strong>嵐 (Arashi) - The eye of the storm for your development workflow</strong></p>
 
 Arashi is a Git worktree manager that pairs perfectly with a spec-driven development workflow in a multi-repo environment.
 
