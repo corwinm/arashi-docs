@@ -400,6 +400,8 @@
   display: block;
   transform-origin: 0 0;
   will-change: transform, filter;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   animation: tree-root-window var(--demo-cycle) ease-in-out infinite;
 }
 
@@ -407,8 +409,9 @@
   display: block;
   white-space: pre;
   color: hsl(177 45% 84%);
-  line-height: 1.14;
-  padding: 0.01rem 0.18rem;
+  line-height: 1.2;
+  font-weight: 500;
+  padding: 0.02rem 0.18rem;
   border-radius: 0.35rem;
   opacity: 0;
   max-height: 0;
@@ -417,7 +420,7 @@
 
 .tree-output .node.base {
   opacity: 1;
-  max-height: 1.45em;
+  max-height: 1.7em;
 }
 
 .tree-output .node.reveal-1 {
@@ -444,7 +447,7 @@
 
 .terminal-shell {
   position: relative;
-  min-height: 2rem;
+  min-height: 2.25rem;
   padding: 0.58rem 0.85rem 0.62rem;
 }
 
@@ -452,6 +455,7 @@
   position: absolute;
   inset: 0.58rem 0.85rem auto 0.85rem;
   white-space: nowrap;
+  line-height: 1.2;
   opacity: 0;
   animation-duration: var(--demo-cycle);
   animation-iteration-count: infinite;
@@ -470,6 +474,9 @@
   max-width: calc(var(--chars) * 1ch);
   overflow: hidden;
   vertical-align: bottom;
+  line-height: 1.2;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
   color: hsl(165 90% 79%);
   white-space: nowrap;
   animation-duration: var(--demo-cycle);
@@ -804,7 +811,7 @@
   8%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -821,7 +828,7 @@
   20%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -838,7 +845,7 @@
   32%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -855,7 +862,7 @@
   44%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -872,7 +879,7 @@
   44%,
   55% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -896,7 +903,7 @@
   56%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -913,7 +920,7 @@
   82%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -930,7 +937,7 @@
   96%,
   100% {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
@@ -942,13 +949,11 @@
   100% {
     color: hsl(176 45% 86%);
     text-shadow: none;
-    font-weight: 400;
   }
   69%,
   79% {
     color: hsl(166 100% 88%);
-    text-shadow: 0 0 12px hsl(165 92% 63% / 0.38);
-    font-weight: 600;
+    text-shadow: 0 0 9px hsl(165 92% 63% / 0.3);
   }
 }
 
@@ -957,19 +962,16 @@
   79% {
     color: hsl(176 45% 86%);
     text-shadow: none;
-    font-weight: 400;
   }
   80%,
   90% {
     color: hsl(166 100% 88%);
-    text-shadow: 0 0 12px hsl(165 92% 63% / 0.38);
-    font-weight: 600;
+    text-shadow: 0 0 9px hsl(165 92% 63% / 0.3);
   }
   91%,
   100% {
     color: hsl(176 45% 86%);
     text-shadow: none;
-    font-weight: 400;
   }
 }
 
@@ -981,18 +983,47 @@
   }
   68%,
   79% {
-    transform: translate(-7.9em, -8.9em);
+    transform: translate(-7.9em, -8.9em) scale(1);
     filter: brightness(0.8);
   }
   80%,
   89% {
-    transform: translate(-7.9em, -13.4em);
+    transform: translate(-7.9em, -13.4em) scale(1);
     filter: brightness(0.8);
   }
   94%,
   100% {
     transform: translate(0, 0) scale(1);
     filter: brightness(1);
+  }
+}
+
+@keyframes tree-root-window-safari {
+  0%,
+  67% {
+    transform: translate(0, 0) scale(1);
+    filter: brightness(1);
+  }
+  68%,
+  79% {
+    transform: translate(-8.1em, -8.8em) scale(1);
+    filter: brightness(0.8);
+  }
+  80%,
+  89% {
+    transform: translate(-8.1em, -13.2em) scale(1);
+    filter: brightness(0.8);
+  }
+  94%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@supports (background: -webkit-named-image(i)) {
+  .tree-canvas {
+    animation-name: tree-root-window-safari;
   }
 }
 
@@ -1030,7 +1061,7 @@
 
   .tree-output .node {
     opacity: 1;
-    max-height: 1.45em;
+    max-height: 1.7em;
     padding-top: 0.01rem;
     padding-bottom: 0.01rem;
   }
