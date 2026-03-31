@@ -13,6 +13,7 @@ Set up a workspace so Arashi can track repositories and worktrees.
 ## What It Does
 
 - Creates Arashi configuration in the current project.
+- Offers to bootstrap a Git repository when you run it from a non-repository directory in an interactive terminal.
 - Prepares workspace metadata used by other commands.
 - Makes the workspace ready for repository registration.
 
@@ -37,6 +38,12 @@ arashi init [options]
 # Standard initialization
 arashi init
 
+# Run from a parent directory, then enter '.' at the prompt to initialize the current directory
+arashi init
+
+# Run from a parent directory, then enter 'my-arashi-repo' at the prompt to create a child repo
+arashi init
+
 # Use a custom repositories directory
 arashi init --repos-dir ../workspace-repos
 
@@ -49,7 +56,9 @@ arashi init --force --dry-run
 
 ## Notes
 
-- Run this command inside a Git repository.
+- Run this command inside an existing Git repository root, or from a parent directory in an interactive terminal when you want Arashi to create the repository for you.
+- In bootstrap mode, the repository target prompt accepts only `.` or a direct child directory name such as `my-arashi-repo`.
+- If `init` is run outside a Git repository without an interactive terminal, it exits with guidance instead of prompting.
 - `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
 - `init` sets `worktreesDir` to `.arashi/worktrees` by default.
 - It updates `.gitignore` to exclude the configured repositories directory.

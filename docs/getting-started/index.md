@@ -65,8 +65,33 @@ If npm is unavailable or fails in your environment, use the curl installer comma
 
 ## First Workflow
 
+Choose the directory you want Arashi to initialize before you run `arashi init`:
+
+- Existing repository workflow: `cd` to the repository root you already want to manage, then run `arashi init` there.
+- New repository workflow: `cd` to a parent directory where you want the repository created, run `arashi init`, and enter either `.` for the current directory or a child name such as `my-arashi-repo` when prompted.
+
+Example: initialize the current directory as a new repository.
+
 ```bash
+mkdir my-arashi-workspace
+cd my-arashi-workspace
 arashi init
+# prompt: Repository target ('.' for current directory or a child directory name) -> .
+```
+
+Example: create a child repository from a parent directory.
+
+```bash
+mkdir scratch
+cd scratch
+arashi init
+# prompt: Repository target ('.' for current directory or a child directory name) -> my-arashi-repo
+cd my-arashi-repo
+```
+
+Once `arashi init` completes, continue with the core workflow:
+
+```bash
 arashi add git@github.com:your-org/frontend.git
 arashi create feature-docs-bootstrap
 arashi switch feature-docs-bootstrap
