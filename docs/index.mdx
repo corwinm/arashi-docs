@@ -1,13 +1,13 @@
 ---
 title: Arashi
-description: Command-first documentation for using and contributing to Arashi.
+description: Git worktree manager for meta-repositories. Keep related repositories aligned while you work on a feature branch across a shared workspace.
 template: splash
 draft: false
 sidebar:
   hidden: false
 hero:
   title: Arashi
-  tagline: We learned git worktrees so you don't have to.
+  tagline: Git worktree manager for meta-repositories.
   image:
     html: |
       <div class="demo-sequence" role="region" aria-label="Animated explainer with one command line and file tree effects.">
@@ -61,13 +61,19 @@ hero:
     - text: Getting Started
       link: /getting-started/
       variant: primary
+    - text: Workflow Guides
+      link: /workflows/
+    - text: Integrations
+      link: /workflows/integrations/
+    - text: Agent Guidance
+      link: /workflows/agents-and-specs/
 ---
 
 import { TabItem, Tabs } from "@astrojs/starlight/components";
 
-<p class="home-mantra"><strong>嵐 (Arashi) - The eye of the storm for your development workflow</strong></p>
+<p class="home-mantra"><strong>Git worktree manager for meta-repositories.</strong></p>
 
-Arashi is a Git worktree manager that pairs perfectly with a spec-driven development workflow in a multi-repo environment.
+Arashi keeps related repositories aligned while you work on a feature branch across a shared workspace.
 
 <Tabs>
   <TabItem label="curl">
@@ -104,8 +110,11 @@ Arashi is a Git worktree manager that pairs perfectly with a spec-driven develop
 ## Choose Your Path
 
 - New to Arashi? Open [Getting Started](/getting-started/).
+- Need hooks and command defaults? Open [Hooks and Config](/workflows/hooks-and-config/).
+- Comparing VSCode, tmux, and `tmux` plus `sesh`? Open [Integrations](/workflows/integrations/).
+- Planning with agents or specs? Open [Agents and Specs](/workflows/agents-and-specs/).
 - Looking for command behavior? Open [Commands](/commands/).
 - Improving docs? Open [Contributing](/contributing/).
 
 By default, `arashi create` places managed worktrees under `.arashi/worktrees`.
-You can also set default create/switch behavior in `.arashi/config.json` with `defaults.create` and `defaults.switch`.
+You can also set default create/switch behavior in `.arashi/config.json` with `defaults.create` and `defaults.switch`, then choose workflow guides for hooks, integrations, and agent-assisted change planning.

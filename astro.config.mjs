@@ -7,7 +7,7 @@ export default defineConfig({
     starlight({
       title: "Arashi",
       description:
-        "User and maintainer documentation for Arashi, the Git worktree manager for meta-repositories.",
+        "Git worktree manager for meta-repositories. Keep related repositories aligned while you work on a feature branch across a shared workspace.",
       logo: {
         src: "./src/assets/arashi-logo.svg",
         alt: "Arashi logo"
@@ -30,6 +30,10 @@ export default defineConfig({
         {
           label: "Getting Started",
           autogenerate: { directory: "getting-started" }
+        },
+        {
+          label: "Workflows",
+          autogenerate: { directory: "workflows" }
         },
         {
           label: "Commands",

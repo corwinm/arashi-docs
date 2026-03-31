@@ -103,7 +103,14 @@ Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.swit
 
 If you install Arashi with the official curl installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 
+When the workspace is initialized, choose the workflow guide that matches what you need next:
+
+- [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks and command defaults.
+- [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` flows.
+- [Agents and Specs](/workflows/agents-and-specs/) for agent-assisted planning and implementation boundaries.
+
 ## Next Steps
 
 - Continue to [Commands](/commands/) for command-by-command behavior.
+- Continue to [Workflows](/workflows/) if you want setup guidance by workflow instead of by command.
 - Continue to [Contributing](/contributing/) if you are adding or editing docs.

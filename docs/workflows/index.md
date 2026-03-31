@@ -1,0 +1,30 @@
+---
+title: Workflows
+description: Choose guidance for hooks, configuration defaults, integrations, and agent-assisted change flow.
+draft: false
+sidebar:
+  hidden: false
+---
+
+Use this section after `arashi init` when you want workflow guidance instead of a command-by-command reference.
+
+## Choose a Workflow
+
+- [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks, command defaults, and post-init workspace setup.
+- [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` launch patterns.
+- [Agents and Specs](/workflows/agents-and-specs/) for agent-assisted planning, implementation boundaries, and spec-driven change flow.
+
+## Recommended Path After `arashi init`
+
+1. Configure `defaults.create` and `defaults.switch` so worktree creation and switching match your preferred launch behavior.
+2. Add lifecycle hooks if you need setup or cleanup automation around `create` and `remove`.
+3. Choose how you want to open worktrees: VSCode, terminal-native tmux flows, or `sesh`-driven session switching.
+4. If you work with agents, write or update planning artifacts before implementation and keep code changes in the affected project repo.
+
+## Related Commands
+
+- [create](/commands/create/)
+- [remove](/commands/remove/)
+- [switch](/commands/switch/)
+- [shell](/commands/shell/)
+- [setup](/commands/setup/)

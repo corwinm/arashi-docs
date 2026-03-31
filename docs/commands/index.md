@@ -35,4 +35,5 @@ arashi switch
 ## Related
 
 - [Getting Started](/getting-started/)
+- [Workflows](/workflows/)
 - [Contributing](/contributing/)
