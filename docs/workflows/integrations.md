@@ -12,6 +12,8 @@ Use this guide when you know the branch you want to open and need the right laun
 
 Use VSCode when you want Arashi to open the selected worktree directly in the editor.
 
+Install the [Arashi VS Code extension](https://marketplace.visualstudio.com/items?itemName=haphazarddev.arashi-vscode) when you want Arashi controls inside the editor, not just a one-off CLI launch.
+
 ```bash
 arashi switch --vscode feature-auth
 ```
@@ -19,6 +21,20 @@ arashi switch --vscode feature-auth
 - Best for editor-first workflows where the terminal is secondary.
 - Good default when your team reviews changes primarily inside VSCode.
 - One-off IDE flags are useful when you do not want to change workspace defaults.
+
+With the extension installed, you can:
+
+- run core Arashi commands from the command palette, including `init`, `add`, `clone`, `create`, `pull`, `sync`, `switch`, and `remove`
+- browse available worktrees in the **Arashi Worktrees** explorer view, including repo, branch, path, and change status
+- use inline worktree actions to switch, remove, or add repositories without leaving the editor
+- review command diagnostics in the **Arashi** output channel when setup or command execution fails
+- respond to startup warnings in-editor, including a shortcut to run `Arashi: Init Workspace`
+
+Recommended usage pattern:
+
+- Use `arashi switch --vscode <branch>` when you are already in the terminal and want VSCode to open a specific worktree immediately.
+- Use the extension when VSCode is your primary shell for day-to-day worktree management and you want a persistent worktree panel.
+- Set `arashi.binaryPath`, `arashi.workspaceRoot`, or `arashi.commandTimeoutMs` in VSCode settings when the editor should target a specific binary or workspace root.
 
 ## tmux
 

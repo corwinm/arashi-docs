@@ -61,12 +61,8 @@ hero:
     - text: Getting Started
       link: /getting-started/
       variant: primary
-    - text: Workflow Guides
+    - text: Workflows
       link: /workflows/
-    - text: Integrations
-      link: /workflows/integrations/
-    - text: Agent Guidance
-      link: /workflows/agents-and-specs/
 ---
 
 import { TabItem, Tabs } from "@astrojs/starlight/components";
@@ -102,6 +98,13 @@ Arashi keeps related repositories aligned while you work on a feature branch acr
   ```bash
   bun pm trust -g arashi
   bun add -g arashi
+  ```
+
+  </TabItem>
+  <TabItem label="vite+">
+
+  ```bash
+  vp i -g arashi@latest
   ```
 
   </TabItem>
