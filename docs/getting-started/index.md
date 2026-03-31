@@ -36,7 +36,9 @@ Verify install:
 arashi --version
 ```
 
-The installer defaults to `~/.arashi/bin` and updates your shell profile so `arashi` is available on `PATH` in new shells.
+The installer defaults to `~/.arashi/bin`, updates your shell profile so `arashi` is available on `PATH` in new shells, and in interactive installs can offer shell integration for `arashi switch --cd`.
+
+For unattended installs, set `ARASHI_SHELL_INTEGRATION=yes` to enable that automatically or `ARASHI_SHELL_INTEGRATION=no` to skip it.
 
 If this path fails, use npm (`npm install -g arashi`) or the manual release flow in [`repos/arashi/docs/INSTALLATION.md`](https://github.com/corwinm/arashi/blob/main/docs/INSTALLATION.md).
 
@@ -72,7 +74,9 @@ arashi status
 ```
 
 By default, new managed worktrees are created under `.arashi/worktrees`.
-Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch/launch behavior.
+Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `arashi shell install` if you want `arashi switch` to support parent-shell `cd` behavior.
+
+If you install Arashi with the official curl installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 
 ## Next Steps
 
