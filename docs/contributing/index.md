@@ -17,8 +17,10 @@ This section defines the contributor workflow and maintenance expectations for t
 - [Review Checklist](/contributing/review-checklist/)
 - [Validation Troubleshooting](/contributing/validation-troubleshooting/)
 - [Ownership](/contributing/ownership/)
+- [Agents](/workflows/agents-and-specs/)
 
 ## Related
 
 - [Getting Started](/getting-started/)
+- [Workflows](/workflows/)
 - [Commands](/commands/)
