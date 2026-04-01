@@ -64,6 +64,78 @@ Typical uses:
 - clear generated files after branch cleanup
 - apply repository-specific setup without hard-coding it into every workflow command
 
+### `post-create` examples
+
+Create hooks are useful when every new worktree needs the same local setup. Make the hook executable with `chmod +x` after you create it.
+
+Useful create-hook variables include:
+
+- `ARASHI_WORKTREE_PATH` for the new worktree path
+- `ARASHI_MAIN_REPO_PATH` for the main workspace path
+- `ARASHI_BRANCH` for the new branch name
+- `ARASHI_BASE_BRANCH` for the base branch used to create the worktree
+
+#### Install Node dependencies with `pnpm`
+
+Use a repo-specific hook when only one child repo needs package install.
+
+File: `.arashi/hooks/post-create.web.sh`
+
+```bash
+#!/bin/sh
+set -eu
+
+cd "$ARASHI_WORKTREE_PATH"
+pnpm install --frozen-lockfile
+```
+
+#### Create a Python virtual environment with `uv`
+
+File: `.arashi/hooks/post-create.api.sh`
+
+```bash
+#!/bin/sh
+set -eu
+
+cd "$ARASHI_WORKTREE_PATH"
+uv venv
+uv sync
+```
+
+#### Create a Python virtual environment with `pip`
+
+File: `.arashi/hooks/post-create.api.sh`
+
+```bash
+#!/bin/sh
+set -eu
+
+cd "$ARASHI_WORKTREE_PATH"
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### Copy a local `.env` file from the main worktree
+
+This is useful when your team keeps uncommitted local environment files in the main worktree and wants each new worktree to start with the same local config.
+
+File: `.arashi/hooks/post-create.web.sh`
+
+```bash
+#!/bin/sh
+set -eu
+
+MAIN_ENV="$ARASHI_MAIN_REPO_PATH/repos/web/.env"
+WORKTREE_ENV="$ARASHI_WORKTREE_PATH/.env"
+
+if [ -f "$MAIN_ENV" ] && [ ! -f "$WORKTREE_ENV" ]; then
+  cp "$MAIN_ENV" "$WORKTREE_ENV"
+fi
+```
+
+If you want one shared hook for multiple child repos, use `.arashi/hooks/post-create.sh` and branch inside the script based on the target repository or the files present in `ARASHI_WORKTREE_PATH`.
+
 ## Suggested Setup Sequence
 
 1. Start with `defaults.create` and `defaults.switch` so the default behavior matches your team.

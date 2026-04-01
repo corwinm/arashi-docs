@@ -17,6 +17,7 @@ Use this section when you want command-level guidance.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
 - [switch](/commands/switch/) - open a terminal context for a worktree.
+- [shell](/commands/shell/) - install shell integration and helpers.
 - [remove](/commands/remove/) - remove worktrees and branches.
 - [pull](/commands/pull/) - pull remote updates across repos.
 - [sync](/commands/sync/) - align child repos to parent branch.
