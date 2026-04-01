@@ -106,8 +106,10 @@ If you install Arashi with the official curl installer, it can offer shell integ
 
 When the workspace is initialized, choose the workflow guide that matches what you need next:
 
-- [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks and command defaults.
-- [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` flows.
+- [Hooks](/workflows/hooks/) for lifecycle automation after create and remove.
+- [Config](/workflows/config/) for command defaults and shell-aware switching behavior.
+- [VS Code](/workflows/vscode/) for editor-first worktree management.
+- [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session flows.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 
 ## Next Steps

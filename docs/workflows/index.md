@@ -1,6 +1,6 @@
 ---
 title: Workflows
-description: Choose guidance for hooks, configuration defaults, integrations, and working with agents in an Arashi workspace.
+description: Choose guidance for hooks, configuration defaults, editor or terminal workflows, and working with agents in an Arashi workspace.
 draft: false
 sidebar:
   hidden: false
@@ -10,8 +10,10 @@ Use this section after `arashi init` when you want workflow guidance instead of 
 
 ## Choose a Workflow
 
-- [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks, command defaults, and post-init workspace setup.
-- [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` launch patterns.
+- [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
+- [Config](/workflows/config/) for command defaults and post-init switch behavior.
+- [VS Code](/workflows/vscode/) for editor-first worktree management.
+- [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 
 ## Recommended Path After `arashi init`
