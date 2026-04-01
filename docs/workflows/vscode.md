@@ -6,9 +6,9 @@ sidebar:
   hidden: false
 ---
 
-Use this guide when VS Code is your primary destination for opening and managing Arashi worktrees.
+Use this guide when VS Code or a VS Code-based editor is your primary destination for opening and managing Arashi worktrees.
 
-Arashi also supports other editors through one-off launch flags such as `--cursor` and `--kiro`. This page focuses on VS Code because it also has a dedicated extension.
+Cursor and Kiro are VS Code forks, so the same editor-first workflow generally applies there as well. This page focuses on VS Code because the Arashi extension is published through the standard VS Code extension ecosystems.
 
 ## Open a Worktree in VS Code
 
@@ -42,7 +42,7 @@ With the extension installed, you can:
 - Use `arashi switch --vscode <branch>` when you are already in the terminal and want VS Code to open a specific worktree immediately.
 - Use the extension when VS Code is your primary shell for day-to-day worktree management and you want a persistent worktree panel.
 - Set `arashi.binaryPath`, `arashi.workspaceRoot`, or `arashi.commandTimeoutMs` in VS Code settings when the editor should target a specific binary or workspace root.
-- Use `--cursor`, `--kiro`, or other supported launch flags when you want editor integration without the VS Code extension workflow.
+- Use `--cursor` or `--kiro` when you want the same VS Code-style workflow in those editors.
 
 ## Related References
 
