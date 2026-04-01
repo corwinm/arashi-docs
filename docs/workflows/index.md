@@ -12,7 +12,7 @@ Use this section after `arashi init` when you want workflow guidance instead of 
 
 - [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks, command defaults, and post-init workspace setup.
 - [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` launch patterns.
-- [Working with Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 
 ## Recommended Path After `arashi init`
 

@@ -108,7 +108,7 @@ When the workspace is initialized, choose the workflow guide that matches what y
 
 - [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks and command defaults.
 - [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` flows.
-- [Working with Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 
 ## Next Steps
 
