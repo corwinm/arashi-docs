@@ -1,55 +1,55 @@
 ---
-title: Agents and Specs
-description: Plan changes with specs, keep implementation in project repos, and hand off clean context to agents.
+title: Working with Agents
+description: Use agents effectively in an Arashi meta-repo by keeping implementation in child repos and shared context in the meta-repo.
 draft: false
 sidebar:
   hidden: false
 ---
 
-Use this guide when Arashi is part of an agent-assisted or spec-driven development workflow.
+Use this guide when you want an agent to work safely inside an Arashi meta-repo.
 
-## Keep Planning and Implementation Separate
+## Core Idea
 
-When your workspace includes planning artifacts and project repositories, keep them in different places:
+Arashi works best with agents when the workspace has a clear split:
 
-- planning artifacts such as `proposal.md`, `design.md`, `tasks.md`, and capability specs belong in the planning repo under `openspec/changes/` and `openspec/specs/`
-- implementation, tests, and project-specific docs belong in the affected project repository under `repos/<project>/`
+- implementation belongs in the affected child repo under `repos/<project>/`
+- shared context, planning, and cross-repo documentation belong in the meta-repo
 
-This split keeps agents from mixing planning files into implementation repos and makes multi-repo review easier.
+That structure makes it much easier to tell an agent where to read, where to write, and what not to mix together.
 
-## AGENTS-Style Workflow Rules
+## What To Tell The Agent
 
-When you ask an agent to work in an Arashi workspace, the agent should:
+When you give an agent work in this workspace, tell it:
 
-1. inspect the existing code and docs before making changes
-2. keep edits minimal and scoped to the task at hand
-3. avoid moving implementation into planning directories or specs into project repos
-4. update companion docs or skills references when workflow behavior or guidance changes
+1. which child repo owns the implementation
+2. that implementation, tests, and repo-specific docs stay in `repos/<project>/`
+3. that meta-repo context, planning notes, and cross-repo guidance stay in the meta-repo
+4. which validation commands to run in the affected repo or repos
+
+If your workspace uses `AGENTS.md` files, point the agent at the root file first and then the file inside the child repo it is editing.
+
+## Recommended Workflow
+
+1. decide which child repo owns the implementation
+2. gather context in the meta-repo before making code changes
+3. have the agent implement the change in the child repo
+4. update related docs or coordination files in the meta-repo when needed
 5. validate each affected repo before review or handoff
 
-For the canonical repository rules, review [`AGENTS.md`](https://github.com/corwinm/arashi-arashi/blob/main/AGENTS.md).
+## Specs Pair Well, But They Are Optional
 
-## Suggested Spec-Driven Frameworks
+Arashi pairs well with a spec-driven development framework such as OpenSpec because it gives the agent a clean place for proposals, tasks, and design context.
 
-- **OpenSpec**: define a change with `proposal.md`, `design.md`, `tasks.md`, and capability specs before implementation.
-- **Issue plus task checklist**: acceptable for smaller changes, as long as the problem, implementation plan, and verification steps are written down before code changes.
-- **Agent-friendly ADR workflow**: useful when you need a durable design decision record in addition to implementation tasks.
+The important part is not a specific framework. The important part is keeping:
 
-The key requirement is not a specific tool. It is preserving enough written context that an agent can plan, implement, and validate changes without guessing.
+- code in the child repo that owns it
+- context and coordination in the meta-repo
+- instructions clear enough that the agent does not need to guess
 
-## Recommended Change Flow
-
-1. define the change and the affected capabilities
-2. write or update `proposal.md`, `design.md`, and `tasks.md`
-3. implement the change in `repos/<project>/`
-4. run validation in every affected repo
-5. archive or merge only after specs, docs, and implementation stay aligned
-
-If your assistant environment exposes them, use `/opsx-propose` to scaffold a change and `/opsx-apply` to work through the task list.
+If your assistant environment exposes them, `OpenSpec` commands such as `/opsx-propose` and `/opsx-apply` are a good fit for this workflow.
 
 ## Related References
 
 - [Workflows overview](/workflows/)
 - [Contributing](/contributing/)
-- [Arashi skill package](https://github.com/corwinm/arashi-skills)
-- [Specs and planning repo](https://github.com/corwinm/arashi-arashi)
+- [Meta-repo AGENTS.md](https://github.com/corwinm/arashi-arashi/blob/main/AGENTS.md)

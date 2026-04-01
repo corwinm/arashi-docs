@@ -65,29 +65,30 @@ If npm is unavailable or fails in your environment, use the curl installer comma
 
 ## First Workflow
 
-Choose the directory you want Arashi to initialize before you run `arashi init`:
+Start with the path that matches how you are adopting Arashi.
 
-- Existing repository workflow: `cd` to the repository root you already want to manage, then run `arashi init` there.
-- New repository workflow: `cd` to a parent directory where you want the repository created, run `arashi init`, and enter either `.` for the current directory or a child name such as `my-arashi-repo` when prompted.
+### 1. Create a new meta-repo
 
-Example: initialize the current directory as a new repository.
-
-```bash
-mkdir my-arashi-workspace
-cd my-arashi-workspace
-arashi init
-# prompt: Repository target ('.' for current directory or a child directory name) -> .
-```
-
-Example: create a child repository from a parent directory.
+Use this flow when you are starting fresh and want Arashi to initialize the workspace root.
 
 ```bash
-mkdir scratch
-cd scratch
+mkdir my-meta-repo
+cd my-meta-repo
 arashi init
-# prompt: Repository target ('.' for current directory or a child directory name) -> my-arashi-repo
-cd my-arashi-repo
 ```
+
+When prompted for the repository target, enter `.` to initialize the current directory.
+
+### 2. Add Arashi to an existing meta-repo
+
+Use this flow when you already have a repository that should become your Arashi workspace.
+
+```bash
+cd path/to/existing-meta-repo
+arashi init
+```
+
+Run `arashi init` from the repository root you want Arashi to manage.
 
 Once `arashi init` completes, continue with the core workflow:
 
@@ -107,7 +108,7 @@ When the workspace is initialized, choose the workflow guide that matches what y
 
 - [Hooks and Config](/workflows/hooks-and-config/) for lifecycle hooks and command defaults.
 - [Integrations](/workflows/integrations/) for VSCode, tmux, and `tmux` plus `sesh` flows.
-- [Agents and Specs](/workflows/agents-and-specs/) for agent-assisted planning and implementation boundaries.
+- [Working with Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 
 ## Next Steps
 
