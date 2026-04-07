@@ -32,10 +32,14 @@ Install the Arashi extension when you want Arashi controls inside the editor, no
 With the extension installed, you can:
 
 - run core Arashi commands from the command palette, including `init`, `add`, `clone`, `create`, `pull`, `sync`, `switch`, and `remove`
-- browse available worktrees in the **Arashi Worktrees** explorer view, including repo, branch, path, and change status
-- use inline worktree actions to switch, remove, or add repositories without leaving the editor
+- browse available worktrees in the **Arashi Worktrees** Explorer view grouped by repository, including repo, branch, path, and change status
+- use panel title actions to create worktrees and refresh the current view without leaving the editor
+- use inline worktree actions to switch or remove a selected worktree with the exact clicked target
+- open the workspace root or a related repository in a new editor window from the panel or command palette
 - review command diagnostics in the **Arashi** output channel when setup or command execution fails
 - respond to startup warnings in-editor, including a shortcut to run `Arashi: Init Workspace`
+
+If the panel is not immediately visible, open the Explorer sidebar and reveal the **Arashi Worktrees** view from the Explorer view menu.
 
 ## Recommended Usage Pattern
 
