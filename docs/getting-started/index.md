@@ -37,6 +37,7 @@ arashi --version
 ```
 
 The installer defaults to `~/.arashi/bin`, updates your shell profile so `arashi` is available on `PATH` in new shells, and in interactive installs can offer shell integration for `arashi switch --cd`.
+It also runs a quick `arashi --version` smoke test before declaring success.
 
 For unattended installs, set `ARASHI_SHELL_INTEGRATION=yes` to enable that automatically or `ARASHI_SHELL_INTEGRATION=no` to skip it.
 
@@ -62,6 +63,7 @@ If npm is unavailable or fails in your environment, use the curl installer comma
 - Permission errors writing to global paths: rerun curl with `ARASHI_INSTALL_DIR="$HOME/.local/bin"` or use a user-level npm prefix.
 - Network/download failures: retry once, then switch to the other install method.
 - Checksum mismatch on curl path: stop and use npm/manual fallback, then report the failure.
+- If `arashi --version` exits immediately or returns code `137`, rerun the curl installer with `ARASHI_VERSION=<version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
 
 ## First Workflow
 
