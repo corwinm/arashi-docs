@@ -49,19 +49,25 @@ If this path fails, use npm (`npm install -g arashi`) or the manual release flow
 npm install -g arashi
 ```
 
+Arashi downloads the matching platform binary on first use. To preinstall it explicitly:
+
+```bash
+arashi install
+```
+
 Verify install:
 
 ```bash
 arashi --version
 ```
 
-If npm is unavailable or fails in your environment, use the curl installer command above or the manual release flow in [`repos/arashi/docs/INSTALLATION.md`](https://github.com/corwinm/arashi/blob/main/docs/INSTALLATION.md).
+If npm is unavailable or binary installation fails in your environment, use the curl installer command above or the manual release flow in [`repos/arashi/docs/INSTALLATION.md`](https://github.com/corwinm/arashi/blob/main/docs/INSTALLATION.md).
 
 ### Troubleshooting and fallback
 
 - `command not found`: install missing prerequisite (`curl`, `bash`, `npm`, or `node`) and rerun.
 - Permission errors writing to global paths: rerun curl with `ARASHI_INSTALL_DIR="$HOME/.local/bin"` or use a user-level npm prefix.
-- Network/download failures: retry once, then switch to the other install method.
+- Network/download failures: retry once; for npm installs you can rerun `arashi install`, then switch to the other install method if needed.
 - Checksum mismatch on curl path: stop and use npm/manual fallback, then report the failure.
 - If `arashi --version` exits immediately or returns code `137`, rerun the curl installer with `ARASHI_VERSION=<version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
 
