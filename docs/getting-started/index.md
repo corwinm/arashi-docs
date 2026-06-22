@@ -49,7 +49,7 @@ If this path fails, use npm (`npm install -g arashi`) or the manual release flow
 npm install -g arashi
 ```
 
-The npm package does not require lifecycle scripts. It downloads the matching platform binary on first use, or you can preinstall it explicitly:
+Arashi downloads the matching platform binary on first use. To preinstall it explicitly:
 
 ```bash
 arashi install
