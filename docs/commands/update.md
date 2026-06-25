@@ -15,16 +15,17 @@ arashi update [--check] [--dry-run] [--yes]
 ## Options
 
 - `--check` checks whether an update is available without changing files.
-- `--dry-run` shows the planned update command or manual replacement guidance without changing files.
-- `-y, --yes` allows a supported npm-managed update to run non-interactively.
+- `--dry-run` shows the planned update command or installer invocation without changing files.
+- `-y, --yes` applies a supported update non-interactively.
 
 ## Behavior
 
 Arashi first detects how the current CLI is installed.
 
 - npm-managed installs can update the package and then refresh the matching platform binary when the package manager can be confidently detected.
-- direct binary or manual installs are not replaced automatically. Arashi reports the latest release URL and the platform asset to download.
-- ambiguous installs do not mutate files. Arashi prints manual update commands or release guidance instead.
+- official curl installer installs can rerun the installer against the current binary directory when you pass `--yes`.
+- manual release-asset installs use the same installer-based plan when possible; use `--dry-run` first if you need to inspect the target directory.
+- ambiguous npm-managed installs do not mutate files. Arashi prints manual update commands instead.
 
 ## Examples
 
