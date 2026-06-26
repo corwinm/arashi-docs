@@ -1,7 +1,9 @@
 ---
-title: update
+title: update Command
 description: Check for and apply Arashi CLI updates.
 draft: false
+sidebar:
+  hidden: false
 ---
 
 Use `arashi update` when you want Arashi to check whether a newer CLI release is available.
