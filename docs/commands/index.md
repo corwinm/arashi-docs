@@ -16,6 +16,7 @@ Use this section when you want command-level guidance.
 - [create](/commands/create/) - create coordinated worktrees.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
+- [update](/commands/update/) - check for and apply CLI updates.
 - [switch](/commands/switch/) - open a terminal context for a worktree.
 - [shell](/commands/shell/) - install shell integration and helpers.
 - [remove](/commands/remove/) - remove worktrees and branches.
