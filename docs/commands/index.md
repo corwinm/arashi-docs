@@ -10,6 +10,7 @@ Use this section when you want command-level guidance.
 
 ## Command Pages
 
+- [JSON output](/commands/json-output/) - parse command results for scripts, integrations, and agents.
 - [init](/commands/init/) - initialize a workspace.
 - [add](/commands/add/) - add a repository to management.
 - [clone](/commands/clone/) - clone missing configured repositories.
