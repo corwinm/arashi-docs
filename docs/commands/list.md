@@ -40,6 +40,9 @@ arashi list --table
 
 # Interactive navigation
 cd "$(arashi list | fzf)"
+
+# Emit structured worktree data
+arashi list --json
 ```
 
 ## Notes

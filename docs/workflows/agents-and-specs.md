@@ -86,6 +86,24 @@ The important part is not a specific framework. The important part is keeping:
 
 If your assistant environment exposes them, `OpenSpec` commands such as `/opsx-propose` and `/opsx-apply` are a good fit for this workflow.
 
+## Machine-Readable Command Output
+
+Agents should prefer `--json` when they need to inspect Arashi state or make decisions from command results. JSON mode keeps stdout reserved for one parseable result document and avoids brittle scraping of progress text, colors, tables, or prompts.
+
+Good agent-facing commands include:
+
+```bash
+arashi status --json
+arashi list --json
+arashi create feature-branch --no-launch --no-switch --json
+arashi pull --only docs --json
+arashi setup --only api --json
+```
+
+In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text.
+
+JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.
+
 ## Related References
 
 - [Workflows overview](/workflows/)

@@ -31,6 +31,7 @@ arashi init [options]
 - `--no-discover` skip automatic repository discovery.
 - `--dry-run` preview changes without writing files.
 - `--verbose` print detailed initialization steps.
+- `--json` output machine-readable initialization results.
 
 ## Examples
 
@@ -52,6 +53,9 @@ arashi init --worktrees-dir ../workspace-worktrees
 
 # Reinitialize safely and preview file changes
 arashi init --force --dry-run
+
+# Initialize and emit JSON for automation
+arashi init --json
 ```
 
 ## Notes
@@ -59,6 +63,7 @@ arashi init --force --dry-run
 - Run this command inside an existing Git repository root, or from a parent directory in an interactive terminal when you want Arashi to create the repository for you.
 - In bootstrap mode, the repository target prompt accepts only `.` or a direct child directory name such as `my-arashi-repo`.
 - If `init` is run outside a Git repository without an interactive terminal, it exits with guidance instead of prompting.
+- JSON mode does not prompt; provide explicit options when running initialization from automation.
 - `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
 - `init` sets `worktreesDir` to `.arashi/worktrees` by default.
 - It updates `.gitignore` to exclude the configured repositories directory.

@@ -32,6 +32,7 @@ arashi switch [filter] [options]
 - `--sesh` run sesh mode in tmux (requires active tmux session and `sesh`).
 - `--vscode`, `--cursor`, `--kiro` explicitly open the selected worktree in that IDE for one invocation.
 - `--no-default-launch` ignore configured switch launch defaults for one invocation.
+- `--json` output machine-readable results when the selected mode can be represented safely.
 
 ## Examples
 
@@ -62,6 +63,9 @@ arashi switch --no-cd
 
 # Ignore configured launch defaults for one run
 arashi switch --no-default-launch
+
+# Ask for a structured result instead of human-oriented output
+arashi switch feature-auth --json
 ```
 
 ## Notes
@@ -80,6 +84,7 @@ arashi switch --no-default-launch
 - If `--cd` cannot act on the parent shell because the wrapper is inactive, Arashi warns and skips launch fallback for that invocation.
 - When no explicit IDE flag is provided, `arashi switch` prefers Cursor, Kiro, or VS Code automatically when launched from those IDE-integrated terminals and the matching launcher is available.
 - The VS Code extension passes the matching IDE flag automatically and uses exact-path switching for selected worktrees so duplicate branch names do not cause ambiguous matches.
+- JSON mode does not launch editors, terminals, tmux, sesh, or parent-shell `cd` behavior unless the command can return a safe non-mutating plan. Unsupported launch modes return a structured `JSON_UNSUPPORTED_FOR_MODE` error.
 
 ## Related Commands
 

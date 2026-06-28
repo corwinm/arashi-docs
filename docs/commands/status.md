@@ -26,6 +26,7 @@ arashi status [options]
 
 - `-v, --verbose` show full `git status` output for each repository.
 - `-s, --short` show one-line summaries per repository.
+- `--json` output machine-readable workspace status.
 
 ## Examples
 
@@ -38,12 +39,16 @@ arashi status --verbose
 
 # Compact one-line summary
 arashi status --short
+
+# Emit structured status for automation
+arashi status --json
 ```
 
 ## Notes
 
 - `--verbose` and `--short` are mutually exclusive.
 - Non-zero exit codes are returned if repository status checks fail.
+- JSON mode is useful for agents and scripts that need to decide whether repositories are clean, dirty, behind, or ahead without scraping text.
 
 ## Related Commands
 

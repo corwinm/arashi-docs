@@ -20,6 +20,7 @@ arashi shell <subcommand>
 
 - `init <bash|zsh|fish>` print shell wrapper code for manual setup.
 - `install` detect the active shell and update the matching startup file.
+- `--json` request a structured result when the selected shell action supports JSON mode.
 
 ## Examples
 
@@ -31,6 +32,9 @@ arashi shell install
 arashi shell init bash
 arashi shell init zsh
 arashi shell init fish
+
+# Check shell installation behavior from automation
+arashi shell install --json
 ```
 
 ## Notes
@@ -39,3 +43,4 @@ arashi shell init fish
 - Restart your shell or source the updated startup file after `arashi shell install`.
 - If install cannot determine a writable startup file, Arashi tells you to use `arashi shell init <shell>` instead.
 - Shell integration is what makes `arashi switch --cd` and `defaults.switch.mode: "cd" | "auto"` work in the parent shell.
+- `arashi shell init <shell>` normally writes shell wrapper code to stdout, so JSON mode returns a structured unsupported-mode error instead of mixing shell code with JSON.
