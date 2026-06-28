@@ -26,6 +26,7 @@ arashi setup [options]
 
 - `--only <repo>` run setup for specific repositories (repeatable).
 - `-v, --verbose` print full setup script output.
+- `--json` output machine-readable setup results.
 
 ## Examples
 
@@ -38,12 +39,16 @@ arashi setup --only api --only web
 
 # Show full script output while setup runs
 arashi setup --verbose
+
+# Run setup for one repo and emit JSON
+arashi setup --only api --json
 ```
 
 ## Notes
 
 - Setup targets without scripts are reported as skipped.
 - Failed or timed-out setup runs return a non-zero exit code.
+- In JSON mode, stdout contains one result document; setup script diagnostics are captured or kept off stdout.
 
 ## Related Commands
 

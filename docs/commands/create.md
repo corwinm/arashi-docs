@@ -35,6 +35,7 @@ arashi create <branch> [options]
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
 - `--dry-run` generate a plan without creating worktrees.
+- `--json` output machine-readable create results or structured unsupported-mode errors.
 
 ## Examples
 
@@ -53,6 +54,9 @@ arashi create feature-auth-refresh --no-launch
 
 # Review the plan first
 arashi create feature-auth-refresh --dry-run
+
+# Create worktrees and emit JSON for automation
+arashi create feature-auth-refresh --no-launch --no-switch --json
 ```
 
 ## Notes
@@ -61,6 +65,7 @@ arashi create feature-auth-refresh --dry-run
 - On failure, coordinated operations can roll back to keep repos consistent.
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
+- JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
 
 ## Related Commands
 

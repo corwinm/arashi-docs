@@ -26,6 +26,7 @@ arashi pull [options]
 
 - `--only <repo>` limit pull to specific repositories (repeatable).
 - `-v, --verbose` print full git output.
+- `--json` output machine-readable pull results.
 
 ## Examples
 
@@ -38,12 +39,16 @@ arashi pull --only api --only web
 
 # Pull with detailed command output
 arashi pull --verbose
+
+# Pull selected repositories and emit JSON
+arashi pull --only api --json
 ```
 
 ## Notes
 
 - Repositories with no remote changes are skipped.
 - Pull failures or manual-update states return a non-zero exit code.
+- In JSON mode, stdout contains one result document; verbose diagnostics stay out of stdout.
 
 ## Related Commands
 

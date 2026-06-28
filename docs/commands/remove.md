@@ -42,6 +42,9 @@ arashi remove
 
 # Remove by path
 arashi remove ./repos/api/feature-login --path
+
+# Remove non-interactively and emit JSON
+arashi remove feature-login --force --json
 ```
 
 ## Notes
@@ -49,6 +52,7 @@ arashi remove ./repos/api/feature-login --path
 - Main worktrees are skipped automatically.
 - If both `--keep-worktrees` and `--keep-branches` are set, no operation is performed.
 - Dirty worktrees require explicit confirmation unless `--no-check-dirty` is used.
+- JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
 
 ## Lifecycle Hooks
 

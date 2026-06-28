@@ -26,6 +26,7 @@ arashi sync [options]
 
 - `--only <repos>` sync comma-separated repository names only.
 - `-v, --verbose` show detailed per-repository sync output.
+- `--json` output machine-readable sync results.
 
 ## Examples
 
@@ -38,12 +39,16 @@ arashi sync --only api,web
 
 # Sync with per-repo details
 arashi sync --verbose
+
+# Sync selected repositories and emit JSON
+arashi sync --only api,web --json
 ```
 
 ## Notes
 
 - `sync` aligns repositories to the parent repository's current branch.
 - When needed, it can create missing target branches in child repositories.
+- JSON mode keeps stdout parseable as a single result document for programmatic callers.
 
 ## Related Commands
 

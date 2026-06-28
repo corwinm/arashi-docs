@@ -19,6 +19,7 @@ arashi update [--check] [--dry-run] [--yes]
 - `--check` checks whether an update is available without changing files.
 - `--dry-run` shows the planned update command or installer invocation without changing files.
 - `-y, --yes` applies a supported update non-interactively.
+- `--json` output machine-readable update check, plan, or result data.
 
 ## Behavior
 
@@ -46,9 +47,13 @@ arashi update --dry-run
 
 # run a supported npm-managed update without prompting
 arashi update --yes
+
+# check for updates and emit JSON
+arashi update --check --json
 ```
 
 ## Notes
 
 - If release or package metadata cannot be fetched, the command exits non-zero and leaves the existing binary in place.
 - If the package update succeeds but binary refresh fails, run `arashi install` to retry the binary installation or download the release asset manually.
+- JSON mode is best for `--check`, `--dry-run`, and supported non-interactive update flows.

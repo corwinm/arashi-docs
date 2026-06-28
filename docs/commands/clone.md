@@ -26,6 +26,7 @@ arashi clone [options]
 ## Key Options
 
 - `--all` clone all missing configured repositories without selection prompts.
+- `--json` output machine-readable results for non-interactive clone runs.
 
 ## Examples
 
@@ -35,6 +36,9 @@ arashi clone
 
 # Clone every missing configured repository
 arashi clone --all
+
+# Clone every missing repository and emit JSON
+arashi clone --all --json
 ```
 
 ## Notes
@@ -42,6 +46,7 @@ arashi clone --all
 - `clone` only works on repositories already configured in the workspace.
 - If no repositories are missing, the command exits successfully with no clone action.
 - If you're in a non-interactive environment, use `--all`.
+- JSON mode does not prompt; combine `--json` with explicit selection flags such as `--all`.
 
 ## Related Commands
 
