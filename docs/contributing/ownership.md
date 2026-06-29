@@ -3,7 +3,7 @@ title: Ownership
 description: Documentation ownership model and maintenance expectations.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Ownership Model

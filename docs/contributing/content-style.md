@@ -3,7 +3,7 @@ title: Content Style
 description: Editorial standards for readable and consistent Arashi documentation.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 Use these conventions for all pages under `docs/`.

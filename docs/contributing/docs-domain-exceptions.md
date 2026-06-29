@@ -3,7 +3,7 @@ title: Docs Domain Migration Exceptions
 description: Approved exceptions for docs-domain migration scope.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Exceptions Overview

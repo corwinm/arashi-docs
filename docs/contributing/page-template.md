@@ -3,7 +3,7 @@ title: Page Template
 description: Reusable template for new documentation pages.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 Copy this template when creating a new page.

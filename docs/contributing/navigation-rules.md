@@ -3,7 +3,7 @@ title: Navigation Rules
 description: Rules for page placement and ordering in docs navigation.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Section Placement

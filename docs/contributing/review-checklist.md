@@ -3,7 +3,7 @@ title: Review Checklist
 description: Discoverability-focused checklist for docs pull request review.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 Use this list when reviewing changes that affect navigation or first-time user experience.

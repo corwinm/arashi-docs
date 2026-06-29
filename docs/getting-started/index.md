@@ -124,4 +124,4 @@ When the workspace is initialized, choose the workflow guide that matches what y
 
 - Continue to [Commands](/commands/) for command-by-command behavior.
 - Continue to [Workflows](/workflows/) if you want setup guidance by workflow instead of by command.
-- Continue to [Contributing](/contributing/) if you are adding or editing docs.
+- Continue to [Contributing](/contributing/) if you want to make a project change.

@@ -3,7 +3,7 @@ title: How to Add Pages
 description: Contributor workflow for adding docs pages without breaking navigation.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Workflow

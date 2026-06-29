@@ -3,7 +3,7 @@ title: Validation Troubleshooting
 description: Resolve common validation failures before requesting review.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Common Failures
