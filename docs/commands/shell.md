@@ -44,3 +44,9 @@ arashi shell install --json
 - If install cannot determine a writable startup file, Arashi tells you to use `arashi shell init <shell>` instead.
 - Shell integration is what makes `arashi switch --cd` and `defaults.switch.mode: "cd" | "auto"` work in the parent shell.
 - `arashi shell init <shell>` normally writes shell wrapper code to stdout, so JSON mode returns a structured unsupported-mode error instead of mixing shell code with JSON.
+
+## Agent Notes
+
+- Do not install shell integration unless the user explicitly asks you to change their shell startup files.
+- For inspection, prefer `arashi shell init <shell>` so the user can review the wrapper code before installing it.
+- Expect JSON mode to be unsupported for shell-code output because stdout is reserved for the wrapper script.

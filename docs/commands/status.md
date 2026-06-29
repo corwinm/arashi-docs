@@ -50,6 +50,12 @@ arashi status --json
 - Non-zero exit codes are returned if repository status checks fail.
 - JSON mode is useful for agents and scripts that need to decide whether repositories are clean, dirty, behind, or ahead without scraping text.
 
+## Agent Notes
+
+- Run `arashi status` before creating, pulling, syncing, removing, or handing off work.
+- Prefer `arashi status --json` when an agent needs to branch on clean, dirty, ahead, or behind state.
+- Do not assume a workspace is safe to edit or merge until status confirms the affected repositories are in the expected state.
+
 ## Related Commands
 
 - [pull](/commands/pull/)

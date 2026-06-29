@@ -67,6 +67,12 @@ arashi create feature-auth-refresh --no-launch --no-switch --json
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
 - JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
 
+## Agent Notes
+
+- Check `arashi status` and `arashi list` before creating a branch so you do not duplicate an existing coordinated worktree.
+- Use `--no-launch --no-switch` for unattended agent runs unless the user explicitly wants an editor or shell session opened.
+- Prefer `--json` with explicit non-interactive flags when automation needs to verify created worktree paths.
+
 ## Related Commands
 
 - [status](/commands/status/)

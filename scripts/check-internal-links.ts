@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 const docsRoot = path.resolve("docs");
+const publicRoot = path.resolve("public");
 
 if (!existsSync(docsRoot)) {
   console.error(`Missing docs directory: ${docsRoot}`);
@@ -125,9 +126,15 @@ function resolveDocPath(sourceFile: string, targetPath: string): string | null {
   const base = normalizedTarget.startsWith("/")
     ? path.join(docsRoot, normalizedTarget.slice(1))
     : path.resolve(path.dirname(sourceFile), normalizedTarget);
+  const publicBase = normalizedTarget.startsWith("/")
+    ? path.join(publicRoot, normalizedTarget.slice(1))
+    : null;
 
   const candidates = new Set<string>();
   candidates.add(base);
+  if (publicBase) {
+    candidates.add(publicBase);
+  }
 
   if (!path.extname(base)) {
     candidates.add(`${base}.md`);
@@ -140,7 +147,7 @@ function resolveDocPath(sourceFile: string, targetPath: string): string | null {
 
   for (const candidate of candidates) {
     const normalized = path.normalize(candidate);
-    if (!normalized.startsWith(docsRoot)) {
+    if (!normalized.startsWith(docsRoot) && !normalized.startsWith(publicRoot)) {
       continue;
     }
     if (existsSync(normalized) && statSync(normalized).isFile()) {

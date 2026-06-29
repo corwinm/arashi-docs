@@ -54,6 +54,12 @@ arashi remove feature-login --force --json
 - Dirty worktrees require explicit confirmation unless `--no-check-dirty` is used.
 - JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
 
+## Agent Notes
+
+- Treat `remove` as destructive: confirm the target branch/worktree and inspect `arashi status` before running it.
+- Prefer `arashi remove <branch> --force --json` only after the user has asked for cleanup and the relevant work is merged or intentionally abandoned.
+- Do not bypass dirty checks unless the user explicitly accepts losing or preserving those changes another way.
+
 ## Lifecycle Hooks
 
 `remove` supports scoped `pre-remove.sh` and `post-remove.sh` hooks.

@@ -6,7 +6,19 @@ sidebar:
   hidden: false
 ---
 
-Use this guide when you want an agent to work safely inside an Arashi meta-repo.
+Use this guide when you want an agent to work safely inside an Arashi meta-repo. It is designed to stand alone as a bootstrap document you can paste into an agent session or link from `/llms.txt`.
+
+## Quick Start For Agents
+
+If you are an agent entering an Arashi-managed workspace:
+
+1. Start in the meta-repo root and inspect state with `arashi status`.
+2. Read the root `AGENTS.md` or equivalent workspace instructions, then read the owning child repo's instructions before editing.
+3. Identify which child repo owns the implementation.
+4. Keep implementation, tests, and repo-specific docs in `repos/<project>/`.
+5. Keep shared context, OpenSpec proposals, plans, and cross-repo coordination in the meta-repo.
+6. Validate every affected repo before handoff.
+7. Use focused PRs and cross-link related PRs when work spans repositories.
 
 ## Core Idea
 
@@ -74,6 +86,8 @@ Then add smaller `AGENTS.md` files inside the child repos so the agent can pick 
 4. update related docs or coordination files in the meta-repo when needed
 5. validate each affected repo before review or handoff
 
+For multi-repo work, do not try to make one commit span the whole workspace. Commit and open PRs from each affected repository, then cross-link those PRs so reviewers can follow the complete change.
+
 ## Specs Pair Well, But They Are Optional
 
 Arashi pairs well with a spec-driven development framework such as OpenSpec because it gives the agent a clean place for proposals, tasks, and design context.
@@ -106,6 +120,8 @@ JSON mode is non-interactive. If a command would normally prompt, launch an edit
 
 ## Related References
 
+- [Curated LLM entrypoint](/llms.txt)
+- [Full Markdown export](/llms-full.txt)
 - [Workflows overview](/workflows/)
 - [Contributing](/contributing/)
 - [Meta-repo AGENTS.md](https://github.com/corwinm/arashi-arashi/blob/main/AGENTS.md)

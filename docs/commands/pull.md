@@ -50,6 +50,12 @@ arashi pull --only api --json
 - Pull failures or manual-update states return a non-zero exit code.
 - In JSON mode, stdout contains one result document; verbose diagnostics stay out of stdout.
 
+## Agent Notes
+
+- Use `arashi pull` before starting a new coordinated worktree when `arashi status` shows repositories are behind.
+- Prefer `--only <repo>` when the user has scoped the work to one repository and a full workspace pull would be unnecessary.
+- Re-run `arashi status` after pulling to confirm the workspace is ready for edits.
+
 ## Related Commands
 
 - [sync](/commands/sync/)
