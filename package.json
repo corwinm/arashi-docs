@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Dedicated documentation site for Arashi",
-  "packageManager": "bun@1.2.2",
+  "packageManager": "bun@1.3.14",
   "scripts": {
     "sync:content": "bun run scripts/sync-docs-content.ts",
     "dev": "bun run sync:content && astro dev",
