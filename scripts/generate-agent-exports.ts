@@ -43,8 +43,12 @@ const generatedDirs = ["getting-started", "workflows", "commands", "contributing
 const requiredRoutes = [
   "llms.txt",
   "llms-full.txt",
+  "getting-started.md",
+  "workflows.md",
   "workflows/agents-and-specs.md",
-  "commands/status.md"
+  "commands.md",
+  "commands/status.md",
+  "contributing.md"
 ];
 
 type Frontmatter = {
@@ -73,7 +77,7 @@ mkdirSync(publicRoot, { recursive: true });
 for (const dir of generatedDirs) {
   rmSync(path.join(publicRoot, dir), { recursive: true, force: true });
 }
-for (const file of ["llms.txt", "llms-full.txt", "index.md"]) {
+for (const file of ["llms.txt", "llms-full.txt", "index.md", ...generatedDirs.map((dir) => `${dir}.md`)]) {
   rmSync(path.join(publicRoot, file), { force: true });
 }
 
@@ -91,7 +95,11 @@ const orderedPages = [
 ] as Page[];
 
 for (const page of pages) {
-  writePublicFile(page.markdownPath, renderPageMarkdown(page));
+  const markdown = renderPageMarkdown(page);
+  writePublicFile(page.markdownPath, markdown);
+  for (const aliasPath of markdownAliasRoutesFor(page.relativePath)) {
+    writePublicFile(aliasPath, markdown);
+  }
 }
 
 writePublicFile("llms.txt", renderLlmsTxt());
@@ -218,6 +226,14 @@ function markdownRouteFor(relativePath: string): string {
   return `${path.posix.join(parsed.dir, parsed.name)}.md`;
 }
 
+function markdownAliasRoutesFor(relativePath: string): string[] {
+  const parsed = path.posix.parse(relativePath);
+  if (parsed.name !== "index" || !parsed.dir) {
+    return [];
+  }
+  return [`${parsed.dir}.md`];
+}
+
 function canonicalRouteFor(relativePath: string): string {
   const parsed = path.posix.parse(relativePath);
   if (parsed.name === "index") {
@@ -270,10 +286,10 @@ function renderLlmsTxt(): string {
 ## Useful Markdown Routes
 
 - [Agents workflow Markdown](${site}/workflows/agents-and-specs.md)
-- [Getting started Markdown](${site}/getting-started/index.md)
+- [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
 - [Create command Markdown](${site}/commands/create.md)
-- [Contributing Markdown](${site}/contributing/index.md)
+- [Contributing Markdown](${site}/contributing.md)
 
 ## Optional
 
