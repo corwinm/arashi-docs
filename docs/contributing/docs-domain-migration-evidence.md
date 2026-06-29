@@ -17,7 +17,7 @@ sidebar:
 ## Baseline Inventory
 
 | Metric | Count |
-|---|---:|
+| --- | ---: |
 | Total target-domain references detected | 5 |
 | Non-target references reviewed | 0 |
 | Candidate exceptions at baseline | 0 |
@@ -25,7 +25,7 @@ sidebar:
 ## Before and After URL Mapping
 
 | Surface | Before | After | Path/Query/Fragment Preserved |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `repos/arashi/README.md` | `https://arashi-docs.netlify.app` | `https://arashi.haphazard.dev` | Yes |
 | `repos/arashi-docs/README.md` | `https://arashi-docs.netlify.app` | `https://arashi.haphazard.dev` | Yes |
 | `repos/arashi-docs/astro.config.mjs` | `https://arashi-docs.netlify.app` | `https://arashi.haphazard.dev` | Yes |
@@ -35,7 +35,7 @@ sidebar:
 ## Validation Runs
 
 | Run | Commands | Result | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Run 1 | `bun run validate:docs-domain`, `bun run validate:readme-link`, `bun run validate` | Pass | Canonical policy and docs validation gates passed |
 | Run 2 | `bun run validate:docs-domain`, `bun run validate` | Pass | Regression and final validation checks passed |
 
