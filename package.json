@@ -21,11 +21,11 @@
     "validate": "bun run lint && bun run validate:build && bun run validate:links:internal && bun run validate:a11y && bun run validate:docs-domain && bun run validate:readme-link"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.32.1",
-    "astro": "^5.2.0"
+    "@astrojs/starlight": "^0.41.1",
+    "astro": "^7.0.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.4",
+    "@astrojs/check": "^0.9.9",
     "markdownlint-cli": "^0.45.0",
     "typescript": "^5.9.0"
   }
