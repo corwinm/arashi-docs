@@ -3,7 +3,7 @@ title: Docs Domain Migration Scope
 description: In-scope surfaces and ownership for canonical docs-domain migration.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Scope Overview

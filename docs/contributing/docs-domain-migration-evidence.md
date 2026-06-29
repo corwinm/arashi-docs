@@ -3,7 +3,7 @@ title: Docs Domain Migration Evidence
 description: Audit evidence and validation results for canonical docs-domain migration.
 draft: false
 sidebar:
-  hidden: false
+  hidden: true
 ---
 
 ## Evidence Overview
