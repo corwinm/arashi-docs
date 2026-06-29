@@ -16,7 +16,7 @@ sidebar:
 ## In-Scope Surfaces
 
 | Surface ID | Repository | File Path | Surface Type | Owner |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | S001 | arashi | `repos/arashi/README.md` | README entrypoint | Arashi maintainers |
 | S002 | arashi-docs | `repos/arashi-docs/README.md` | README policy | Docs maintainers |
 | S003 | arashi-docs | `repos/arashi-docs/astro.config.mjs` | Site config | Docs maintainers |

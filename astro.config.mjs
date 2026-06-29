@@ -12,9 +12,13 @@ export default defineConfig({
         src: "./src/assets/arashi-logo.svg",
         alt: "Arashi logo"
       },
-      social: {
-        github: "https://github.com/corwinm/arashi"
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/corwinm/arashi"
+        }
+      ],
       head: [
         {
           tag: "link",
@@ -29,19 +33,19 @@ export default defineConfig({
       sidebar: [
         {
           label: "Getting Started",
-          autogenerate: { directory: "getting-started" }
+          items: [{ autogenerate: { directory: "getting-started" } }]
         },
         {
           label: "Workflows",
-          autogenerate: { directory: "workflows" }
+          items: [{ autogenerate: { directory: "workflows" } }]
         },
         {
           label: "Commands",
-          autogenerate: { directory: "commands" }
+          items: [{ autogenerate: { directory: "commands" } }]
         },
         {
           label: "Contributing",
-          autogenerate: { directory: "contributing" }
+          items: [{ autogenerate: { directory: "contributing" } }]
         }
       ]
     })
