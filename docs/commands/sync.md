@@ -50,6 +50,12 @@ arashi sync --only api,web --json
 - When needed, it can create missing target branches in child repositories.
 - JSON mode keeps stdout parseable as a single result document for programmatic callers.
 
+## Agent Notes
+
+- Use `arashi sync` when branch/worktree state has drifted and you need the child repos aligned to the current parent branch.
+- Inspect `arashi status` before and after sync so any remaining mismatches are visible before implementation or handoff.
+- Avoid using sync as a substitute for understanding dirty worktrees; resolve or preserve local changes deliberately.
+
 ## Related Commands
 
 - [pull](/commands/pull/)

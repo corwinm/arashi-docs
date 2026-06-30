@@ -6,7 +6,7 @@
   "description": "Dedicated documentation site for Arashi",
   "packageManager": "bun@1.3.14",
   "scripts": {
-    "sync:content": "bun run scripts/sync-docs-content.ts",
+    "sync:content": "bun run scripts/sync-docs-content.ts && bun run scripts/generate-agent-exports.ts",
     "dev": "bun run sync:content && astro dev",
     "build": "bun run sync:content && astro check && astro build",
     "preview": "astro preview",

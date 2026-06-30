@@ -143,6 +143,19 @@ vite.config.ts.timestamp-*
 .astro/
 src/content/docs/
 
+# Generated agent-readable docs exports
+public/commands/
+public/contributing/
+public/getting-started/
+public/workflows/
+public/commands.md
+public/contributing.md
+public/getting-started.md
+public/workflows.md
+public/index.md
+public/llms.txt
+public/llms-full.txt
+
 # Netlify local build output
 .netlify/
 
