@@ -25,6 +25,7 @@ const coreOrder = [
   "commands/index.md",
   "commands/status.md",
   "commands/create.md",
+  "commands/move.md",
   "commands/pull.md",
   "commands/sync.md",
   "commands/remove.md",
