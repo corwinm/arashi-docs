@@ -14,6 +14,7 @@ Use this section when you want command-level guidance.
 - [add](/commands/add/) - add a repository to management.
 - [clone](/commands/clone/) - clone missing configured repositories.
 - [create](/commands/create/) - create coordinated worktrees.
+- [move](/commands/move/) - move uncommitted changes between coordinated worktrees.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
 - [update](/commands/update/) - check for and apply CLI updates.

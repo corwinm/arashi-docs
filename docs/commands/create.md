@@ -36,6 +36,7 @@ arashi create <branch> [options]
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
 - `--dry-run` generate a plan without creating worktrees.
+- `--move-changes` move compatible uncommitted changes from the current workspace into the new worktree after create.
 - `--json` output machine-readable create results or structured unsupported-mode errors.
 
 ## Examples
@@ -61,6 +62,9 @@ arashi create feature-auth-refresh --dry-run
 
 # Create worktrees and emit JSON for automation
 arashi create feature-auth-refresh --no-launch --no-switch --json
+
+# Create worktrees and move current uncommitted work into them
+arashi create feature-auth-refresh --move-changes
 ```
 
 ## Notes
@@ -72,6 +76,7 @@ arashi create feature-auth-refresh --no-launch --no-switch --json
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
 - JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
+- When the source workspace has uncommitted changes, create output includes guidance for moving compatible changes with [`arashi move`](/commands/move/). In JSON mode, that guidance is returned as structured data instead of human text.
 
 ## Agent Notes
 
