@@ -14,6 +14,7 @@ Start feature work across multiple repositories from a single command.
 
 - Creates a worktree for the target branch in each configured repository.
 - Ensures repositories are aligned to the same branch name.
+- In interactive mode, always creates the parent/meta worktree and prompts only for optional child repositories.
 - Runs configured lifecycle hooks when present.
 
 ## Usage
@@ -46,6 +47,9 @@ arashi create feature-auth-refresh
 # Create in specific repositories only
 arashi create feature-auth-refresh --only api,web
 
+# Pick child repositories interactively while always creating the parent worktree
+arashi create feature-auth-refresh --interactive
+
 # Force launch for this run
 arashi create feature-auth-refresh --launch
 
@@ -63,6 +67,8 @@ arashi create feature-auth-refresh --no-launch --no-switch --json
 
 - `create` validates branch names and repository readiness.
 - On failure, coordinated operations can roll back to keep repos consistent.
+- Interactive `create` treats the parent/meta repository as the required anchor for the coordinated worktree; the selection prompt only controls child repositories.
+- A partial coordinated worktree is valid. Add omitted child repositories later with [`arashi clone`](/commands/clone/) from inside that worktree.
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
 - JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
@@ -72,6 +78,7 @@ arashi create feature-auth-refresh --no-launch --no-switch --json
 - Check `arashi status` and `arashi list` before creating a branch so you do not duplicate an existing coordinated worktree.
 - Use `--no-launch --no-switch` for unattended agent runs unless the user explicitly wants an editor or shell session opened.
 - Prefer `--json` with explicit non-interactive flags when automation needs to verify created worktree paths.
+- Use `--interactive` when a task only needs some child repositories; the parent worktree is still present, so shared metadata and coordination remain available.
 
 ## Related Commands
 

@@ -8,13 +8,15 @@ sidebar:
 
 ## What It's For
 
-Recover missing local repositories without re-adding them to workspace configuration.
+Recover missing local repositories without re-adding them to workspace configuration, or complete a partial coordinated worktree after creating only some child repositories.
 
 ## What It Does
 
 - Detects repositories already defined in `.arashi/config.json` that are missing on disk.
 - Lets you choose which missing repositories to clone in interactive mode.
 - Clones all missing repositories in non-interactive mode with `--all`.
+- Inside a coordinated worktree, adds missing child repositories as worktrees on the current branch when a local source repository is available.
+- Falls back to normal remote clone behavior outside coordinated worktrees or when no source repository is available.
 - Skips repositories that are already present locally.
 
 ## Usage
@@ -37,6 +39,10 @@ arashi clone
 # Clone every missing configured repository
 arashi clone --all
 
+# Complete a partial coordinated worktree from inside it
+cd .arashi/worktrees/my-meta-feature-auth-refresh
+arashi clone
+
 # Clone every missing repository and emit JSON
 arashi clone --all --json
 ```
@@ -45,8 +51,15 @@ arashi clone --all --json
 
 - `clone` only works on repositories already configured in the workspace.
 - If no repositories are missing, the command exits successfully with no clone action.
+- From inside a coordinated worktree, `clone` uses the current branch for child worktrees so completed repositories stay aligned with the parent worktree.
+- If the matching source repository cannot be found locally, `clone` uses the configured remote URL instead.
 - If you're in a non-interactive environment, use `--all`.
 - JSON mode does not prompt; combine `--json` with explicit selection flags such as `--all`.
+
+## Agent Notes
+
+- Use `arashi status --json` or `arashi status --verbose` to discover missing configured repositories before completing a partial workspace.
+- Prefer `arashi clone --all --json` when automation should complete every missing child repository without prompts.
 
 ## Related Commands
 

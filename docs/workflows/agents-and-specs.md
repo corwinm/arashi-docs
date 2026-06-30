@@ -110,6 +110,7 @@ Good agent-facing commands include:
 arashi status --json
 arashi list --json
 arashi create feature-branch --no-launch --no-switch --json
+arashi clone --all --json
 arashi pull --only docs --json
 arashi setup --only api --json
 ```
@@ -117,6 +118,15 @@ arashi setup --only api --json
 In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text.
 
 JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.
+
+## Partial Coordinated Worktrees
+
+Arashi supports intentionally partial coordinated worktrees when a task only needs some child repositories.
+
+- Use `arashi create <branch> --interactive` to choose child repositories while still creating the parent/meta worktree.
+- Default and short `arashi status` output hide omitted child repositories so partial worktrees do not look broken during everyday checks.
+- Use `arashi status --verbose` or `arashi status --json` when an agent needs to inspect every configured repository, including missing child repositories.
+- From inside a partial worktree, use `arashi clone` or `arashi clone --all --json` to add missing child repositories on the current branch.
 
 ## Related References
 
