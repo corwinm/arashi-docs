@@ -52,6 +52,7 @@ arashi remove feature-login --force --json
 - Main worktrees are skipped automatically.
 - If both `--keep-worktrees` and `--keep-branches` are set, no operation is performed.
 - Dirty worktrees require explicit confirmation unless `--no-check-dirty` is used.
+- Stale Git-prunable worktree records are excluded from `remove`; use `arashi prune` to clean stale metadata.
 - JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
 
 ## Agent Notes
@@ -82,3 +83,4 @@ Behavior:
 
 - [list](/commands/list/)
 - [create](/commands/create/)
+- [prune](/commands/prune/)
