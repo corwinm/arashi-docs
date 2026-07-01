@@ -21,6 +21,7 @@ Use this section when you want command-level guidance.
 - [switch](/commands/switch/) - open a terminal context for a worktree.
 - [shell](/commands/shell/) - install shell integration and helpers.
 - [remove](/commands/remove/) - remove worktrees and branches.
+- [prune](/commands/prune/) - clean stale Git worktree metadata.
 - [pull](/commands/pull/) - pull remote updates across repos.
 - [sync](/commands/sync/) - align child repos to parent branch.
 - [setup](/commands/setup/) - run setup scripts across repos.
