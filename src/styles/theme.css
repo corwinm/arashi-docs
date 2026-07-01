@@ -190,6 +190,21 @@
   font-size: 1.04rem;
 }
 
+.sl-markdown-content .install-script-link {
+  margin-top: -0.45rem;
+  font-size: var(--sl-text-sm);
+  text-align: right;
+}
+
+.sl-markdown-content .install-script-link a {
+  color: var(--sl-color-gray-2);
+}
+
+.sl-markdown-content .install-script-link a:hover,
+.sl-markdown-content .install-script-link a:focus-visible {
+  color: var(--sl-color-accent-high);
+}
+
 .sl-markdown-content h3 + pre {
   border: 1px solid hsl(174 88% 66% / 0.3);
   border-radius: 0.75rem;
