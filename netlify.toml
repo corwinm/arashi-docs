@@ -26,3 +26,15 @@
   to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/install.sh"
   status = 302
   force = true
+
+[[redirects]]
+  from = "/install.ps1"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/install.ps1"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/install.ps1/"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/install.ps1"
+  status = 302
+  force = true

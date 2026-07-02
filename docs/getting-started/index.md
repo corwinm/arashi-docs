@@ -10,15 +10,16 @@ Use this section when you are new to Arashi and need a quick setup and first wor
 
 ## Install
 
-Choose either install method below.
+Choose the install method for your platform and environment.
 
 ### Prerequisites
 
 - `git` available in your shell
-- `bash` and `curl` for the curl installer path
+- `bash` and `curl` for the macOS/Linux installer path
+- Windows PowerShell for the Windows installer path
 - `node` and `npm` for the npm path
 
-### Method 1: curl installer
+### Method 1: macOS/Linux installer
 
 ```bash
 curl -fsSL https://arashi.haphazard.dev/install | bash
@@ -27,7 +28,7 @@ curl -fsSL https://arashi.haphazard.dev/install | bash
 Pin a specific version when needed:
 
 ```bash
-curl -fsSL https://arashi.haphazard.dev/install | ARASHI_VERSION=1.4.0 bash
+curl -fsSL https://arashi.haphazard.dev/install | ARASHI_VERSION=1.16.0 bash
 ```
 
 Verify install:
@@ -41,9 +42,28 @@ It also runs a quick `arashi --version` smoke test before declaring success.
 
 For unattended installs, set `ARASHI_SHELL_INTEGRATION=yes` to enable that automatically or `ARASHI_SHELL_INTEGRATION=no` to skip it.
 
-If this path fails, use npm (`npm install -g arashi`) or the manual release flow in [`repos/arashi/docs/INSTALLATION.md`](https://github.com/corwinm/arashi/blob/main/docs/INSTALLATION.md).
+### Method 2: Windows PowerShell installer
 
-### Method 2: npm global install
+```powershell
+powershell -ExecutionPolicy Bypass -c "irm https://arashi.haphazard.dev/install.ps1 | iex"
+```
+
+Inspect the script before running it:
+
+```powershell
+irm https://arashi.haphazard.dev/install.ps1
+```
+
+Pin a specific version when invoking a downloaded script:
+
+```powershell
+.\install.ps1 -Version 1.16.0
+```
+
+By default, the Windows installer places `arashi.bin.exe`, `arashi.ps1`, and `arashi.bat` in `%USERPROFILE%\.arashi\bin`, verifies them against `arashi-checksums.txt`, adds the install directory to the persistent user PATH, and tells you to open a new terminal.
+Use `-InstallDir` or `ARASHI_INSTALL_DIR` for a custom user-writable directory, and use `-NoModifyPath` or `ARASHI_NO_MODIFY_PATH=1` if you want to update PATH yourself.
+
+### Method 3: npm global install
 
 ```bash
 npm install -g arashi
@@ -61,15 +81,25 @@ Verify install:
 arashi --version
 ```
 
-If npm is unavailable or binary installation fails in your environment, use the curl installer command above or the manual release flow in [`repos/arashi/docs/INSTALLATION.md`](https://github.com/corwinm/arashi/blob/main/docs/INSTALLATION.md).
+### Manual Windows fallback
+
+If you do not want to pipe a remote script into PowerShell, download these assets from the same [GitHub release](https://github.com/corwinm/arashi/releases/latest):
+
+- `arashi-windows-x64.exe`
+- `arashi.ps1`
+- `arashi.bat`
+- `arashi-checksums.txt`
+
+Verify each asset with `Get-FileHash -Algorithm SHA256`, rename `arashi-windows-x64.exe` to `arashi.bin.exe`, put all files in one directory on PATH, open a new terminal, and run `arashi --version`.
 
 ### Troubleshooting and fallback
 
-- `command not found`: install missing prerequisite (`curl`, `bash`, `npm`, or `node`) and rerun.
-- Permission errors writing to global paths: rerun curl with `ARASHI_INSTALL_DIR="$HOME/.local/bin"` or use a user-level npm prefix.
-- Network/download failures: retry once; for npm installs you can rerun `arashi install`, then switch to the other install method if needed.
-- Checksum mismatch on curl path: stop and use npm/manual fallback, then report the failure.
-- If `arashi --version` exits immediately or returns code `137`, rerun the curl installer with `ARASHI_VERSION=<version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
+- `command not found`: install missing prerequisite (`curl`, `bash`, `npm`, `node`, or PowerShell) and rerun.
+- Permission errors writing to global paths: rerun the direct installer with a user-writable install directory or use a user-level npm prefix.
+- Network/download failures: retry once; for npm installs you can rerun `arashi install`, then switch to another install method if needed.
+- Checksum mismatch on direct installer paths: stop and use npm/manual fallback, then report the failure.
+- If `arashi --version` exits immediately or returns code `137`, rerun the direct installer with `ARASHI_VERSION=<version>` or `-Version <version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
+- PATH changes may require a new terminal on Windows and POSIX shells.
 
 ## First Workflow
 
@@ -110,7 +140,7 @@ arashi status
 By default, new managed worktrees are created under `.arashi/worktrees`.
 Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `arashi shell install` if you want `arashi switch` to support parent-shell `cd` behavior.
 
-If you install Arashi with the official curl installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
+If you install Arashi with the official POSIX installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 
 When the workspace is initialized, choose the workflow guide that matches what you need next:
 
