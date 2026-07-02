@@ -45,7 +45,7 @@ For unattended installs, set `ARASHI_SHELL_INTEGRATION=yes` to enable that autom
 ### Method 2: Windows PowerShell installer
 
 ```powershell
-powershell -ExecutionPolicy Bypass -c "irm https://arashi.haphazard.dev/install.ps1 | iex"
+powershell -c "irm https://arashi.haphazard.dev/install.ps1 | iex"
 ```
 
 Inspect the script before running it:
@@ -100,6 +100,7 @@ Verify each asset with `Get-FileHash -Algorithm SHA256`, rename `arashi-windows-
 - Checksum mismatch on direct installer paths: stop and use npm/manual fallback, then report the failure.
 - If `arashi --version` exits immediately or returns code `137`, rerun the direct installer with `ARASHI_VERSION=<version>` or `-Version <version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
 - PATH changes may require a new terminal on Windows and POSIX shells.
+- If your environment blocks local `.ps1` scripts, inspect `install.ps1` first, then add `-ExecutionPolicy Bypass` to the `powershell` invocation for this one process or use the manual Windows fallback.
 
 ## First Workflow
 
