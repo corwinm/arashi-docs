@@ -72,7 +72,18 @@ import { TabItem, Tabs } from "@astrojs/starlight/components";
 
 Arashi manages aligned worktrees across multiple repositories within a shared meta-repository. It streamlines creating, switching, and managing changes across your whole stack.
 
-<Tabs>
+<script is:inline>{`
+  (() => {
+    const syncKey = "starlight-synced-tabs__install-method";
+    const platform = navigator.userAgentData?.platform ?? navigator.platform ?? "";
+
+    if (!localStorage.getItem(syncKey) && /win/i.test(platform)) {
+      localStorage.setItem(syncKey, "Windows");
+    }
+  })();
+`}</script>
+
+<Tabs syncKey="install-method">
   <TabItem label="macOS/Linux">
 
   ```bash
