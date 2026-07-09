@@ -18,6 +18,7 @@ const coreOrder = [
   "getting-started/index.md",
   "workflows/index.md",
   "workflows/agents-and-specs.md",
+  "workflows/json-automation.md",
   "workflows/config.md",
   "workflows/hooks.md",
   "workflows/vscode.md",
@@ -49,6 +50,7 @@ const requiredRoutes = [
   "getting-started.md",
   "workflows.md",
   "workflows/agents-and-specs.md",
+  "workflows/json-automation.md",
   "commands.md",
   "commands/exec.md",
   "commands/status.md",
@@ -283,6 +285,7 @@ function renderLlmsTxt(): string {
 ## Core Docs
 
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
+- [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
 - [Getting started](${site}/getting-started/) - install and first-workspace flow.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
@@ -291,6 +294,7 @@ function renderLlmsTxt(): string {
 ## Useful Markdown Routes
 
 - [Agents workflow Markdown](${site}/workflows/agents-and-specs.md)
+- [JSON automation Markdown](${site}/workflows/json-automation.md)
 - [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
 - [Create command Markdown](${site}/commands/create.md)

@@ -42,6 +42,7 @@ arashi switch
 
 ## Related
 
+- [JSON Automation](/workflows/json-automation/)
 - [Getting Started](/getting-started/)
 - [Workflows](/workflows/)
 - [Contributing](/contributing/)

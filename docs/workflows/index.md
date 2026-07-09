@@ -15,6 +15,7 @@ Use this section after `arashi init` when you want workflow guidance instead of 
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
 
 ## Recommended Path After `arashi init`
 
