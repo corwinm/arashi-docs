@@ -121,7 +121,7 @@ arashi pull --group docs --json
 arashi setup --only api --json
 ```
 
-In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text.
+In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text. See the [JSON automation reference](/workflows/json-automation/) for the full envelope contract, stdout/stderr guarantees, and command support matrix.
 
 Use `arashi doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
 
@@ -142,6 +142,7 @@ Arashi supports intentionally partial coordinated worktrees when a task only nee
 
 - [Curated LLM entrypoint](/llms.txt)
 - [Full Markdown export](/llms-full.txt)
+- [JSON automation reference](/workflows/json-automation/)
 - [Workflows overview](/workflows/)
 - [Contributing](/contributing/)
 - [Meta-repo AGENTS.md](https://github.com/corwinm/arashi-arashi/blob/main/AGENTS.md)
