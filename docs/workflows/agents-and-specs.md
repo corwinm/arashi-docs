@@ -12,13 +12,14 @@ Use this guide when you want an agent to work safely inside an Arashi meta-repo.
 
 If you are an agent entering an Arashi-managed workspace:
 
-1. Start in the meta-repo root and inspect state with `arashi status`.
+1. Start in the meta-repo root and run `arashi doctor` as a safe, non-mutating workspace-health diagnostic.
 2. Read the root `AGENTS.md` or equivalent workspace instructions, then read the owning child repo's instructions before editing.
 3. Identify which child repo owns the implementation.
 4. Keep implementation, tests, and repo-specific docs in `repos/<project>/`.
 5. Keep shared context, OpenSpec proposals, plans, and cross-repo coordination in the meta-repo.
-6. Validate every affected repo before handoff.
-7. Use focused PRs and cross-link related PRs when work spans repositories.
+6. Inspect detailed repository state with `arashi status` when `doctor` findings or the task require it.
+7. Validate every affected repo before handoff.
+8. Use focused PRs and cross-link related PRs when work spans repositories.
 
 ## Core Idea
 
@@ -107,6 +108,7 @@ Agents should prefer `--json` when they need to inspect Arashi state or make dec
 Good agent-facing commands include:
 
 ```bash
+arashi doctor --json
 arashi status --json
 arashi list --json
 arashi exec --json -- git status --short
@@ -118,6 +120,8 @@ arashi setup --only api --json
 ```
 
 In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text.
+
+Use `arashi doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
 
 Use `arashi exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer explicit `--only <repos>` filters for mutating, expensive, or repo-specific commands, and use `--dirty` when the task should only inspect repositories with local changes.
 
