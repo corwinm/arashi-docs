@@ -59,4 +59,5 @@ arashi sync --only api,web --json
 ## Related Commands
 
 - [pull](/commands/pull/)
+- [push](/commands/push/)
 - [status](/commands/status/)
