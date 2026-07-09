@@ -109,6 +109,8 @@ Good agent-facing commands include:
 ```bash
 arashi status --json
 arashi list --json
+arashi exec --json -- git status --short
+arashi exec --only arashi-docs --json -- bun run validate
 arashi create feature-branch --no-launch --no-switch --json
 arashi clone --all --json
 arashi pull --only docs --json
@@ -116,6 +118,8 @@ arashi setup --only api --json
 ```
 
 In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text.
+
+Use `arashi exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer explicit `--only <repos>` filters for mutating, expensive, or repo-specific commands, and use `--dirty` when the task should only inspect repositories with local changes.
 
 JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.
 

@@ -26,6 +26,7 @@ const coreOrder = [
   "commands/status.md",
   "commands/create.md",
   "commands/move.md",
+  "commands/exec.md",
   "commands/pull.md",
   "commands/sync.md",
   "commands/remove.md",
@@ -49,6 +50,7 @@ const requiredRoutes = [
   "workflows.md",
   "workflows/agents-and-specs.md",
   "commands.md",
+  "commands/exec.md",
   "commands/status.md",
   "contributing.md"
 ];
@@ -274,6 +276,7 @@ function renderLlmsTxt(): string {
 - Use the meta-repo for shared context, OpenSpec proposals, planning, and cross-repo coordination.
 - Put implementation, tests, and repo-specific docs in the owning child repository under \`repos/<project>/\`.
 - Prefer machine-readable command output such as \`arashi status --json\` when automating decisions.
+- Use \`arashi exec --json -- <command>\` for repeated multi-repo inspection or validation commands, with explicit \`--only\` filters for mutating or expensive commands.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
 
@@ -291,6 +294,7 @@ function renderLlmsTxt(): string {
 - [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
 - [Create command Markdown](${site}/commands/create.md)
+- [Exec command Markdown](${site}/commands/exec.md)
 - [Contributing Markdown](${site}/contributing.md)
 
 ## Optional
