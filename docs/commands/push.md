@@ -26,6 +26,7 @@ arashi push [options]
 ## Key Options
 
 - `--only <repo>` include only a named repository. Repeat it to select multiple repositories.
+- `--group <group>` include only repositories in the requested group. Repeat for multiple groups.
 - `--set-upstream` publish new branches and configure upstream tracking.
 - `--dry-run` preview planned pushes without updating remotes.
 - `--json` output a single machine-readable result envelope.
@@ -42,6 +43,9 @@ arashi push --set-upstream
 # Publish only the CLI repo
 arashi push --only arashi --set-upstream
 
+# Publish changed documentation repositories only
+arashi push --group docs --set-upstream
+
 # Preview before publishing
 arashi push --set-upstream --dry-run
 
@@ -54,12 +58,13 @@ arashi push --set-upstream --json
 - `push` does not open pull requests; it only publishes branches.
 - Repositories without upstream tracking are skipped unless `--set-upstream` is supplied.
 - Dry-run is a local preview and does not contact or mutate remotes.
+- `--group` narrows publishing to configured semantic sets; when combined with `--only`, both filters must match.
 - JSON mode keeps stdout parseable as one envelope and reports skipped repositories as structured warnings.
 
 ## Agent Notes
 
 - Use `arashi push --set-upstream` after committing implementation changes and before opening related PRs.
-- Use `--only <repo>` for focused child-repo PRs instead of pushing every coordinated worktree.
+- Use `--group <group>` for known semantic sets and `--only <repo>` for focused child-repo PRs instead of pushing every coordinated worktree.
 - Do not manufacture remote branches for clean, untouched child repositories just because the coordinated branch exists locally.
 
 ## Related Commands
