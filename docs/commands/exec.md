@@ -23,6 +23,7 @@ The `--` delimiter is required before the child command. Arashi parses options b
 ## Options
 
 - `--only <repos>` run only the named managed repositories. Use a comma-separated list for multiple repositories.
+- `--group <group>` run only repositories in the requested group. Repeat for multiple groups.
 - `--dirty` run only in selected repositories that have local working-tree changes.
 - `--jobs <n>` run up to `n` repositories concurrently. The default is serial execution.
 - `--fail-fast` stop scheduling additional repositories after the first child-command failure. Already-running jobs may finish and be reported.
@@ -36,6 +37,9 @@ arashi exec -- git status --short
 
 # validate one repository
 arashi exec --only arashi-docs -- bun run validate
+
+# validate all documentation repositories
+arashi exec --group docs -- bun run validate
 
 # inspect two repositories
 arashi exec --only arashi,arashi-docs -- git status --short
@@ -72,7 +76,8 @@ On full success, the result data includes the child command arguments, effective
 
 ## Notes
 
-- Use explicit `--only` filters for expensive or mutating commands.
+- Use explicit filters for expensive or mutating commands. Prefer `--group <group>` for known semantic sets and `--only <repo>` for one-off repository lists.
+- When combined with `--only`, `--group` narrows the explicit repository list by intersection.
 - Prefer serial execution for commands that contend for shared resources or produce large output.
 - `--jobs <n>` must be a positive integer.
 - `arashi exec` is intended for non-interactive fan-out commands; avoid child commands that require a TTY prompt or editor.

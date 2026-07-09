@@ -25,6 +25,7 @@ arashi sync [options]
 ## Key Options
 
 - `--only <repos>` sync comma-separated repository names only.
+- `--group <group>` sync only repositories in the requested group. Repeat for multiple groups.
 - `-v, --verbose` show detailed per-repository sync output.
 - `--json` output machine-readable sync results.
 
@@ -37,6 +38,9 @@ arashi sync
 # Sync selected repositories
 arashi sync --only api,web
 
+# Sync agent-support repositories
+arashi sync --group agents
+
 # Sync with per-repo details
 arashi sync --verbose
 
@@ -48,11 +52,13 @@ arashi sync --only api,web --json
 
 - `sync` aligns repositories to the parent repository's current branch.
 - When needed, it can create missing target branches in child repositories.
+- `--group` targets configured semantic sets; with `--only`, it narrows the explicit repository selection by intersection.
 - JSON mode keeps stdout parseable as a single result document for programmatic callers.
 
 ## Agent Notes
 
 - Use `arashi sync` when branch/worktree state has drifted and you need the child repos aligned to the current parent branch.
+- Prefer `--group <group>` when only a known semantic set should be synchronized.
 - Inspect `arashi status` before and after sync so any remaining mismatches are visible before implementation or handoff.
 - Avoid using sync as a substitute for understanding dirty worktrees; resolve or preserve local changes deliberately.
 

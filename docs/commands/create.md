@@ -26,6 +26,7 @@ arashi create <branch> [options]
 ## Key Options
 
 - `--only <repos>` limit creation to comma-separated repository names.
+- `--group <group>` create worktrees only for repositories in the requested group. Repeat for multiple groups.
 - `-i, --interactive` pick repositories interactively.
 - `--switch` switch to the created parent worktree after create.
 - `--no-switch` disable configured create switch defaults for one invocation.
@@ -47,6 +48,9 @@ arashi create feature-auth-refresh
 
 # Create in specific repositories only
 arashi create feature-auth-refresh --only api,web
+
+# Create worktrees for the core repository group
+arashi create feature-auth-refresh --group core
 
 # Pick child repositories interactively while always creating the parent worktree
 arashi create feature-auth-refresh --interactive
@@ -72,6 +76,8 @@ arashi create feature-auth-refresh --move-changes
 - `create` validates branch names and repository readiness.
 - On failure, coordinated operations can roll back to keep repos consistent.
 - Interactive `create` treats the parent/meta repository as the required anchor for the coordinated worktree; the selection prompt only controls child repositories.
+- `--group` targets configured semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`.
+- When combined with `--only`, `--group` narrows the explicit repository list by intersection. Empty intersections fail before creating worktrees.
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`arashi clone`](/commands/clone/) from inside that worktree.
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
@@ -84,6 +90,7 @@ arashi create feature-auth-refresh --move-changes
 - Use `--no-launch --no-switch` for unattended agent runs unless the user explicitly wants an editor or shell session opened.
 - Prefer `--json` with explicit non-interactive flags when automation needs to verify created worktree paths.
 - Use `--interactive` when a task only needs some child repositories; the parent worktree is still present, so shared metadata and coordination remain available.
+- Prefer `--group <group>` over a long `--only` list when a known semantic group matches the task scope.
 
 ## Related Commands
 

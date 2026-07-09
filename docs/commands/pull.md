@@ -25,6 +25,7 @@ arashi pull [options]
 ## Key Options
 
 - `--only <repo>` limit pull to specific repositories (repeatable).
+- `--group <group>` pull only repositories in the requested group (repeatable).
 - `-v, --verbose` print full git output.
 - `--json` output machine-readable pull results.
 
@@ -37,6 +38,9 @@ arashi pull
 # Pull selected repositories only
 arashi pull --only api --only web
 
+# Pull infrastructure repositories only
+arashi pull --group infra
+
 # Pull with detailed command output
 arashi pull --verbose
 
@@ -47,13 +51,14 @@ arashi pull --only api --json
 ## Notes
 
 - Repositories with no remote changes are skipped.
+- `--group` targets configured semantic sets; with `--only`, it narrows the explicit repository selection by intersection.
 - Pull failures or manual-update states return a non-zero exit code.
 - In JSON mode, stdout contains one result document; verbose diagnostics stay out of stdout.
 
 ## Agent Notes
 
 - Use `arashi pull` before starting a new coordinated worktree when `arashi status` shows repositories are behind.
-- Prefer `--only <repo>` when the user has scoped the work to one repository and a full workspace pull would be unnecessary.
+- Prefer `--group <group>` when the user has scoped work to a known semantic set, or `--only <repo>` when the work is limited to one repository.
 - Re-run `arashi status` after pulling to confirm the workspace is ready for edits.
 
 ## Related Commands

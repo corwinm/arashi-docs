@@ -27,6 +27,7 @@ arashi status [options]
 
 - `-v, --verbose` show full `git status` output for each repository.
 - `-s, --short` show one-line summaries per repository.
+- `--group <group>` inspect only repositories in the requested group. Repeat for multiple groups.
 - `--json` output machine-readable workspace status.
 
 ## Examples
@@ -41,6 +42,9 @@ arashi status --verbose
 # Compact one-line summary
 arashi status --short
 
+# Inspect documentation repositories only
+arashi status --group docs
+
 # Emit structured status for automation
 arashi status --json
 ```
@@ -49,6 +53,7 @@ arashi status --json
 
 - `--verbose` and `--short` are mutually exclusive.
 - Default and short human output hide configured child repositories that are missing from a partial coordinated worktree.
+- `--group` filters status to repositories in the requested semantic group, such as `docs`, `core`, or `infra`.
 - Use `--verbose` or `--json` when you need to see every configured repository, including omitted or missing child repositories.
 - Non-zero exit codes are returned if repository status checks fail.
 - JSON mode is useful for agents and scripts that need to decide whether repositories are clean, dirty, behind, or ahead without scraping text.

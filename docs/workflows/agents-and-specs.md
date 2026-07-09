@@ -112,10 +112,12 @@ arashi doctor --json
 arashi status --json
 arashi list --json
 arashi exec --json -- git status --short
+arashi status --group docs --json
 arashi exec --only arashi-docs --json -- bun run validate
+arashi exec --group agents --json -- bun run validate
 arashi create feature-branch --no-launch --no-switch --json
 arashi clone --all --json
-arashi pull --only docs --json
+arashi pull --group docs --json
 arashi setup --only api --json
 ```
 
@@ -123,7 +125,7 @@ In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`
 
 Use `arashi doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
 
-Use `arashi exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer explicit `--only <repos>` filters for mutating, expensive, or repo-specific commands, and use `--dirty` when the task should only inspect repositories with local changes.
+Use `arashi exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer `--group <group>` for known semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`; use `--only <repos>` for one-off repository lists. For mutating, expensive, network-heavy, or long-running commands, always apply an explicit `--group` or `--only` filter unless the user asked for every managed repository. When both filters are supplied, `--group` intersects with and narrows `--only`.
 
 JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.
 

@@ -25,6 +25,7 @@ arashi setup [options]
 ## Key Options
 
 - `--only <repo>` run setup for specific repositories (repeatable).
+- `--group <group>` run setup only for repositories in the requested group (repeatable).
 - `-v, --verbose` print full setup script output.
 - `--json` output machine-readable setup results.
 
@@ -37,6 +38,9 @@ arashi setup
 # Run setup for selected repositories
 arashi setup --only api --only web
 
+# Run setup for extension repositories
+arashi setup --group extensions
+
 # Show full script output while setup runs
 arashi setup --verbose
 
@@ -47,6 +51,7 @@ arashi setup --only api --json
 ## Notes
 
 - Setup targets without scripts are reported as skipped.
+- `--group` targets configured semantic sets; with `--only`, it narrows the explicit repository selection by intersection.
 - Failed or timed-out setup runs return a non-zero exit code.
 - In JSON mode, stdout contains one result document; setup script diagnostics are captured or kept off stdout.
 

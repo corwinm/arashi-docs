@@ -42,6 +42,59 @@ Install shell integration with `arashi shell install` if you want `defaults.swit
 3. Add hooks after you confirm the create and switch flow you want to automate.
 4. Keep shared defaults in config and move environment-specific setup into hooks.
 
+## Repository Groups
+
+Add optional `groups` arrays to entries under `repos.<name>` when your workspace has semantic repository sets that you target together. Groups are stored on each repository entry, so there is no separate group registry to keep in sync.
+
+```json
+{
+  "repos": {
+    "arashi": {
+      "path": "repos/arashi",
+      "gitUrl": "git@github.com:example/arashi.git",
+      "groups": ["core"]
+    },
+    "arashi-docs": {
+      "path": "repos/arashi-docs",
+      "gitUrl": "git@github.com:example/arashi-docs.git",
+      "groups": ["docs"]
+    },
+    "arashi-vscode": {
+      "path": "repos/arashi-vscode",
+      "groups": ["extensions"]
+    },
+    "arashi-skills": {
+      "path": "repos/arashi-skills",
+      "groups": ["agents", "docs"]
+    },
+    "deploy": {
+      "path": "repos/deploy",
+      "groups": ["infra"]
+    }
+  }
+}
+```
+
+Common layouts use groups such as:
+
+- `core` for the primary CLI, API, or shared libraries.
+- `docs` for documentation sites, examples, and content exports.
+- `extensions` for editor extensions or optional integrations.
+- `agents` for skill packages, agent instructions, and automation-facing references.
+- `infra` for deployment, CI, infrastructure, or operations repositories.
+
+A repository can belong to more than one group when it serves multiple roles. Repositories without `groups` remain valid and are treated as ungrouped.
+
+Use `--group <group>` with repo-selecting commands to target a semantic set without enumerating repository names:
+
+```bash
+arashi status --group docs
+arashi create feat/update-docs --group docs --no-launch --no-switch
+arashi exec --group agents -- bun run validate
+```
+
+When `--group` and `--only` are supplied together, Arashi intersects the filters: `--group` narrows the explicit repository list instead of broadening it. For example, `arashi exec --only arashi,arashi-docs --group docs -- bun run validate` runs only in `arashi-docs` if that is the only selected repository in the `docs` group. Unknown groups and valid filters that produce an empty intersection are reported as selection errors before mutating commands run.
+
 ## Related References
 
 - [create command](/commands/create/)
