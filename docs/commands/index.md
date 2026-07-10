@@ -17,6 +17,7 @@ Use this section when you want command-level guidance.
 - [move](/commands/move/) - move uncommitted changes between coordinated worktrees.
 - [doctor](/commands/doctor/) - diagnose workspace health without making changes.
 - [exec](/commands/exec/) - run an arbitrary command across selected managed repositories.
+- [handoff](/commands/handoff/) - generate a Markdown or JSON handoff report for coordinated work.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
 - [update](/commands/update/) - check for and apply CLI updates.
@@ -37,6 +38,7 @@ arashi create feature-branch-name
 arashi doctor
 arashi status
 arashi exec -- git status --short
+arashi handoff --link https://github.com/your-org/project/issues/123
 arashi switch
 ```
 

@@ -18,8 +18,9 @@ If you are an agent entering an Arashi-managed workspace:
 4. Keep implementation, tests, and repo-specific docs in `repos/<project>/`.
 5. Keep shared context, OpenSpec proposals, plans, and cross-repo coordination in the meta-repo.
 6. Inspect detailed repository state with `arashi status` when `doctor` findings or the task require it.
-7. Validate every affected repo before handoff.
-8. Use focused PRs and cross-link related PRs when work spans repositories.
+7. Validate every affected repo before review or handoff.
+8. Generate an `arashi handoff` report when pausing, switching agents, or leaving dirty work.
+9. Use focused PRs and cross-link related PRs when work spans repositories.
 
 ## Core Idea
 
@@ -86,8 +87,30 @@ Then add smaller `AGENTS.md` files inside the child repos so the agent can pick 
 3. have the agent implement the change in the child repo
 4. update related docs or coordination files in the meta-repo when needed
 5. validate each affected repo before review or handoff
+6. run `arashi handoff` with links, validation evidence, remaining work, risks, and next commands before pausing or transferring context
 
 For multi-repo work, do not try to make one commit span the whole workspace. Commit and open PRs from each affected repository, then cross-link those PRs so reviewers can follow the complete change.
+
+## Handoff Reports
+
+Use `arashi handoff` to create a concise report when an agent is about to pause, switch with another agent, request review, or leave a dirty coordinated workspace. The command is read-only: it gathers current Arashi status and renders Markdown by default, but it does not run validations, write files, stage changes, commit, push, or delete worktrees.
+
+Include context Arashi cannot infer:
+
+```bash
+arashi handoff \
+  --link https://github.com/corwinm/arashi-arashi/issues/186 \
+  --link https://github.com/corwinm/arashi/pull/123 \
+  --validation "bun run test — passed" \
+  --validation "bun run build — passed" \
+  --todo "watch CI" \
+  --risk "Windows matrix has not finished yet" \
+  --next-command "gh pr checks 123 --repo corwinm/arashi"
+```
+
+Use `--validation` only for commands and results that were actually run. If a check is pending or unverified, put it in `--todo` or `--risk` so the next worker does not mistake it for merge-ready evidence.
+
+Use `arashi handoff --json` when an agent or script needs to parse the report. JSON mode uses the standard single-document Arashi envelope and includes workspace metadata, current repository context, per-repository status records, supplied context arrays, warnings, and generated next-command hints.
 
 ## Specs Pair Well, But They Are Optional
 
@@ -112,6 +135,7 @@ arashi doctor --json
 arashi status --json
 arashi list --json
 arashi exec --json -- git status --short
+arashi handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
 arashi status --group docs --json
 arashi exec --only arashi-docs --json -- bun run validate
 arashi exec --group agents --json -- bun run validate
