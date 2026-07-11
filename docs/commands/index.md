@@ -26,6 +26,7 @@ Use this section when you want command-level guidance.
 - [remove](/commands/remove/) - remove worktrees and branches.
 - [prune](/commands/prune/) - clean stale Git worktree metadata.
 - [pull](/commands/pull/) - pull remote updates across repos.
+- [push](/commands/push/) - publish coordinated branches across repos.
 - [sync](/commands/sync/) - align child repos to parent branch.
 - [setup](/commands/setup/) - run setup scripts across repos.
 
