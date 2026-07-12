@@ -21,6 +21,6 @@ No approved exceptions for feature `035-update-docs-domain`.
 
 | Artifact | Classification | Reason | Owner |
 | --- | --- | --- | --- |
-| `repos/arashi-docs/bun.lock` (`@netlify/*` dependency text) | Non-target generated content | Not a docs-domain URL reference | Docs maintainers |
+| `repos/arashi-docs/pnpm-lock.yaml` (`@netlify/*` dependency text) | Non-target generated content | Not a docs-domain URL reference | Docs maintainers |
 | `repos/arashi-docs/.gitignore` and `.npmignore` (`.netlify/`) | Non-target tool path | Local tooling output path, not a docs-domain URL | Docs maintainers |
 | `repos/arashi-docs/.github/workflows/docs-validate.yml` (`netlify.toml` path trigger) | Non-target workflow path | File trigger path, not a docs-domain URL | Docs maintainers |

@@ -4,21 +4,21 @@
   "private": true,
   "type": "module",
   "description": "Dedicated documentation site for Arashi",
-  "packageManager": "bun@1.3.14",
+  "packageManager": "pnpm@10.33.2",
   "scripts": {
-    "sync:content": "bun run scripts/sync-docs-content.ts && bun run scripts/generate-agent-exports.ts",
-    "dev": "bun run sync:content && astro dev",
-    "build": "bun run sync:content && astro check && astro build",
+    "sync:content": "tsx scripts/sync-docs-content.ts && tsx scripts/generate-agent-exports.ts",
+    "dev": "pnpm sync:content && astro dev",
+    "build": "pnpm sync:content && astro check && astro build",
     "preview": "astro preview",
     "lint:markdown": "markdownlint \"README.md\" \"docs/**/*.md\" --disable MD013",
-    "lint": "bun run lint:markdown",
-    "validate:build": "bun run build",
-    "validate:docs-domain": "bun run scripts/check-canonical-docs-domain.ts",
-    "validate:links:internal": "bun run scripts/check-internal-links.ts",
-    "validate:a11y": "bun run build && bun run scripts/check-a11y-smoke.ts",
-    "validate:links:external": "bun run scripts/check-external-links.ts",
-    "validate:readme-link": "bun run scripts/check-readme-link.ts",
-    "validate": "bun run lint && bun run validate:build && bun run validate:links:internal && bun run validate:a11y && bun run validate:docs-domain && bun run validate:readme-link"
+    "lint": "pnpm lint:markdown",
+    "validate:build": "pnpm build",
+    "validate:docs-domain": "tsx scripts/check-canonical-docs-domain.ts",
+    "validate:links:internal": "tsx scripts/check-internal-links.ts",
+    "validate:a11y": "pnpm build && tsx scripts/check-a11y-smoke.ts",
+    "validate:links:external": "tsx scripts/check-external-links.ts",
+    "validate:readme-link": "tsx scripts/check-readme-link.ts",
+    "validate": "pnpm lint && pnpm validate:build && pnpm validate:links:internal && pnpm validate:a11y && pnpm validate:docs-domain && pnpm validate:readme-link"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.1",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "markdownlint-cli": "^0.49.0",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   }
 }
