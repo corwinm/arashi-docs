@@ -10,27 +10,27 @@ sidebar:
 
 ## Markdown lint failures
 
-- Run `bun run lint`.
+- Run `pnpm lint`.
 - Fix heading order, code block fencing, and list formatting issues.
 
 ## Internal link or anchor failures
 
-- Run `bun run validate:links:internal`.
+- Run `pnpm validate:links:internal`.
 - Confirm linked files exist and fragment anchors match section headings.
 
 ## Accessibility smoke failures
 
-- Run `bun run validate:a11y`.
+- Run `pnpm validate:a11y`.
 - Ensure each critical page includes a clear `h1` and semantic main content.
 
 ## Canonical docs URL health failure
 
-- Run `bun run validate:readme-link`.
+- Run `pnpm validate:readme-link`.
 - Confirm `https://arashi.haphazard.dev` is reachable.
 - Confirm docs home and `repos/arashi/README.md` use the same canonical URL.
 
 ## Canonical docs domain policy failure
 
-- Run `bun run validate:docs-domain`.
+- Run `pnpm validate:docs-domain`.
 - Replace deprecated docs-domain references with `https://arashi.haphazard.dev`.
 - Ensure the Documentation link in `repos/arashi/README.md` targets `https://arashi.haphazard.dev` exactly.

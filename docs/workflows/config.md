@@ -90,10 +90,10 @@ Use `--group <group>` with repo-selecting commands to target a semantic set with
 ```bash
 arashi status --group docs
 arashi create feat/update-docs --group docs --no-launch --no-switch
-arashi exec --group agents -- bun run validate
+arashi exec --group agents -- pnpm validate
 ```
 
-When `--group` and `--only` are supplied together, Arashi intersects the filters: `--group` narrows the explicit repository list instead of broadening it. For example, `arashi exec --only arashi,arashi-docs --group docs -- bun run validate` runs only in `arashi-docs` if that is the only selected repository in the `docs` group. Unknown groups and valid filters that produce an empty intersection are reported as selection errors before mutating commands run.
+When `--group` and `--only` are supplied together, Arashi intersects the filters: `--group` narrows the explicit repository list instead of broadening it. For example, `arashi exec --only arashi,arashi-docs --group docs -- pnpm validate` runs only in `arashi-docs` if that is the only selected repository in the `docs` group. Unknown groups and valid filters that produce an empty intersection are reported as selection errors before mutating commands run.
 
 ## Related References
 

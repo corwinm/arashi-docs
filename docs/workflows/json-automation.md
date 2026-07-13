@@ -165,7 +165,7 @@ arashi list --json
 Then choose targeted commands based on the task:
 
 ```bash
-arashi exec --only arashi-docs --json -- bun run validate
+arashi exec --only arashi-docs --json -- pnpm validate
 arashi pull --group docs --json
 arashi create docs/update-reference --no-launch --no-switch --json
 arashi remove docs/update-reference --dry-run --json

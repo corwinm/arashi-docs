@@ -39,8 +39,8 @@ arashi handoff --link https://github.com/corwinm/arashi-arashi/issues/186
 # include validation evidence and remaining work
 arashi handoff \
   --link https://github.com/corwinm/arashi/pull/123 \
-  --validation "bun run test — passed" \
-  --validation "bun run build — passed" \
+  --validation "pnpm test — passed" \
+  --validation "pnpm build — passed" \
   --todo "watch CI" \
   --risk "Windows matrix has not finished yet" \
   --next-command "gh pr checks 123 --repo corwinm/arashi"

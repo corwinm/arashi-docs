@@ -101,8 +101,8 @@ Include context Arashi cannot infer:
 arashi handoff \
   --link https://github.com/corwinm/arashi-arashi/issues/186 \
   --link https://github.com/corwinm/arashi/pull/123 \
-  --validation "bun run test — passed" \
-  --validation "bun run build — passed" \
+  --validation "pnpm test — passed" \
+  --validation "pnpm build — passed" \
   --todo "watch CI" \
   --risk "Windows matrix has not finished yet" \
   --next-command "gh pr checks 123 --repo corwinm/arashi"
@@ -137,8 +137,8 @@ arashi list --json
 arashi exec --json -- git status --short
 arashi handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
 arashi status --group docs --json
-arashi exec --only arashi-docs --json -- bun run validate
-arashi exec --group agents --json -- bun run validate
+arashi exec --only arashi-docs --json -- pnpm validate
+arashi exec --group agents --json -- pnpm validate
 arashi create feature-branch --no-launch --no-switch --json
 arashi clone --all --json
 arashi pull --group docs --json

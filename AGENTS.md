@@ -16,4 +16,4 @@ This repository contains the Arashi documentation site.
 
 ## Validation
 
-- `bun run validate`
+- `pnpm validate`

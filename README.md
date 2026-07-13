@@ -9,30 +9,30 @@ Dedicated documentation site repository for Arashi.
 ## Local setup
 
 ```bash
-bun install
+pnpm install
 ```
 
 ## Run locally
 
 ```bash
-bun run dev
+pnpm run dev
 ```
 
 ## Build and validate
 
 ```bash
-bun run validate
-bun run build
+pnpm run validate
+pnpm run build
 ```
 
 ## Validation commands
 
-- `bun run lint` checks markdown consistency.
-- `bun run validate:links:internal` checks internal links and anchors.
-- `bun run validate:a11y` runs accessibility smoke checks for critical pages.
-- `bun run validate:links:external` checks external links (scheduled, non-blocking).
-- `bun run validate:docs-domain` enforces canonical docs-domain policy and denylist checks.
-- `bun run validate:readme-link` checks canonical docs URL health.
+- `pnpm run lint` checks markdown consistency.
+- `pnpm run validate:links:internal` checks internal links and anchors.
+- `pnpm run validate:a11y` runs accessibility smoke checks for critical pages.
+- `pnpm run validate:links:external` checks external links (scheduled, non-blocking).
+- `pnpm run validate:docs-domain` enforces canonical docs-domain policy and denylist checks.
+- `pnpm run validate:readme-link` checks canonical docs URL health.
 
 ## Migration Audit Artifacts
 

@@ -36,10 +36,10 @@ The `--` delimiter is required before the child command. Arashi parses options b
 arashi exec -- git status --short
 
 # validate one repository
-arashi exec --only arashi-docs -- bun run validate
+arashi exec --only arashi-docs -- pnpm validate
 
 # validate all documentation repositories
-arashi exec --group docs -- bun run validate
+arashi exec --group docs -- pnpm validate
 
 # inspect two repositories
 arashi exec --only arashi,arashi-docs -- git status --short
@@ -48,13 +48,13 @@ arashi exec --only arashi,arashi-docs -- git status --short
 arashi exec --dirty -- git diff --stat
 
 # run tests with bounded parallelism
-arashi exec --jobs 4 -- bun run test
+arashi exec --jobs 4 -- pnpm test
 
 # stop starting new test jobs after the first failure
-arashi exec --jobs 4 --fail-fast -- bun run test
+arashi exec --jobs 4 --fail-fast -- pnpm test
 
 # pass child-command flags after the delimiter
-arashi exec -- bun run test -- --watch=false
+arashi exec -- pnpm test -- --watch=false
 
 # capture per-repository stdout, stderr, status, and totals for automation
 arashi exec --json -- git status --short

@@ -36,8 +36,8 @@ sidebar:
 
 | Run | Commands | Result | Notes |
 | --- | --- | --- | --- |
-| Run 1 | `bun run validate:docs-domain`, `bun run validate:readme-link`, `bun run validate` | Pass | Canonical policy and docs validation gates passed |
-| Run 2 | `bun run validate:docs-domain`, `bun run validate` | Pass | Regression and final validation checks passed |
+| Run 1 | `pnpm validate:docs-domain`, `pnpm validate:readme-link`, `pnpm validate` | Pass | Canonical policy and docs validation gates passed |
+| Run 2 | `pnpm validate:docs-domain`, `pnpm validate` | Pass | Regression and final validation checks passed |
 
 ## Regression Check Results
 
