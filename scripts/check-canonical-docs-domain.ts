@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { CANONICAL_DOCS_URL, DEPRECATED_DOCS_HOST_DENYLIST } from "./lib/canonical-docs-url";
+import { CANONICAL_DOCS_URL, DEPRECATED_DOCS_HOST_DENYLIST } from "./lib/canonical-docs-url.ts";
 
 const canonicalHost = new URL(CANONICAL_DOCS_URL).host;
 const allowedDocsHosts = new Set([canonicalHost]);

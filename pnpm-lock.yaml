@@ -21,9 +21,6 @@ importers:
       markdownlint-cli:
         specifier: ^0.49.0
         version: 0.49.0
-      tsx:
-        specifier: ^4.21.0
-        version: 4.23.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -4992,6 +4989,7 @@ snapshots:
       esbuild: 0.28.1
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   typesafe-path@0.2.2: {}
 

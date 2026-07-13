@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { CANONICAL_DOCS_URL } from "./lib/canonical-docs-url";
+import { CANONICAL_DOCS_URL } from "./lib/canonical-docs-url.ts";
 
 const canonicalUrl = process.env.CANONICAL_DOCS_URL ?? CANONICAL_DOCS_URL;
 const projectReadmePath = path.resolve("../arashi/README.md");

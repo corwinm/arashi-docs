@@ -6,18 +6,18 @@
   "description": "Dedicated documentation site for Arashi",
   "packageManager": "pnpm@10.33.2",
   "scripts": {
-    "sync:content": "tsx scripts/sync-docs-content.ts && tsx scripts/generate-agent-exports.ts",
+    "sync:content": "node scripts/sync-docs-content.ts && node scripts/generate-agent-exports.ts",
     "dev": "pnpm sync:content && astro dev",
     "build": "pnpm sync:content && astro check && astro build",
     "preview": "astro preview",
     "lint:markdown": "markdownlint \"README.md\" \"docs/**/*.md\" --disable MD013",
     "lint": "pnpm lint:markdown",
     "validate:build": "pnpm build",
-    "validate:docs-domain": "tsx scripts/check-canonical-docs-domain.ts",
-    "validate:links:internal": "tsx scripts/check-internal-links.ts",
-    "validate:a11y": "pnpm build && tsx scripts/check-a11y-smoke.ts",
-    "validate:links:external": "tsx scripts/check-external-links.ts",
-    "validate:readme-link": "tsx scripts/check-readme-link.ts",
+    "validate:docs-domain": "node scripts/check-canonical-docs-domain.ts",
+    "validate:links:internal": "node scripts/check-internal-links.ts",
+    "validate:a11y": "pnpm build && node scripts/check-a11y-smoke.ts",
+    "validate:links:external": "node scripts/check-external-links.ts",
+    "validate:readme-link": "node scripts/check-readme-link.ts",
     "validate": "pnpm lint && pnpm validate:build && pnpm validate:links:internal && pnpm validate:a11y && pnpm validate:docs-domain && pnpm validate:readme-link"
   },
   "dependencies": {
@@ -27,7 +27,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "markdownlint-cli": "^0.49.0",
-    "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   }
 }
