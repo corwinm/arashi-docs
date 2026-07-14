@@ -4,6 +4,7 @@ description: Set command defaults so Arashi creates and switches worktrees the w
 draft: false
 sidebar:
   hidden: false
+  order: 2
 ---
 
 Use this guide after `arashi init` when you want Arashi to create and switch worktrees in a repeatable way without repeating flags on every command.

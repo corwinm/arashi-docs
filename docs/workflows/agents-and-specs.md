@@ -4,6 +4,7 @@ description: Use agents effectively in an Arashi meta-repo by keeping implementa
 draft: false
 sidebar:
   hidden: false
+  order: 4
 ---
 
 Use this guide when you want an agent to work safely inside an Arashi meta-repo. It is designed to stand alone as a bootstrap document you can paste into an agent session or link from `/llms.txt`.

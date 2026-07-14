@@ -4,6 +4,7 @@ description: Use lifecycle hooks to automate setup and cleanup around Arashi cre
 draft: false
 sidebar:
   hidden: false
+  order: 3
 ---
 
 Use this guide after `arashi init` when your workspace needs setup or cleanup automation around `create` and `remove`.
