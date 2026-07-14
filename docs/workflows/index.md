@@ -11,12 +11,12 @@ Use this section after `arashi init` when you want workflow guidance instead of 
 
 ## Choose a Workflow
 
-- [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Config](/workflows/config/) for command defaults and post-init switch behavior.
-- [VS Code](/workflows/vscode/) for editor-first worktree management.
-- [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
-- [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
+- [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [VS Code](/workflows/vscode/) for editor-first worktree management.
+- [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
+- [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
 - [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
 
 ## Recommended Path After `arashi init`
