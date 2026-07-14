@@ -15,6 +15,7 @@ Start feature work across multiple repositories from a single command.
 - Creates a worktree for the target branch in each configured repository.
 - Ensures repositories are aligned to the same branch name.
 - In interactive mode, always creates the parent/meta worktree and prompts only for optional child repositories.
+- Reconciles managed ignore rules before creating any parent or child worktree.
 - Runs configured lifecycle hooks when present.
 
 ## Usage
@@ -75,6 +76,9 @@ arashi create feature-auth-refresh --move-changes
 
 - `create` validates branch names and repository readiness.
 - On failure, coordinated operations can roll back to keep repos consistent.
+- Reconciliation honors existing effective tracked, repository-local, or global rules before using the clone's stored scope or repository-local default. Scope `none` creates no ignore-file changes and warns for safe paths that remain unignored.
+- `--dry-run` previews managed ignore scope, effective sources, planned rules, warnings, and unsafe skips without changing ignore files or clone-local preference state.
+- If worktree creation is fully rolled back, reconciliation is restored too. If a worktree survives a partial failure, Arashi retains the ignore state needed for that final filesystem state and reports it.
 - Interactive `create` treats the parent/meta repository as the required anchor for the coordinated worktree; the selection prompt only controls child repositories.
 - `--group` targets configured semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`.
 - When combined with `--only`, `--group` narrows the explicit repository list by intersection. Empty intersections fail before creating worktrees.
@@ -82,6 +86,7 @@ arashi create feature-auth-refresh --move-changes
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
 - JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
+- JSON results include structured managed ignore details and final changed/restored state without mixing human reconciliation output into stdout.
 - When the source workspace has uncommitted changes, create output includes guidance for moving compatible changes with [`arashi move`](/commands/move/). In JSON mode, that guidance is returned as structured data instead of human text.
 
 ## Agent Notes
@@ -91,8 +96,10 @@ arashi create feature-auth-refresh --move-changes
 - Prefer `--json` with explicit non-interactive flags when automation needs to verify created worktree paths.
 - Use `--interactive` when a task only needs some child repositories; the parent worktree is still present, so shared metadata and coordination remain available.
 - Prefer `--group <group>` over a long `--only` list when a known semantic group matches the task scope.
+- Treat managed ignore warnings as actionable workspace state; do not compensate by writing global Git configuration.
 
 ## Related Commands
 
 - [status](/commands/status/)
 - [remove](/commands/remove/)
+- [Config workflow](/workflows/config/)

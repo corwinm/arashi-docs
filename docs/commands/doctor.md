@@ -24,9 +24,13 @@ Run a safe, read-only health check when an Arashi workspace looks wrong or befor
 - repository status checks that fail
 - stale Git worktree metadata that `arashi prune --dry-run` can review
 - configured lifecycle hook files that are missing, not executable, unsafe, or unsupported
+- safe managed repository or worktree paths that have no effective ignore rule
+- stale entries in Arashi-owned ignore blocks, invalid clone-local ignore scope, and paths unsafe for automatic rules
 - shell integration or install/update hints when they can be detected safely
 
 Environment checks are conservative. If shell integration or install state cannot be determined safely, `doctor` avoids treating the unknown state as a blocking failure.
+
+The managed ignore checks use Git's effective tracked, repository-local, and global sources. Findings identify the managed path, effective scope or stored preference when available, and suggested repair such as rerunning a lifecycle command or selecting `arashi init --ignore-scope local|tracked|none`. An unsafe-path finding is distinct from a missing safe rule. `doctor` does not repair ignore files, remove stale owned entries, replace an invalid `arashi.ignoreScope`, or write global Git configuration.
 
 ## Usage
 
@@ -136,6 +140,7 @@ When `ok` is `false`, findings and summary counts are included in the structured
 - Prefer `arashi doctor --json` as the first workspace-health diagnostic command for agents.
 - Treat `error` findings as blockers before mutating recovery commands.
 - Use suggested commands from findings as follow-up checks, and keep mutating commands explicit and scoped.
+- For managed ignore findings, preserve user-authored and global rules. Use the suggested lifecycle or `init --ignore-scope` repair instead of editing an effective source blindly.
 - Use [`arashi exec`](/commands/exec/) for additional repeated inspection only when `doctor` and built-in commands do not cover the question.
 
 ## Related Commands

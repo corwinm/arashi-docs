@@ -66,6 +66,9 @@ jobs:
       - name: Run accessibility smoke checks
         run: pnpm validate:a11y
 
+      - name: Check managed-ignore documentation contract
+        run: pnpm validate:managed-ignore-docs
+
       - name: Enforce canonical docs domain policy
         run: pnpm validate:docs-domain
 
