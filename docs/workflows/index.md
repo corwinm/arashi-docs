@@ -13,6 +13,7 @@ Use this section after `arashi init` when you want workflow guidance instead of 
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Config](/workflows/config/) for command defaults and post-init switch behavior.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
+- [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
@@ -21,7 +22,7 @@ Use this section after `arashi init` when you want workflow guidance instead of 
 
 1. Configure `defaults.create` and `defaults.switch` so worktree creation and switching match your preferred launch behavior.
 2. Add lifecycle hooks if you need setup or cleanup automation around `create` and `remove`.
-3. Choose how you want to open worktrees: VSCode, terminal-native tmux flows, or `sesh`-driven session switching.
+3. Choose how you want to open worktrees: VS Code, automatic cmux workspaces, terminal-native tmux flows, or `sesh`-driven session switching.
 4. If you work with agents, keep code changes in the affected project repo and shared context in the meta-repo.
 
 ## Related Commands

@@ -80,6 +80,9 @@ arashi create feature-auth-refresh --move-changes
 - When combined with `--only`, `--group` narrows the explicit repository list by intersection. Empty intersections fail before creating worktrees.
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`arashi clone`](/commands/clone/) from inside that worktree.
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
+- When post-create launch runs inside a cmux-managed terminal, Arashi creates and focuses a cmux workspace rooted at the new primary worktree. This requires cmux v0.64.18 or newer and local socket access.
+- If cmux launch fails after worktree creation, the created worktrees remain available and Arashi reports the launch failure without falling back to standalone Ghostty.
+- An active tmux session nested inside cmux keeps the existing tmux/sesh launch behavior.
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
 - JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
 - When the source workspace has uncommitted changes, create output includes guidance for moving compatible changes with [`arashi move`](/commands/move/). In JSON mode, that guidance is returned as structured data instead of human text.
@@ -96,3 +99,4 @@ arashi create feature-auth-refresh --move-changes
 
 - [status](/commands/status/)
 - [remove](/commands/remove/)
+- [cmux workflow guide](/workflows/cmux/)
