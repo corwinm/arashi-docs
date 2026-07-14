@@ -16,6 +16,7 @@ Set up a workspace so Arashi can track repositories and worktrees.
 - Offers to bootstrap a Git repository when you run it from a non-repository directory in an interactive terminal.
 - Prepares workspace metadata used by other commands.
 - Makes the workspace ready for repository registration.
+- Reconciles safe configured repository and worktree paths with Git before creating managed directories.
 
 ## Usage
 
@@ -27,6 +28,7 @@ arashi init [options]
 
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
 - `--worktrees-dir <path>` set a custom worktree base directory (default `.arashi/worktrees`).
+- `--ignore-scope <local|tracked|none>` choose repository-local rules, tracked rules, or no ignore-file writes.
 - `--force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.
 - `--dry-run` preview changes without writing files.
@@ -38,6 +40,15 @@ arashi init [options]
 ```bash
 # Standard initialization
 arashi init
+
+# Share missing managed rules in the workspace-root .gitignore
+arashi init --ignore-scope tracked
+
+# Manage ignore rules manually and receive warnings for unignored paths
+arashi init --ignore-scope none
+
+# Reset an existing clone to the repository-local default without --force
+arashi init --ignore-scope local
 
 # Run from a parent directory, then enter '.' at the prompt to initialize the current directory
 arashi init
@@ -66,11 +77,19 @@ arashi init --json
 - JSON mode does not prompt; provide explicit options when running initialization from automation.
 - `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
 - `init` sets `worktreesDir` to `.arashi/worktrees` by default.
-- It updates `.gitignore` to exclude the configured repositories directory.
-- It also adds the normalized managed worktree directory entry to `.gitignore` when the location is default or a safe repository-relative subdirectory.
-- Broad locations (`.`/`./`) and parent-traversal locations (`../` variants) are not auto-added to `.gitignore`.
+- `local` is the default ignore scope. Missing safe `reposDir` and `worktreesDir` rules are written to the common repository's exclude file resolved through Git, normally `.git/info/exclude`; tracked `.gitignore` is unchanged.
+- `tracked` writes missing safe rules to the workspace-root `.gitignore`. `none` does not write tracked, local, or global ignore files and warns when a safe path remains unignored.
+- Explicit `tracked` and `none` choices are stored as `arashi.ignoreScope` in clone-local Git configuration, not shared `.arashi/config.json`. Selecting `local` removes the stored non-default preference.
+- On an existing valid workspace, supplying only `--ignore-scope` updates the preference and reconciles current paths without requiring `--force` or recreating config, hooks, or repositories. A forced init with no explicit scope preserves a valid stored preference.
+- Before writing, Arashi asks Git for each path's effective ignore rule. Existing tracked, repository-local, nested, or global rules are preserved without duplication regardless of the selected scope.
+- Arashi never creates or modifies `core.excludesFile` or other global Git configuration.
+- Only normalized repository-relative subdirectories are safe to write. Repository root (`.`/`./`), absolute paths, and parent traversal (`../` variants) are reported and skipped.
+- Reconciliation updates only Arashi-owned ignore blocks and removes stale owned entries in the active writable scope. User-authored rules remain untouched; `none` freezes existing ignore content.
+- `--dry-run` includes planned scope, preference, and ignore changes without modifying them. JSON results expose effective sources, planned or applied rules, warnings, unsafe skips, and final changed/restored state under structured managed ignore data.
+- This command initializes a configured workspace. It does not implement configless discovery from [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
 
 ## Related Commands
 
 - [add](/commands/add/)
 - [create](/commands/create/)
+- [Config workflow](/workflows/config/)

@@ -17,6 +17,7 @@ Recover missing local repositories without re-adding them to workspace configura
 - Clones all missing repositories in non-interactive mode with `--all`.
 - Inside a coordinated worktree, adds missing child repositories as worktrees on the current branch when a local source repository is available.
 - Falls back to normal remote clone behavior outside coordinated worktrees or when no source repository is available.
+- Reconciles managed ignore rules before materializing a configured repository path.
 - Skips repositories that are already present locally.
 
 ## Usage
@@ -55,14 +56,19 @@ arashi clone --all --json
 - If the matching source repository cannot be found locally, `clone` uses the configured remote URL instead.
 - If you're in a non-interactive environment, use `--all`.
 - JSON mode does not prompt; combine `--json` with explicit selection flags such as `--all`.
+- Before cloning, Arashi honors any effective tracked, repository-local, or global rule. If a safe managed path is still unignored, it uses the stored clone-local scope or the repository-local default; scope `none` warns without writing.
+- Repeated reconciliation is idempotent. If no clone is retained after failure, ignore and preference changes are restored; when some selected repositories succeed, required reconciliation is retained and reported with the partial result.
+- A fresh clone has no shared ignore preference because `arashi.ignoreScope` is clone-local. It therefore defaults to the common repository's local exclude file and does not unexpectedly change tracked `.gitignore`.
 
 ## Agent Notes
 
 - Use `arashi status --json` or `arashi status --verbose` to discover missing configured repositories before completing a partial workspace.
 - Prefer `arashi clone --all --json` when automation should complete every missing child repository without prompts.
+- Inspect managed ignore warnings and final changed/restored state in JSON results instead of editing Git ignore files directly.
 
 ## Related Commands
 
 - [add](/commands/add/)
 - [status](/commands/status/)
 - [setup](/commands/setup/)
+- [Config workflow](/workflows/config/)

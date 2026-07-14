@@ -118,6 +118,8 @@ arashi init
 
 When prompted for the repository target, enter `.` to initialize the current directory.
 
+By default, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status with repository-local rules in the common repository's `.git/info/exclude`. This protects generated workspace directories without changing the tracked `.gitignore` that your team shares.
+
 ### 2. Add Arashi to an existing meta-repo
 
 Use this flow when you already have a repository that should become your Arashi workspace.
@@ -128,6 +130,23 @@ arashi init
 ```
 
 Run `arashi init` from the repository root you want Arashi to manage.
+
+Git's effective ignore state wins. If a tracked `.gitignore`, repository-local exclude, or existing global excludes file already ignores a managed path, Arashi preserves that rule and does not add a duplicate. Arashi may read an effective global rule, but it never creates or modifies `core.excludesFile` or other global Git configuration.
+
+Choose a different policy only when you intend it:
+
+```bash
+# Commit Arashi-managed rules to the workspace-root .gitignore for the team
+arashi init --ignore-scope tracked
+
+# Do not let Arashi write ignore files; unignored managed paths produce warnings
+arashi init --ignore-scope none
+
+# Restore the repository-local default later
+arashi init --ignore-scope local
+```
+
+Explicit `tracked` and `none` preferences are stored in clone-local Git configuration, not `.arashi/config.json`. They therefore apply to later `pull`, `clone`, `add`, and `create` operations in this clone without becoming a shared team setting. Choosing `local` removes that non-default preference.
 
 Once `arashi init` completes, continue with the core workflow:
 
@@ -140,6 +159,10 @@ arashi status
 
 By default, new managed worktrees are created under `.arashi/worktrees`.
 Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `arashi shell install` if you want `arashi switch` to support parent-shell `cd` behavior.
+
+The next configured lifecycle command reconciles missing safe ignore rules before it materializes repositories or worktrees. Run `arashi doctor` for a non-mutating check of missing, stale, invalid, or unsafe managed ignore state.
+
+This workflow requires an Arashi workspace with `.arashi/config.json`. It does not add the configless workspace discovery proposed separately in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
 
 If you install Arashi with the official POSIX installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 

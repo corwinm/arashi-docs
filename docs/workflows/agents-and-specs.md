@@ -150,6 +150,22 @@ In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`
 
 Use `arashi doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
 
+## Managed Ignore Guidance For Agents
+
+Configured `init`, `pull`, `clone`, `add`, and `create` operations reconcile safe `reposDir` and `worktreesDir` rules before materializing workspace content. The default target is the common repository's local exclude file, normally `.git/info/exclude`, so a fresh clone does not modify tracked `.gitignore`.
+
+Treat the clone-local ignore scope as user intent:
+
+- `local` is the built-in default and is represented by the absence of a non-default preference.
+- `tracked` opts into Arashi-owned rules in the workspace-root `.gitignore`.
+- `none` opts out of ignore-file mutation and can produce warnings for unignored paths.
+
+Explicit `tracked` and `none` values live in local Git configuration under `arashi.ignoreScope`, not shared `.arashi/config.json`. Do not copy that preference between clones or change it merely to silence a warning. Never create, edit, or unset global Git configuration or the user's global excludes file; Arashi may honor an existing effective global rule, but global Git state is read-only for this workflow.
+
+In JSON lifecycle results, inspect `managedIgnore` for effective sources, planned/applied rules, unsafe skips, warnings, and final changed/restored state. Do not assume a failed command removed reconciliation: partial success may retain rules needed by surviving repositories, worktrees, or pulled config. Use `arashi doctor --json` for non-mutating missing, stale, invalid-scope, and unsafe-path diagnostics.
+
+This guidance applies to configured workspaces. It does not assume the separate configless discovery proposed in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
+
 Use `arashi exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer `--group <group>` for known semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`; use `--only <repos>` for one-off repository lists. For mutating, expensive, network-heavy, or long-running commands, always apply an explicit `--group` or `--only` filter unless the user asked for every managed repository. When both filters are supplied, `--group` intersects with and narrows `--only`.
 
 JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.

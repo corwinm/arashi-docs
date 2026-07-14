@@ -54,6 +54,16 @@ The common fields are:
 
 Command-specific `data` payloads may evolve as commands gain more diagnostics, filters, or result details. Consumers should read the fields they need and ignore unknown fields.
 
+## Managed Ignore Results
+
+When reconciliation is performed, JSON-capable configured lifecycle commands (`init`, `pull`, `clone`, `add`, and `create`) include a `managedIgnore` result. A no-op or cancelled path that returns before reconciliation may omit this optional field. When present, use it to understand the effective scope, stored preference, normalized managed paths, effective source and matched rule, planned or applied changes, warnings, unsafe skips, and tracked or local file state.
+
+Do not assume that the selected scope implies a write. An existing effective rule from a tracked file, repository-local exclude, or global excludes file wins and is reported unchanged. Scope `none` reports an unignored safe path as a structured warning. A dry-run reports planned changes without modifying ignore files or clone-local preference state.
+
+For failures, inspect the reconciliation details instead of inferring final state from the exit code. Results distinguish whether a change was attempted, whether it was restored, and whether the final observed state is changed. Partial success may retain a rule required by a surviving repository, worktree, or pulled configuration. A restoration failure reports both the original and rollback failures.
+
+`doctor --json` uses its existing findings array rather than `managedIgnore`. Managed-ignore findings keep the stable diagnostic fields and add path, source or stored-preference details, plus suggested repair commands.
+
 ## Success Example
 
 ```json
@@ -173,6 +183,8 @@ arashi remove docs/update-reference --dry-run --json
 ```
 
 For mutating, expensive, or network-heavy commands, use `--only` or `--group` unless the user explicitly asked for every managed repository.
+
+For lifecycle commands, inspect `managedIgnore` warnings and final state. Never respond to an unignored-path warning by modifying global Git configuration; preserve explicit `tracked` or `none` clone-local preferences unless the user asks to change them.
 
 ## Command-Specific Examples
 

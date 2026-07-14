@@ -280,6 +280,8 @@ function renderLlmsTxt(): string {
 - Put implementation, tests, and repo-specific docs in the owning child repository under \`repos/<project>/\`.
 - Prefer machine-readable command output such as \`arashi status --json\` when automating decisions.
 - Use \`arashi exec --json -- <command>\` for repeated multi-repo inspection or validation commands, with explicit \`--only\` filters for mutating or expensive commands.
+- Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
+- Preserve explicit clone-local \`tracked\` or \`none\` preferences and never modify global Git configuration or a global excludes file to silence a warning.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
 
@@ -288,6 +290,7 @@ function renderLlmsTxt(): string {
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
 - [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
 - [Getting started](${site}/getting-started/) - install and first-workspace flow.
+- [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
 - [Full Markdown export](${site}/llms-full.txt) - consolidated public docs context.

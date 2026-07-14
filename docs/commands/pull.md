@@ -14,6 +14,8 @@ Update repositories in your workspace without entering each one manually.
 
 - Runs pull operations across managed repositories.
 - Brings local branches up to date with remote changes.
+- Reloads workspace configuration after a selected parent repository is updated.
+- Reconciles managed ignore rules for the active configured paths before continuing child operations.
 - Reports which repositories succeeded or failed.
 
 ## Usage
@@ -52,16 +54,24 @@ arashi pull --only api --json
 
 - Repositories with no remote changes are skipped.
 - `--group` targets configured semantic sets; with `--only`, it narrows the explicit repository selection by intersection.
+- The parent repository follows the original `--only` and `--group` filters. It runs first only when those filters select it; `pull` does not pull the parent solely to refresh configuration.
+- After a selected parent pull succeeds, Arashi reloads `.arashi/config.json`, reapplies the original filters to the post-pull repositories and groups, reconciles the resulting `reposDir` and `worktreesDir`, and then pulls the selected children. An unfiltered run uses all children in the reloaded config.
+- If an original name or group filter no longer resolves after reload, `pull` stops before remaining child pulls with a structured selection failure. A newly configured child that is absent locally is not cloned implicitly; it is skipped with `arashi clone` guidance.
+- If the parent is excluded, or its pull fails and rolls back, child selection and reconciliation continue from the pre-pull configuration snapshot.
+- Reconciliation honors effective tracked, repository-local, or global ignore rules. Missing safe rules use the clone's stored scope or the repository-local default; scope `none` leaves files unchanged and reports unignored paths. Arashi never writes global Git configuration.
+- If a later child fails after a new parent configuration remains active, the managed ignore state required by that configuration is retained. State needed only by an abandoned, rolled-back parent update is restored.
 - Pull failures or manual-update states return a non-zero exit code.
-- In JSON mode, stdout contains one result document; verbose diagnostics stay out of stdout.
+- In JSON mode, stdout contains one result document; verbose diagnostics stay out of stdout. Structured results include managed ignore sources, applied or planned changes, warnings, skips, and final rollback state when relevant.
 
 ## Agent Notes
 
 - Use `arashi pull` before starting a new coordinated worktree when `arashi status` shows repositories are behind.
 - Prefer `--group <group>` when the user has scoped work to a known semantic set, or `--only <repo>` when the work is limited to one repository.
+- Do not assume child selection is fixed when the selected parent can pull a changed config; inspect the post-reload structured results.
 - Re-run `arashi status` after pulling to confirm the workspace is ready for edits.
 
 ## Related Commands
 
 - [sync](/commands/sync/)
 - [status](/commands/status/)
+- [Config workflow](/workflows/config/)
