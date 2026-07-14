@@ -4,6 +4,7 @@ description: Arashi's machine-readable output contract, error envelope shape, an
 draft: false
 sidebar:
   hidden: false
+  order: 8
 ---
 
 Use this reference when you are writing scripts, coding agents, CI checks, or integrations that need stable Arashi command output. Prefer command-specific pages for human workflow examples; use this page for the cross-command JSON contract.

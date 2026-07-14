@@ -4,6 +4,7 @@ description: Use tmux and sesh to keep Arashi worktree switching inside terminal
 draft: false
 sidebar:
   hidden: false
+  order: 4
 ---
 
 Use this guide when terminal windows, panes, and sessions are the main way you move between Arashi worktrees.

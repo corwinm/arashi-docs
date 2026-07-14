@@ -4,6 +4,7 @@ description: Open and manage Arashi worktrees from VS Code with the CLI or the A
 draft: false
 sidebar:
   hidden: false
+  order: 3
 ---
 
 Use this guide when VS Code or a VS Code-based editor is your primary destination for opening and managing Arashi worktrees.

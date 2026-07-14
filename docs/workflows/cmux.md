@@ -4,6 +4,7 @@ description: Open Arashi worktrees as focused cmux workspaces through automatic 
 draft: false
 sidebar:
   hidden: false
+  order: 5
 ---
 
 Use this guide when [cmux](https://cmux.com/) is your primary terminal and you want each Arashi worktree to open as its own cmux workspace.

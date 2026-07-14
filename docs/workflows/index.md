@@ -4,6 +4,7 @@ description: Choose guidance for hooks, configuration defaults, editor or termin
 draft: false
 sidebar:
   hidden: false
+  order: 1
 ---
 
 Use this section after `arashi init` when you want workflow guidance instead of a command-by-command reference.
