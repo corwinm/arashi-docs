@@ -14,7 +14,7 @@ Move into the right worktree quickly without manually changing directories.
 
 - Selects an existing worktree and opens a new terminal context there.
 - Supports parent-only, child-repo-only, or combined worktree scopes.
-- Uses terminal-aware launch behavior (tmux, VS Code, Cursor, Kiro, and common terminal apps).
+- Uses terminal-aware launch behavior (cmux, tmux, VS Code, Cursor, Kiro, and common terminal apps).
 
 ## Usage
 
@@ -79,6 +79,9 @@ arashi switch feature-auth --json
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
 - Configure default launch mode in `.arashi/config.json` under `defaults.switch.launchMode`.
 - Launch precedence is: explicit launch flag, then `--no-default-launch`, then configured switch default, then automatic environment detection.
+- In a cmux-managed terminal, automatic launch creates and focuses a new cmux workspace at the exact selected worktree. Arashi detects cmux from `CMUX_WORKSPACE_ID` or `CMUX_SURFACE_ID`, not from Ghostty's shared `TERM_PROGRAM` value.
+- cmux launch requires cmux v0.64.18 or newer and local CLI socket access. If the CLI/socket is unavailable or its structured response cannot be validated, Arashi reports `LAUNCH_FAILED` instead of opening standalone Ghostty.
+- An active tmux session inside cmux keeps tmux precedence. Explicit `--sesh`, `--vscode`, `--cursor`, and `--kiro` behavior is also unchanged.
 - `mode: "auto"` prefers parent-shell switching only when shell integration is active and otherwise keeps launch behavior.
 - Install shell integration with `arashi shell install` or print manual wrapper code with `arashi shell init <bash|zsh|fish>`.
 - If `--cd` cannot act on the parent shell because the wrapper is inactive, Arashi warns and skips launch fallback for that invocation.
@@ -91,3 +94,4 @@ arashi switch feature-auth --json
 - [list](/commands/list/)
 - [status](/commands/status/)
 - [create](/commands/create/)
+- [cmux workflow guide](/workflows/cmux/)
