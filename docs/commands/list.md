@@ -49,6 +49,7 @@ arashi list --json
 
 - Default output is intentionally simple for shell composition.
 - Use `--json` when another tool needs structured output.
+- Standalone mode never traverses sub-repositories. `--max-depth` is not supported there, and `--verbose` reports detailed Git metadata for the standalone repository's worktrees only.
 
 ## Related Commands
 

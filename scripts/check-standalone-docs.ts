@@ -43,6 +43,10 @@ const sourceRequirements = new Map<string, string[]>([
       [standaloneLink, "standalone"]
     ]
   ),
+  [
+    "docs/commands/list.md",
+    [standaloneLink, "standalone", "--max-depth", "not supported"]
+  ],
   ...["add", "clone", "sync", "pull", "push", "exec", "setup"].map(
     (command): [string, string[]] => [
       `docs/commands/${command}.md`,
@@ -77,6 +81,10 @@ const generatedRequirements = new Map<string, string[]>([
       [standaloneLink, "standalone"]
     ]
   ),
+  [
+    "public/commands/list.md",
+    [standaloneLink, "standalone", "--max-depth", "not supported"]
+  ],
   ...["add", "clone", "sync", "pull", "push", "exec", "setup"].map(
     (command): [string, string[]] => [
       `public/commands/${command}.md`,
