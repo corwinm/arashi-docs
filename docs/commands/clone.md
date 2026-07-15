@@ -68,6 +68,8 @@ arashi clone --all --json
 
 ## Related Commands
 
+`clone` requires configured mode and persisted child repositories. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+
 - [add](/commands/add/)
 - [status](/commands/status/)
 - [setup](/commands/setup/)

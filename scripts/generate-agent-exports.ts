@@ -17,6 +17,7 @@ const coreOrder = [
   "index.mdx",
   "getting-started/index.md",
   "workflows/index.md",
+  "workflows/standalone.md",
   "workflows/agents-and-specs.md",
   "workflows/json-automation.md",
   "workflows/config.md",
@@ -50,6 +51,7 @@ const requiredRoutes = [
   "llms-full.txt",
   "getting-started.md",
   "workflows.md",
+  "workflows/standalone.md",
   "workflows/agents-and-specs.md",
   "workflows/json-automation.md",
   "commands.md",
@@ -271,11 +273,12 @@ function renderPageMarkdown(page: Page): string {
 function renderLlmsTxt(): string {
   return `# Arashi
 
-> Arashi is a Git worktree manager for meta-repositories. It keeps related repositories aligned while agents and humans work on a feature branch across a shared workspace.
+> Arashi is a Git worktree manager for standalone repositories and configured meta-repositories. It keeps worktrees organized for one repository or aligns related repositories across a shared workspace.
 
 ## Agent Guidance
 
 - Start by inspecting workspace state with \`arashi status\`.
+- In a single repository, use \`arashi init --zero-config\` and the root \`.worktrees/<branch>\` convention; use ordinary \`arashi init\` for configured coordination.
 - Use the meta-repo for shared context, OpenSpec proposals, planning, and cross-repo coordination.
 - Put implementation, tests, and repo-specific docs in the owning child repository under \`repos/<project>/\`.
 - Prefer machine-readable command output such as \`arashi status --json\` when automating decisions.
@@ -287,6 +290,7 @@ function renderLlmsTxt(): string {
 
 ## Core Docs
 
+- [Standalone workflow](${site}/workflows/standalone/) - configless bootstrap, lifecycle, safety, and configured-mode upgrade guidance.
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
 - [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
 - [Getting started](${site}/getting-started/) - install and first-workspace flow.
@@ -297,6 +301,7 @@ function renderLlmsTxt(): string {
 
 ## Useful Markdown Routes
 
+- [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Agents workflow Markdown](${site}/workflows/agents-and-specs.md)
 - [JSON automation Markdown](${site}/workflows/json-automation.md)
 - [Getting started Markdown](${site}/getting-started.md)

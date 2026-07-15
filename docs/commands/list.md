@@ -52,5 +52,7 @@ arashi list --json
 
 ## Related Commands
 
+`list` supports standalone repositories from the main or a linked worktree. See the [Standalone Repository workflow](/workflows/standalone/) for discovery and lifecycle scope.
+
 - [status](/commands/status/)
 - [remove](/commands/remove/)

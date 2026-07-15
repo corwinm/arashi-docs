@@ -7,10 +7,11 @@ sidebar:
   order: 1
 ---
 
-Use this section after `arashi init` when you want workflow guidance instead of a command-by-command reference.
+Use this section when you want outcome-focused guidance instead of a command-by-command reference.
 
 ## Choose a Workflow
 
+- [Standalone Repository](/workflows/standalone/) for one-repository worktrees with no persisted Arashi configuration.
 - [Config](/workflows/config/) for managed path ignore scope, command defaults, and post-init switch behavior.
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.

@@ -57,5 +57,7 @@ arashi setup --only api --json
 
 ## Related Commands
 
+`setup` depends on configured repositories and setup scripts, so it requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+
 - [add](/commands/add/)
 - [sync](/commands/sync/)

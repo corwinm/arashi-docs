@@ -85,6 +85,8 @@ On full success, the result data includes the child command arguments, effective
 
 ## Related
 
+`exec` runs across configured repository selections and therefore requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+
 - [status](/commands/status/) for built-in workspace state inspection.
 - [setup](/commands/setup/) for configured repository setup scripts.
 - [Agents workflow](/workflows/agents-and-specs/) for automation guidance.

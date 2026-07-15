@@ -64,6 +64,8 @@ arashi sync --only api,web --json
 
 ## Related Commands
 
+`sync` requires configured mode and a persisted repository map. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+
 - [pull](/commands/pull/)
 - [push](/commands/push/)
 - [status](/commands/status/)
