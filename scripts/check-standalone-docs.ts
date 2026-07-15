@@ -4,8 +4,8 @@ import path from "node:path";
 const standaloneLink = "/workflows/standalone/";
 
 const sourceRequirements = new Map<string, string[]>([
-  ["astro.config.mjs", ["standalone repositories", "configured meta-repositories"]],
-  ["docs/index.mdx", [standaloneLink, "standalone repositories", "configured meta-repositories"]],
+  ["astro.config.mjs", ["configured meta-repositories", "optional standalone"]],
+  ["docs/index.mdx", [standaloneLink, "configured meta-repositories", "optional standalone"]],
   [
     "docs/workflows/standalone.md",
     [
@@ -59,7 +59,7 @@ const sourceRequirements = new Map<string, string[]>([
 ]);
 
 const generatedRequirements = new Map<string, string[]>([
-  ["public/index.md", [standaloneLink, "standalone repositories", "configured meta-repositories"]],
+  ["public/index.md", [standaloneLink, "configured meta-repositories", "optional standalone"]],
   ["public/workflows/standalone.md", ["arashi init --zero-config", ".worktrees/<branch>"]],
   ["public/getting-started.md", [standaloneLink, "arashi init --zero-config"]],
   ["public/commands.md", [standaloneLink, "standalone"]],
@@ -150,15 +150,17 @@ function checkGeneratedPageOrder(): void {
   const sources = [...content.matchAll(/^Source:\s+(\S+)$/gm)].map((match) => match[1]);
   const expectedOrder = [
     "https://arashi.haphazard.dev/workflows/",
+    "https://arashi.haphazard.dev/workflows/agents-and-specs/",
+    "https://arashi.haphazard.dev/workflows/config/",
     "https://arashi.haphazard.dev/workflows/standalone/",
     "https://arashi.haphazard.dev/commands/"
   ];
   const positions = expectedOrder.map((source) => sources.indexOf(source));
 
   if (positions.some((position) => position === -1)) {
-    errors.push("public/llms-full.txt must export the workflow index, standalone workflow, and command index");
-  } else if (!(positions[0] < positions[1] && positions[1] < positions[2])) {
-    errors.push("public/llms-full.txt must prioritize standalone between the workflow and command indexes");
+    errors.push("public/llms-full.txt must export primary configured workflows, standalone, and commands");
+  } else if (!positions.every((position, index) => index === 0 || positions[index - 1] < position)) {
+    errors.push("public/llms-full.txt must present configured workflows before standalone convenience guidance");
   }
 }
 

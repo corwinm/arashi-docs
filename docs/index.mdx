@@ -1,13 +1,13 @@
 ---
 title: Arashi
-description: Arashi manages Git worktrees in standalone repositories and across configured meta-repositories.
+description: Arashi coordinates Git worktrees across configured meta-repositories, with an optional standalone workflow for individual repositories.
 template: splash
 draft: false
 sidebar:
   hidden: false
 hero:
   title: Arashi
-  tagline: Manage Git worktrees in one repository or coordinate them across your whole stack.
+  tagline: Coordinate Git worktrees across every repository in your stack.
   image:
     html: |
       <div class="demo-sequence" role="region" aria-label="Animated explainer with one command line and file tree effects.">
@@ -70,7 +70,7 @@ import { TabItem, Tabs } from "@astrojs/starlight/components";
 
 <p class="home-mantra"><strong>嵐 (Arashi) - The eye of the storm for your development workflow</strong></p>
 
-Arashi manages Git worktrees in standalone repositories and aligns related repositories across configured meta-repositories.
+Arashi aligns branches and worktrees across configured meta-repositories. When you only need to manage one existing repository, an optional standalone workflow provides a lighter-weight path.
 
 <script is:inline>{`
   (() => {

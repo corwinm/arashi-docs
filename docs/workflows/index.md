@@ -7,11 +7,10 @@ sidebar:
   order: 1
 ---
 
-Use this section when you want outcome-focused guidance instead of a command-by-command reference.
+Use this section when you want outcome-focused guidance instead of a command-by-command reference. Arashi's primary workflow coordinates worktrees across the repositories in a configured meta-repo.
 
 ## Choose a Workflow
 
-- [Standalone Repository](/workflows/standalone/) for one-repository worktrees with no persisted Arashi configuration.
 - [Config](/workflows/config/) for managed path ignore scope, command defaults, and post-init switch behavior.
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
@@ -19,6 +18,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
 - [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
+- [Standalone Repository](/workflows/standalone/) for the optional one-repository convenience mode with no persisted Arashi configuration.
 
 ## Recommended Path After `arashi init`
 

@@ -13,7 +13,7 @@ Use this section when you want command-level guidance.
 - [init](/commands/init/) - initialize a workspace.
 - [add](/commands/add/) - add a repository to management.
 - [clone](/commands/clone/) - clone missing configured repositories.
-- [create](/commands/create/) - create a standalone or coordinated worktree.
+- [create](/commands/create/) - create a coordinated or standalone worktree.
 - [move](/commands/move/) - move uncommitted changes between worktrees.
 - [doctor](/commands/doctor/) - diagnose workspace health without making changes.
 - [exec](/commands/exec/) - run an arbitrary command across selected managed repositories.
@@ -45,8 +45,8 @@ arashi switch
 
 ## Related
 
-- [Standalone Repository](/workflows/standalone/)
 - [JSON Automation](/workflows/json-automation/)
 - [Getting Started](/getting-started/)
 - [Workflows](/workflows/)
 - [Contributing](/contributing/)
+- [Standalone Repository](/workflows/standalone/)

@@ -4,10 +4,10 @@ description: Use Arashi with one Git repository and no persisted Arashi configur
 draft: false
 sidebar:
   hidden: false
-  order: 2
+  order: 20
 ---
 
-Use standalone mode when one existing, non-bare Git repository needs worktrees but does not need Arashi's multi-repository coordination. The root `.worktrees/` directory is the discovery convention; Arashi keeps the implicit workspace model in memory and does not create `.arashi/` or `.arashi/config.json`.
+Arashi's primary workflow coordinates branches and worktrees across repositories in a configured meta-repo. Use standalone mode as a narrower convenience when one existing, non-bare Git repository needs worktrees but does not need that coordination. The root `.worktrees/` directory is the discovery convention; Arashi keeps the implicit workspace model in memory and does not create `.arashi/` or `.arashi/config.json`.
 
 ## Bootstrap with Arashi
 

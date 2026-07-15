@@ -7,7 +7,7 @@ export default defineConfig({
     starlight({
       title: "Arashi",
       description:
-        "Git worktree manager for standalone repositories and configured meta-repositories.",
+        "Git worktree coordination for configured meta-repositories, with optional standalone support.",
       logo: {
         src: "./src/assets/arashi-logo.svg",
         alt: "Arashi logo"

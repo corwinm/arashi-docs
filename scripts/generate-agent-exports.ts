@@ -17,13 +17,13 @@ const coreOrder = [
   "index.mdx",
   "getting-started/index.md",
   "workflows/index.md",
-  "workflows/standalone.md",
   "workflows/agents-and-specs.md",
   "workflows/json-automation.md",
   "workflows/config.md",
   "workflows/hooks.md",
   "workflows/vscode.md",
   "workflows/tmux-and-sesh.md",
+  "workflows/standalone.md",
   "commands/index.md",
   "commands/status.md",
   "commands/create.md",
@@ -290,22 +290,22 @@ function renderLlmsTxt(): string {
 
 ## Core Docs
 
-- [Standalone workflow](${site}/workflows/standalone/) - configless bootstrap, lifecycle, safety, and configured-mode upgrade guidance.
+- [Getting started](${site}/getting-started/) - install and configured meta-repository workflow.
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
-- [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
-- [Getting started](${site}/getting-started/) - install and first-workspace flow.
 - [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
+- [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
+- [Standalone workflow](${site}/workflows/standalone/) - optional configless, single-repository lifecycle and safety guidance.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
 - [Full Markdown export](${site}/llms-full.txt) - consolidated public docs context.
 
 ## Useful Markdown Routes
 
-- [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Agents workflow Markdown](${site}/workflows/agents-and-specs.md)
 - [JSON automation Markdown](${site}/workflows/json-automation.md)
 - [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
+- [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Create command Markdown](${site}/commands/create.md)
 - [Exec command Markdown](${site}/commands/exec.md)
 - [Contributing Markdown](${site}/contributing.md)

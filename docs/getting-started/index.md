@@ -104,21 +104,9 @@ Verify each asset with `Get-FileHash -Algorithm SHA256`, rename `arashi-windows-
 
 ## First Workflow
 
-Start with the path that matches how you are adopting Arashi.
+Arashi is designed to coordinate branches and worktrees across the repositories in a configured meta-repo. Start with the path that matches your workspace.
 
-### 1. Use one repository without configuration
-
-From an existing non-bare Git repository, explicitly prepare the standalone convention:
-
-```bash
-arashi init --zero-config
-arashi create feature-docs-bootstrap
-arashi status
-```
-
-This keeps worktrees under `.worktrees/<branch>` without creating `.arashi/config.json`. See the [Standalone Repository workflow](/workflows/standalone/) for manual bootstrap, exact-destination ignore safety, supported lifecycle commands, linked-worktree behavior, and the upgrade path to configured mode.
-
-### 2. Create a new meta-repo
+### 1. Create a new meta-repo
 
 Use this flow when you are starting fresh and want Arashi to initialize the workspace root.
 
@@ -132,7 +120,7 @@ When prompted for the repository target, enter `.` to initialize the current dir
 
 By default, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status with repository-local rules in the common repository's `.git/info/exclude`. This protects generated workspace directories without changing the tracked `.gitignore` that your team shares.
 
-### 3. Add Arashi to an existing meta-repo
+### 2. Add Arashi to an existing meta-repo
 
 Use this flow when you already have a repository that should become your Arashi workspace.
 
@@ -174,18 +162,30 @@ Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.swit
 
 The next configured lifecycle command reconciles missing safe ignore rules before it materializes repositories or worktrees. Run `arashi doctor` for a non-mutating check of missing, stale, invalid, or unsafe managed ignore state.
 
-This configured workflow requires an Arashi workspace with `.arashi/config.json`. For one repository without persisted configuration, use the [standalone workflow](/workflows/standalone/).
+This configured workflow uses `.arashi/config.json` to coordinate repositories, groups, hooks, defaults, and managed paths.
+
+### Optional: manage one existing repository
+
+If you only need Arashi's worktree lifecycle in one non-bare Git repository, initialize the standalone convenience mode explicitly:
+
+```bash
+arashi init --zero-config
+arashi create feature-docs-bootstrap
+arashi status
+```
+
+This keeps worktrees under `.worktrees/<branch>` without creating `.arashi/config.json`. It does not provide meta-repository coordination. See the [Standalone Repository workflow](/workflows/standalone/) for its narrower command scope, ignore safety, and upgrade path to configured mode.
 
 If you install Arashi with the official POSIX installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 
 When the workspace is initialized, choose the workflow guide that matches what you need next:
 
-- [Hooks](/workflows/hooks/) for lifecycle automation after create and remove.
-- [Standalone Repository](/workflows/standalone/) for a configless, single-repository lifecycle.
 - [Config](/workflows/config/) for command defaults and shell-aware switching behavior.
+- [Hooks](/workflows/hooks/) for lifecycle automation after create and remove.
+- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session flows.
-- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [Standalone Repository](/workflows/standalone/) for the optional configless, single-repository lifecycle.
 
 ## Next Steps
 
