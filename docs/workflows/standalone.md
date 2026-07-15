@@ -36,11 +36,15 @@ If you prefer to establish the convention yourself, run the following from the m
 ```bash
 mkdir -p .worktrees
 exclude_file="$(git rev-parse --git-path info/exclude)"
+if [ -L "$exclude_file" ]; then
+  printf 'Refusing to write through symlink: %s\n' "$exclude_file" >&2
+  exit 1
+fi
 mkdir -p "$(dirname "$exclude_file")"
 grep -qxF '.worktrees/' "$exclude_file" 2>/dev/null || printf '\n.worktrees/\n' >> "$exclude_file"
 ```
 
-Use `git rev-parse --git-path info/exclude` rather than assuming `.git/info/exclude`: linked worktrees and repositories with a separate Git directory may store the common exclude file elsewhere. Do not automate changes to global Git configuration or the tracked `.gitignore` for this personal worktree convention.
+Use `git rev-parse --git-path info/exclude` rather than assuming `.git/info/exclude`: linked worktrees and repositories with a separate Git directory may store the common exclude file elsewhere. The explicit symlink check prevents shell redirection from following a symlinked exclude file; if it refuses the write, inspect the repository metadata or use `arashi init --zero-config` rather than bypassing the guard. Do not automate changes to global Git configuration or the tracked `.gitignore` for this personal worktree convention.
 
 Verify the effective rule before creating worktrees:
 

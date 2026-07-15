@@ -11,6 +11,7 @@ const sourceRequirements = new Map<string, string[]>([
     [
       "arashi init --zero-config",
       "git rev-parse --git-path info/exclude",
+      "if [ -L \"$exclude_file\" ]; then",
       ".worktrees/<branch>",
       "arashi create",
       "arashi list",
@@ -87,28 +88,8 @@ const generatedRequirements = new Map<string, string[]>([
 const errors: string[] = [];
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
-
-const generator = read("scripts/generate-agent-exports.ts");
-if (generator !== null) {
-  const standaloneEntries = generator.match(/^\s*"workflows\/standalone\.md",?$/gm) ?? [];
-  if (standaloneEntries.length < 2) {
-    errors.push(
-      "scripts/generate-agent-exports.ts must include workflows/standalone.md in coreOrder and requiredRoutes"
-    );
-  }
-  const standalonePosition = generator.indexOf('"workflows/standalone.md",');
-  const workflowIndexPosition = generator.indexOf('"workflows/index.md",');
-  const commandsPosition = generator.indexOf('"commands/index.md",');
-  if (
-    standalonePosition === -1 ||
-    workflowIndexPosition === -1 ||
-    commandsPosition === -1 ||
-    standalonePosition < workflowIndexPosition ||
-    standalonePosition > commandsPosition
-  ) {
-    errors.push("standalone workflow is not prioritized between the workflow and command indexes");
-  }
-}
+checkGeneratedStandaloneLinks();
+checkGeneratedPageOrder();
 
 if (errors.length > 0) {
   console.error("Standalone documentation contract failed:");
@@ -129,6 +110,44 @@ function checkRequirements(requirements: Map<string, string[]>): void {
         errors.push(`${relativePath} is missing ${JSON.stringify(text)}`);
       }
     }
+  }
+}
+
+function checkGeneratedStandaloneLinks(): void {
+  const content = read("public/llms.txt");
+  if (content === null) return;
+
+  const links = new Map(
+    [...content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map((match) => [match[1], match[2]])
+  );
+  const expectedLinks = new Map([
+    ["Standalone workflow", "https://arashi.haphazard.dev/workflows/standalone/"],
+    ["Standalone workflow Markdown", "https://arashi.haphazard.dev/workflows/standalone.md"]
+  ]);
+
+  for (const [label, target] of expectedLinks) {
+    if (links.get(label) !== target) {
+      errors.push(`public/llms.txt must link ${JSON.stringify(label)} to ${target}`);
+    }
+  }
+}
+
+function checkGeneratedPageOrder(): void {
+  const content = read("public/llms-full.txt");
+  if (content === null) return;
+
+  const sources = [...content.matchAll(/^Source:\s+(\S+)$/gm)].map((match) => match[1]);
+  const expectedOrder = [
+    "https://arashi.haphazard.dev/workflows/",
+    "https://arashi.haphazard.dev/workflows/standalone/",
+    "https://arashi.haphazard.dev/commands/"
+  ];
+  const positions = expectedOrder.map((source) => sources.indexOf(source));
+
+  if (positions.some((position) => position === -1)) {
+    errors.push("public/llms-full.txt must export the workflow index, standalone workflow, and command index");
+  } else if (!(positions[0] < positions[1] && positions[1] < positions[2])) {
+    errors.push("public/llms-full.txt must prioritize standalone between the workflow and command indexes");
   }
 }
 
