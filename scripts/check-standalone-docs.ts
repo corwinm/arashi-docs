@@ -11,7 +11,10 @@ const sourceRequirements = new Map<string, string[]>([
     [
       "arashi init --zero-config",
       "git rev-parse --git-path info/exclude",
-      "if [ -L \"$exclude_file\" ]; then",
+      "[ -L \"$exclude_file\" ]",
+      "configured workspace detected",
+      "trap rollback EXIT",
+      "rmdir .worktrees",
       ".worktrees/<branch>",
       "arashi create",
       "arashi list",
