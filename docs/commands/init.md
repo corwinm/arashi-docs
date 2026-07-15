@@ -34,7 +34,7 @@ arashi init [options]
 - `--dry-run` preview changes without writing files.
 - `--verbose` print detailed initialization steps.
 - `--json` output machine-readable initialization results.
-- `--zero-config` bootstrap the root `.worktrees/` convention for one existing non-bare repository without writing `.arashi/` configuration.
+- `--zero-config` bootstrap the root `.worktrees/` convention for ad hoc use in a non-bare Git project that has not adopted Arashi configuration.
 
 ## Examples
 
@@ -69,7 +69,7 @@ arashi init --force --dry-run
 # Initialize and emit JSON for automation
 arashi init --json
 
-# Bootstrap a standalone repository without persisted Arashi configuration
+# Use Arashi ad hoc in a project without persisted Arashi configuration
 arashi init --zero-config
 
 # Preview the standalone bootstrap as structured output
@@ -93,7 +93,8 @@ arashi init --zero-config --dry-run --json
 - Only normalized repository-relative subdirectories are safe to write. Repository root (`.`/`./`), absolute paths, and parent traversal (`../` variants) are reported and skipped.
 - Reconciliation updates only Arashi-owned ignore blocks and removes stale owned entries in the active writable scope. User-authored rules remain untouched; `none` freezes existing ignore content.
 - `--dry-run` includes planned scope, preference, and ignore changes without modifying them. JSON results expose effective sources, planned or applied rules, warnings, unsafe skips, and final changed/restored state under structured managed ignore data.
-- `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It never writes tracked or global ignore state, `.arashi/`, hooks, or config.
+- Prefer ordinary `arashi init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
+- `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It is an ad hoc path for otherwise-unconfigured projects and never writes tracked or global ignore state, `.arashi/`, hooks, or config.
 - Zero-config mode accepts `--dry-run`, `--verbose`, and `--json`; it rejects configured-init options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` before mutation.
 - Use the [Standalone Repository workflow](/workflows/standalone/) for manual bootstrap, lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `arashi init`.
 

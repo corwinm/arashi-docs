@@ -294,7 +294,7 @@ function renderLlmsTxt(): string {
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
 - [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
 - [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
-- [Standalone workflow](${site}/workflows/standalone/) - optional configless, single-repository lifecycle and safety guidance.
+- [Standalone workflow](${site}/workflows/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
 - [Full Markdown export](${site}/llms-full.txt) - consolidated public docs context.

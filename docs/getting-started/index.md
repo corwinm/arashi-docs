@@ -164,9 +164,9 @@ The next configured lifecycle command reconciles missing safe ignore rules befor
 
 This configured workflow uses `.arashi/config.json` to coordinate repositories, groups, hooks, defaults, and managed paths.
 
-### Optional: manage one existing repository
+### Use Arashi in an unconfigured project
 
-If you only need Arashi's worktree lifecycle in one non-bare Git repository, initialize the standalone convenience mode explicitly:
+Configured mode remains the better choice whenever the project can adopt Arashi, even for one repository, because it enables repository and workspace hooks, persisted defaults, and custom paths. When you need Arashi in a project that has not adopted it, initialize standalone mode explicitly:
 
 ```bash
 arashi init --zero-config
@@ -174,7 +174,7 @@ arashi create feature-docs-bootstrap
 arashi status
 ```
 
-This keeps worktrees under `.worktrees/<branch>` without creating `.arashi/config.json`. It does not provide meta-repository coordination. See the [Standalone Repository workflow](/workflows/standalone/) for its narrower command scope, ignore safety, and upgrade path to configured mode.
+This keeps worktrees under `.worktrees/<branch>` without creating `.arashi/config.json`, letting you use Arashi ad hoc in any non-bare Git project. It does not provide meta-repository coordination, repository/workspace hooks, or persisted defaults. See the [Standalone Repository workflow](/workflows/standalone/) for its narrower command scope, ignore safety, and upgrade path to configured mode.
 
 If you install Arashi with the official POSIX installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 
@@ -185,7 +185,7 @@ When the workspace is initialized, choose the workflow guide that matches what y
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session flows.
-- [Standalone Repository](/workflows/standalone/) for the optional configless, single-repository lifecycle.
+- [Standalone Repository](/workflows/standalone/) for ad hoc use in a project that has not adopted Arashi configuration.
 
 ## Next Steps
 

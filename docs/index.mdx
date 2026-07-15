@@ -1,6 +1,6 @@
 ---
 title: Arashi
-description: Arashi coordinates Git worktrees across configured meta-repositories, with an optional standalone workflow for individual repositories.
+description: Arashi coordinates Git worktrees across configured meta-repositories and can run ad hoc in projects that have not adopted Arashi.
 template: splash
 draft: false
 sidebar:
@@ -70,7 +70,7 @@ import { TabItem, Tabs } from "@astrojs/starlight/components";
 
 <p class="home-mantra"><strong>嵐 (Arashi) - The eye of the storm for your development workflow</strong></p>
 
-Arashi aligns branches and worktrees across configured meta-repositories. When you only need to manage one existing repository, an optional standalone workflow provides a lighter-weight path.
+Arashi aligns branches and worktrees across configured meta-repositories. It can also run ad hoc in an otherwise-unconfigured project, so you can use its worktree lifecycle without requiring that project to adopt Arashi first.
 
 <script is:inline>{`
   (() => {
@@ -145,6 +145,6 @@ Arashi aligns branches and worktrees across configured meta-repositories. When y
 - Using tmux or `sesh`? Open [tmux and sesh](/workflows/tmux-and-sesh/).
 - Looking for command behavior? Open [Commands](/commands/).
 - Contributing to Arashi? Open [Contributing](/contributing/).
-- Only managing one existing repository? Use the optional [Standalone Repository](/workflows/standalone/) workflow.
+- Need Arashi temporarily in a project that has not adopted it? Use the [Standalone Repository](/workflows/standalone/) workflow.
 
-Configured mode coordinates child repositories and supports create/switch defaults, hooks, custom paths, and worktrees under `.arashi/worktrees` by default. Standalone mode provides a narrower `.worktrees/<branch>` convention for one repository.
+Configured mode is preferred whenever it is available—even for one repository—because it supports hooks, defaults, custom paths, and coordination. Standalone mode provides an ad hoc `.worktrees/<branch>` convention for an otherwise-unconfigured project.
