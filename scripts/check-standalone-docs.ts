@@ -7,7 +7,7 @@ const sourceRequirements = new Map<string, string[]>([
   ["astro.config.mjs", ["configured meta-repositories", "ad hoc support"]],
   [
     "docs/index.mdx",
-    [standaloneLink, "configured meta-repositories", "run ad hoc", "Configured mode is preferred"]
+    [standaloneLink, "configured meta-repositories", "Configured mode is preferred"]
   ],
   [
     "docs/workflows/standalone.md",
