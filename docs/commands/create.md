@@ -74,6 +74,7 @@ arashi create feature-auth-refresh --move-changes
 
 ## Notes
 
+- In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [Standalone Repository workflow](/workflows/standalone/).
 - `create` validates branch names and repository readiness.
 - On failure, coordinated operations can roll back to keep repos consistent.
 - Reconciliation honors existing effective tracked, repository-local, or global rules before using the clone's stored scope or repository-local default. Scope `none` creates no ignore-file changes and warns for safe paths that remain unignored.

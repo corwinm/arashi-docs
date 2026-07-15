@@ -91,6 +91,8 @@ arashi switch feature-auth --json
 
 ## Related Commands
 
+`switch` supports standalone repository worktrees; multi-repository scopes such as `--repos` and `--all` are configured-mode features. See the [Standalone Repository workflow](/workflows/standalone/).
+
 - [list](/commands/list/)
 - [status](/commands/status/)
 - [create](/commands/create/)

@@ -67,5 +67,8 @@ arashi status --json
 
 ## Related Commands
 
+`status` supports standalone repositories and reports standalone mode and exact paths in human or JSON output. See the [Standalone Repository workflow](/workflows/standalone/).
+
+- [list](/commands/list/)
 - [pull](/commands/pull/)
 - [sync](/commands/sync/)

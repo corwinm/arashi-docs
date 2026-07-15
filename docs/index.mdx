@@ -1,13 +1,13 @@
 ---
 title: Arashi
-description: Arashi manages aligned worktrees across multiple repositories within a shared meta-repository. It streamlines creating, switching, and managing changes across your whole stack.
+description: Arashi coordinates Git worktrees across configured meta-repositories and can run ad hoc in projects that have not adopted Arashi.
 template: splash
 draft: false
 sidebar:
   hidden: false
 hero:
   title: Arashi
-  tagline: Manage aligned worktrees across multiple repositories within a shared meta-repository.
+  tagline: Coordinate Git worktrees across every repository in your stack.
   image:
     html: |
       <div class="demo-sequence" role="region" aria-label="Animated explainer with one command line and file tree effects.">
@@ -138,13 +138,13 @@ Arashi manages aligned worktrees across multiple repositories within a shared me
 
 ## Choose Your Path
 
-- New to Arashi? Open [Getting Started](/getting-started/).
+- New to Arashi or setting up a meta-repo? Open [Getting Started](/getting-started/).
 - Need hooks or command defaults? Open [Hooks](/workflows/hooks/) or [Config](/workflows/config/).
+- Working with agents in a meta-repo? Open [Agents](/workflows/agents-and-specs/).
 - Using VS Code? Open [VS Code](/workflows/vscode/).
 - Using tmux or `sesh`? Open [tmux and sesh](/workflows/tmux-and-sesh/).
-- Working with agents in a meta-repo? Open [Agents](/workflows/agents-and-specs/).
 - Looking for command behavior? Open [Commands](/commands/).
 - Contributing to Arashi? Open [Contributing](/contributing/).
+- Need Arashi temporarily in a project that has not adopted it? Use the [Standalone Repository](/workflows/standalone/) workflow.
 
-By default, `arashi create` places managed worktrees under `.arashi/worktrees`.
-You can also set default create/switch behavior in `.arashi/config.json` with `defaults.create` and `defaults.switch`, then choose workflow guides for hooks, editor or terminal setup, and agent-assisted change planning.
+Configured mode is preferred whenever it is available—even for one repository—because it supports hooks, defaults, custom paths, and coordination. Standalone mode provides an ad hoc `.worktrees/<branch>` convention for an otherwise-unconfigured project.

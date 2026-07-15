@@ -104,7 +104,7 @@ Verify each asset with `Get-FileHash -Algorithm SHA256`, rename `arashi-windows-
 
 ## First Workflow
 
-Start with the path that matches how you are adopting Arashi.
+Arashi is designed to coordinate branches and worktrees across the repositories in a configured meta-repo. Start with the path that matches your workspace.
 
 ### 1. Create a new meta-repo
 
@@ -162,17 +162,30 @@ Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.swit
 
 The next configured lifecycle command reconciles missing safe ignore rules before it materializes repositories or worktrees. Run `arashi doctor` for a non-mutating check of missing, stale, invalid, or unsafe managed ignore state.
 
-This workflow requires an Arashi workspace with `.arashi/config.json`. It does not add the configless workspace discovery proposed separately in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
+This configured workflow uses `.arashi/config.json` to coordinate repositories, groups, hooks, defaults, and managed paths.
+
+### Use Arashi in an unconfigured project
+
+Configured mode remains the better choice whenever the project can adopt Arashi, even for one repository, because it enables repository and workspace hooks, persisted defaults, and custom paths. When you need Arashi in a project that has not adopted it, initialize standalone mode explicitly:
+
+```bash
+arashi init --zero-config
+arashi create feature-docs-bootstrap
+arashi status
+```
+
+This keeps worktrees under `.worktrees/<branch>` without creating `.arashi/config.json`, letting you use Arashi ad hoc in any non-bare Git project. It does not provide meta-repository coordination, repository/workspace hooks, or persisted defaults. See the [Standalone Repository workflow](/workflows/standalone/) for its narrower command scope, ignore safety, and upgrade path to configured mode.
 
 If you install Arashi with the official POSIX installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
 
 When the workspace is initialized, choose the workflow guide that matches what you need next:
 
-- [Hooks](/workflows/hooks/) for lifecycle automation after create and remove.
 - [Config](/workflows/config/) for command defaults and shell-aware switching behavior.
+- [Hooks](/workflows/hooks/) for lifecycle automation after create and remove.
+- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session flows.
-- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [Standalone Repository](/workflows/standalone/) for ad hoc use in a project that has not adopted Arashi configuration.
 
 ## Next Steps
 

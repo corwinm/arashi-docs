@@ -69,6 +69,8 @@ arashi push --set-upstream --json
 
 ## Related Commands
 
+`push` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+
 - [pull](/commands/pull/)
 - [sync](/commands/sync/)
 - [status](/commands/status/)

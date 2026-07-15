@@ -91,6 +91,8 @@ Behavior:
 
 ## Related Commands
 
+`remove` supports standalone repository worktrees and applicable user-global hooks, but configless local `.arashi/hooks` are inactive. See the [Standalone Repository workflow](/workflows/standalone/).
+
 - [list](/commands/list/)
 - [create](/commands/create/)
 - [prune](/commands/prune/)

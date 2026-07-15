@@ -23,6 +23,7 @@ const coreOrder = [
   "workflows/hooks.md",
   "workflows/vscode.md",
   "workflows/tmux-and-sesh.md",
+  "workflows/standalone.md",
   "commands/index.md",
   "commands/status.md",
   "commands/create.md",
@@ -50,6 +51,7 @@ const requiredRoutes = [
   "llms-full.txt",
   "getting-started.md",
   "workflows.md",
+  "workflows/standalone.md",
   "workflows/agents-and-specs.md",
   "workflows/json-automation.md",
   "commands.md",
@@ -271,11 +273,12 @@ function renderPageMarkdown(page: Page): string {
 function renderLlmsTxt(): string {
   return `# Arashi
 
-> Arashi is a Git worktree manager for meta-repositories. It keeps related repositories aligned while agents and humans work on a feature branch across a shared workspace.
+> Arashi is a Git worktree manager for standalone repositories and configured meta-repositories. It keeps worktrees organized for one repository or aligns related repositories across a shared workspace.
 
 ## Agent Guidance
 
 - Start by inspecting workspace state with \`arashi status\`.
+- In a single repository, use \`arashi init --zero-config\` and the root \`.worktrees/<branch>\` convention; use ordinary \`arashi init\` for configured coordination.
 - Use the meta-repo for shared context, OpenSpec proposals, planning, and cross-repo coordination.
 - Put implementation, tests, and repo-specific docs in the owning child repository under \`repos/<project>/\`.
 - Prefer machine-readable command output such as \`arashi status --json\` when automating decisions.
@@ -287,10 +290,11 @@ function renderLlmsTxt(): string {
 
 ## Core Docs
 
+- [Getting started](${site}/getting-started/) - install and configured meta-repository workflow.
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
-- [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
-- [Getting started](${site}/getting-started/) - install and first-workspace flow.
 - [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
+- [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
+- [Standalone workflow](${site}/workflows/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
 - [Full Markdown export](${site}/llms-full.txt) - consolidated public docs context.
@@ -301,6 +305,7 @@ function renderLlmsTxt(): string {
 - [JSON automation Markdown](${site}/workflows/json-automation.md)
 - [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
+- [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Create command Markdown](${site}/commands/create.md)
 - [Exec command Markdown](${site}/commands/exec.md)
 - [Contributing Markdown](${site}/contributing.md)

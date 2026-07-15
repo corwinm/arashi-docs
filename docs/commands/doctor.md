@@ -145,6 +145,8 @@ When `ok` is `false`, findings and summary counts are included in the structured
 
 ## Related Commands
 
+`doctor` checks standalone repository state without repairing ignore rules or creating configuration. See the [Standalone Repository workflow](/workflows/standalone/).
+
 - [status](/commands/status/) for detailed repository and branch state.
 - [clone](/commands/clone/) for missing configured repositories.
 - [prune](/commands/prune/) for stale Git worktree metadata.

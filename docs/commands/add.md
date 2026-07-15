@@ -45,6 +45,7 @@ arashi add git@github.com:your-org/data.git --json
 
 ## Notes
 
+- `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/) for the mode boundary.
 - Run `arashi init` first so workspace config exists.
 - `add` detects the default branch and tracks setup scripts when present.
 - Arashi asks Git for effective tracked, repository-local, and global rules before writing. Missing safe managed paths use the clone's stored scope or the repository-local default; scope `none` warns without changing ignore files.

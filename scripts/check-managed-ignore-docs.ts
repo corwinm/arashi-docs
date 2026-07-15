@@ -4,7 +4,7 @@ import path from "node:path";
 const sourceRequirements = new Map<string, string[]>([
   [
     "docs/getting-started/index.md",
-    [".git/info/exclude", "--ignore-scope tracked", "--ignore-scope none", "issues/212"]
+    [".git/info/exclude", "--ignore-scope tracked", "--ignore-scope none", "--zero-config"]
   ],
   [
     "docs/workflows/config.md",

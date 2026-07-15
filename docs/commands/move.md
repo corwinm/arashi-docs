@@ -65,6 +65,8 @@ arashi move --from main --to feature-auth-refresh --json
 
 ## Related Commands
 
+`move` supports standalone mode and limits source and target discovery to the resolved repository's worktrees. See the [Standalone Repository workflow](/workflows/standalone/).
+
 - [create](/commands/create/)
 - [list](/commands/list/)
 - [status](/commands/status/)

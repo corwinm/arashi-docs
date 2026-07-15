@@ -59,6 +59,8 @@ arashi prune --json
 
 ## Related Commands
 
+`prune` supports standalone repository metadata and worktrees from either the main or a linked worktree. See the [Standalone Repository workflow](/workflows/standalone/).
+
 - [remove](/commands/remove/)
 - [list](/commands/list/)
 - [status](/commands/status/)
