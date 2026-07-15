@@ -53,7 +53,7 @@ my-repository/
 
 The layout never adds a repository-name prefix. Commands invoked from the main worktree or any linked worktree resolve the same main repository and shared worktree set.
 
-Before `create` or `create --dry-run` mutates a branch, directory, worktree, hook, or config, Arashi asks Git whether the exact normalized destination (for example `.worktrees/feat/standalone-docs`) is effectively ignored. A negation or selective rule that exposes that destination blocks creation even if another `.worktrees/` descendant is ignored. Run `arashi init --zero-config` or repair the repository-local exclude, then retry; Arashi does not rewrite ignore state during passive discovery.
+Before `create` or `create --dry-run` mutates a branch, directory, worktree, hook, or config, Arashi asks Git whether the exact normalized destination (for example `.worktrees/feat/standalone-docs`) is effectively ignored. A negation or selective rule that exposes that destination blocks creation even if another `.worktrees/` descendant is ignored. Run `arashi init --zero-config`, then retry; Arashi does not rewrite ignore state during passive discovery.
 
 ## Supported Lifecycle
 
