@@ -13,11 +13,11 @@ Use this section when you want command-level guidance.
 - [init](/commands/init/) - initialize a workspace.
 - [add](/commands/add/) - add a repository to management.
 - [clone](/commands/clone/) - clone missing configured repositories.
-- [create](/commands/create/) - create coordinated worktrees.
-- [move](/commands/move/) - move uncommitted changes between coordinated worktrees.
+- [create](/commands/create/) - create a standalone or coordinated worktree.
+- [move](/commands/move/) - move uncommitted changes between worktrees.
 - [doctor](/commands/doctor/) - diagnose workspace health without making changes.
 - [exec](/commands/exec/) - run an arbitrary command across selected managed repositories.
-- [handoff](/commands/handoff/) - generate a Markdown or JSON handoff report for coordinated work.
+- [handoff](/commands/handoff/) - generate a Markdown or JSON workspace handoff report.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
 - [update](/commands/update/) - check for and apply CLI updates.
@@ -45,6 +45,7 @@ arashi switch
 
 ## Related
 
+- [Standalone Repository](/workflows/standalone/)
 - [JSON Automation](/workflows/json-automation/)
 - [Getting Started](/getting-started/)
 - [Workflows](/workflows/)

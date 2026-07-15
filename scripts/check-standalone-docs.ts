@@ -4,6 +4,8 @@ import path from "node:path";
 const standaloneLink = "/workflows/standalone/";
 
 const sourceRequirements = new Map<string, string[]>([
+  ["astro.config.mjs", ["standalone repositories", "configured meta-repositories"]],
+  ["docs/index.mdx", [standaloneLink, "standalone repositories", "configured meta-repositories"]],
   [
     "docs/workflows/standalone.md",
     [
@@ -22,6 +24,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   ["docs/getting-started/index.md", [standaloneLink, "arashi init --zero-config"]],
   ["docs/workflows/index.md", [standaloneLink, "Standalone"]],
+  ["docs/commands/index.md", [standaloneLink, "standalone"]],
   ["docs/commands/init.md", [standaloneLink, "--zero-config"]],
   ...[
     "create",
@@ -48,8 +51,10 @@ const sourceRequirements = new Map<string, string[]>([
 ]);
 
 const generatedRequirements = new Map<string, string[]>([
+  ["public/index.md", [standaloneLink, "standalone repositories", "configured meta-repositories"]],
   ["public/workflows/standalone.md", ["arashi init --zero-config", ".worktrees/<branch>"]],
   ["public/getting-started.md", [standaloneLink, "arashi init --zero-config"]],
+  ["public/commands.md", [standaloneLink, "standalone"]],
   ["public/llms.txt", ["Standalone workflow", "/workflows/standalone.md"]],
   [
     "public/llms-full.txt",
