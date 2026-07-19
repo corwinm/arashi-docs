@@ -31,6 +31,7 @@ Typical uses:
 
 - run repository bootstrap after worktree creation
 - stop tmux sessions before worktree removal
+- optionally close a Herdr workspace before its checkout is removed
 - clear generated files after branch cleanup
 - apply repository-specific setup without hard-coding it into every workflow command
 
@@ -113,9 +114,12 @@ If you want one shared hook for multiple child repos, use `.arashi/hooks/post-cr
 3. Add repository-scoped or global hooks only for trusted scripts and narrow use cases.
 4. Keep hooks focused on environment setup and cleanup, not on core project behavior.
 
+Herdr workspaces can contain agents or unsaved terminal state, so `arashi remove` never closes them automatically. If your team deliberately opts into pre-remove cleanup, resolve the workspace ID while `ARASHI_WORKTREE_PATH` still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove) for a guarded example.
+
 ## Related References
 
 - [create command](/commands/create/)
 - [remove command](/commands/remove/)
 - [Config workflow guide](/workflows/config/)
+- [Herdr workflow guide](/workflows/herdr/)
 - [Full hooks reference](https://github.com/corwinm/arashi/blob/main/docs/hooks.md)

@@ -39,11 +39,19 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
     "create": {
       "switch": true,
       "launch": true,
-      "launchMode": "sesh"
+      "launchMode": "herdr"
+    },
+    "editors": {
+      "vscode": {
+        "create": {
+          "launch": true,
+          "launchMode": "herdr"
+        }
+      }
     },
     "switch": {
       "mode": "auto",
-      "launchMode": "sesh"
+      "launchMode": "herdr"
     }
   }
 }
@@ -53,6 +61,9 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 - `defaults.create.launch` and `defaults.create.launchMode` control how create opens the new context.
 - `defaults.switch.mode` chooses between launch behavior, parent-shell `cd`, or automatic detection.
 - `defaults.switch.launchMode` controls how `arashi switch` opens when launch behavior is used.
+- `launchMode: "herdr"` opens or focuses the existing worktree through Herdr. It is valid for generic create defaults, switch defaults, and `defaults.editors.<host>.create` overrides.
+
+Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --no-default-launch` bypasses the configured switch launcher for one run; `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
 
 Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
 
@@ -122,4 +133,5 @@ When `--group` and `--only` are supplied together, Arashi intersects the filters
 - [switch command](/commands/switch/)
 - [shell command](/commands/shell/)
 - [Hooks workflow guide](/workflows/hooks/)
+- [Herdr workflow guide](/workflows/herdr/)
 - [Full configuration reference](https://github.com/corwinm/arashi/blob/main/docs/configuration.md)
