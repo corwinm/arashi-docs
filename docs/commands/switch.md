@@ -14,7 +14,7 @@ Move into the right worktree quickly without manually changing directories.
 
 - Selects an existing worktree and opens a new terminal context there.
 - Supports parent-only, child-repo-only, or combined worktree scopes.
-- Uses terminal-aware launch behavior (cmux, tmux, VS Code, Cursor, Kiro, and common terminal apps).
+- Uses terminal-aware launch behavior (tmux, Herdr, cmux, VS Code, Cursor, Kiro, and common terminal apps).
 
 ## Usage
 
@@ -30,6 +30,7 @@ arashi switch [filter] [options]
 - `--no-cd` force launch behavior for one invocation.
 - `--path` treat the argument as an exact worktree path instead of a fuzzy filter.
 - `--sesh` run sesh mode in tmux (requires active tmux session and `sesh`).
+- `--herdr` open or focus the selected existing worktree in a running Herdr session.
 - `--vscode`, `--cursor`, `--kiro` explicitly open the selected worktree in that IDE for one invocation.
 - `--no-default-launch` ignore configured switch launch defaults for one invocation.
 - `--json` output machine-readable results when the selected mode can be represented safely.
@@ -58,6 +59,9 @@ arashi switch --cd feature-auth
 # Use sesh/tmux switching mode
 arashi switch --sesh
 
+# Open or focus the selected worktree in Herdr
+arashi switch --herdr feature-auth
+
 # Force launch behavior when switch defaults prefer cd
 arashi switch --no-cd
 
@@ -77,11 +81,16 @@ arashi switch feature-auth --json
 - If `--repos` has no repo matches, Arashi prints available child repositories.
 - Configure default switch mode in `.arashi/config.json` under `defaults.switch.mode` (`launch`, `cd`, or `auto`).
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
-- Configure default launch mode in `.arashi/config.json` under `defaults.switch.launchMode`.
-- Launch precedence is: explicit launch flag, then `--no-default-launch`, then configured switch default, then automatic environment detection.
+- Configure default launch mode in `.arashi/config.json` under `defaults.switch.launchMode`; `"herdr"` selects Herdr even outside a Herdr-managed pane when its CLI can reach the running default session.
+- Launcher resolution is: switch behavior and shell integration, one explicit launcher, configured launch mode unless `--no-default-launch` bypasses it, automatic tmux, automatic Herdr, then cmux/IDE/terminal/generic fallback.
+- Automatic Herdr detection requires `HERDR_ENV` to trim to the exact string `1`. Similar values such as `0` or `true` do not select Herdr, and automatic tmux keeps precedence when both environments are active.
+- `--herdr` conflicts with `--sesh`, explicit IDE flags, and `--cd`. Arashi rejects the combination instead of choosing one implicitly.
+- Herdr launch requires v0.7.4 on `PATH`, a reachable running default session/socket, and a Git-resolved non-bare main checkout for the selected repository. Bare-only repositories fail before invoking Herdr.
+- Herdr opens the existing target through `herdr worktree open`, focuses it, and reuses an already-open workspace. The requested label is `<repo-name>: <branch-name>` and can rename a reused workspace.
+- A missing CLI/socket, non-zero process exit, invalid JSON, protocol mismatch, or missing workspace ID produces actionable `LAUNCH_FAILED` output. Once Herdr is selected, Arashi does not fall through to another launcher.
 - In a cmux-managed terminal, automatic launch creates and focuses a new cmux workspace at the exact selected worktree. Arashi detects cmux from `CMUX_WORKSPACE_ID` or `CMUX_SURFACE_ID`, not from Ghostty's shared `TERM_PROGRAM` value.
 - cmux launch requires cmux v0.64.18 or newer and local CLI socket access. If the CLI/socket is unavailable or its structured response cannot be validated, Arashi reports `LAUNCH_FAILED` instead of opening standalone Ghostty.
-- An active tmux session inside cmux keeps tmux precedence. Explicit `--sesh`, `--vscode`, `--cursor`, and `--kiro` behavior is also unchanged.
+- An active tmux session inside cmux or Herdr keeps tmux precedence in automatic mode. Explicit `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro` behavior remains authoritative.
 - `mode: "auto"` prefers parent-shell switching only when shell integration is active and otherwise keeps launch behavior.
 - Install shell integration with `arashi shell install` or print manual wrapper code with `arashi shell init <bash|zsh|fish>`.
 - If `--cd` cannot act on the parent shell because the wrapper is inactive, Arashi warns and skips launch fallback for that invocation.
@@ -96,4 +105,5 @@ arashi switch feature-auth --json
 - [list](/commands/list/)
 - [status](/commands/status/)
 - [create](/commands/create/)
+- [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)

@@ -63,6 +63,7 @@ arashi remove feature-login --force --json
 - `arashi remove --dry-run --json` returns a single JSON envelope whose `data` includes `dryRun: true`, pending operations, effective options, blockers, and hook previews for automation.
 - Stale Git-prunable worktree records are excluded from `remove`; use `arashi prune` to clean stale metadata.
 - JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
+- `remove` does not close Herdr workspaces because they can contain agents or unsaved terminal state. Close a stale workspace manually, or deliberately opt into a pre-remove `herdr workspace close <workspace-id>` hook that resolves the workspace before the checkout disappears. Never use `herdr worktree remove`; Arashi owns Git worktree removal.
 
 ## Agent Notes
 
@@ -96,3 +97,4 @@ Behavior:
 - [list](/commands/list/)
 - [create](/commands/create/)
 - [prune](/commands/prune/)
+- [Herdr workflow guide](/workflows/herdr/)

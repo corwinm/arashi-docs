@@ -34,6 +34,7 @@ arashi create <branch> [options]
 - `--launch` open a terminal/editor context after create.
 - `--no-launch` disable configured create launch defaults for one invocation.
 - `--sesh` force sesh launch mode (implies launch behavior).
+- `--herdr` open or focus the primary created worktree in Herdr (implies launch behavior).
 - `--conflict <strategy>` preselect conflict handling (`ABORT`, `REUSE_EXISTING`).
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
@@ -58,6 +59,9 @@ arashi create feature-auth-refresh --interactive
 
 # Force launch for this run
 arashi create feature-auth-refresh --launch
+
+# Create worktrees and open the primary worktree in Herdr
+arashi create feature-auth-refresh --herdr
 
 # Disable configured launch default for this run
 arashi create feature-auth-refresh --no-launch
@@ -85,11 +89,16 @@ arashi create feature-auth-refresh --move-changes
 - When combined with `--only`, `--group` narrows the explicit repository list by intersection. Empty intersections fail before creating worktrees.
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`arashi clone`](/commands/clone/) from inside that worktree.
 - Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
+- `launchMode: "herdr"` is valid for generic create defaults and editor-scoped create defaults. It works outside a Herdr pane when the CLI can reach the running default session.
+- Explicit `--herdr` implies launch and takes precedence over `--no-launch`, matching explicit `--sesh`. Combining `--herdr` with `--sesh` is rejected before worktree creation; without explicit `--herdr`, `--no-launch` suppresses configured Herdr.
+- `create --launch` automatically selects Herdr only when `HERDR_ENV` trims to exactly `1` and no explicit or configured launcher wins. Automatic tmux keeps precedence over automatic Herdr.
+- Herdr v0.7.4 requires a reachable default session/socket and a non-bare main checkout for the primary repository. It opens the already-created target, reuses an existing workspace, and applies the `<repo-name>: <branch-name>` label.
+- If Herdr is missing, cannot reach its socket, returns an error or invalid response, or cannot use a bare-only source, Arashi reports `LAUNCH_FAILED`, preserves all successfully created worktrees, and does not try another launcher or roll back Git creation.
 - When post-create launch runs inside a cmux-managed terminal, Arashi creates and focuses a cmux workspace rooted at the new primary worktree. This requires cmux v0.64.18 or newer and local socket access.
 - If cmux launch fails after worktree creation, the created worktrees remain available and Arashi reports the launch failure without falling back to standalone Ghostty.
 - An active tmux session nested inside cmux keeps the existing tmux/sesh launch behavior.
 - Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
-- JSON mode is intended for non-interactive automation. Launch modes that would open another app or session return a structured unsupported-mode error instead of mixing launch output with JSON.
+- JSON mode is intended for non-interactive automation. `--json --herdr` is rejected before worktree creation, like other launch modes that cannot safely mix interactive launch output with JSON.
 - JSON results include structured managed ignore details and final changed/restored state without mixing human reconciliation output into stdout.
 - When the source workspace has uncommitted changes, create output includes guidance for moving compatible changes with [`arashi move`](/commands/move/). In JSON mode, that guidance is returned as structured data instead of human text.
 
@@ -107,4 +116,5 @@ arashi create feature-auth-refresh --move-changes
 - [status](/commands/status/)
 - [remove](/commands/remove/)
 - [Config workflow](/workflows/config/)
+- [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
