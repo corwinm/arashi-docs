@@ -55,6 +55,7 @@ const staleSwitchLaunchModePages = [
 ];
 
 const errors: string[] = [];
+checkStructuredContract();
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 
@@ -89,6 +90,31 @@ function checkRequirements(requirements: Map<string, string[]>): void {
         errors.push(`${relativePath} is missing ${JSON.stringify(text)}`);
       }
     }
+  }
+}
+
+function checkStructuredContract(): void {
+  const raw = read("contracts/switch-config.json");
+  if (raw === null) return;
+  try {
+    const contract = JSON.parse(raw);
+    const expected = {
+      schemaVersion: 1,
+      canonicalField: "defaults.switch.mode",
+      modes: ["auto", "cd", "launch", "sesh", "herdr"],
+      absentMode: "launch",
+      autoOrder: ["tmux", "herdr", "cmux", "ide", "cd", "platform"],
+      legacyFields: [
+        "defaults.switch.launchMode",
+        "defaults.switch.launch_mode"
+      ],
+      createDefaultsUnchanged: true
+    };
+    if (JSON.stringify(contract) !== JSON.stringify(expected)) {
+      errors.push("contracts/switch-config.json does not match the documented unified-mode contract");
+    }
+  } catch {
+    errors.push("contracts/switch-config.json is not valid JSON");
   }
 }
 
