@@ -41,14 +41,6 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
       "launch": true,
       "launchMode": "herdr"
     },
-    "editors": {
-      "vscode": {
-        "create": {
-          "launch": true,
-          "launchMode": "herdr"
-        }
-      }
-    },
     "switch": {
       "mode": "auto",
       "launchMode": "herdr"
