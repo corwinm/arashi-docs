@@ -42,8 +42,7 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
       "launchMode": "herdr"
     },
     "switch": {
-      "mode": "auto",
-      "launchMode": "herdr"
+      "mode": "herdr"
     }
   }
 }
@@ -51,13 +50,35 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 
 - `defaults.create.switch` controls whether Arashi switches into the new worktree after `create`.
 - `defaults.create.launch` and `defaults.create.launchMode` control how create opens the new context.
-- `defaults.switch.mode` chooses between launch behavior, parent-shell `cd`, or automatic detection.
-- `defaults.switch.launchMode` controls how `arashi switch` opens when launch behavior is used.
-- `launchMode: "herdr"` opens or focuses the existing worktree through Herdr. It is valid for generic create defaults, switch defaults, and `defaults.editors.<host>.create` overrides.
+- `defaults.switch.mode` is the single switch default. Its complete vocabulary is `auto | cd | launch | sesh | herdr`.
+- `auto` prefers strictly detected managed contexts in the order tmux, Herdr, cmux, and integrated IDE; only then does it use parent-shell `cd`, followed by terminal/platform launch fallback.
+- `cd` prefers parent-shell switching, `launch` always uses automatic launcher selection, and `sesh` or `herdr` always selects that launcher.
+- An absent `defaults.switch.mode` preserves automatic launch without preferring parent-shell `cd`.
+- Create defaults are unchanged: `defaults.create.launchMode` and `defaults.editors.<host>.create` launch settings remain independent from switch mode.
 
-Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --no-default-launch` bypasses the configured switch launcher for one run; `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
+Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --no-default-launch` bypasses configured `sesh` or `herdr` for one run; `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
 
 Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
+
+## Legacy switch mode migration
+
+The canonical schema and new examples use only `defaults.switch.mode`. Unsupported values are rejected before target selection or mutation. During the bounded compatibility window—until a future config-version change removes the legacy reader—Arashi still reads legacy `defaults.switch.launchMode` and `defaults.switch.launch_mode`, emits one warning with the exact unified replacement for accepted configurations, and keeps migration diagnostics out of JSON stdout.
+
+| Legacy `mode` | Legacy launch value | Unified `mode` |
+| --- | --- | --- |
+| absent | absent | absent (built-in `launch`) |
+| absent | `auto` | `launch` |
+| absent | `sesh` / `herdr` | matching explicit mode |
+| `launch` | absent / `auto` | `launch` |
+| `launch` | `sesh` / `herdr` | matching explicit mode |
+| `auto` | absent / `auto` | `auto` |
+| `auto` | `sesh` / `herdr` | matching explicit mode |
+| `cd` | absent / `auto` | `cd` |
+| `cd` + `sesh` / `herdr` | explicit fallback | reject as ambiguous |
+| `sesh` / `herdr` | absent / `auto` / same launcher | preserve explicit mode |
+| `sesh` / `herdr` | opposite explicit launcher | reject as conflicting |
+
+If `launchMode` and `launch_mode` are both present with equal values, Arashi collapses them before applying the table and emits one migration warning only after an accepted mapping. Different alias values are rejected before mapping. Rejected `cd` plus explicit-launcher combinations name both values and direct you to choose either unified `cd` or the matching explicit mode; conflicting explicit modes likewise name both values. Rejection happens before target selection, launch, directory switching, or workspace mutation.
 
 ## Suggested Setup Sequence
 
