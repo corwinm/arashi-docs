@@ -287,6 +287,7 @@ function renderLlmsTxt(): string {
 - Use \`arashi exec --json -- <command>\` for repeated multi-repo inspection or validation commands, with explicit \`--only\` filters for mutating or expensive commands.
 - Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
 - Preserve explicit clone-local \`tracked\` or \`none\` preferences and never modify global Git configuration or a global excludes file to silence a warning.
+- Configure switching with one \`defaults.switch.mode\`: \`auto | cd | launch | sesh | herdr\`. An absent mode preserves automatic launch; configured \`auto\` prefers managed contexts before parent-shell \`cd\`.
 - For persistent Herdr launch, use \`arashi switch --herdr\` or \`arashi create --herdr\`; Arashi owns Git worktree creation/removal, and Herdr only opens, focuses, and reuses the existing checkout.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
@@ -310,7 +311,9 @@ function renderLlmsTxt(): string {
 - [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
 - [Standalone workflow Markdown](${site}/workflows/standalone.md)
+- [Configuration workflow Markdown](${site}/workflows/config.md)
 - [Herdr workflow Markdown](${site}/workflows/herdr.md)
+- [Switch command Markdown](${site}/commands/switch.md)
 - [Create command Markdown](${site}/commands/create.md)
 - [Exec command Markdown](${site}/commands/exec.md)
 - [Contributing Markdown](${site}/contributing.md)

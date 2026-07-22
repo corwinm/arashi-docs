@@ -18,9 +18,10 @@
     "validate:a11y": "pnpm build && node scripts/check-a11y-smoke.ts",
     "validate:managed-ignore-docs": "pnpm sync:content && node scripts/check-managed-ignore-docs.ts",
     "validate:standalone-docs": "pnpm sync:content && node scripts/check-standalone-docs.ts",
+    "validate:switch-mode-docs": "pnpm sync:content && node scripts/check-switch-mode-docs.ts",
     "validate:links:external": "node scripts/check-external-links.ts",
     "validate:readme-link": "node scripts/check-readme-link.ts",
-    "validate": "pnpm lint && pnpm validate:build && pnpm validate:links:internal && pnpm validate:a11y && pnpm validate:managed-ignore-docs && pnpm validate:standalone-docs && pnpm validate:docs-domain && pnpm validate:readme-link"
+    "validate": "pnpm lint && pnpm validate:build && pnpm validate:links:internal && pnpm validate:a11y && pnpm validate:managed-ignore-docs && pnpm validate:standalone-docs && pnpm validate:switch-mode-docs && pnpm validate:docs-domain && pnpm validate:readme-link"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.1",

@@ -42,7 +42,7 @@ arashi shell install --json
 - The first release supports bash, zsh, and fish.
 - Restart your shell or source the updated startup file after `arashi shell install`.
 - If install cannot determine a writable startup file, Arashi tells you to use `arashi shell init <shell>` instead.
-- Shell integration is what makes `arashi switch --cd` and `defaults.switch.mode: "cd" | "auto"` work in the parent shell.
+- Shell integration enables explicit `arashi switch --cd`, configured `mode: "cd"`, and the parent-shell `cd` fallback for configured `mode: "auto"`. Auto considers this fallback only after no managed context is strictly detected.
 - `arashi shell init <shell>` normally writes shell wrapper code to stdout, so JSON mode returns a structured unsupported-mode error instead of mixing shell code with JSON.
 
 ## Agent Notes

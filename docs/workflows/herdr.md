@@ -40,7 +40,7 @@ On `create`, `--herdr` implies post-create launch, like `--sesh`. An explicit `-
 
 ## Configure Herdr As The Default
 
-Set `launchMode` to `herdr` for normal terminal create and switch flows:
+Keep `launchMode` for create, and set the unified switch mode to `herdr`:
 
 ```json
 {
@@ -50,8 +50,7 @@ Set `launchMode` to `herdr` for normal terminal create and switch flows:
       "launchMode": "herdr"
     },
     "switch": {
-      "mode": "launch",
-      "launchMode": "herdr"
+      "mode": "herdr"
     }
   }
 }
@@ -67,16 +66,15 @@ Editor-scoped create defaults under `defaults.editors.<host>.create` also accept
 
 With no explicit or configured launcher, Arashi automatically selects Herdr only when trimming `HERDR_ENV` produces the exact string `1`. Values such as an empty string, `0`, or `true` are not Herdr signals.
 
-Launcher resolution is:
+Switch resolution is:
 
-1. switch behavior (`--cd`, `--no-cd`, configured `mode`, and shell integration)
-2. one explicit launcher
-3. configured `launchMode`, unless its command-specific opt-out applies
-4. automatic tmux
-5. automatic Herdr
-6. cmux, integrated IDE, terminal app, and generic fallback behavior
+1. validate explicit launcher conflicts and `--cd` conflicts
+2. apply one explicit launcher or explicit `--cd`
+3. apply configured `mode: "sesh"`, `mode: "herdr"`, `mode: "cd"`, or `mode: "launch"`
+4. for configured `auto`, detect tmux, Herdr, cmux, or an integrated IDE before parent-shell `cd`
+5. continue to terminal-app and generic fallback when automatic launch has no managed context
 
-Therefore an explicit or configured Herdr mode overrides automatic environment detection. In automatic mode, a tmux session nested inside Herdr retains tmux behavior; otherwise Herdr precedes cmux, IDE, terminal-app, and generic fallbacks. Once Herdr is selected by any route, a Herdr failure does not silently open another launcher.
+Therefore an explicit or configured Herdr mode overrides automatic environment detection. `--no-cd` preserves configured Herdr, while `--no-default-launch` bypasses configured Herdr and returns to automatic launch. In automatic launch, a tmux session nested inside Herdr retains tmux behavior; otherwise Herdr precedes cmux, IDE, terminal-app, and generic fallbacks. Once Herdr is selected by any route, a Herdr failure does not silently open another launcher or fall back to `cd`.
 
 ## Verified v0.7.4 Contract
 

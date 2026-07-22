@@ -54,12 +54,15 @@ You can also enable post-create launch in `.arashi/config.json`:
 
 ## Precedence
 
-Arashi preserves its existing explicit launch and nested-session behavior:
+Set `defaults.switch.mode: "auto"` when you want strict managed-context detection to select cmux before parent-shell switching. Set `defaults.switch.mode: "cd"` when parent-shell switching should remain authoritative even inside cmux.
 
-1. Explicit `--sesh` or IDE launch flags such as `--vscode`, `--cursor`, and `--kiro` take precedence.
-2. An active tmux session nested inside cmux opens a tmux window.
-3. Otherwise, a cmux-managed terminal creates and focuses a cmux workspace.
-4. Standalone Ghostty and other detected terminal apps keep their existing launch behavior.
+Arashi preserves explicit launch, configured mode, and nested-session precedence:
+
+1. Explicit `--sesh`, `--herdr`, or IDE launch flags such as `--vscode`, `--cursor`, and `--kiro` take precedence.
+2. Configured `sesh`, `herdr`, and available `cd` modes take precedence over automatic context detection.
+3. An active tmux session nested inside cmux opens a tmux window during automatic launch.
+4. Otherwise, a cmux-managed terminal creates and focuses a cmux workspace before integrated IDE detection.
+5. Standalone Ghostty and other detected terminal apps keep their existing launch behavior.
 
 Arashi does not currently provide an explicit `--cmux` flag. Automatic detection is limited to managed cmux terminals; setting `CMUX_SOCKET_PATH` alone does not activate cmux launch behavior.
 

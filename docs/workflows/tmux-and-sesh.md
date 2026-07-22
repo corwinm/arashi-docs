@@ -18,9 +18,9 @@ arashi switch feature-auth
 arashi switch --cd feature-auth
 ```
 
-- `arashi switch` can open a new tmux window when Arashi detects a tmux session.
+- `arashi switch` can open a new tmux window during automatic launch when Arashi detects a tmux session.
 - `arashi switch --cd` is useful when you want to keep the current shell and jump directly into the worktree path.
-- Combine tmux with `defaults.switch.mode` when your team wants a consistent terminal flow.
+- Set `defaults.switch.mode: "auto"` to prefer an active tmux context before parent-shell `cd`, even when shell integration is active. There is no configured `tmux` mode; explicit tmux mode is tracked separately.
 
 ## sesh
 
@@ -31,7 +31,7 @@ arashi switch --sesh feature-auth
 ```
 
 - Good for teams that treat each worktree as a session-oriented workspace.
-- Works well with `defaults.create.launchMode` or `defaults.switch.launchMode` set to `"sesh"`.
+- `defaults.create.launchMode: "sesh"` remains available for post-create launch. For switching, set the unified `defaults.switch.mode: "sesh"`.
 - Pair with shortcut flows such as `sesh connect "$(arashi list | fzf)"` when you want faster session selection.
 
 ## Choosing Between Them
