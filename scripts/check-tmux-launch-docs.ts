@@ -74,6 +74,7 @@ const generatedRequirements: Requirement[] = [
       "`arashi create --tmux`",
       "per-invocation",
       "configured `auto`",
+      "Explicit `--tmux`, `--sesh`, or `--herdr` wins",
       "[tmux and sesh workflow Markdown](https://arashi.haphazard.dev/workflows/tmux-and-sesh.md)"
     ]
   },

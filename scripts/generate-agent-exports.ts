@@ -289,7 +289,7 @@ function renderLlmsTxt(): string {
 - Preserve explicit clone-local \`tracked\` or \`none\` preferences and never modify global Git configuration or a global excludes file to silence a warning.
 - Configure switching with one \`defaults.switch.mode\`: \`auto | cd | launch | sesh | herdr\`. An absent mode preserves automatic launch; configured \`auto\` prefers managed contexts before parent-shell \`cd\`.
 - Use \`arashi switch --tmux\` or \`arashi create --tmux\` for a per-invocation plain tmux override. Configured \`auto\` remains the persistent contextual choice inside tmux; \`tmux\` is not added to configuration vocabularies.
-- Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--sesh\` or \`--herdr\` wins, then \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
+- Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--tmux\`, \`--sesh\`, or \`--herdr\` wins, then \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
 - For persistent Herdr launch, use \`arashi switch --herdr\` or \`arashi create --herdr\`; Arashi owns Git worktree creation/removal, and Herdr only opens, focuses, and reuses the existing checkout.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
