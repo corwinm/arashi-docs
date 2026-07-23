@@ -22,8 +22,8 @@ arashi create feature-auth --tmux
 ```
 
 - Explicit tmux requires an active tmux client or session: Arashi requires a non-empty `TMUX` environment value after trimming.
-- `--tmux` is per-invocation-only. It is not a `defaults.switch.mode` or create `launchMode` value.
-- A configured `auto` mode already chooses plain tmux contextually when Arashi runs inside tmux. The configuration vocabularies remain `auto | cd | launch | sesh | herdr` for switch and `auto | sesh | herdr` for create.
+- `--tmux` is per-invocation-only. It is not a `defaults.switch.mode` or `defaults.create.launch` value.
+- A configured `auto` mode already chooses plain tmux contextually when Arashi runs inside tmux. The configuration vocabularies remain `auto | cd | launch | sesh | herdr` for switch and `none | auto | sesh | herdr` for create.
 - Explicit tmux wins over configured `cd`, `sesh`, or `herdr` behavior and over detected Herdr, cmux, or integrated IDE contexts.
 - Arashi passes the exact worktree path as one argv value to `tmux new-window -c`; spaces, quotes, and shell-significant characters are not interpolated by a shell.
 - If tmux context is missing or `tmux new-window` fails, Arashi does not fall back to another launcher.
@@ -63,7 +63,8 @@ arashi create feature-auth --sesh
 ```
 
 - `--tmux` opens a plain tmux window with `tmux new-window`; `--sesh` delegates to sesh's session-aware workflow.
-- `defaults.create.launchMode: "sesh"` remains available for post-create launch. For switching, set `defaults.switch.mode: "sesh"`.
+- Good for teams that treat each worktree as a session-oriented workspace.
+- Set `defaults.create.launch: "sesh"` for explicit post-create sesh launch. This bypasses automatic context detection; if sesh validation or execution fails, Arashi preserves created worktrees and does not fall back to another launcher. For switching, set the unified `defaults.switch.mode: "sesh"`.
 - Pair with shortcut flows such as `sesh connect "$(arashi list | fzf)"` when you want faster session selection.
 
 ## Standalone Repositories

@@ -7,6 +7,5 @@
   "legacyFields": [
     "defaults.switch.launchMode",
     "defaults.switch.launch_mode"
-  ],
-  "createDefaultsUnchanged": true
+  ]
 }

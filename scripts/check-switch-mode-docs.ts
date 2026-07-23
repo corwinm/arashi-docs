@@ -27,7 +27,7 @@ const sourceRequirements = new Map<string, string[]>([
       "`cd` + `sesh` / `herdr`",
       "Unsupported values are rejected",
       "reject",
-      "defaults.create.launchMode",
+      "defaults.create.launch",
       "defaults.editors.<host>.create"
     ]
   ],
@@ -127,8 +127,7 @@ function checkStructuredContract(): void {
       legacyFields: [
         "defaults.switch.launchMode",
         "defaults.switch.launch_mode"
-      ],
-      createDefaultsUnchanged: true
+      ]
     };
     if (JSON.stringify(contract) !== JSON.stringify(expected)) {
       errors.push("contracts/switch-config.json does not match the documented unified-mode contract");
