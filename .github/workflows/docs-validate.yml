@@ -74,6 +74,9 @@ jobs:
       - name: Check switch-mode documentation contract
         run: pnpm validate:switch-mode-docs
 
+      - name: Check explicit tmux launch documentation contract
+        run: pnpm validate:tmux-launch-docs
+
       - name: Enforce canonical docs domain policy
         run: pnpm validate:docs-domain
 
