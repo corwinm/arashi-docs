@@ -288,7 +288,8 @@ function renderLlmsTxt(): string {
 - Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
 - Preserve explicit clone-local \`tracked\` or \`none\` preferences and never modify global Git configuration or a global excludes file to silence a warning.
 - Configure switching with one \`defaults.switch.mode\`: \`auto | cd | launch | sesh | herdr\`. An absent mode preserves automatic launch; configured \`auto\` prefers managed contexts before parent-shell \`cd\`.
-- Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--sesh\` or \`--herdr\` wins, then \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
+- Use \`arashi switch --tmux\` or \`arashi create --tmux\` for a per-invocation plain tmux override. Configured \`auto\` remains the persistent contextual choice inside tmux; \`tmux\` is not added to configuration vocabularies.
+- Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--tmux\`, \`--sesh\`, or \`--herdr\` wins, then \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
 - For persistent Herdr launch, use \`arashi switch --herdr\` or \`arashi create --herdr\`; Arashi owns Git worktree creation/removal, and Herdr only opens, focuses, and reuses the existing checkout.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
@@ -299,6 +300,7 @@ function renderLlmsTxt(): string {
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
 - [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
 - [Herdr workflow](${site}/workflows/herdr/) - explicit, configured, and automatic workspace launch, reuse, ownership, and troubleshooting.
+- [tmux and sesh workflow](${site}/workflows/tmux-and-sesh/) - explicit plain tmux launch, contextual auto behavior, and sesh integration.
 - [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
 - [Standalone workflow](${site}/workflows/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
 - [Commands](${site}/commands/) - command reference.
@@ -314,6 +316,7 @@ function renderLlmsTxt(): string {
 - [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Configuration workflow Markdown](${site}/workflows/config.md)
 - [Herdr workflow Markdown](${site}/workflows/herdr.md)
+- [tmux and sesh workflow Markdown](${site}/workflows/tmux-and-sesh.md)
 - [Switch command Markdown](${site}/commands/switch.md)
 - [Create command Markdown](${site}/commands/create.md)
 - [Exec command Markdown](${site}/commands/exec.md)

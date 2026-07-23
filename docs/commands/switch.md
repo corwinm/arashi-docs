@@ -29,6 +29,7 @@ arashi switch [filter] [options]
 - `--cd` request parent-shell directory switching for one invocation.
 - `--no-cd` force launch behavior for one invocation.
 - `--path` treat the argument as an exact worktree path instead of a fuzzy filter.
+- `--tmux` open the selected worktree in a new plain tmux window for this invocation.
 - `--sesh` run sesh mode in tmux (requires active tmux session and `sesh`).
 - `--herdr` open or focus the selected existing worktree in a running Herdr session.
 - `--vscode`, `--cursor`, `--kiro` explicitly open the selected worktree in that IDE for one invocation.
@@ -59,6 +60,9 @@ arashi switch --cd feature-auth
 # Use sesh/tmux switching mode
 arashi switch --sesh
 
+# Force a new plain tmux window instead of another configured or detected launcher
+arashi switch --tmux feature-auth
+
 # Open or focus the selected worktree in Herdr
 arashi switch --herdr feature-auth
 
@@ -79,12 +83,16 @@ arashi switch feature-auth --json
   - exact repo match wins
   - otherwise a unique partial repo match is selected
 - If `--repos` has no repo matches, Arashi prints available child repositories.
-- Configure one default under `defaults.switch.mode`. The complete mode vocabulary is `auto | cd | launch | sesh | herdr`.
+- Configure one default under `defaults.switch.mode`. The complete mode vocabulary is `auto | cd | launch | sesh | herdr`; `tmux` is deliberately not a configured value. `--tmux` is a per-invocation-only override, while configured `auto` chooses plain tmux contextually inside an active tmux session.
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
 - `launch` always uses automatic launcher selection without preferring parent-shell switching. `sesh` and `herdr` always select that launcher, even when shell integration or another managed context is active.
 - An absent mode preserves automatic launch and does not newly prefer parent-shell `cd` in configured or standalone repositories.
 - Configured `auto` uses this order: tmux → Herdr → cmux → integrated IDE → parent-shell `cd` → terminal/platform fallback. Parent-shell switching is considered only when no managed context is strictly detected; it requires shell integration.
-- Explicit launcher flags take precedence over configuration and environment detection. Passing more than one explicit launcher fails, and `--cd` conflicts with every explicit launcher: `--sesh`, `--herdr`, `--vscode`, `--cursor`, or `--kiro`.
+- Explicit launcher flags take precedence over configuration and environment detection. `--tmux` therefore overrides configured `cd`, `sesh`, or `herdr` behavior and detected Herdr, cmux, or IDE contexts. `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`; Arashi reports the complete set instead of choosing by flag order.
+- `--tmux` requires a non-empty `TMUX` value after trimming. Run the command from an active tmux client/session or choose another launcher. If the prerequisite is missing or `tmux new-window` fails, explicit tmux does not fall back to sesh, Herdr, cmux, an IDE, parent-shell `cd`, or a platform terminal.
+- `--tmux` + `--no-cd` is compatible launch intent. `--tmux` + `--no-default-launch` remains explicit and authoritative, bypassing any configured named launcher rather than disabling tmux.
+- Arashi invokes `tmux new-window -c <worktree-path>` without a shell; even paths containing spaces, quotes, or shell-significant characters remain the exact single argument after `tmux new-window -c`.
+- Explicit tmux has the same behavior in a zero-config standalone repository: Arashi discovers the standalone target and opens it without creating or persisting Arashi configuration. Configured-only `--repos` and `--all` restrictions are unchanged.
 - `--no-cd` forces launch behavior but preserves configured `sesh` or `herdr`. `--no-default-launch` bypasses only configured `sesh` or `herdr`; it does not erase configured `auto`, `cd`, or `launch` behavior.
 - Explicit `--cd` warns and does not launch if parent-shell switching is unavailable. Configured `cd` warns and falls back to automatic launch in that situation.
 - Automatic Herdr detection requires `HERDR_ENV` to trim to the exact string `1`. Similar values such as `0` or `true` do not select Herdr, and automatic tmux keeps precedence when both environments are active.
@@ -99,7 +107,7 @@ arashi switch feature-auth --json
 - If `--cd` cannot act on the parent shell because the wrapper is inactive, Arashi warns and skips launch fallback for that invocation.
 - When automatic launch reaches an integrated IDE and its optional CLI is unavailable, Arashi continues to terminal/platform fallback without returning to `cd`. A selected tmux, Herdr, or cmux failure—or an available IDE CLI that fails—remains an actionable launch failure and does not try another launcher or `cd`.
 - The VS Code extension passes the matching IDE flag automatically and uses exact-path switching for selected worktrees so duplicate branch names do not cause ambiguous matches.
-- JSON mode does not launch editors, terminals, tmux, sesh, or parent-shell `cd` behavior unless the command can return a safe non-mutating plan. Unsupported launch modes return a structured `JSON_UNSUPPORTED_FOR_MODE` error.
+- JSON mode does not launch editors, terminals, tmux, sesh, or parent-shell `cd` behavior unless the command can return a safe non-mutating plan. `switch --json --tmux` returns exactly one JSON document with `JSON_UNSUPPORTED_FOR_MODE` and the existing `launch` mode label before launcher-conflict or tmux-context validation, including when `TMUX` is blank. It does not switch or invoke tmux.
 
 ## Related Commands
 
