@@ -74,6 +74,9 @@ jobs:
       - name: Check switch-mode documentation contract
         run: pnpm validate:switch-mode-docs
 
+      - name: Check create-launch documentation contract
+        run: pnpm validate:create-launch-docs
+
       - name: Enforce canonical docs domain policy
         run: pnpm validate:docs-domain
 

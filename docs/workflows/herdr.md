@@ -40,14 +40,13 @@ On `create`, `--herdr` implies post-create launch, like `--sesh`. An explicit `-
 
 ## Configure Herdr As The Default
 
-Keep `launchMode` for create, and set the unified switch mode to `herdr`:
+Set the single create launch choice and the unified switch mode to `herdr`:
 
 ```json
 {
   "defaults": {
     "create": {
-      "launch": true,
-      "launchMode": "herdr"
+      "launch": "herdr"
     },
     "switch": {
       "mode": "herdr"
@@ -56,7 +55,7 @@ Keep `launchMode` for create, and set the unified switch mode to `herdr`:
 }
 ```
 
-Editor-scoped create defaults under `defaults.editors.<host>.create` also accept `launchMode: "herdr"`. Configured Herdr works outside a Herdr-managed pane as long as the CLI can reach the running default session.
+Editor-scoped create defaults under `defaults.editors.<host>.create` use the same `launch: "herdr"` choice for `vscode`, `cursor`, and `kiro`. An editor-hosted invocation reads only its matching host scope and does not inherit generic or another host's create defaults. Configured Herdr works outside a Herdr-managed pane as long as the CLI can reach the running default session.
 
 - `arashi switch --no-default-launch ...` bypasses configured Herdr for that invocation and returns to automatic launch resolution.
 - `arashi switch --no-cd ...` forces launch behavior when the configured switch mode would otherwise change the parent shell directory.

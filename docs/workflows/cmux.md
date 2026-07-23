@@ -46,7 +46,7 @@ You can also enable post-create launch in `.arashi/config.json`:
   "defaults": {
     "create": {
       "switch": true,
-      "launch": true
+      "launch": "auto"
     }
   }
 }

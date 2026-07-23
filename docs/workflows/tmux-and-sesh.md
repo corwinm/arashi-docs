@@ -31,7 +31,7 @@ arashi switch --sesh feature-auth
 ```
 
 - Good for teams that treat each worktree as a session-oriented workspace.
-- `defaults.create.launchMode: "sesh"` remains available for post-create launch. For switching, set the unified `defaults.switch.mode: "sesh"`.
+- Set `defaults.create.launch: "sesh"` for explicit post-create sesh launch. This bypasses automatic context detection; if sesh validation or execution fails, Arashi preserves created worktrees and does not fall back to another launcher. For switching, set the unified `defaults.switch.mode: "sesh"`.
 - Pair with shortcut flows such as `sesh connect "$(arashi list | fzf)"` when you want faster session selection.
 
 ## Choosing Between Them
