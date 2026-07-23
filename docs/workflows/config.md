@@ -38,8 +38,7 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
   "defaults": {
     "create": {
       "switch": true,
-      "launch": true,
-      "launchMode": "herdr"
+      "launch": "herdr"
     },
     "switch": {
       "mode": "herdr"
@@ -48,17 +47,35 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 }
 ```
 
-- `defaults.create.switch` controls whether Arashi switches into the new worktree after `create`.
-- `defaults.create.launch` and `defaults.create.launchMode` control how create opens the new context.
+- `defaults.create.launch` is one post-create choice: `none | auto | sesh | herdr`.
+- `defaults.create.switch` remains an independent boolean. A launch choice other than `none` still selects the newly created primary worktree, so launch implies switch even when `switch` is `false`. Setting `launch` to `none` does not disable an independently enabled switch.
+- An absent `defaults.create.launch` preserves built-in no-launch behavior.
 - `defaults.switch.mode` is the single switch default. Its complete vocabulary is `auto | cd | launch | sesh | herdr`.
 - `auto` prefers strictly detected managed contexts in the order tmux, Herdr, cmux, and integrated IDE; only then does it use parent-shell `cd`, followed by terminal/platform launch fallback.
 - `cd` prefers parent-shell switching, `launch` always uses automatic launcher selection, and `sesh` or `herdr` always selects that launcher.
 - An absent `defaults.switch.mode` preserves automatic launch without preferring parent-shell `cd`.
-- Create defaults are unchanged: `defaults.create.launchMode` and `defaults.editors.<host>.create` launch settings remain independent from switch mode.
+- Terminal create reads only `defaults.create`. Editor-hosted create reads only its matching `defaults.editors.<host>.create` scope for `vscode`, `cursor`, or `kiro`; it does not fall back to generic defaults or another editor when that host scope is absent.
 
 Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --no-default-launch` bypasses configured `sesh` or `herdr` for one run; `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
 
 Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
+
+## Legacy create launch migration
+
+The canonical schema and new examples use the single string `launch` field. During a bounded compatibility window, Arashi still reads a legacy boolean `launch` with create-specific `launchMode` or `launch_mode` at generic and editor-hosted create scopes.
+
+| Legacy `launch` | Legacy launcher | Canonical `launch` |
+| --- | --- | --- |
+| absent | absent | absent (built-in `none`) |
+| absent | `auto` / `sesh` / `herdr` | matching mode |
+| `true` | absent / `auto` | `auto` |
+| `true` | `sesh` / `herdr` | matching explicit mode |
+| `false` | absent | `none` |
+| `false` | `auto` / `sesh` / `herdr` | reject as ambiguous |
+
+Canonical `auto` plus legacy `auto` is accepted, as is canonical `sesh` or `herdr` plus legacy `auto` or the same explicit launcher. Canonical `none` plus any legacy launcher, canonical `auto` plus an explicit legacy launcher, and opposite explicit launchers are rejected. Equal `launchMode` and `launch_mode` aliases collapse to one value; different aliases are rejected before mapping. Invalid launch values and non-boolean `switch` values are also rejected.
+
+Accepted legacy input emits exactly one scope-qualified migration warning with the exact replacement for each affected scope. Warnings go to stderr, including during JSON commands, so stdout remains one structured document. Normalization is in memory: the configuration file remains byte-for-byte unchanged. Rejected combinations fail before repository discovery, worktree creation, hooks, launch, or other workspace mutation and explain whether to choose canonical `launch: "none"` or the matching enabled mode.
 
 ## Legacy switch mode migration
 

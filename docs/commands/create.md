@@ -88,17 +88,17 @@ arashi create feature-auth-refresh --move-changes
 - `--group` targets configured semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`.
 - When combined with `--only`, `--group` narrows the explicit repository list by intersection. Empty intersections fail before creating worktrees.
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`arashi clone`](/commands/clone/) from inside that worktree.
-- Configure defaults in `.arashi/config.json` under `defaults.create` (`switch`, `launch`, `launchMode`).
-- `launchMode: "herdr"` is valid for generic create defaults and editor-scoped create defaults. It works outside a Herdr pane when the CLI can reach the running default session.
-- Explicit `--herdr` implies launch and takes precedence over `--no-launch`, matching explicit `--sesh`. Combining `--herdr` with `--sesh` is rejected before worktree creation; without explicit `--herdr`, `--no-launch` suppresses configured Herdr.
+- Configure one post-create choice in `.arashi/config.json` at `defaults.create.launch`: `none | auto | sesh | herdr`. The independent `switch` boolean can still select the new primary worktree without launching; every launch mode except `none` selects it too, so launch implies switch.
+- Launch precedence is deliberate. Combining `--sesh` and `--herdr` fails before repository discovery or worktree creation. Otherwise `--sesh` or `--herdr` selects that explicit launcher even beside `--launch` or `--no-launch`; `--launch` selects `auto`; `--no-launch` selects `none`; then configured launch applies; an absent choice is built-in `none`.
+- Terminal and editor-hosted defaults are isolated. See the [Config workflow](/workflows/config/) for matching-host scope and legacy migration rules.
 - `create --launch` automatically selects Herdr only when `HERDR_ENV` trims to exactly `1` and no explicit or configured launcher wins. Automatic tmux keeps precedence over automatic Herdr.
 - Herdr v0.7.4 requires a reachable default session/socket and a non-bare main checkout for the primary repository. It opens the already-created target, reuses an existing workspace, and applies the `<repo-name>: <branch-name>` label.
-- If Herdr is missing, cannot reach its socket, returns an error or invalid response, or cannot use a bare-only source, Arashi reports `LAUNCH_FAILED`, preserves all successfully created worktrees, and does not try another launcher or roll back Git creation.
+- If Herdr is missing, cannot reach its socket, returns an error or invalid response, or cannot use a bare-only source, Arashi reports `LAUNCH_FAILED`, preserves every successfully created worktree, and does not try another launcher or roll back Git creation.
 - When post-create launch runs inside a cmux-managed terminal, Arashi creates and focuses a cmux workspace rooted at the new primary worktree. This requires cmux v0.64.18 or newer and local socket access.
 - If cmux launch fails after worktree creation, the created worktrees remain available and Arashi reports the launch failure without falling back to standalone Ghostty.
 - An active tmux session nested inside cmux keeps the existing tmux/sesh launch behavior.
-- Precedence for launch/switch behavior is: explicit flag > opt-out flag > config default > built-in default.
-- JSON mode is intended for non-interactive automation. `--json --herdr` is rejected before worktree creation, like other launch modes that cannot safely mix interactive launch output with JSON.
+- Switch flags and defaults resolve independently from launch, but requested launch cannot be suppressed by `--no-switch`.
+- JSON mode is intended for non-interactive automation. Explicit or configured launch resolving to `auto`, `sesh`, or `herdr` returns one structured unsupported-mode error before worktree creation; resolved `none` may continue. Legacy migration warnings remain on stderr rather than contaminating JSON stdout.
 - JSON results include structured managed ignore details and final changed/restored state without mixing human reconciliation output into stdout.
 - When the source workspace has uncommitted changes, create output includes guidance for moving compatible changes with [`arashi move`](/commands/move/). In JSON mode, that guidance is returned as structured data instead of human text.
 
