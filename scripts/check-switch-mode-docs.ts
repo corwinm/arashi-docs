@@ -13,7 +13,7 @@ const sourceRequirements = new Map<string, string[]>([
       "An absent mode preserves automatic launch",
       "--no-cd",
       "--no-default-launch",
-      "--sesh`, `--herdr`, `--vscode`, `--cursor`, or `--kiro"
+      "`--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`"
     ]
   ],
   [
