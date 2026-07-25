@@ -10,9 +10,8 @@ const sourceRequirements = new Map<string, string[]>([
       "--ignore-scope none",
       "--zero-config",
       "In non-bare repositories, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status",
-      "Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.",
-      "An explicit `--worktrees-dir` takes precedence",
-      "persisted as `worktreesDir` in `.arashi/config.json`"
+      "Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository.",
+      "[init command reference](/commands/init/)"
     ]
   ],
   [
@@ -28,6 +27,8 @@ const sourceRequirements = new Map<string, string[]>([
       "Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.",
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
+      "Existing configurations are not migrated automatically",
+      "`.arashi/worktrees` remains its compatibility fallback",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files",
@@ -60,9 +61,8 @@ const generatedRequirements = new Map<string, string[]>([
     [
       ".git/info/exclude",
       "--ignore-scope tracked",
-      "Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.",
-      "An explicit `--worktrees-dir` takes precedence",
-      "persisted as `worktreesDir` in `.arashi/config.json`"
+      "Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository.",
+      "[init command reference](/commands/init/)"
     ]
   ],
   ["public/workflows/config.md", ["arashi.ignoreScope", "core.excludesFile"]],
@@ -74,6 +74,8 @@ const generatedRequirements = new Map<string, string[]>([
       "Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.",
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
+      "Existing configurations are not migrated automatically",
+      "`.arashi/worktrees` remains its compatibility fallback",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files",
@@ -99,6 +101,8 @@ const generatedRequirements = new Map<string, string[]>([
       "Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.",
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
+      "Existing configurations are not migrated automatically",
+      "`.arashi/worktrees` remains its compatibility fallback",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files"

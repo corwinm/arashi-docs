@@ -131,7 +131,7 @@ arashi init
 
 Run `arashi init` from the repository root you want Arashi to manage.
 
-Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`. An explicit `--worktrees-dir` takes precedence in either repository type. For new or forced initialization, the normalized selection is persisted as `worktreesDir` in `.arashi/config.json`, so later commands use the configured base rather than re-inferring it. Existing configurations are not migrated, and older configurations without this field continue to use `.arashi/worktrees`.
+Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository. See the [init command reference](/commands/init/) for exact directory selection, custom-path, persistence, and compatibility behavior.
 
 Git's effective ignore state wins. If a tracked `.gitignore`, repository-local exclude, or existing global excludes file already ignores a managed path, Arashi preserves that rule and does not add a duplicate. Arashi may read an effective global rule, but it never creates or modifies `core.excludesFile` or other global Git configuration.
 
