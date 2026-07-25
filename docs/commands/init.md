@@ -27,7 +27,7 @@ arashi init [options]
 ## Key Options
 
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
-- `--worktrees-dir <path>` set a custom worktree base directory (default `.arashi/worktrees`).
+- `--worktrees-dir <path>` set a custom worktree base directory (when omitted, bare repositories use `..` and non-bare repositories use `.arashi/worktrees`).
 - `--ignore-scope <local|tracked|none>` choose repository-local rules, tracked rules, or no ignore-file writes.
 - `--force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.
@@ -83,12 +83,16 @@ arashi init --zero-config --dry-run --json
 - If `init` is run outside a Git repository without an interactive terminal, it exits with guidance instead of prompting.
 - JSON mode does not prompt; provide explicit options when running initialization from automation.
 - `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
-- `init` sets `worktreesDir` to `.arashi/worktrees` by default.
+- Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.
+- An explicit `--worktrees-dir` takes precedence in either repository type. New and forced initialization normalizes the selected value, which is persisted as `worktreesDir` in `.arashi/config.json`; later commands use that configured value instead of re-inferring the repository type.
+- Existing configurations are not migrated automatically. If an older config omits `worktreesDir`, `.arashi/worktrees` remains its compatibility fallback; preference-only init reports that configured value or fallback without rewriting the config.
 - `local` is the default ignore scope. Missing safe `reposDir` and `worktreesDir` rules are written to the common repository's exclude file resolved through Git, normally `.git/info/exclude`; tracked `.gitignore` is unchanged.
 - `tracked` writes missing safe rules to the workspace-root `.gitignore`. `none` does not write tracked, local, or global ignore files and warns when a safe path remains unignored.
 - Explicit `tracked` and `none` choices are stored as `arashi.ignoreScope` in clone-local Git configuration, not shared `.arashi/config.json`. Selecting `local` removes the stored non-default preference.
 - On an existing valid workspace, supplying only `--ignore-scope` updates the preference and reconciles current paths without requiring `--force` or recreating config, hooks, or repositories. A forced init with no explicit scope preserves a valid stored preference.
-- Before writing, Arashi asks Git for each path's effective ignore rule. Existing tracked, repository-local, nested, or global rules are preserved without duplication regardless of the selected scope.
+- Bare configured init treats the parent default `..` as external and unsafe, and treats administrative subdirectories beneath the bare Git directory, such as `reposDir`, as non-applicable to working-tree ignore rules. It does not run `git check-ignore` or write ignore files for these paths, even when a linked worktree exists.
+- For bare configured init, `local` reports local scope and the unsafe or non-applicable classifications without changing the common exclude file. `tracked` may preserve the clone-local scope preference but does not create or edit `.gitignore` or require a linked or temporary worktree. `none` reports classifications without ignore-file changes. The same policy applies to linked, committed-without-linked-worktree, and unborn bare repositories.
+- For non-bare configured init, Arashi asks Git for each path's effective ignore rule before writing. Existing tracked, repository-local, nested, or global rules are preserved without duplication regardless of the selected scope.
 - Arashi never creates or modifies `core.excludesFile` or other global Git configuration.
 - Only normalized repository-relative subdirectories are safe to write. Repository root (`.`/`./`), absolute paths, and parent traversal (`../` variants) are reported and skipped.
 - Reconciliation updates only Arashi-owned ignore blocks and removes stale owned entries in the active writable scope. User-authored rules remain untouched; `none` freezes existing ignore content.

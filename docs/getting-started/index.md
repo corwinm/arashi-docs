@@ -118,7 +118,7 @@ arashi init
 
 When prompted for the repository target, enter `.` to initialize the current directory.
 
-By default, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status with repository-local rules in the common repository's `.git/info/exclude`. This protects generated workspace directories without changing the tracked `.gitignore` that your team shares.
+In non-bare repositories, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status by default with repository-local rules in the common repository's `.git/info/exclude`. This protects generated workspace directories without changing the tracked `.gitignore` that your team shares. Bare configured init instead reports paths relative to the bare Git directory as unsafe or non-applicable and does not inspect or write worktree ignore files.
 
 ### 2. Add Arashi to an existing meta-repo
 
@@ -130,6 +130,8 @@ arashi init
 ```
 
 Run `arashi init` from the repository root you want Arashi to manage.
+
+Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`. An explicit `--worktrees-dir` takes precedence in either repository type. For new or forced initialization, the normalized selection is persisted as `worktreesDir` in `.arashi/config.json`, so later commands use the configured base rather than re-inferring it. Existing configurations are not migrated, and older configurations without this field continue to use `.arashi/worktrees`.
 
 Git's effective ignore state wins. If a tracked `.gitignore`, repository-local exclude, or existing global excludes file already ignores a managed path, Arashi preserves that rule and does not add a duplicate. Arashi may read an effective global rule, but it never creates or modifies `core.excludesFile` or other global Git configuration.
 
@@ -157,7 +159,7 @@ arashi switch feature-docs-bootstrap
 arashi status
 ```
 
-By default, new managed worktrees are created under `.arashi/worktrees`.
+New managed worktrees are created under the persisted `worktreesDir`: `.arashi/worktrees` for the non-bare omitted default or the parent of a bare repository for its `..` omitted default.
 Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `arashi shell install` if you want `arashi switch` to support parent-shell `cd` behavior.
 
 The next configured lifecycle command reconciles missing safe ignore rules before it materializes repositories or worktrees. Run `arashi doctor` for a non-mutating check of missing, stale, invalid, or unsafe managed ignore state.
