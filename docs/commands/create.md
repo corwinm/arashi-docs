@@ -109,6 +109,7 @@ arashi create feature-auth-refresh --move-changes
 - When post-create launch runs inside a cmux-managed terminal, Arashi creates and focuses a cmux workspace rooted at the new primary worktree. This requires cmux v0.64.18 or newer and local socket access.
 - If cmux launch fails after worktree creation, the created worktrees remain available and Arashi reports the launch failure without falling back to standalone Ghostty.
 - An active tmux session nested inside cmux keeps the existing tmux/sesh launch behavior.
+- In an automatically detected Kitty 0.43+ context, post-create launch uses the same managed Kitty reuse-or-launch flow as `arashi switch`. If remote control, focus, launch, or validation fails after creation, the created worktrees remain available and Arashi reports `LAUNCH_FAILED` without another launcher or Git rollback. See the [Kitty workflow guide](/workflows/kitty/) for setup and ownership boundaries.
 - JSON mode is intended for non-interactive automation. `create --json --tmux` returns exactly one JSON document with `JSON_UNSUPPORTED_FOR_MODE` and the existing `interactive-or-launch` mode label before worktree creation, hooks, launcher-conflict checks, or tmux-context validation. The same rejection wins for `--json --tmux --sesh` and blank `TMUX` input.
 - Switch flags and defaults resolve independently from launch, but requested launch cannot be suppressed by `--no-switch`.
 - Other explicit or configured launch resolving to `auto`, `sesh`, or `herdr` likewise returns one structured unsupported-mode error before worktree creation; resolved `none` may continue. Legacy migration warnings remain on stderr rather than contaminating JSON stdout.
@@ -131,3 +132,4 @@ arashi create feature-auth-refresh --move-changes
 - [Config workflow](/workflows/config/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
+- [Kitty workflow guide](/workflows/kitty/)

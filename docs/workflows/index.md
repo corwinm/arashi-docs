@@ -18,6 +18,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [Herdr](/workflows/herdr/) for persistent workspace focus/reuse while Arashi retains Git worktree ownership.
 - [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
+- [Kitty](/workflows/kitty/) for automatic exact worktree-window reuse and live Kitty session ownership.
 - [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
 - [Standalone Repository](/workflows/standalone/) for ad hoc use in a project that has not adopted Arashi configuration.
 
@@ -26,7 +27,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 1. Confirm the repository-local managed ignore default or deliberately select `tracked` or `none` for this clone.
 2. Configure `defaults.create` and `defaults.switch` so worktree creation and switching match your preferred launch behavior.
 3. Add lifecycle hooks if you need setup or cleanup automation around `create` and `remove`.
-4. Choose how you want to open worktrees: VS Code, Herdr workspace reuse, automatic cmux workspaces, terminal-native tmux flows, or `sesh`-driven session switching.
+4. Choose how you want to open worktrees: VS Code, Herdr workspace reuse, automatic cmux or Kitty contexts, terminal-native tmux flows, or `sesh`-driven session switching.
 5. If you work with agents, keep code changes in the affected project repo and shared context in the meta-repo.
 
 ## Related Commands

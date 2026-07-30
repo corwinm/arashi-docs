@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const modeVocabulary = "auto | cd | launch | sesh | herdr";
-const autoOrder = "tmux → Herdr → cmux → integrated IDE → parent-shell `cd` → terminal/platform fallback";
+const autoOrder = "tmux → Herdr → cmux → integrated IDE → Kitty → parent-shell `cd` → terminal/platform fallback";
 
 const sourceRequirements = new Map<string, string[]>([
   [
@@ -123,7 +123,7 @@ function checkStructuredContract(): void {
       canonicalField: "defaults.switch.mode",
       modes: ["auto", "cd", "launch", "sesh", "herdr"],
       absentMode: "launch",
-      autoOrder: ["tmux", "herdr", "cmux", "ide", "cd", "platform"],
+      autoOrder: ["tmux", "herdr", "cmux", "ide", "kitty", "cd", "platform"],
       legacyFields: [
         "defaults.switch.launchMode",
         "defaults.switch.launch_mode"

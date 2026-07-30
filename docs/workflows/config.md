@@ -51,7 +51,8 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 - `defaults.create.switch` remains an independent boolean. A launch choice other than `none` still selects the newly created primary worktree, so launch implies switch even when `switch` is `false`. Setting `launch` to `none` does not disable an independently enabled switch.
 - An absent `defaults.create.launch` preserves built-in no-launch behavior.
 - `defaults.switch.mode` is the single switch default. Its complete vocabulary is `auto | cd | launch | sesh | herdr`.
-- `auto` prefers strictly detected managed contexts in the order tmux, Herdr, cmux, and integrated IDE; only then does it use parent-shell `cd`, followed by terminal/platform launch fallback.
+- `auto` prefers strictly detected managed contexts in the order tmux, Herdr, cmux, integrated IDE, and Kitty; only then does it use parent-shell `cd`, followed by terminal/platform launch fallback.
+- Kitty remains auto-detected only and does not add a `kitty` value to either persistent mode vocabulary. See the [Kitty workflow guide](/workflows/kitty/) for version, remote-control, reuse, and live-session ownership details.
 - `cd` prefers parent-shell switching, `launch` always uses automatic launcher selection, and `sesh` or `herdr` always selects that launcher.
 - An absent `defaults.switch.mode` preserves automatic launch without preferring parent-shell `cd`.
 - Terminal create reads only `defaults.create`. Editor-hosted create reads only its matching `defaults.editors.<host>.create` scope for `vscode`, `cursor`, or `kiro`; it does not fall back to generic defaults or another editor when that host scope is absent.
