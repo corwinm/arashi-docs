@@ -41,6 +41,10 @@ When automatic launch is active, managed Kitty runs after integrated IDE detecti
 
 Arashi derives an exact Arashi worktree identity from the canonical worktree path and keeps it separate from the readable `<repo-name>: <branch-name>` label. On the first switch, Arashi creates and validates a session-backed tab at the exact worktree path. On later switches, it finds the exact marked window, focuses and validates it, and does not open a duplicate during ordinary reuse. Readable title or session-label drift does not change the stable exact identity.
 
+### Concurrent launch safety
+
+Arashi serializes reuse-or-launch decisions for each worktree with a cross-process identity lock. A contender waits for up to 10 seconds. It never steals from a live owner, can recover a lock from a dead owner, and recovers malformed owner metadata only after it is at least 30 seconds old. Release is ownership-safe: a process removes only the lock instance it created.
+
 ## Post-create Launch
 
 Automatic post-create launch uses the same managed Kitty behavior:
@@ -74,6 +78,10 @@ After Kitty is selected, permission, socket, malformed-response, focus, launch, 
 ### More than one exact window is reported
 
 Arashi fails closed rather than choosing or closing one automatically. Inspect your live Kitty windows, close stale duplicates manually, and retry. Removing the Git worktree does not resolve or close Kitty windows for you.
+
+### The identity lock cannot be acquired
+
+Another Arashi process may still be selecting or launching the same worktree. Wait for that process to finish and retry. If the 10-second wait returns `LAUNCH_FAILED`, check for a live owner before removing anything manually. Arashi recovers a dead owner automatically and waits 30 seconds before recovering malformed metadata; ownership-safe release prevents one process from deleting another process's lock.
 
 ## Related References
 

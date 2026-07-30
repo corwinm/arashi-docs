@@ -18,7 +18,13 @@ const kittyWorkflowRequirements = [
   "does not add Kitty to persistent Arashi launch configuration",
   "`LAUNCH_FAILED`",
   "does not fall back",
-  "created worktrees remain available"
+  "created worktrees remain available",
+  "cross-process identity lock",
+  "10 seconds",
+  "live owner",
+  "dead owner",
+  "30 seconds",
+  "ownership-safe release"
 ];
 
 const requirements = new Map<string, string[]>([
