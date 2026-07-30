@@ -14,7 +14,7 @@ Move into the right worktree quickly without manually changing directories.
 
 - Selects an existing worktree and opens a new terminal context there.
 - Supports parent-only, child-repo-only, or combined worktree scopes.
-- Uses terminal-aware launch behavior (tmux, Herdr, cmux, VS Code, Cursor, Kiro, and common terminal apps).
+- Uses terminal-aware launch behavior (tmux, Herdr, cmux, VS Code, Cursor, Kiro, managed Kitty, and common terminal apps).
 
 ## Usage
 
@@ -87,7 +87,7 @@ arashi switch feature-auth --json
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
 - `launch` always uses automatic launcher selection without preferring parent-shell switching. `sesh` and `herdr` always select that launcher, even when shell integration or another managed context is active.
 - An absent mode preserves automatic launch and does not newly prefer parent-shell `cd` in configured or standalone repositories.
-- Configured `auto` uses this order: tmux → Herdr → cmux → integrated IDE → parent-shell `cd` → terminal/platform fallback. Parent-shell switching is considered only when no managed context is strictly detected; it requires shell integration.
+- Configured `auto` uses this order: tmux → Herdr → cmux → integrated IDE → Kitty → parent-shell `cd` → terminal/platform fallback. Parent-shell switching is considered only when no managed context is strictly detected; it requires shell integration.
 - Explicit launcher flags take precedence over configuration and environment detection. `--tmux` therefore overrides configured `cd`, `sesh`, or `herdr` behavior and detected Herdr, cmux, or IDE contexts. `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`; Arashi reports the complete set instead of choosing by flag order.
 - `--tmux` requires a non-empty `TMUX` value after trimming. Run the command from an active tmux client/session or choose another launcher. If the prerequisite is missing or `tmux new-window` fails, explicit tmux does not fall back to sesh, Herdr, cmux, an IDE, parent-shell `cd`, or a platform terminal.
 - `--tmux` + `--no-cd` is compatible launch intent. `--tmux` + `--no-default-launch` remains explicit and authoritative, bypassing any configured named launcher rather than disabling tmux.
@@ -103,6 +103,7 @@ arashi switch feature-auth --json
 - In a cmux-managed terminal, automatic launch creates and focuses a new cmux workspace at the exact selected worktree. Arashi detects cmux from `CMUX_WORKSPACE_ID` or `CMUX_SURFACE_ID`, not from Ghostty's shared `TERM_PROGRAM` value.
 - cmux launch requires cmux v0.64.18 or newer and local CLI socket access. If the CLI/socket is unavailable or its structured response cannot be validated, Arashi reports `LAUNCH_FAILED` instead of opening standalone Ghostty.
 - An active tmux session inside cmux or Herdr keeps tmux precedence during automatic launch. Explicit `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro` behavior remains authoritative.
+- In Kitty 0.43+ with permitted remote control, automatic launch reuses and focuses the exact live worktree window or creates one managed session-backed tab. Once Kitty is selected, prerequisite, inspection, focus, launch, or validation failure reports `LAUNCH_FAILED` and does not fall back. See the [Kitty workflow guide](/workflows/kitty/) for safe setup, live-only ownership, and troubleshooting.
 - Install shell integration with `arashi shell install` or print manual wrapper code with `arashi shell init <bash|zsh|fish>`.
 - If `--cd` cannot act on the parent shell because the wrapper is inactive, Arashi warns and skips launch fallback for that invocation.
 - When automatic launch reaches an integrated IDE and its optional CLI is unavailable, Arashi continues to terminal/platform fallback without returning to `cd`. A selected tmux, Herdr, or cmux failure—or an available IDE CLI that fails—remains an actionable launch failure and does not try another launcher or `cd`.
@@ -118,3 +119,4 @@ arashi switch feature-auth --json
 - [create](/commands/create/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
+- [Kitty workflow guide](/workflows/kitty/)

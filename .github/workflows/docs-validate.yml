@@ -80,6 +80,9 @@ jobs:
       - name: Check create-launch documentation contract
         run: pnpm validate:create-launch-docs
 
+      - name: Check managed Kitty session documentation contract
+        run: pnpm validate:kitty-session-docs
+
       - name: Enforce canonical docs domain policy
         run: pnpm validate:docs-domain
 

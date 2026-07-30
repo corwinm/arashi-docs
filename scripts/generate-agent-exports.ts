@@ -22,6 +22,7 @@ const coreOrder = [
   "workflows/config.md",
   "workflows/hooks.md",
   "workflows/herdr.md",
+  "workflows/kitty.md",
   "workflows/vscode.md",
   "workflows/tmux-and-sesh.md",
   "workflows/standalone.md",
@@ -56,6 +57,7 @@ const requiredRoutes = [
   "workflows/agents-and-specs.md",
   "workflows/json-automation.md",
   "workflows/herdr.md",
+  "workflows/kitty.md",
   "commands.md",
   "commands/exec.md",
   "commands/status.md",
@@ -291,6 +293,7 @@ function renderLlmsTxt(): string {
 - Use \`arashi switch --tmux\` or \`arashi create --tmux\` for a per-invocation plain tmux override. Configured \`auto\` remains the persistent contextual choice inside tmux; \`tmux\` is not added to configuration vocabularies.
 - Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--tmux\`, \`--sesh\`, or \`--herdr\` wins, then \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
 - For persistent Herdr launch, use \`arashi switch --herdr\` or \`arashi create --herdr\`; Arashi owns Git worktree creation/removal, and Herdr only opens, focuses, and reuses the existing checkout.
+- In Kitty 0.43+, automatic launch uses remote control to reuse and focus the exact live worktree window. Kitty remains auto-detected and live-only; review the Kitty workflow before enabling remote control.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
 
@@ -300,6 +303,7 @@ function renderLlmsTxt(): string {
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
 - [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
 - [Herdr workflow](${site}/workflows/herdr/) - explicit, configured, and automatic workspace launch, reuse, ownership, and troubleshooting.
+- [Kitty workflow](${site}/workflows/kitty/) - Kitty 0.43+ remote-control setup, exact window reuse, live-only ownership, and troubleshooting.
 - [tmux and sesh workflow](${site}/workflows/tmux-and-sesh/) - explicit plain tmux launch, contextual auto behavior, and sesh integration.
 - [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
 - [Standalone workflow](${site}/workflows/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
@@ -316,6 +320,7 @@ function renderLlmsTxt(): string {
 - [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Configuration workflow Markdown](${site}/workflows/config.md)
 - [Herdr workflow Markdown](${site}/workflows/herdr.md)
+- [Kitty workflow Markdown](${site}/workflows/kitty.md)
 - [tmux and sesh workflow Markdown](${site}/workflows/tmux-and-sesh.md)
 - [Switch command Markdown](${site}/commands/switch.md)
 - [Create command Markdown](${site}/commands/create.md)
@@ -327,6 +332,7 @@ function renderLlmsTxt(): string {
 - [Configuration workflow](${site}/workflows/config/)
 - [Hooks workflow](${site}/workflows/hooks/)
 - [Herdr workflow](${site}/workflows/herdr/)
+- [Kitty workflow](${site}/workflows/kitty/)
 - [VS Code workflow](${site}/workflows/vscode/)
 - [tmux and sesh workflow](${site}/workflows/tmux-and-sesh/)
 `;
