@@ -83,6 +83,9 @@ jobs:
       - name: Check managed Kitty session documentation contract
         run: pnpm validate:kitty-session-docs
 
+      - name: Check Windows Git Bash installation documentation contract
+        run: pnpm validate:windows-git-bash-install-docs
+
       - name: Enforce canonical docs domain policy
         run: pnpm validate:docs-domain
 
