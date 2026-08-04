@@ -163,6 +163,8 @@ Some commands exist to prompt, launch tools, print shell code, or change the par
 
 Automation should respond by passing a non-interactive flag, choosing a different command, or falling back to human output for that workflow.
 
+Tab disposition keeps the existing command-specific launch guards: `switch --json --tab` returns `JSON_UNSUPPORTED_FOR_MODE` with mode `launch` and exit status `2`; `create --json --tab` returns the same code with mode `interactive-or-launch` and exit status `1`. Both emit exactly one JSON document and reject before launch, create mutation, launcher-conflict checks, or runtime-session validation. See the [launch disposition workflow](/workflows/launch-disposition/) for the supported adapter matrix.
+
 ## Agent Guidance
 
 Agents should prefer this sequence:
