@@ -15,6 +15,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
+- [Launch disposition](/workflows/launch-disposition/) for default independent windows/sessions, one-invocation `--tab`, precedence, and terminal support.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [Herdr](/workflows/herdr/) for persistent workspace focus/reuse while Arashi retains Git worktree ownership.
 - [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.

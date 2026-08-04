@@ -33,6 +33,7 @@ arashi create <branch> [options]
 - `--no-switch` disable configured create switch defaults for one invocation.
 - `--launch` open a terminal/editor context after create.
 - `--no-launch` disable configured create launch defaults for one invocation.
+- `--tab` launch the primary created worktree as a tab in the selected supported context (implies launch and switch).
 - `--tmux` force a new plain tmux window after creation (implies launch and target selection).
 - `--sesh` force sesh launch mode (implies launch behavior).
 - `--herdr` open or focus the primary created worktree in Herdr (implies launch behavior).
@@ -64,6 +65,9 @@ arashi create feature-auth-refresh --launch
 # Create worktrees and open the primary worktree in a new plain tmux window
 arashi create feature-auth-refresh --tmux
 
+# Create worktrees and open the primary worktree as a supported tab
+arashi create feature-auth-refresh --tab
+
 # Create worktrees and open the primary worktree in Herdr
 arashi create feature-auth-refresh --herdr
 
@@ -94,6 +98,7 @@ arashi create feature-auth-refresh --move-changes
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`arashi clone`](/commands/clone/) from inside that worktree.
 - Configure one post-create choice in `.arashi/config.json` at `defaults.create.launch`: `none | auto | sesh | herdr`. The independent `switch` boolean can still select the new primary worktree without launching; every launch mode except `none` selects it too, so launch implies switch.
 - `--tmux` is a per-invocation-only override and is not persisted in the generic or editor-scoped create configuration. Configured `auto` can still choose tmux contextually when launch runs inside tmux.
+- `--tab` is a CLI-only, one-invocation disposition. It implies launch and switch and wins over `--no-launch` and `--no-switch`; explicit launcher selectors still choose the adapter. Knowable unsupported requests fail before mutation, while runtime failures after creation preserve the worktrees and never fall back to a window. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete matrix and JSON exit behavior.
 - Explicit `--tmux` takes precedence over generic and editor-scoped create defaults and automatic Herdr, cmux, or IDE detection. `--tmux` + `--no-launch` still implies post-create launch, and `--tmux` + `--no-switch` still selects and launches the primary created worktree.
 - `--tmux` conflicts with `--sesh` and `--herdr`. Arashi reports the complete explicit-launcher conflict set before repository mutation.
 - Launch precedence is deliberate. Otherwise `--sesh` or `--herdr` selects that explicit launcher even beside `--launch` or `--no-launch`; `--launch` selects `auto`; `--no-launch` selects `none`; then configured launch applies; an absent choice is built-in `none`.
@@ -133,3 +138,4 @@ arashi create feature-auth-refresh --move-changes
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
 - [Kitty workflow guide](/workflows/kitty/)
+- [launch disposition workflow](/workflows/launch-disposition/)

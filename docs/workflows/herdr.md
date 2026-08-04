@@ -75,6 +75,8 @@ Switch resolution is:
 
 Therefore an explicit or configured Herdr mode overrides automatic environment detection. `--no-cd` preserves configured Herdr, while `--no-default-launch` bypasses configured Herdr and returns to automatic launch. In automatic launch, a tmux session nested inside Herdr retains tmux behavior; otherwise Herdr precedes cmux, IDE, terminal-app, and generic fallbacks. Once Herdr is selected by any route, a Herdr failure does not silently open another launcher or fall back to `cd`.
 
+Ghostty containing Herdr selects Herdr rather than the containing terminal. With `--tab`, Arashi creates a Herdr tab in the active Herdr workspace; strict workspace evidence is required and unsupported or failed tab launch does not fall back to a Ghostty window. See the [launch disposition workflow](/workflows/launch-disposition/) for the default-versus-tab matrix.
+
 ## Verified v0.7.4 Contract
 
 For each target, Arashi resolves the repository's non-bare main checkout through Git and invokes the argv equivalent of:

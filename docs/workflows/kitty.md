@@ -57,6 +57,8 @@ Both configured and standalone creation route through the shared reuse-or-launch
 
 Kitty is auto-detected only. There is no `--kitty` flag, and this integration does not add Kitty to persistent Arashi launch configuration. Continue to use `auto` when you want environment-aware selection.
 
+In managed Kitty, `--tab` uses the exact identity-backed worktree tab. Unmanaged Kitty cannot safely target the caller's tab and reports unsupported without falling back to a window. The flag remains CLI-only and does not add Kitty or tab disposition to configuration. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete adapter matrix.
+
 ## Live-session Ownership
 
 Managed Kitty sessions are live only. Arashi does not generate or update a persistent `.kitty-session` file, restore windows after Kitty exits, or configure layouts and startup commands.

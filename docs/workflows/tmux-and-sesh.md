@@ -27,6 +27,7 @@ arashi create feature-auth --tmux
 - Explicit tmux wins over configured `cd`, `sesh`, or `herdr` behavior and over detected Herdr, cmux, or integrated IDE contexts.
 - Arashi passes the exact worktree path as one argv value to `tmux new-window -c`; spaces, quotes, and shell-significant characters are not interpolated by a shell.
 - If tmux context is missing or `tmux new-window` fails, Arashi does not fall back to another launcher.
+- Ghostty containing tmux still selects a tmux window for both the default independent launch and `--tab` managed equivalent; the containing Ghostty adapter does not outrank tmux. See the [launch disposition workflow](/workflows/launch-disposition/) for disposition precedence and the complete support matrix.
 
 For `switch`, `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`. It is compatible with `--no-cd` and remains authoritative with `--no-default-launch`.
 
