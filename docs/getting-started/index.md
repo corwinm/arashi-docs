@@ -60,8 +60,8 @@ Pin a specific version when invoking a downloaded script:
 .\install.ps1 -Version 1.16.0
 ```
 
-By default, the Windows installer places `arashi.bin.exe`, `arashi.ps1`, and `arashi.bat` in `%USERPROFILE%\.arashi\bin`, verifies them against `arashi-checksums.txt`, adds the install directory to the persistent user PATH, and tells you to open a new terminal.
-Use `-InstallDir` or `ARASHI_INSTALL_DIR` for a custom user-writable directory, and use `-NoModifyPath` or `ARASHI_NO_MODIFY_PATH=1` if you want to update PATH yourself.
+The PowerShell script is the canonical Windows installer. By default, it installs the verified four-file payload—`arashi.bin.exe`, the extensionless `arashi` command for Git Bash, `arashi.ps1`, and `arashi.bat`—in `%USERPROFILE%\.arashi\bin`, adds that directory to the persistent user PATH, and tells you to open a new terminal. Open a new Git Bash window before running `arashi --version` so it inherits the PATH change.
+Use `-InstallDir` or `ARASHI_INSTALL_DIR` for a custom user-writable directory. Use `-NoModifyPath` or `ARASHI_NO_MODIFY_PATH=1` to leave PATH unchanged and add the install directory to PATH yourself. The installer does not edit Git Bash profile files.
 
 ### Method 3: npm global install
 
@@ -86,11 +86,12 @@ arashi --version
 If you do not want to pipe a remote script into PowerShell, download these assets from the same [GitHub release](https://github.com/corwinm/arashi/releases/latest):
 
 - `arashi-windows-x64.exe`
+- `arashi`
 - `arashi.ps1`
 - `arashi.bat`
 - `arashi-checksums.txt`
 
-Verify each asset with `Get-FileHash -Algorithm SHA256`, rename `arashi-windows-x64.exe` to `arashi.bin.exe`, put all files in one directory on PATH, open a new terminal, and run `arashi --version`.
+Download and verify the complete set from one GitHub release. Verify all four payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, and `arashi.bat` together in one directory on PATH. Open a new Git Bash window before running `arashi --version` there.
 
 ### Troubleshooting and fallback
 
@@ -100,6 +101,8 @@ Verify each asset with `Get-FileHash -Algorithm SHA256`, rename `arashi-windows-
 - Checksum mismatch on direct installer paths: stop and use npm/manual fallback, then report the failure.
 - If `arashi --version` exits immediately or returns code `137`, rerun the direct installer with `ARASHI_VERSION=<version>` or `-Version <version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
 - PATH changes may require a new terminal on Windows and POSIX shells.
+- If Git Bash reports `arashi: command not found` after a PowerShell install, confirm `%USERPROFILE%\.arashi\bin` is on the persistent user PATH, then open a new Git Bash window. An already-open shell does not inherit the update.
+- With `-NoModifyPath`, add the install directory to PATH yourself. Do not add an installer-managed entry to `.bashrc`, `.bash_profile`, or `.profile`; the installer does not edit Git Bash profile files.
 - If your environment blocks local `.ps1` scripts, inspect `install.ps1` first, then add `-ExecutionPolicy Bypass` to the `powershell` invocation for this one process or use the manual Windows fallback.
 
 ## First Workflow

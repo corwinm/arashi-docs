@@ -297,6 +297,7 @@ function renderLlmsTxt(): string {
 - Launch defaults to a default new window or independent managed session. \`--tab\` is CLI-only for one \`switch\` or \`create\` invocation, composes with launcher selection, never falls back to a window when unsupported, and does not change configuration vocabularies.
 - For persistent Herdr launch, use \`arashi switch --herdr\` or \`arashi create --herdr\`; Arashi owns Git worktree creation/removal, and Herdr only opens, focuses, and reuses the existing checkout.
 - In Kitty 0.43+, automatic launch uses remote control to reuse and focus the exact live worktree window. Kitty remains auto-detected and live-only; review the Kitty workflow before enabling remote control.
+- On Windows, use the canonical PowerShell installer. It installs Git Bash support through the extensionless \`arashi\` wrapper; open a new Git Bash window so it inherits the persistent user PATH. See [Getting started](${site}/getting-started/) for the verified manual payload and no-profile-edit guidance.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
 
