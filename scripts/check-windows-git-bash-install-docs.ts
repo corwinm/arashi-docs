@@ -3,10 +3,12 @@ import os from "node:os";
 import path from "node:path";
 
 const landingRequirements = [
-  "canonical PowerShell installer",
-  "Git Bash",
-  "new Git Bash window"
+  'powershell -c "irm https://arashi.haphazard.dev/install.ps1 | iex"',
+  "View install.ps1"
 ];
+
+const landingForbiddenText =
+  "The canonical PowerShell installer also installs the `arashi` command for Git Bash.";
 
 const installationRequirements = [
   "canonical Windows installer",
@@ -52,6 +54,11 @@ const requirements = new Map<string, string[]>([
   ]
 ]);
 
+const forbiddenText = new Map<string, string[]>([
+  ["docs/index.mdx", [landingForbiddenText]],
+  ["public/index.md", [landingForbiddenText]]
+]);
+
 const root = path.resolve(process.cwd());
 const errors = checkRoot(root);
 if (errors.length > 0) {
@@ -74,6 +81,16 @@ function checkRoot(rootPath: string): string[] {
     for (const text of expectedText) {
       if (!content.includes(text)) {
         found.push(`${relativePath} is missing ${JSON.stringify(text)}`);
+      }
+    }
+  }
+
+  for (const [relativePath, disallowedText] of forbiddenText) {
+    const content = read(rootPath, relativePath, found);
+    if (content === null) continue;
+    for (const text of disallowedText) {
+      if (content.includes(text)) {
+        found.push(`${relativePath} must not include ${JSON.stringify(text)}`);
       }
     }
   }
@@ -149,6 +166,18 @@ function runOutOfRepositoryMismatchTest(sourceRoot: string): void {
     ) {
       throw new Error(
         "Windows Git Bash installation documentation checker self-test failed to reject missing four-file checksum verification."
+      );
+    }
+
+    const landingPath = path.join(fixtureRoot, "docs/index.mdx");
+    writeFileSync(
+      landingPath,
+      `${readFileSync(landingPath, "utf8")}\n${landingForbiddenText}\n`
+    );
+    const landingErrors = checkRoot(fixtureRoot);
+    if (!landingErrors.some((error) => error.includes("must not include"))) {
+      throw new Error(
+        "Windows Git Bash installation documentation checker self-test failed to reject verbose Git Bash guidance on the landing page."
       );
     }
   } finally {
