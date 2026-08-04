@@ -77,6 +77,9 @@ jobs:
       - name: Check explicit tmux launch documentation contract
         run: pnpm validate:tmux-launch-docs
 
+      - name: Check tab launch-disposition documentation contract
+        run: pnpm validate:tab-launch-docs
+
       - name: Check create-launch documentation contract
         run: pnpm validate:create-launch-docs
 

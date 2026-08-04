@@ -29,6 +29,7 @@ arashi switch [filter] [options]
 - `--cd` request parent-shell directory switching for one invocation.
 - `--no-cd` force launch behavior for one invocation.
 - `--path` treat the argument as an exact worktree path instead of a fuzzy filter.
+- `--tab` request a tab in the selected supported terminal or managed context for this invocation.
 - `--tmux` open the selected worktree in a new plain tmux window for this invocation.
 - `--sesh` run sesh mode in tmux (requires active tmux session and `sesh`).
 - `--herdr` open or focus the selected existing worktree in a running Herdr session.
@@ -63,6 +64,9 @@ arashi switch --sesh
 # Force a new plain tmux window instead of another configured or detected launcher
 arashi switch --tmux feature-auth
 
+# Request a tab in the current supported terminal or managed context
+arashi switch --tab feature-auth
+
 # Open or focus the selected worktree in Herdr
 arashi switch --herdr feature-auth
 
@@ -87,6 +91,7 @@ arashi switch feature-auth --json
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
 - `launch` always uses automatic launcher selection without preferring parent-shell switching. `sesh` and `herdr` always select that launcher, even when shell integration or another managed context is active.
 - An absent mode preserves automatic launch and does not newly prefer parent-shell `cd` in configured or standalone repositories.
+- `--tab` is a CLI-only, one-invocation disposition. It overrides configured or contextual parent-shell `cd`, conflicts only with explicit `--cd`, and is compatible with `--no-cd` and `--no-default-launch`. It composes with explicit launcher selectors; unsupported selected adapters fail without opening a window or falling through. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete matrix, JSON behavior, and safety boundaries.
 - Configured `auto` uses this order: tmux → Herdr → cmux → integrated IDE → Kitty → parent-shell `cd` → terminal/platform fallback. Parent-shell switching is considered only when no managed context is strictly detected; it requires shell integration.
 - Explicit launcher flags take precedence over configuration and environment detection. `--tmux` therefore overrides configured `cd`, `sesh`, or `herdr` behavior and detected Herdr, cmux, or IDE contexts. `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`; Arashi reports the complete set instead of choosing by flag order.
 - `--tmux` requires a non-empty `TMUX` value after trimming. Run the command from an active tmux client/session or choose another launcher. If the prerequisite is missing or `tmux new-window` fails, explicit tmux does not fall back to sesh, Herdr, cmux, an IDE, parent-shell `cd`, or a platform terminal.
@@ -120,3 +125,4 @@ arashi switch feature-auth --json
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
 - [Kitty workflow guide](/workflows/kitty/)
+- [launch disposition workflow](/workflows/launch-disposition/)

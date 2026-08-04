@@ -66,6 +66,8 @@ Arashi preserves explicit launch, configured mode, and nested-session precedence
 
 Arashi does not currently provide an explicit `--cmux` flag. Automatic detection is limited to managed cmux terminals; setting `CMUX_SOCKET_PATH` alone does not activate cmux launch behavior.
 
+For explicit `--tab`, the supported managed equivalent is a cmux workspace / vertical tab in the active cmux session. Arashi does not launch the containing standalone Ghostty window, and a cmux failure never falls through to one. See the [launch disposition workflow](/workflows/launch-disposition/) for the full matrix and failure boundaries.
+
 ## Troubleshooting
 
 ### Arashi opens standalone Ghostty
