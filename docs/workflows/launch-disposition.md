@@ -66,7 +66,7 @@ Nested tmux remains authoritative over Herdr, cmux, Kitty, and its containing te
 | tmux / sesh | tmux window or sesh-managed session | Managed tab equivalent | Active tmux/session evidence |
 | cmux | Workspace | cmux workspace / vertical tab | Active session identifiers |
 | active-workspace Herdr | Workspace | Herdr tab | Active workspace ID |
-| Terminal.app | New window | True tab | Current application/window |
+| Terminal.app | New window | Unsupported | No supported true-tab automation |
 | iTerm2 | New window | True tab | Current application/window/session |
 | macOS Ghostty older than 1.3 or missing supported-version evidence | New window | Unsupported | No supported tab API |
 | macOS Ghostty 1.3+ | New window | True tab | Current Ghostty window and supported version |
@@ -75,6 +75,20 @@ Nested tmux remains authoritative over Herdr, cmux, Kitty, and its containing te
 | Linux Ghostty | New window | Unsupported | No external true-tab adapter |
 | IDE workspaces | Existing editor behavior | Unsupported | No terminal-tab contract |
 | generic fallback | New terminal/platform window | Unsupported | No portable exact tab target |
+
+### Terminal.app manual tab workflow
+
+Terminal.app's default `window` disposition remains supported and opens a new window. Its supported AppleScript API cannot safely create a true tab in an exact selected window, so an explicit Terminal.app `--tab` request returns `TAB_DISPOSITION_UNSUPPORTED` before target preflight, AppleScript, command execution, or fallback launch.
+
+To work in a true Terminal.app tab, press Command-T manually, then run `arashi switch --cd`:
+
+```bash
+arashi switch --cd
+```
+
+This sequential workflow requires active Arashi shell integration so Arashi can change the current shell's directory.
+
+To request Arashi's normal automatic launch instead of parent-shell directory switching or a configured named launcher, run `arashi switch --no-cd --no-default-launch` directly. It opens a new Terminal window when automatic launcher resolution selects Terminal.app.
 
 Unsupported tab disposition never opens a window or falls through to another launcher. An explicitly selected or positively detected unsupported adapter reports `TAB_DISPOSITION_UNSUPPORTED`; runtime automation or process failures after a supported adapter is selected report `LAUNCH_FAILED`. Neither case retries with the default window disposition.
 
