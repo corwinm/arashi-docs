@@ -156,6 +156,8 @@ const generatedRequirements: Requirement[] = [
   },
 ];
 
+const invalidPathSubstitution = 'cd "$(arashi switch --no-cd --no-default-launch)"';
+
 const root = path.resolve(process.cwd());
 const errors = checkRoot(root);
 if (errors.length > 0) {
@@ -173,9 +175,24 @@ function checkRoot(rootPath: string): string[] {
   const found: string[] = [];
   checkRequirements(rootPath, sourceRequirements, found);
   checkRequirements(rootPath, generatedRequirements, found);
+  checkForbiddenPathSubstitution(rootPath, found);
   checkConfigurationVocabulary(rootPath, found);
   checkReachability(rootPath, found);
   return found;
+}
+
+function checkForbiddenPathSubstitution(rootPath: string, found: string[]): void {
+  for (const relativePath of new Set([
+    ...sourceRequirements.map(({ path: requirementPath }) => requirementPath),
+    ...generatedRequirements.map(({ path: requirementPath }) => requirementPath),
+  ])) {
+    const content = read(rootPath, relativePath, found);
+    if (content?.includes(invalidPathSubstitution)) {
+      found.push(
+        `${relativePath} must not recommend launch-mode output as a path-only command substitution`,
+      );
+    }
+  }
 }
 
 function checkRequirements(
@@ -338,6 +355,21 @@ function runDeliberateMismatchSelfTest(sourceRoot: string): void {
     ) {
       throw new Error(
         "Tab launch-disposition checker self-test did not reject the no-fallback mismatch.",
+      );
+    }
+
+    writeFileSync(
+      workflowPath,
+      `${valid}\n\nWithout shell integration, run \`cd "$(arashi switch --no-cd --no-default-launch)"\`.\n`,
+    );
+    const invalidPathSubstitutionErrors = checkRoot(fixtureRoot);
+    if (
+      !invalidPathSubstitutionErrors.some((error) =>
+        error.includes("must not recommend launch-mode output as a path-only command substitution"),
+      )
+    ) {
+      throw new Error(
+        "Tab launch-disposition checker self-test did not reject the invalid path-substitution guidance.",
       );
     }
 

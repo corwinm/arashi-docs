@@ -86,11 +86,7 @@ To work in a true Terminal.app tab, press Command-T manually, then run `arashi s
 arashi switch --cd
 ```
 
-This sequential workflow requires active Arashi shell integration so Arashi can change the current shell's directory. Without shell integration, obtain the selected path without launching and change directory in the current shell:
-
-```bash
-cd "$(arashi switch --no-cd --no-default-launch)"
-```
+This sequential workflow requires active Arashi shell integration so Arashi can change the current shell's directory.
 
 To request Arashi's normal automatic launch instead of parent-shell directory switching or a configured named launcher, run `arashi switch --no-cd --no-default-launch` directly. It opens a new Terminal window when automatic launcher resolution selects Terminal.app.
 
