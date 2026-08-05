@@ -197,30 +197,56 @@ function checkDeprecatedGuidance(): void {
     errors.push(...deprecatedGuidanceErrors(relativePath, content));
   }
 
-  const deliberateMismatch = [
+  const afterSectionMismatch = [
     "## Deprecated compatibility spellings",
     "The old spelling is deprecated compatibility metadata.",
     "## Preferred workflow",
     "Run `arashi switch --no-cd` for normal use."
   ].join("\n");
-  const mismatchErrors = deprecatedGuidanceErrors("deliberate-mismatch.md", deliberateMismatch);
-  if (mismatchErrors.length !== 1 || !mismatchErrors[0]?.includes("--no-cd")) {
-    errors.push("deprecated-guidance checker accepted actionable syntax after a compatibility section");
+  const sameLineMismatch = [
+    "## Deprecated compatibility spellings",
+    "For deprecated compatibility, run `arashi switch --no-cd`."
+  ].join("\n");
+  for (const [name, fixture] of [
+    ["after-section", afterSectionMismatch],
+    ["same-line-actionable", sameLineMismatch]
+  ] as const) {
+    const mismatchErrors = deprecatedGuidanceErrors(`deliberate-${name}.md`, fixture);
+    if (mismatchErrors.length !== 1 || !mismatchErrors[0]?.includes("--no-cd")) {
+      errors.push(`deprecated-guidance checker accepted ${name} actionable syntax`);
+    }
   }
 }
 
 function deprecatedGuidanceErrors(relativePath: string, content: string): string[] {
   const findings: string[] = [];
   const deprecated = ["--no-cd", "--no-default-launch", "--markdown"];
+  let compatibilityHeadingDepth: number | null = null;
+  let inCodeFence = false;
+
   for (const [index, line] of content.split("\n").entries()) {
+    const heading = /^(#{1,6})\s+(.+)$/.exec(line);
+    if (heading) {
+      const depth = heading[1]?.length ?? 0;
+      if (/deprecated compatibility/i.test(heading[2] ?? "")) {
+        compatibilityHeadingDepth = depth;
+      } else if (compatibilityHeadingDepth !== null && depth <= compatibilityHeadingDepth) {
+        compatibilityHeadingDepth = null;
+      }
+    }
+
     for (const spelling of deprecated) {
       if (!line.includes(spelling)) continue;
-      if (!/deprecated/i.test(line) || !/compatibility/i.test(line)) {
+      const inCompatibilitySection = compatibilityHeadingDepth !== null;
+      const actionableCommand = inCodeFence || /\barashi\s+[^`\n]*\s--?[\w-]*\b/.test(line);
+      if (!inCompatibilitySection || actionableCommand) {
         findings.push(
-          `${relativePath}:${index + 1} teaches deprecated ${spelling} outside explicit deprecated compatibility metadata`
+          `${relativePath}:${index + 1} teaches deprecated ${spelling} outside bounded non-actionable compatibility metadata`
         );
       }
     }
+
+    if (/^\s*```/.test(line)) inCodeFence = !inCodeFence;
   }
   return findings;
 }
