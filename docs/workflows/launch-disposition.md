@@ -22,7 +22,7 @@ Arashi first honors explicit launcher selection and then strictly detected manag
 
 ## Request A Tab Once
 
-`--tab` is a CLI-only, one-invocation request. It changes launch disposition, not launcher selection, and does not create a persistent preference.
+`--tab` is a CLI-only, one-invocation request. It changes launch disposition and does not replace a launcher explicitly selected in the same invocation. When no explicit selector is present, tab intent also controls default selection by bypassing configured launcher defaults; it does not create a persistent preference.
 
 ```bash
 # Open an existing worktree as a tab in the selected supported context
@@ -36,9 +36,9 @@ arashi switch feature-auth --herdr --tab
 arashi create feature-auth --tmux --tab
 ```
 
-For `switch`, explicit tab intent overrides configured or contextual parent-shell `cd`. It conflicts only with explicit `--cd`; it is compatible with `--no-cd` and `--no-default-launch`, and it composes with explicit launcher selectors. If the selected launcher cannot provide a supported tab, its adapter returns an unsupported result rather than turning the combination into a generic parser conflict.
+For `switch`, explicit tab intent overrides configured or contextual parent-shell `cd` and bypasses configured launcher defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; `--no-cd` and the now-redundant `--no-default-launch` remain compatible, and it composes with explicit launcher selectors. An explicit selector such as `--herdr --tab` remains authoritative while `--tab` controls that launcher's disposition. If the selected launcher cannot provide a supported tab, its adapter returns an unsupported result rather than turning the combination into a generic parser conflict.
 
-For `create`, create tab implies launch and switch. It wins over `--no-launch` and `--no-switch`; redundant positive `--launch` and `--switch` remain compatible. Explicit launcher selectors still choose the adapter, while `--tab` chooses that adapter's disposition.
+For `create`, create tab implies launch and switch and bypasses configured launcher defaults, using automatic contextual launcher resolution unless `--tmux`, `--sesh`, or `--herdr` explicitly selects the adapter. It wins over `--no-launch` and `--no-switch`; redundant positive `--launch` and `--switch` remain compatible. Explicit launcher selectors still choose the adapter, while `--tab` chooses that adapter's disposition.
 
 ## Managed Context Precedence
 
