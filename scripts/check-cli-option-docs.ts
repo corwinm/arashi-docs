@@ -244,7 +244,16 @@ function updateJsonPolicyErrors(relativePath: string, content: string): string[]
 }
 
 function checkDeprecatedGuidance(): void {
-  for (const relativePath of walk(path.join(root, "docs")).filter((file) => /\.mdx?$/.test(file))) {
+  const guidanceFiles = [
+    ...walk(path.join(root, "docs")).filter((file) => /\.mdx?$/.test(file)),
+    ...walk(path.join(root, "public")).filter((file) => /\.(?:md|txt)$/.test(file))
+  ];
+  for (const requiredExport of ["public/llms.txt", "public/llms-full.txt"]) {
+    if (!guidanceFiles.includes(requiredExport)) {
+      errors.push(`deprecated-guidance checker cannot reach generated export ${requiredExport}`);
+    }
+  }
+  for (const relativePath of guidanceFiles) {
     const content = read(relativePath);
     if (content === null) continue;
     errors.push(...deprecatedGuidanceErrors(relativePath, content));
@@ -260,9 +269,14 @@ function checkDeprecatedGuidance(): void {
     "## Deprecated compatibility spellings",
     "For deprecated compatibility, run `arashi switch --no-cd`."
   ].join("\n");
+  const recommendationMismatch = [
+    "## Deprecated compatibility spellings",
+    "Use `--no-cd` whenever you want to force launch behavior."
+  ].join("\n");
   for (const [name, fixture] of [
     ["after-section", afterSectionMismatch],
-    ["same-line-actionable", sameLineMismatch]
+    ["same-line-actionable", sameLineMismatch],
+    ["recommendation-prose", recommendationMismatch]
   ] as const) {
     const mismatchErrors = deprecatedGuidanceErrors(`deliberate-${name}.md`, fixture);
     if (mismatchErrors.length !== 1 || !mismatchErrors[0]?.includes("--no-cd")) {
@@ -274,6 +288,10 @@ function checkDeprecatedGuidance(): void {
 function deprecatedGuidanceErrors(relativePath: string, content: string): string[] {
   const findings: string[] = [];
   const deprecated = ["--no-cd", "--no-default-launch", "--markdown"];
+  const allowedMetadata = new Set([
+    "Markdown is the default human output, so preferred help and examples omit `--markdown`. The explicit spelling remains a hidden, deprecated compatibility option throughout Arashi 1.x and produces the same report; JSON remains authoritative if both are supplied. Removal may happen no earlier than Arashi 2.0 and requires a separately approved breaking-change issue.",
+    "The legacy `--no-cd` maps to `--launch`, and `--no-default-launch` maps to `--ignore-configured-launcher`. They remain parseable only as deprecated compatibility metadata throughout Arashi 1.x; preferred options, examples, and automation should use the canonical spellings above. Removal may happen no earlier than Arashi 2.0 and requires a separately approved breaking-change issue."
+  ]);
   let compatibilityHeadingDepth: number | null = null;
   let inCodeFence = false;
 
@@ -291,8 +309,8 @@ function deprecatedGuidanceErrors(relativePath: string, content: string): string
     for (const spelling of deprecated) {
       if (!line.includes(spelling)) continue;
       const inCompatibilitySection = compatibilityHeadingDepth !== null;
-      const actionableCommand = inCodeFence || /\barashi\s+[^`\n]*\s--?[\w-]*\b/.test(line);
-      if (!inCompatibilitySection || actionableCommand) {
+      const boundedMetadata = !inCodeFence && inCompatibilitySection && allowedMetadata.has(line.trim());
+      if (!boundedMetadata) {
         findings.push(
           `${relativePath}:${index + 1} teaches deprecated ${spelling} outside bounded non-actionable compatibility metadata`
         );
