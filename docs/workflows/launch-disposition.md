@@ -36,7 +36,7 @@ arashi switch feature-auth --herdr --tab
 arashi create feature-auth --tmux --tab
 ```
 
-For `switch`, explicit tab intent overrides configured or contextual parent-shell `cd`. It conflicts only with explicit `--cd`; it is compatible with `--no-cd` and `--no-default-launch`, and it composes with explicit launcher selectors. If the selected launcher cannot provide a supported tab, its adapter returns an unsupported result rather than turning the combination into a generic parser conflict.
+For `switch`, explicit tab intent overrides configured or contextual parent-shell `cd` and bypasses configured launcher defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; `--no-cd` and the now-redundant `--no-default-launch` remain compatible, and it composes with explicit launcher selectors. An explicit selector such as `--herdr --tab` remains authoritative while `--tab` controls that launcher's disposition. If the selected launcher cannot provide a supported tab, its adapter returns an unsupported result rather than turning the combination into a generic parser conflict.
 
 For `create`, create tab implies launch and switch. It wins over `--no-launch` and `--no-switch`; redundant positive `--launch` and `--switch` remain compatible. Explicit launcher selectors still choose the adapter, while `--tab` chooses that adapter's disposition.
 
