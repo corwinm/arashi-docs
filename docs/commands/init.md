@@ -82,7 +82,8 @@ arashi init --zero-config --dry-run --json
 - In bootstrap mode, the repository target prompt accepts only `.` or a direct child directory name such as `my-arashi-repo`.
 - If `init` is run outside a Git repository without an interactive terminal, it exits with guidance instead of prompting.
 - JSON mode does not prompt; provide explicit options when running initialization from automation.
-- `init` creates `.arashi/config.json` and hook templates under `.arashi/hooks/`.
+- `init` creates `.arashi/config.json` and inert lifecycle examples under `.arashi/hooks/`. Activate one example at a time: on POSIX, `install -m 755 <chosen>.sh.example <chosen>.sh` creates the active executable; on native Windows, copy one matching `.ps1.example`, `.cmd.example`, or `.bat.example` to the same filename without `.example`.
+- POSIX setup guidance uses `.arashi/setup.sh.example`; activate it with `install -m 755 .arashi/setup.sh.example .arashi/setup.sh`. Setup uses its documented cwd rather than lifecycle variables. No native Windows setup example is introduced because setup discovery does not support it. See the [Hooks workflow](/workflows/hooks/).
 - Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.
 - An explicit `--worktrees-dir` takes precedence in either repository type. New and forced initialization normalizes the selected value, which is persisted as `worktreesDir` in `.arashi/config.json`; later commands use that configured value instead of re-inferring the repository type.
 - Existing configurations are not migrated automatically. If an older config omits `worktreesDir`, `.arashi/worktrees` remains its compatibility fallback; preference-only init reports that configured value or fallback without rewriting the config.

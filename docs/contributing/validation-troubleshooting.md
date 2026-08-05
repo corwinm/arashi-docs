@@ -23,6 +23,12 @@ sidebar:
 - Run `pnpm validate:a11y`.
 - Ensure each critical page includes a clear `h1` and semantic main content.
 
+## Lifecycle-hook semantic or freshness failures
+
+- Run `pnpm validate:lifecycle-hook-docs`.
+- Update canonical hook guidance first, then regenerate generated Markdown routes and `llms-full.txt` with `pnpm sync:content`.
+- Remove stale aliases or lifecycle claims from canonical sources instead of editing ignored generated exports directly.
+
 ## Canonical docs URL health failure
 
 - Run `pnpm validate:readme-link`.
