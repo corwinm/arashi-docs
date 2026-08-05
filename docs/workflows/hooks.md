@@ -1,125 +1,202 @@
 ---
 title: Hooks
-description: Use lifecycle hooks to automate setup and cleanup around Arashi create and remove workflows.
+description: Automate setup and cleanup with scope-correct create and remove lifecycle hooks.
 draft: false
 sidebar:
   hidden: false
   order: 3
 ---
 
-Use this guide after `arashi init` when your workspace needs setup or cleanup automation around `create` and `remove`.
+Use lifecycle hooks for trusted setup and cleanup around `arashi create` and `arashi remove`. Hook discovery is based on filesystem conventions, not entries in `.arashi/config.json`.
 
-## Create Hooks
+## Lifecycle matrix
 
-- `.arashi/hooks/pre-create.sh`
-- `.arashi/hooks/post-create.sh`
-- `.arashi/hooks/pre-create.<repo>.sh`
-- `.arashi/hooks/post-create.<repo>.sh`
+| Mode and lifecycle | Discovery and multiplicity | Timing | Working directory | Failure behavior |
+| --- | --- | --- | --- | --- |
+| Configured workspace `pre-create` | `.arashi/hooks/pre-create<ext>`, once | Before branch or worktree mutation | Configured workspace root | Create fails before mutation. |
+| Configured repository `pre-create.<repo>` | `.arashi/hooks/pre-create.<repo><ext>`, once for that selected repository | After that repository worktree is materialized; this retained name means post-materialization and pre-setup | New child worktree | Create fails and rolls back Git mutations owned by this invocation. |
+| Configured repository `post-create.<repo>` | `.arashi/hooks/post-create.<repo><ext>`, once for that selected repository | After its repository pre hook | New child worktree | Create fails and enters the same rollback boundary. |
+| Configured workspace `post-create` | `.arashi/hooks/post-create<ext>`, once | After coordinated Git creation and before move-changes or switch/launch handling | Configured workspace root | Create fails and enters the same rollback boundary. |
+| Configured `pre-remove` | Repository, workspace, global-targeted, then global-shared for each target | Before destructive removal | Scope-dependent; see below | Any failure or timeout aborts removal. |
+| Configured `post-remove` | Repository → workspace → global-targeted → global-shared for each target | After removal attempts, including partial failures | Scope-dependent; see below | Outcomes are retained and the command exits nonzero on hook failure. |
+| Standalone create/remove | User-global targeted before shared, once at each applicable location | At the matching pre/post lifecycle point | Resolved standalone main root | Create uses rollback; remove preserves pre-abort and post-finalization behavior. |
 
-## Remove Hooks
+For configured remove, all four scopes are evaluated separately for every target repository. Workspace and global-shared hooks therefore run once per target repository, not once per command. Repository-local, global-targeted, and global-shared remove hooks run from the current target's configured source checkout; workspace hooks run from the configured workspace root.
 
-- `repos/<repo>/.arashi/hooks/pre-remove.sh`
-- `repos/<repo>/.arashi/hooks/post-remove.sh`
-- `.arashi/hooks/pre-remove.sh`
-- `.arashi/hooks/post-remove.sh`
-- `~/.arashi/hooks/<repo>/pre-remove.sh`
-- `~/.arashi/hooks/<repo>/post-remove.sh`
-- `~/.arashi/hooks/pre-remove.sh`
-- `~/.arashi/hooks/post-remove.sh`
+Create and remove results retain evaluated hook outcomes, including skips, successes, validation failures, timeouts, and nonzero exits. Human output and JSON output derive from that outcome ledger. JSON success places outcomes in `data.hookOutcomes`; failure places them in `error.details.hookOutcomes`, while hook stdout and stderr stay off JSON stdout.
 
-Typical uses:
+## Discovery by mode and platform
 
-- run repository bootstrap after worktree creation
-- stop tmux sessions before worktree removal
-- optionally close a Herdr workspace before its checkout is removed
-- clear generated files after branch cleanup
-- apply repository-specific setup without hard-coding it into every workflow command
+Configured create uses only the workspace and repository-specific filenames shown above. It does not activate similarly named repository-local or user-global create scripts.
 
-## `post-create` Examples
+Configured remove searches each target in this order:
 
-Create hooks are useful when every new worktree needs the same local setup. Make the hook executable with `chmod +x` after you create it.
+1. `repos/<repo>/.arashi/hooks/<lifecycle><ext>`
+2. `.arashi/hooks/<lifecycle><ext>`
+3. `~/.arashi/hooks/<repo>/<lifecycle><ext>`
+4. `~/.arashi/hooks/<lifecycle><ext>`
 
-Useful create-hook variables include:
+Standalone create and remove search only the repository-targeted and shared user-global locations. Targeted lookup uses the resolved main-root basename even when the command starts in a linked worktree. Configless repository-local and workspace hooks remain inactive; adopt configured mode when you need those scopes.
 
-- `ARASHI_WORKTREE_PATH` for the new worktree path
-- `ARASHI_MAIN_REPO_PATH` for the main workspace path
-- `ARASHI_BRANCH` for the new branch name
-- `ARASHI_BASE_BRANCH` for the base branch used to create the worktree
+On POSIX, `<ext>` is `.sh`. On Windows, extension matching is case-insensitive and `<ext>` is `.ps1`, `.cmd`, or `.bat`. Windows does not discover `.sh` or execute it through implicit Git Bash. If a logical location has more than one extension supported by the current platform, Arashi reports every candidate and fails before lifecycle mutation rather than choosing by extension or filesystem order. Missing native interpreters likewise fail preflight before mutation.
 
-### Install Node Dependencies With `pnpm`
+## Activate exactly one example
 
-Use a repo-specific hook when only one child repo needs package install.
+Examples created by `arashi init` are inert. Activate only the lifecycle and scope you intend.
 
-File: `.arashi/hooks/post-create.web.sh`
+On POSIX, create the active script and its executable mode in one step:
 
 ```bash
-#!/bin/sh
-set -eu
-
-cd "$ARASHI_WORKTREE_PATH"
-pnpm install --frozen-lockfile
+install -m 755 .arashi/hooks/post-create.web.sh.example \
+  .arashi/hooks/post-create.web.sh
 ```
 
-### Create a Python Virtual Environment With `uv`
+On Windows PowerShell, choose one native example and copy it one-to-one:
 
-File: `.arashi/hooks/post-create.api.sh`
-
-```bash
-#!/bin/sh
-set -eu
-
-cd "$ARASHI_WORKTREE_PATH"
-uv venv
-uv sync
+```powershell
+Copy-Item .arashi\hooks\post-create.web.ps1.example `
+  .arashi\hooks\post-create.web.ps1
 ```
 
-### Create a Python Virtual Environment With `pip`
+For a command script, activate the matching `.cmd.example` or `.bat.example` as that same extension. Do not copy multiple examples to one active filename.
 
-File: `.arashi/hooks/post-create.api.sh`
+Setup is a separate command contract, not a lifecycle hook. On POSIX, activate the generated setup example as follows:
+
+```bash
+install -m 755 .arashi/setup.sh.example .arashi/setup.sh
+```
+
+`arashi setup` runs the script from its documented setup cwd; do not rely on lifecycle-hook variables there. This change does not introduce a native Windows setup example, and lifecycle setup never requires changing Git `core.hooksPath`.
+
+## Environment contract
+
+Every executed lifecycle hook receives common executor-owned metadata where applicable:
+
+| Variable | Meaning |
+| --- | --- |
+| `ARASHI_HOOK_NAME` | Logical discovered name, including the repository suffix for configured repository-specific create. |
+| `ARASHI_HOOK_SCOPE` | `workspace`, `repository`, `global-repository`, or `global-shared`. |
+| `ARASHI_HOOK_SOURCE_PATH` | Exact absolute discovered script path. |
+| `ARASHI_HOOK_EXECUTION_PATH` | Exact absolute process cwd. |
+| `ARASHI_HOOK_WORKSPACE_MODE` | `configured` or `standalone`. |
+| `ARASHI_MAIN_REPO_PATH` | Canonical configured workspace root or standalone main root. |
+| `ARASHI_BRANCH_NAME` | Requested create branch, or the current remove repository's branch when exactly one is unambiguous. |
+| `ARASHI_HOOK_TARGET_REPOSITORY` | Current target repository identity when the invocation has one. |
+| `ARASHI_HOOK_TARGET_REPO_PATH` | Configured source checkout or standalone main root for that target. |
+| `ARASHI_HOOK_TARGET_WORKTREE_PATH` | Target worktree when exactly one applies. |
+| `ARASHI_PARENT_REPO_PATH` | Coordinated parent worktree, only for configured repository-specific create. |
+
+Operation data cannot overwrite these executor-owned fields. Workspace create hooks have workspace and branch context but no child target fields, no target worktree, and no child repository identity. Do not branch a workspace create script on an invented first child.
+
+### Target and compatibility mapping
+
+| Mode and scope | Execution path | Explicit target repo path | Explicit target worktree | Compatibility behavior |
+| --- | --- | --- | --- | --- |
+| Configured workspace create | Workspace root | Unset | Unset | Historical repository path is the workspace root; repository name and worktree aliases are unset. |
+| Configured repository-specific create | New child worktree | Child source checkout | New child worktree | Historical repository name is the child name; historical repository and worktree paths are the new child worktree. |
+| Configured remove, any scope, one target | Child source checkout, except workspace scope uses workspace root | Child source checkout | Target worktree when exactly one | Historical repository name/path identify the child source checkout; historical worktree path is set only when unambiguous. |
+| Standalone global create/remove | Standalone main root | Standalone main root | Lifecycle target worktree when exactly one | Historical repository name is the main-root basename and historical paths retain their standalone meanings. |
+
+The historical repository/worktree aliases and comma-separated remove aggregates remain supported throughout 1.x. Removal can occur no earlier than 2.0 through a separately approved breaking-change proposal. New portable hooks should use the explicit execution and target fields above.
+
+### Structured remove targets
+
+Every remove hook receives `ARASHI_REMOVE_TARGETS_JSON`, an array of records with this exact shape:
+
+```json
+[
+  {
+    "repository": "web",
+    "branchName": "feature/auth",
+    "worktreePath": "/workspace/worktrees/web/feature/auth"
+  }
+]
+```
+
+Keys are always present; absent branch or worktree values are JSON `null`. Paths are absolute, lexically normalized, and use `/` separators on every platform. Exact duplicate records are removed and ordering is deterministic. Per-target scalar fields come only from the current repository and are omitted when multiple values are ambiguous.
+
+The named comma-separated remove compatibility aggregates are lossy and non-canonical because valid names and paths may contain commas. New command-wide cleanup must parse `ARASHI_REMOVE_TARGETS_JSON` instead.
+
+## Timeout and failures
+
+Configured create, configured remove, and standalone lifecycle hooks use a default timeout of `300000` milliseconds. Configured workspaces may set `hooks.timeout` to an integer from `1` through `2147483647`; the override applies to every configured lifecycle scope.
+
+Zero, negative, fractional, non-numeric, and out-of-range values fail configuration validation before hook discovery or lifecycle mutation. A timeout remains a timeout outcome even when another hook or removal operation also fails.
+
+Pre-create and pre-remove failures happen before their applicable mutation boundary. Post-create failure rolls back Git mutations owned by that create invocation and reports any rollback warning. Post-remove runs after attempted removals, preserves removal errors alongside all hook outcomes, and finalizes with a nonzero result when required. `remove --dry-run` discovers and previews hooks but never spawns them or fabricates execution outcomes.
+
+## Scope-correct setup examples
+
+Repository-specific post-create hooks already run in the new child worktree, but checking the explicit target makes the assumption clear and fail-fast:
 
 ```bash
 #!/bin/sh
 set -eu
 
-cd "$ARASHI_WORKTREE_PATH"
+[ "$PWD" = "$ARASHI_HOOK_TARGET_WORKTREE_PATH" ] || exit 1
+```
+
+### Node and pnpm
+
+Follow the repository's committed `packageManager` and lockfile; do not infer npm merely from the presence of `package.json`. For a pnpm child nested beneath another pnpm workspace, use the pinned Corepack version and prevent ancestor-workspace selection:
+
+```bash
+#!/bin/sh
+set -eu
+
+[ "$PWD" = "$ARASHI_HOOK_TARGET_WORKTREE_PATH" ] || exit 1
+CI=true corepack pnpm --ignore-workspace install --frozen-lockfile
+```
+
+PowerShell uses its native environment assignment:
+
+```powershell
+if ($PWD.Path -ne $env:ARASHI_HOOK_TARGET_WORKTREE_PATH) { exit 1 }
+$env:CI = "true"
+corepack pnpm --ignore-workspace install --frozen-lockfile
+```
+
+Command scripts use their own assignment form:
+
+```bat
+@echo off
+if /I not "%CD%"=="%ARASHI_HOOK_TARGET_WORKTREE_PATH%" exit /b 1
+set "CI=true"
+corepack pnpm --ignore-workspace install --frozen-lockfile
+```
+
+For npm, Yarn, or Bun, use the package manager named by committed provenance and its lockfile-preserving install command.
+
+### Python
+
+Bind pip to the activated interpreter rather than relying on a separate `pip` executable:
+
+```bash
+#!/bin/sh
+set -eu
+
+[ "$PWD" = "$ARASHI_HOOK_TARGET_WORKTREE_PATH" ] || exit 1
 python3 -m venv .venv
 . .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-### Copy a Local `.env` File From the Main Worktree
+## Suggested setup sequence
 
-This is useful when your team keeps uncommitted local environment files in the main worktree and wants each new worktree to start with the same local config.
+1. Confirm lifecycle timing and choose the narrowest required scope.
+2. Activate exactly one inert example using the platform-native extension.
+3. Use explicit target fields for target-specific work and structured JSON for aggregate remove cleanup.
+4. Keep scripts fail-fast and idempotent; workspace and shared remove hooks can run repeatedly across targets.
+5. Run with `--dry-run` where supported, then inspect human or JSON hook outcomes.
 
-File: `.arashi/hooks/post-create.web.sh`
+Herdr workspaces can contain agents or unsaved terminal state, so `arashi remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove).
 
-```bash
-#!/bin/sh
-set -eu
-
-MAIN_ENV="$ARASHI_MAIN_REPO_PATH/repos/web/.env"
-WORKTREE_ENV="$ARASHI_WORKTREE_PATH/.env"
-
-if [ -f "$MAIN_ENV" ] && [ ! -f "$WORKTREE_ENV" ]; then
-  cp "$MAIN_ENV" "$WORKTREE_ENV"
-fi
-```
-
-If you want one shared hook for multiple child repos, use `.arashi/hooks/post-create.sh` and branch inside the script based on the target repository or the files present in `ARASHI_WORKTREE_PATH`.
-
-## Suggested Setup Sequence
-
-1. Confirm the create and remove flow you want first.
-2. Add workspace-level hooks only after you know which steps should be automatic.
-3. Add repository-scoped or global hooks only for trusted scripts and narrow use cases.
-4. Keep hooks focused on environment setup and cleanup, not on core project behavior.
-
-Herdr workspaces can contain agents or unsaved terminal state, so `arashi remove` never closes them automatically. If your team deliberately opts into pre-remove cleanup, resolve the workspace ID while `ARASHI_WORKTREE_PATH` still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove) for a guarded example.
-
-## Related References
+## Related references
 
 - [create command](/commands/create/)
 - [remove command](/commands/remove/)
+- [init command](/commands/init/)
 - [Config workflow guide](/workflows/config/)
+- [Standalone workflow guide](/workflows/standalone/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [Full hooks reference](https://github.com/corwinm/arashi/blob/main/docs/hooks.md)

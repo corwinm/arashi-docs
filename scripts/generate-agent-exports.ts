@@ -290,6 +290,7 @@ function renderLlmsTxt(): string {
 - Prefer machine-readable command output such as \`arashi status --json\` when automating decisions.
 - Use \`arashi exec --json -- <command>\` for repeated multi-repo inspection or validation commands, with explicit \`--only\` filters for mutating or expensive commands.
 - Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
+- Treat [Hooks](${site}/workflows/hooks/) as the lifecycle contract: configured create scopes have different mutation points, configured remove evaluates every scope per target, standalone uses targeted-then-shared user-global hooks only, and aggregate cleanup parses \`ARASHI_REMOVE_TARGETS_JSON\`.
 - Preserve explicit clone-local \`tracked\` or \`none\` preferences and never modify global Git configuration or a global excludes file to silence a warning.
 - Configure switching with one \`defaults.switch.mode\`: \`auto | cd | launch | sesh | herdr\`. An absent mode preserves automatic launch; configured \`auto\` prefers managed contexts before parent-shell \`cd\`.
 - Use \`arashi switch --tmux\` or \`arashi create --tmux\` for a per-invocation plain tmux override. Configured \`auto\` remains the persistent contextual choice inside tmux; \`tmux\` is not added to configuration vocabularies.
@@ -306,6 +307,7 @@ function renderLlmsTxt(): string {
 - [Getting started](${site}/getting-started/) - install and configured meta-repository workflow.
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
 - [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
+- [Hooks workflow](${site}/workflows/hooks/) - lifecycle timing, scope, environment, platform, timeout, failure, and safe setup guidance.
 - [Launch disposition workflow](${site}/workflows/launch-disposition/) - default independent launch, one-invocation tabs, precedence, support matrix, and no-fallback safety.
 - [Herdr workflow](${site}/workflows/herdr/) - explicit, configured, and automatic workspace launch, reuse, ownership, and troubleshooting.
 - [Kitty workflow](${site}/workflows/kitty/) - Kitty 0.43+ remote-control setup, exact window reuse, live-only ownership, and troubleshooting.
@@ -324,6 +326,7 @@ function renderLlmsTxt(): string {
 - [Status command Markdown](${site}/commands/status.md)
 - [Standalone workflow Markdown](${site}/workflows/standalone.md)
 - [Configuration workflow Markdown](${site}/workflows/config.md)
+- [Hooks workflow Markdown](${site}/workflows/hooks.md)
 - [Launch disposition workflow Markdown](${site}/workflows/launch-disposition.md)
 - [Herdr workflow Markdown](${site}/workflows/herdr.md)
 - [Kitty workflow Markdown](${site}/workflows/kitty.md)

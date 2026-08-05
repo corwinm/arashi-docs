@@ -70,7 +70,7 @@ Where a command supports JSON, it reports standalone mode and exact repository/w
 
 Repository filters and multi-repository selection have no meaning here. Standalone commands reject `--only`, `--group`, interactive multi-repository selection, and switch scopes such as `--repos` or `--all` rather than silently broadening or ignoring them.
 
-Standalone create/remove lifecycles can run shared and repository-targeted **user-global** hooks under `~/.arashi/hooks/`. A configless repository's local `.arashi/hooks` and configured workspace-root hook scopes are not activated. Use configured mode when those local hook capabilities are required.
+Standalone create/remove lifecycles run platform-native repository-targeted and shared **user-global** hooks under `~/.arashi/hooks/`, targeted before shared. Targeted lookup uses the resolved main-root basename even when invocation begins in a linked worktree. Configless repository-local and workspace hooks remain inactive; use configured mode when those scopes are required. Hook cwd is the resolved standalone main root, create follows the documented rollback boundary, and remove preserves pre-abort/post-finalization outcomes. See the [Hooks workflow](/workflows/hooks/) for native extensions, context, timeout, and failure details.
 
 ## Upgrade to Configured Mode
 

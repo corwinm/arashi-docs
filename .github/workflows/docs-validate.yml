@@ -71,6 +71,12 @@ jobs:
       - name: Check managed-ignore documentation contract
         run: pnpm validate:managed-ignore-docs
 
+      - name: Check standalone documentation contract
+        run: pnpm validate:standalone-docs
+
+      - name: Check lifecycle-hook documentation contract
+        run: pnpm validate:lifecycle-hook-docs
+
       - name: Check switch-mode documentation contract
         run: pnpm validate:switch-mode-docs
 
