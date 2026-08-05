@@ -61,6 +61,20 @@ Configured Herdr does not require the command to start inside a Herdr-managed pa
 
 Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
 
+## Hook timeout
+
+All lifecycle scopes use a default timeout of `300000` milliseconds. Set `hooks.timeout` to an integer from `1` through `2147483647` when trusted configured create/remove hooks need a different limit:
+
+```json
+{
+  "hooks": {
+    "timeout": 600000
+  }
+}
+```
+
+The configured override applies consistently to workspace, repository, global-targeted, and global-shared lifecycle hooks. Zero, negative, fractional, non-numeric, and out-of-range values fail validation before hook discovery or lifecycle mutation. See the [Hooks workflow](/workflows/hooks/) for timing and failure behavior.
+
 ## Legacy create launch migration
 
 The canonical schema and new examples use the single string `launch` field. During a bounded compatibility window, Arashi still reads a legacy boolean `launch` with create-specific `launchMode` or `launch_mode` at generic and editor-hosted create scopes.

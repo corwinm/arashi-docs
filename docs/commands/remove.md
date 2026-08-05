@@ -73,22 +73,17 @@ arashi remove feature-login --force --json
 
 ## Lifecycle Hooks
 
-`remove` supports scoped `pre-remove.sh` and `post-remove.sh` hooks.
-
-Hook discovery order for each targeted repository:
-
-1. `repos/<repo>/.arashi/hooks/<lifecycle>.sh`
-2. `.arashi/hooks/<lifecycle>.sh`
-3. `~/.arashi/hooks/<repo>/<lifecycle>.sh`
-4. `~/.arashi/hooks/<lifecycle>.sh`
+For each configured target repository, `remove` evaluates repository, workspace, global-targeted, and global-shared `pre-remove`/`post-remove` hooks in that order. Every scope is evaluated once per target repository, so workspace and shared hooks must be idempotent and use the current target's context. POSIX uses `.sh`; Windows uses one unambiguous native `.ps1`, `.cmd`, or `.bat` script at each location.
 
 Behavior:
 
-- Any failing `pre-remove` hook aborts destructive remove actions.
-- Dry-run mode reports hooks that would be considered but never executes `pre-remove` or `post-remove` scripts.
-- `post-remove` hooks still run after partial remove failures.
-- Any failing `post-remove` hook returns a non-zero command exit status.
-- Hooks receive scope metadata via `ARASHI_HOOK_SCOPE` and `ARASHI_HOOK_SOURCE_PATH`.
+- Any failing or timed-out `pre-remove` hook aborts destructive remove actions.
+- Dry-run mode reports hooks that would be considered but never executes `pre-remove` or `post-remove` scripts and never fabricates execution outcomes.
+- `post-remove` hooks still run after partial remove failures; removal errors and all hook outcomes remain available in human and JSON results.
+- Any failing `post-remove` hook contributes to a nonzero command result without collapsing earlier timeout or removal failures.
+- Per-target scalar context comes only from the current repository. Command-wide cleanup parses `ARASHI_REMOVE_TARGETS_JSON`; comma-separated compatibility aggregates are lossy.
+
+See the [Hooks workflow](/workflows/hooks/) for discovery paths, structured target shape, cwd, timeout, compatibility, and outcome contracts.
 
 ## Related Commands
 

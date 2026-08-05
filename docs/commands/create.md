@@ -88,7 +88,9 @@ arashi create feature-auth-refresh --move-changes
 
 - In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [Standalone Repository workflow](/workflows/standalone/).
 - `create` validates branch names and repository readiness.
-- On failure, coordinated operations can roll back to keep repos consistent.
+- Configured create runs workspace `pre-create` once before branch/worktree mutation, then each repository's retained-name `pre-create.<repo>` at its post-materialization/pre-setup point, followed by `post-create.<repo>`. Workspace `post-create` runs once after coordinated Git creation and before move-changes or switch/launch handling. Repository hooks run in the new child worktree; workspace hooks run at the workspace root.
+- Any create-hook validation failure, timeout, or nonzero exit fails create and enters the owned Git rollback boundary. Human and JSON results preserve the complete hook outcome ledger and any rollback warning. See the [Hooks workflow](/workflows/hooks/) for scope, environment, platform, timeout, and outcome details.
+- On other failures, coordinated operations can roll back to keep repos consistent.
 - Reconciliation honors existing effective tracked, repository-local, or global rules before using the clone's stored scope or repository-local default. Scope `none` creates no ignore-file changes and warns for safe paths that remain unignored.
 - `--dry-run` previews managed ignore scope, effective sources, planned rules, warnings, and unsafe skips without changing ignore files or clone-local preference state.
 - If worktree creation is fully rolled back, reconciliation is restored too. If a worktree survives a partial failure, Arashi retains the ignore state needed for that final filesystem state and reports it.
