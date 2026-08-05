@@ -22,6 +22,7 @@ const canonicalRequirements = [
   "conflicts only with explicit `--cd`",
   "now-redundant `--no-default-launch` remain compatible",
   "composes with explicit launcher selectors",
+  "does not replace a launcher explicitly selected in the same invocation",
   "`launch` mode",
   "exit status `2`",
   "`interactive-or-launch` mode",
@@ -148,6 +149,8 @@ const generatedRequirements: Requirement[] = [
     text: [
       "default new window or independent managed session",
       "`--tab` is CLI-only",
+      "bypasses configured switch and create launch defaults",
+      "explicit launcher selectors remain authoritative",
       "[Launch disposition workflow]",
       "https://arashi.haphazard.dev/workflows/launch-disposition.md",
     ],

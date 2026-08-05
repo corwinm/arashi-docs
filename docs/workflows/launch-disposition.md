@@ -22,7 +22,7 @@ Arashi first honors explicit launcher selection and then strictly detected manag
 
 ## Request A Tab Once
 
-`--tab` is a CLI-only, one-invocation request. It changes launch disposition, not launcher selection, and does not create a persistent preference.
+`--tab` is a CLI-only, one-invocation request. It changes launch disposition and does not replace a launcher explicitly selected in the same invocation. When no explicit selector is present, tab intent also controls default selection by bypassing configured launcher defaults; it does not create a persistent preference.
 
 ```bash
 # Open an existing worktree as a tab in the selected supported context
