@@ -75,6 +75,8 @@ Arashi downloads the matching platform binary on first use. To preinstall it exp
 arashi install
 ```
 
+For npm-managed bootstrap automation, `arashi install -j` and `arashi install --json` are equivalent and emit the same machine-readable result exactly once.
+
 Verify install:
 
 ```bash

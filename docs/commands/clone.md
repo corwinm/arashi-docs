@@ -29,7 +29,7 @@ arashi clone [options]
 ## Key Options
 
 - `--all` clone all missing configured repositories without selection prompts.
-- `--json` output machine-readable results for non-interactive clone runs.
+- `-j, --json` output machine-readable results for non-interactive clone runs.
 
 ## Examples
 

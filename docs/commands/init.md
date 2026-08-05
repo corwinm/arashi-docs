@@ -29,11 +29,11 @@ arashi init [options]
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
 - `--worktrees-dir <path>` set a custom worktree base directory (when omitted, bare repositories use `..` and non-bare repositories use `.arashi/worktrees`).
 - `--ignore-scope <local|tracked|none>` choose repository-local rules, tracked rules, or no ignore-file writes.
-- `--force` overwrite an existing Arashi config (with backup).
+- `-f, --force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.
-- `--dry-run` preview changes without writing files.
-- `--verbose` print detailed initialization steps.
-- `--json` output machine-readable initialization results.
+- `-n, --dry-run` preview changes without writing files.
+- `-v, --verbose` print detailed initialization steps.
+- `-j, --json` output machine-readable initialization results.
 - `--zero-config` bootstrap the root `.worktrees/` convention for ad hoc use in a non-bare Git project that has not adopted Arashi configuration.
 
 ## Examples

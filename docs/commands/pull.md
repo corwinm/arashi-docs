@@ -26,10 +26,10 @@ arashi pull [options]
 
 ## Key Options
 
-- `--only <repo>` limit pull to specific repositories (repeatable).
-- `--group <group>` pull only repositories in the requested group (repeatable).
+- `-o, --only <repo>` limit pull to repositories; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` limit pull to groups; repeat it, use commas, or mix both forms.
 - `-v, --verbose` print full git output.
-- `--json` output machine-readable pull results.
+- `-j, --json` output machine-readable pull results.
 
 ## Examples
 

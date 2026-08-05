@@ -17,9 +17,9 @@ arashi update [--check] [--dry-run] [--yes]
 ## Options
 
 - `--check` checks whether an update is available without changing files.
-- `--dry-run` shows the planned update command or installer invocation without changing files.
+- `-n, --dry-run` shows the planned update command or installer invocation without changing files.
 - `-y, --yes` applies a supported update non-interactively.
-- `--json` output machine-readable update check, plan, or result data.
+- `-j, --json` output machine-readable update check, plan, or result data.
 
 ## Behavior
 
@@ -31,6 +31,8 @@ Arashi first detects how the current CLI is installed.
 - official direct-installer installs can rerun the platform installer against the current binary directory when you pass `--yes`: the POSIX curl installer on macOS/Linux and a deferred PowerShell installer on Windows after the current Arashi process exits.
 - manual release-asset installs use the same installer-based plan when possible; use `--dry-run` first if you need to inspect the target directory.
 - ambiguous npm-managed installs do not mutate files. Arashi prints manual update commands instead.
+- `--check` conflicts with `--dry-run` and `-n`. The npm wrapper and direct binary both reject that combination before release lookup, installer planning, or mutation rather than choosing one mode by flag order.
+- Human mode returns an actionable usage error. JSON mode returns exactly one structured error envelope with both options identified and no human text mixed into stdout.
 
 ## Examples
 

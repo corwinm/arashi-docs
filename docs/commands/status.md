@@ -27,8 +27,9 @@ arashi status [options]
 
 - `-v, --verbose` show full `git status` output for each repository.
 - `-s, --short` show one-line summaries per repository.
-- `--group <group>` inspect only repositories in the requested group. Repeat for multiple groups.
-- `--json` output machine-readable workspace status.
+- `-o, --only <repo>` inspect configured child repositories by identity; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` inspect requested groups; repeat it, use commas, or mix both forms.
+- `-j, --json` output machine-readable workspace status.
 
 ## Examples
 
@@ -45,6 +46,9 @@ arashi status --short
 # Inspect documentation repositories only
 arashi status --group docs
 
+# Inspect one configured child and emit one JSON envelope
+arashi status -o arashi-docs -j
+
 # Emit structured status for automation
 arashi status --json
 ```
@@ -54,6 +58,10 @@ arashi status --json
 - `--verbose` and `--short` are mutually exclusive.
 - Default and short human output hide configured child repositories that are missing from a partial coordinated worktree.
 - `--group` filters status to repositories in the requested semantic group, such as `docs`, `core`, or `infra`.
+- Repeated, comma-separated, or mixed `--only` and `--group` values use the shared normalization contract. When both are supplied, they intersect; unknown, explicitly empty, and empty-intersection filters fail closed before status work.
+- `--only` selects configured child repositories only. Unselected child repositories are not fetched or inspected, while parent repository reporting remains unchanged in human and JSON summaries.
+- In JSON output, `data.filters` reports the effective normalized `only` and `groups` values. `data.repositories` contains the selected child set plus the unchanged parent record, so the repository records and effective-filter metadata agree with the applied selection.
+- Implicit standalone mode rejects `--only` and `--group` before Git fetch or inspection; ordinary standalone status remains unchanged when selectors are omitted.
 - Use `--verbose` or `--json` when you need to see every configured repository, including omitted or missing child repositories.
 - Non-zero exit codes are returned if repository status checks fail.
 - JSON mode is useful for agents and scripts that need to decide whether repositories are clean, dirty, behind, or ahead without scraping text.

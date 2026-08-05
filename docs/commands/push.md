@@ -25,11 +25,11 @@ arashi push [options]
 
 ## Key Options
 
-- `--only <repo>` include only a named repository. Repeat it to select multiple repositories.
-- `--group <group>` include only repositories in the requested group. Repeat for multiple groups.
+- `-o, --only <repo>` include named repositories; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` include requested groups; repeat it, use commas, or mix both forms.
 - `--set-upstream` publish new branches and configure upstream tracking.
-- `--dry-run` preview planned pushes without updating remotes.
-- `--json` output a single machine-readable result envelope.
+- `-n, --dry-run` preview planned pushes without updating remotes.
+- `-j, --json` output a single machine-readable result envelope.
 
 ## Examples
 

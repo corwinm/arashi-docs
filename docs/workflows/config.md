@@ -57,7 +57,7 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 - An absent `defaults.switch.mode` preserves automatic launch without preferring parent-shell `cd`.
 - Terminal create reads only `defaults.create`. Editor-hosted create reads only its matching `defaults.editors.<host>.create` scope for `vscode`, `cursor`, or `kiro`; it does not fall back to generic defaults or another editor when that host scope is absent.
 
-Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --no-default-launch` bypasses configured `sesh` or `herdr` for one run; `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
+Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --launch` preserves a configured `sesh` or `herdr` launcher. `switch --ignore-configured-launcher` bypasses that named launcher while retaining its launch behavior, and `switch --launch --ignore-configured-launcher` requests generic automatic launch. `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
 
 Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
 
@@ -157,6 +157,12 @@ arashi exec --group agents -- pnpm validate
 ```
 
 When `--group` and `--only` are supplied together, Arashi intersects the filters: `--group` narrows the explicit repository list instead of broadening it. For example, `arashi exec --only arashi,arashi-docs --group docs -- pnpm validate` runs only in `arashi-docs` if that is the only selected repository in the `docs` group. Unknown groups and valid filters that produce an empty intersection are reported as selection errors before mutating commands run.
+
+### Repeated and comma-separated selectors
+
+Every command that registers `--only` or `--group` accepts repeated occurrences, comma-separated values, or both mixed together. Values are flattened in encounter order, trimmed, and deduplicated by first occurrence. Blank segments beside valid values are ignored.
+
+Omitted selectors retain the command default. A supplied selector that normalizes empty remains an error rather than becoming omission. An unknown repository or group and an empty intersection also fail closed before repository inspection, hooks, fetches, or mutation. The command-local aliases `-o` and `-g` use the identical normalization and error behavior.
 
 ## Related References
 

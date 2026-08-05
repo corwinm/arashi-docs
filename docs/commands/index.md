@@ -8,6 +8,8 @@ sidebar:
 
 Use this section when you want command-level guidance.
 
+Native shell completion is not added or claimed by this option-rationalization change. Long options and each command's documented aliases remain the authoritative public surface for future completion work.
+
 ## Command Pages
 
 - [init](/commands/init/) - initialize a workspace.

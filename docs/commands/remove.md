@@ -28,9 +28,9 @@ arashi remove [target] [options]
 - `--keep-worktrees` delete branches but keep worktree directories.
 - `--keep-branches` remove worktrees but keep branches.
 - `-f, --force` skip confirmation prompts.
-- `--dry-run` preview planned removals without changing worktrees, branches, or lifecycle hooks.
+- `-n, --dry-run` preview planned removals without changing worktrees, branches, or lifecycle hooks.
 - `--path` treat `target` as a worktree path.
-- `--json` output machine-readable results.
+- `-j, --json` output machine-readable results.
 
 ## Examples
 

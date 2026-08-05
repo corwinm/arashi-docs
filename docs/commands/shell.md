@@ -20,7 +20,7 @@ arashi shell <subcommand>
 
 - `init <bash|zsh|fish>` print shell wrapper code for manual setup.
 - `install` detect the active shell and update the matching startup file.
-- `--json` request a structured result when the selected shell action supports JSON mode.
+- `-j, --json` request a structured result when the selected shell action supports JSON mode.
 
 ## Examples
 

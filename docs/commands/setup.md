@@ -24,10 +24,10 @@ arashi setup [options]
 
 ## Key Options
 
-- `--only <repo>` run setup for specific repositories (repeatable).
-- `--group <group>` run setup only for repositories in the requested group (repeatable).
+- `-o, --only <repo>` run setup for repositories; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` run setup for groups; repeat it, use commas, or mix both forms.
 - `-v, --verbose` print full setup script output.
-- `--json` output machine-readable setup results.
+- `-j, --json` output machine-readable setup results.
 
 ## Examples
 

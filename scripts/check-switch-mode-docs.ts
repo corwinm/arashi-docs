@@ -11,8 +11,9 @@ const sourceRequirements = new Map<string, string[]>([
       modeVocabulary,
       autoOrder,
       "An absent mode preserves automatic launch",
-      "--no-cd",
-      "--no-default-launch",
+      "--launch",
+      "--ignore-configured-launcher",
+      "Deprecated compatibility spellings",
       "`--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`"
     ]
   ],
@@ -33,7 +34,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   ["docs/commands/shell.md", ["managed context", "parent-shell `cd`"]],
   ["docs/workflows/tmux-and-sesh.md", ["mode: \"auto\"", "mode: \"sesh\""]],
-  ["docs/workflows/herdr.md", ["mode: \"herdr\"", "--no-default-launch", "--no-cd"]],
+  ["docs/workflows/herdr.md", ["mode: \"herdr\"", "--ignore-configured-launcher", "--launch"]],
   ["docs/workflows/cmux.md", ["mode: \"auto\"", "mode: \"cd\"", "--herdr"]]
 ]);
 

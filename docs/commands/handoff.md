@@ -22,8 +22,7 @@ Markdown is the default human output. Use `--json` when an agent, script, or edi
 
 ## Options
 
-- `--json` emit one machine-readable JSON envelope instead of Markdown.
-- `--markdown` explicitly request Markdown output. Markdown is already the default.
+- `-j, --json` emit one machine-readable JSON envelope instead of Markdown.
 - `--link <link>` add a related issue, PR, spec, or reference link. Repeat for multiple links.
 - `--validation <entry>` add validation evidence such as a command and result. Repeat for multiple entries.
 - `--todo <item>` add remaining work as a checklist item. Repeat for multiple items.
@@ -77,6 +76,10 @@ On success, `data` includes:
 - `generatedNextCommands`: conservative follow-up commands such as `arashi status`
 
 If the command runs outside a workspace, JSON mode returns `ok: false` with `error.code: "NOT_IN_WORKSPACE"`.
+
+## Deprecated compatibility
+
+Markdown is the default human output, so preferred help and examples omit `--markdown`. The explicit spelling remains a hidden, deprecated compatibility option throughout Arashi 1.x and produces the same report; JSON remains authoritative if both are supplied. Removal may happen no earlier than Arashi 2.0 and requires a separately approved breaking-change issue.
 
 ## Handoff Guidance
 
