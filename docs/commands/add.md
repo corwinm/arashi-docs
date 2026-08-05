@@ -28,7 +28,7 @@ arashi add <git-url> [options]
 - `-n, --name <name>` override the auto-derived repository name.
 - `--create-setup` create a setup template when no setup script is found.
 - `-f, --force` skip confirmation prompts.
-- `--json` output machine-readable results.
+- `-j, --json` output machine-readable results. On `add`, `-n` remains the alias for `--name`, not dry-run.
 
 ## Examples
 

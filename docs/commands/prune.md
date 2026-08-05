@@ -27,9 +27,9 @@ arashi prune [options]
 
 ## Key Options
 
-- `--dry-run` report stale worktree metadata without pruning it.
+- `-n, --dry-run` report stale worktree metadata without pruning it.
 - `--expire <time>` pass a Git worktree prune expiry time. Defaults to `now` so stale entries discovered by Arashi are cleaned immediately.
-- `--json` output machine-readable results.
+- `-j, --json` output machine-readable results.
 
 ## Examples
 

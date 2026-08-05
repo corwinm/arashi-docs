@@ -20,6 +20,8 @@ Use `--json` when a tool needs to parse Arashi output or make decisions from it.
 
 Use human output when a person is reading the result directly, especially for exploratory `status`, `doctor`, or `exec` runs where tables and grouped summaries are easier to scan.
 
+Every command that supports `--json` also accepts `-j` through the same validation and execution path. For example, `status -o arashi-docs -j` narrows configured child inspection and emits the same single envelope as the long options.
+
 ## Envelope Shape
 
 JSON-capable commands write a single envelope to stdout.
@@ -151,7 +153,7 @@ If stdout contains human text in JSON mode, that is a bug because it breaks tool
 | `status` | Supported | Prefer this for current repository state when `doctor` says deeper inspection is needed. |
 | `switch` | Unsupported by design | `--json` returns a structured unsupported-mode error instead of opening terminals, editors, or changing the parent shell. |
 | `sync` | Supported | Use `--only` or `--group` to limit branch alignment work when appropriate. |
-| `update` | Supported for check and preview flows | Use `--check --json` or `--dry-run --json`. Applying an installer update with `--yes --json` returns an unsupported-mode error. |
+| `update` | Supported for check and preview flows | Use `--check --json` or `--dry-run --json`. Bare `update --json` is inspection-only and never prompts or mutates. Applying an installer update with `--yes --json` returns an unsupported-mode error. |
 
 ## Stable Unsupported Modes
 
@@ -162,6 +164,8 @@ Some commands exist to prompt, launch tools, print shell code, or change the par
 - `error.details.mode` naming the unsupported flow, such as `interactive-selection`, `shell-code`, `terminal-launch`, or `installer-apply`
 
 Automation should respond by passing a non-interactive flag, choosing a different command, or falling back to human output for that workflow.
+
+`update --check --dry-run` (including `--check -n`) is a usage conflict before release lookup or mutation. JSON mode emits one structured error envelope; human and JSON paths enforce the same conflict before the npm wrapper or direct binary performs update work.
 
 Tab disposition keeps the existing command-specific launch guards: `switch --json --tab` returns `JSON_UNSUPPORTED_FOR_MODE` with mode `launch` and exit status `2`; `create --json --tab` returns the same code with mode `interactive-or-launch` and exit status `1`. Both emit exactly one JSON document and reject before launch, create mutation, launcher-conflict checks, or runtime-session validation. See the [launch disposition workflow](/workflows/launch-disposition/) for the supported adapter matrix.
 

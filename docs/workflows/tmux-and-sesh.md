@@ -29,7 +29,7 @@ arashi create feature-auth --tmux
 - If tmux context is missing or `tmux new-window` fails, Arashi does not fall back to another launcher.
 - Ghostty containing tmux still selects a tmux window for both the default independent launch and `--tab` managed equivalent; the containing Ghostty adapter does not outrank tmux. See the [launch disposition workflow](/workflows/launch-disposition/) for disposition precedence and the complete support matrix.
 
-For `switch`, `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`. It is compatible with `--no-cd` and remains authoritative with `--no-default-launch`.
+For `switch`, `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`. It is compatible with `--launch` and remains authoritative with `--ignore-configured-launcher`.
 
 For `create`, `--tmux` conflicts with `--sesh` and `--herdr`. It implies launch and target selection, so it remains active with `--no-launch` or `--no-switch`. Missing tmux context fails before worktrees or hooks are created. If the tmux process fails only after successful creation, Arashi preserves those worktrees and reports the launch failure.
 

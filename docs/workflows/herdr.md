@@ -57,8 +57,8 @@ Set the single create launch choice and the unified switch mode to `herdr`:
 
 Editor-scoped create defaults under `defaults.editors.<host>.create` use the same `launch: "herdr"` choice for `vscode`, `cursor`, and `kiro`. An editor-hosted invocation reads only its matching host scope and does not inherit generic or another host's create defaults. Configured Herdr works outside a Herdr-managed pane as long as the CLI can reach the running default session.
 
-- `arashi switch --no-default-launch ...` bypasses configured Herdr for that invocation and returns to automatic launch resolution.
-- `arashi switch --no-cd ...` forces launch behavior when the configured switch mode would otherwise change the parent shell directory.
+- `arashi switch --ignore-configured-launcher ...` bypasses configured Herdr for that invocation while retaining launch behavior through automatic resolution.
+- `arashi switch --launch ...` forces launch behavior while preserving configured Herdr.
 - `arashi create --no-launch ...` suppresses configured Herdr unless explicit `--herdr` is also present.
 
 ## Automatic Detection And Precedence
@@ -73,7 +73,7 @@ Switch resolution is:
 4. for configured `auto`, detect tmux, Herdr, cmux, or an integrated IDE before parent-shell `cd`
 5. continue to terminal-app and generic fallback when automatic launch has no managed context
 
-Therefore an explicit or configured Herdr mode overrides automatic environment detection. `--no-cd` preserves configured Herdr, while `--no-default-launch` bypasses configured Herdr and returns to automatic launch. In automatic launch, a tmux session nested inside Herdr retains tmux behavior; otherwise Herdr precedes cmux, IDE, terminal-app, and generic fallbacks. Once Herdr is selected by any route, a Herdr failure does not silently open another launcher or fall back to `cd`.
+Therefore an explicit or configured Herdr mode overrides automatic environment detection. `--launch` preserves configured Herdr, while `--ignore-configured-launcher` bypasses configured Herdr and returns to automatic launch. In automatic launch, a tmux session nested inside Herdr retains tmux behavior; otherwise Herdr precedes cmux, IDE, terminal-app, and generic fallbacks. Once Herdr is selected by any route, a Herdr failure does not silently open another launcher or fall back to `cd`.
 
 Ghostty containing Herdr selects Herdr rather than the containing terminal. With `--tab`, Arashi creates a Herdr tab in the active Herdr workspace; strict workspace evidence is required and unsupported or failed tab launch does not fall back to a Ghostty window. See the [launch disposition workflow](/workflows/launch-disposition/) for the default-versus-tab matrix.
 

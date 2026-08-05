@@ -22,12 +22,12 @@ The `--` delimiter is required before the child command. Arashi parses options b
 
 ## Options
 
-- `--only <repos>` run only the named managed repositories. Use a comma-separated list for multiple repositories.
-- `--group <group>` run only repositories in the requested group. Repeat for multiple groups.
+- `-o, --only <repos>` run only named managed repositories; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` run only requested groups; repeat it, use commas, or mix both forms.
 - `--dirty` run only in selected repositories that have local working-tree changes.
-- `--jobs <n>` run up to `n` repositories concurrently. The default is serial execution.
+- `--jobs <positive-int>` remains long-only and runs up to that many repositories concurrently. The default is serial execution.
 - `--fail-fast` stop scheduling additional repositories after the first child-command failure. Already-running jobs may finish and be reported.
-- `--json` emit one machine-readable JSON envelope instead of grouped human output.
+- `-j, --json` emit one machine-readable JSON envelope instead of grouped human output.
 
 ## Examples
 

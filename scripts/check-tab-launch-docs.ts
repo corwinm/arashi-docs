@@ -20,7 +20,7 @@ const canonicalRequirements = [
   "bypasses configured launcher defaults",
   "`--tab` alone uses automatic launcher resolution",
   "conflicts only with explicit `--cd`",
-  "now-redundant `--no-default-launch` remain compatible",
+  "canonical `--launch` and `--ignore-configured-launcher` remain compatible",
   "composes with explicit launcher selectors",
   "does not replace a launcher explicitly selected in the same invocation",
   "`launch` mode",
@@ -44,7 +44,7 @@ const canonicalRequirements = [
   "press Command-T",
   "`arashi switch --cd`",
   "requires active Arashi shell integration",
-  "`arashi switch --no-cd --no-default-launch`",
+  "`arashi switch --launch --ignore-configured-launcher`",
   "when automatic launcher resolution selects Terminal.app",
   "iTerm2",
   "| macOS Ghostty older than 1.3 or missing supported-version evidence | New window | Unsupported | No supported tab API |",
@@ -74,7 +74,7 @@ const sourceRequirements: Requirement[] = [
       "bypasses configured `sesh` or `herdr` launch defaults",
       "`--tab` alone uses automatic launcher resolution",
       "conflicts only with explicit `--cd`",
-      "now-redundant `--no-default-launch` remain compatible",
+      "canonical `--launch` and `--ignore-configured-launcher` remain compatible",
       "[launch disposition workflow](/workflows/launch-disposition/)",
     ],
   },
@@ -164,7 +164,7 @@ const generatedRequirements: Requirement[] = [
   },
 ];
 
-const invalidPathSubstitution = 'cd "$(arashi switch --no-cd --no-default-launch)"';
+const invalidPathSubstitution = 'cd "$(arashi switch --launch --ignore-configured-launcher)"';
 
 const root = path.resolve(process.cwd());
 const errors = checkRoot(root);
@@ -368,7 +368,7 @@ function runDeliberateMismatchSelfTest(sourceRoot: string): void {
 
     writeFileSync(
       workflowPath,
-      `${valid}\n\nWithout shell integration, run \`cd "$(arashi switch --no-cd --no-default-launch)"\`.\n`,
+      `${valid}\n\nWithout shell integration, run \`cd "$(arashi switch --launch --ignore-configured-launcher)"\`.\n`,
     );
     const invalidPathSubstitutionErrors = checkRoot(fixtureRoot);
     if (

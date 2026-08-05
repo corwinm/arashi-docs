@@ -26,8 +26,8 @@ arashi create <branch> [options]
 
 ## Key Options
 
-- `--only <repos>` limit creation to comma-separated repository names.
-- `--group <group>` create worktrees only for repositories in the requested group. Repeat for multiple groups.
+- `-o, --only <repos>` limit creation to repository names; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` create worktrees only for requested groups; repeat it, use commas, or mix both forms.
 - `-i, --interactive` pick repositories interactively.
 - `--switch` switch to the created parent worktree after create.
 - `--no-switch` disable configured create switch defaults for one invocation.
@@ -40,9 +40,9 @@ arashi create <branch> [options]
 - `--conflict <strategy>` preselect conflict handling (`ABORT`, `REUSE_EXISTING`).
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
-- `--dry-run` generate a plan without creating worktrees.
+- `-n, --dry-run` generate a plan without creating worktrees.
 - `--move-changes` move compatible uncommitted changes from the current workspace into the new worktree after create.
-- `--json` output machine-readable create results or structured unsupported-mode errors.
+- `-j, --json` output machine-readable create results or structured unsupported-mode errors.
 
 ## Examples
 

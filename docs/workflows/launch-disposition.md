@@ -36,7 +36,9 @@ arashi switch feature-auth --herdr --tab
 arashi create feature-auth --tmux --tab
 ```
 
-For `switch`, explicit tab intent overrides configured or contextual parent-shell `cd` and bypasses configured launcher defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; `--no-cd` and the now-redundant `--no-default-launch` remain compatible, and it composes with explicit launcher selectors. An explicit selector such as `--herdr --tab` remains authoritative while `--tab` controls that launcher's disposition. If the selected launcher cannot provide a supported tab, its adapter returns an unsupported result rather than turning the combination into a generic parser conflict.
+For `switch`, explicit tab intent overrides configured or contextual parent-shell `cd` and bypasses configured behavior and named-launcher defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; canonical `--launch` and `--ignore-configured-launcher` remain compatible, and it composes with explicit launcher selectors. An explicit launcher supplied with `--tab` remains authoritative while `--tab` controls that launcher's disposition. If the selected launcher cannot provide a supported tab, its adapter returns an unsupported result rather than turning the combination into a generic parser conflict.
+
+Outside tab requests, `--launch --ignore-configured-launcher` is the exact generic automatic-launch combination.
 
 For `create`, create tab implies launch and switch and bypasses configured launcher defaults, using automatic contextual launcher resolution unless `--tmux`, `--sesh`, or `--herdr` explicitly selects the adapter. It wins over `--no-launch` and `--no-switch`; redundant positive `--launch` and `--switch` remain compatible. Explicit launcher selectors still choose the adapter, while `--tab` chooses that adapter's disposition.
 
@@ -88,7 +90,7 @@ arashi switch --cd
 
 This sequential workflow requires active Arashi shell integration so Arashi can change the current shell's directory.
 
-To request Arashi's normal automatic launch instead of parent-shell directory switching or a configured named launcher, run `arashi switch --no-cd --no-default-launch` directly. It opens a new Terminal window when automatic launcher resolution selects Terminal.app.
+To request Arashi's normal automatic launch instead of parent-shell directory switching or a configured named launcher, run `arashi switch --launch --ignore-configured-launcher` directly. It opens a new Terminal window when automatic launcher resolution selects Terminal.app.
 
 Unsupported tab disposition never opens a window or falls through to another launcher. An explicitly selected or positively detected unsupported adapter reports `TAB_DISPOSITION_UNSUPPORTED`; runtime automation or process failures after a supported adapter is selected report `LAUNCH_FAILED`. Neither case retries with the default window disposition.
 

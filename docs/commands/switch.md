@@ -27,15 +27,15 @@ arashi switch [filter] [options]
 - `--repos` target child repositories in the current workspace only.
 - `--all` target parent workspaces and nested child repo worktrees.
 - `--cd` request parent-shell directory switching for one invocation.
-- `--no-cd` force launch behavior for one invocation.
+- `--launch` force launch behavior while preserving a configured named launcher.
+- `--ignore-configured-launcher` ignore a configured named launcher without erasing configured or contextual launch behavior.
 - `--path` treat the argument as an exact worktree path instead of a fuzzy filter.
 - `--tab` request a tab in the selected supported terminal or managed context for this invocation.
 - `--tmux` open the selected worktree in a new plain tmux window for this invocation.
 - `--sesh` run sesh mode in tmux (requires active tmux session and `sesh`).
 - `--herdr` open or focus the selected existing worktree in a running Herdr session.
 - `--vscode`, `--cursor`, `--kiro` explicitly open the selected worktree in that IDE for one invocation.
-- `--no-default-launch` bypass a configured `sesh` or `herdr` mode for one invocation and use automatic launch instead.
-- `--json` output machine-readable results when the selected mode can be represented safely.
+- `-j, --json` output machine-readable results when the selected mode can be represented safely.
 
 ## Examples
 
@@ -70,11 +70,11 @@ arashi switch --tab feature-auth
 # Open or focus the selected worktree in Herdr
 arashi switch --herdr feature-auth
 
-# Force launch behavior when switch defaults prefer cd
-arashi switch --no-cd
+# Force launch behavior while preserving a configured named launcher
+arashi switch --launch
 
-# Bypass a configured sesh or Herdr mode for one run
-arashi switch --no-default-launch
+# Request generic automatic launch, ignoring a configured named launcher
+arashi switch --launch --ignore-configured-launcher
 
 # Ask for a structured result instead of human-oriented output
 arashi switch feature-auth --json
@@ -91,14 +91,15 @@ arashi switch feature-auth --json
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
 - `launch` always uses automatic launcher selection without preferring parent-shell switching. `sesh` and `herdr` always select that launcher, even when shell integration or another managed context is active.
 - An absent mode preserves automatic launch and does not newly prefer parent-shell `cd` in configured or standalone repositories.
-- `--tab` is a CLI-only, one-invocation disposition. It overrides configured or contextual parent-shell `cd` and bypasses configured `sesh` or `herdr` launch defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; `--no-cd` and the now-redundant `--no-default-launch` remain compatible. It composes with explicit launcher selectors, which stay authoritative while `--tab` controls disposition; unsupported selected adapters fail without opening a window or falling through. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete matrix, JSON behavior, and safety boundaries.
+- `--tab` is a CLI-only, one-invocation disposition. It overrides configured or contextual parent-shell `cd` and bypasses configured `sesh` or `herdr` launch defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; canonical `--launch` and `--ignore-configured-launcher` remain compatible. It composes with explicit launcher selectors, which stay authoritative while `--tab` controls disposition; unsupported selected adapters fail without opening a window or falling through. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete matrix, JSON behavior, and safety boundaries.
 - Configured `auto` uses this order: tmux → Herdr → cmux → integrated IDE → Kitty → parent-shell `cd` → terminal/platform fallback. Parent-shell switching is considered only when no managed context is strictly detected; it requires shell integration.
 - Explicit launcher flags take precedence over configuration and environment detection. `--tmux` therefore overrides configured `cd`, `sesh`, or `herdr` behavior and detected Herdr, cmux, or IDE contexts. `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`; Arashi reports the complete set instead of choosing by flag order.
 - `--tmux` requires a non-empty `TMUX` value after trimming. Run the command from an active tmux client/session or choose another launcher. If the prerequisite is missing or `tmux new-window` fails, explicit tmux does not fall back to sesh, Herdr, cmux, an IDE, parent-shell `cd`, or a platform terminal.
-- `--tmux` + `--no-cd` is compatible launch intent. `--tmux` + `--no-default-launch` remains explicit and authoritative, bypassing any configured named launcher rather than disabling tmux.
+- `--tmux` + `--launch` is compatible launch intent. `--tmux` + `--ignore-configured-launcher` remains explicit and authoritative, bypassing any configured named launcher rather than disabling tmux.
 - Arashi invokes `tmux new-window -c <worktree-path>` without a shell; even paths containing spaces, quotes, or shell-significant characters remain the exact single argument after `tmux new-window -c`.
 - Explicit tmux has the same behavior in a zero-config standalone repository: Arashi discovers the standalone target and opens it without creating or persisting Arashi configuration. Configured-only `--repos` and `--all` restrictions are unchanged.
-- `--no-cd` forces launch behavior but preserves configured `sesh` or `herdr`. `--no-default-launch` bypasses only configured `sesh` or `herdr`; it does not erase configured `auto`, `cd`, or `launch` behavior.
+- `--launch` preserves configured `sesh` or `herdr`. With only `--ignore-configured-launcher`, configured `auto`, `cd`, or `launch` behavior remains unchanged, while configured `sesh` or `herdr` keeps launch behavior but uses automatic launcher resolution. Combining them as `--launch --ignore-configured-launcher` requests generic automatic launch.
+- `--cd` conflicts with `--launch`, `--tab`, and every explicit launcher selector. Canonical and compatibility synonyms for the same intent remain redundant but compatible.
 - Explicit `--cd` warns and does not launch if parent-shell switching is unavailable. Configured `cd` warns and falls back to automatic launch in that situation.
 - Automatic Herdr detection requires `HERDR_ENV` to trim to the exact string `1`. Similar values such as `0` or `true` do not select Herdr, and automatic tmux keeps precedence when both environments are active.
 - `--herdr` conflicts with `--sesh`, explicit IDE flags, and `--cd`. Arashi rejects the combination instead of choosing one implicitly.
@@ -114,6 +115,10 @@ arashi switch feature-auth --json
 - When automatic launch reaches an integrated IDE and its optional CLI is unavailable, Arashi continues to terminal/platform fallback without returning to `cd`. A selected tmux, Herdr, or cmux failure—or an available IDE CLI that fails—remains an actionable launch failure and does not try another launcher or `cd`.
 - The VS Code extension passes the matching IDE flag automatically and uses exact-path switching for selected worktrees so duplicate branch names do not cause ambiguous matches.
 - JSON mode does not launch editors, terminals, tmux, sesh, or parent-shell `cd` behavior unless the command can return a safe non-mutating plan. `switch --json --tmux` returns exactly one JSON document with `JSON_UNSUPPORTED_FOR_MODE` and the existing `launch` mode label before launcher-conflict or tmux-context validation, including when `TMUX` is blank. It does not switch or invoke tmux.
+
+## Deprecated compatibility spellings
+
+The legacy `--no-cd` maps to `--launch`, and `--no-default-launch` maps to `--ignore-configured-launcher`. They remain parseable only as deprecated compatibility metadata throughout Arashi 1.x; preferred options, examples, and automation should use the canonical spellings above. Removal may happen no earlier than Arashi 2.0 and requires a separately approved breaking-change issue.
 
 ## Related Commands
 

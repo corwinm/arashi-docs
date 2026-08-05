@@ -86,6 +86,9 @@ jobs:
       - name: Check tab launch-disposition documentation contract
         run: pnpm validate:tab-launch-docs
 
+      - name: Check CLI option documentation contract
+        run: pnpm validate:cli-option-docs
+
       - name: Check create-launch documentation contract
         run: pnpm validate:create-launch-docs
 

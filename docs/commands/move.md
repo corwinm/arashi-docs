@@ -28,7 +28,7 @@ arashi move [options]
 
 - `--from <workspace>` source branch, worktree name, or full worktree path.
 - `--to <workspace>` target branch, worktree name, or full worktree path.
-- `--json` output machine-readable move results or structured unsupported-mode errors.
+- `-j, --json` output machine-readable move results or structured unsupported-mode errors.
 
 When `--from` is omitted, Arashi uses the current dirty workspace when it can. When `--to` is omitted, Arashi prompts for a target workspace. JSON mode requires enough flags to avoid prompts.
 

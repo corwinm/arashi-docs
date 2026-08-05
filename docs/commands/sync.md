@@ -24,10 +24,10 @@ arashi sync [options]
 
 ## Key Options
 
-- `--only <repos>` sync comma-separated repository names only.
-- `--group <group>` sync only repositories in the requested group. Repeat for multiple groups.
+- `-o, --only <repos>` sync repositories; repeat it, use commas, or mix both forms.
+- `-g, --group <group>` sync groups; repeat it, use commas, or mix both forms.
 - `-v, --verbose` show detailed per-repository sync output.
-- `--json` output machine-readable sync results.
+- `-j, --json` output machine-readable sync results.
 
 ## Examples
 

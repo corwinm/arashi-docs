@@ -40,7 +40,7 @@ arashi doctor [options]
 
 ## Options
 
-- `--json` emit one machine-readable JSON envelope instead of grouped human output.
+- `-j, --json` emit one machine-readable JSON envelope instead of grouped human output.
 
 ## Examples
 
