@@ -8,10 +8,12 @@ Dedicated documentation site repository for Arashi.
 
 ## Local setup
 
-This project requires Node.js 22.13 or newer and pnpm 11.20.0. With nvm, select the pinned development runtime first:
+This project pins Node.js 24.18.0, which satisfies pnpm 11's Node.js 22.13 minimum, and pnpm 11.20.0. With nvm, select the pinned development runtime first:
 
 ```bash
 nvm use
+npm install --global corepack@0.35.0
+corepack enable
 pnpm install --frozen-lockfile
 ```
 
