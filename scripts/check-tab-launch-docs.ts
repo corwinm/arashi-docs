@@ -15,8 +15,8 @@ const canonicalWorkflow = "docs/workflows/launch-disposition.md";
 const canonicalRequirements = [
   "new terminal window or an independent managed session",
   "`--tab` is a CLI-only, one-invocation request",
-  "create tab implies launch and switch",
   "wins over `--no-launch` and `--no-switch`",
+  "For `create`, create tab implies launch and switch and bypasses configured launcher defaults",
   "bypasses configured launcher defaults",
   "`--tab` alone uses automatic launcher resolution",
   "conflicts only with explicit `--cd`",
@@ -84,6 +84,7 @@ const sourceRequirements: Requirement[] = [
       "CLI-only, one-invocation",
       "implies launch and switch",
       "wins over `--no-launch` and `--no-switch`",
+      "bypasses configured generic or editor-scoped launch defaults",
       "[launch disposition workflow](/workflows/launch-disposition/)",
     ],
   },
