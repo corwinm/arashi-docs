@@ -68,6 +68,10 @@ const sourceRequirements = new Map<string, string[]>([
     ]
   ],
   [
+    "docs/workflows/herdr.md",
+    [hooksLink, "ARASHI_REMOVE_TARGETS_JSON", ".worktreePath", "exact checkout path"]
+  ],
+  [
     "docs/contributing/validation-troubleshooting.md",
     ["validate:lifecycle-hook-docs", "generated Markdown routes", "llms-full.txt"]
   ]
@@ -86,6 +90,7 @@ const generatedRequirements = new Map<string, string[]>([
     "public/workflows/standalone.md",
     sourceRequirements.get("docs/workflows/standalone.md") ?? []
   ],
+  ["public/workflows/herdr.md", sourceRequirements.get("docs/workflows/herdr.md") ?? []],
   [
     "public/llms-full.txt",
     [

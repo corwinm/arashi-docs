@@ -131,22 +131,30 @@ herdr workspace list
 herdr workspace close <workspace-id>
 ```
 
-If your team has explicitly chosen automatic cleanup, use a trusted `pre-remove.sh` hook so the workspace can be identified while the checkout still exists. Herdr v0.7.4's `workspace list` output is JSON, so this opt-in example matches the exact checkout path before closing the workspace:
+If your team has explicitly chosen automatic cleanup, use a trusted `pre-remove.sh` hook so each workspace can be identified while its checkout still exists. Herdr v0.7.4's `workspace list` output is JSON, so this opt-in example parses Arashi's canonical structured target list and matches every exact checkout path before closing a workspace:
 
 ```bash
 #!/bin/sh
 set -eu
 
-workspace_id=$(
-  herdr workspace list |
-    jq -r --arg path "$ARASHI_WORKTREE_PATH" \
-      '.result.workspaces[] | select(.worktree.checkout_path == $path) | .workspace_id' |
-    head -n 1
-)
+targets_file=$(mktemp)
+trap 'rm -f "$targets_file"' 0 HUP INT TERM
 
-if [ -n "$workspace_id" ]; then
-  herdr workspace close "$workspace_id"
-fi
+printf '%s\n' "$ARASHI_REMOVE_TARGETS_JSON" |
+  jq -r '.[] | select(.worktreePath != null) | .worktreePath' >"$targets_file"
+
+while IFS= read -r target_path; do
+  workspaces_json=$(herdr workspace list)
+  workspace_id=$(
+    printf '%s\n' "$workspaces_json" |
+      jq -r --arg path "$target_path" \
+        '[.result.workspaces[] | select(.worktree.checkout_path == $path)][0].workspace_id // empty'
+  )
+
+  if [ -n "$workspace_id" ]; then
+    herdr workspace close "$workspace_id"
+  fi
+done <"$targets_file"
 ```
 
 Review the matched workspace and your hook scope before enabling this mutation. Never substitute `herdr worktree remove`: Git worktree removal belongs to Arashi.
