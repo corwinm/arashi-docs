@@ -153,7 +153,7 @@ If stdout contains human text in JSON mode, that is a bug because it breaks tool
 | `status` | Supported | Prefer this for current repository state when `doctor` says deeper inspection is needed. |
 | `switch` | Unsupported by design | `--json` returns a structured unsupported-mode error instead of opening terminals, editors, or changing the parent shell. |
 | `sync` | Supported | Use `--only` or `--group` to limit branch alignment work when appropriate. |
-| `update` | Supported for check and preview flows | Use `--check --json` or `--dry-run --json`. Applying an installer update with `--yes --json` returns an unsupported-mode error. |
+| `update` | Supported for check and preview flows | Use `--check --json` or `--dry-run --json`. Bare `update --json` is inspection-only and never prompts or mutates. Applying an installer update with `--yes --json` returns an unsupported-mode error. |
 
 ## Stable Unsupported Modes
 

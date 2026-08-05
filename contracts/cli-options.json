@@ -102,7 +102,11 @@
     ],
     "dryRunAlias": "-n",
     "precedence": "before-lookup-or-mutation",
-    "humanJsonParity": true
+    "humanJsonParity": true,
+    "bareJson": "inspection-only",
+    "jsonApply": "unsupported",
+    "jsonPrompt": false,
+    "jsonMutation": false
   },
   "nativeCompletion": "out-of-scope"
 }

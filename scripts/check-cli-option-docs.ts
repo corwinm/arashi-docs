@@ -92,7 +92,10 @@ const semanticRequirements = new Map<string, string[]>([
       "`--check` conflicts with `--dry-run` and `-n`",
       "before release lookup, installer planning, or mutation",
       "exactly one structured error envelope",
-      "npm wrapper and direct binary"
+      "npm wrapper and direct binary",
+      "Bare `--json` is inspection-only",
+      "never prompts or applies an update",
+      "`--json --yes` returns `JSON_UNSUPPORTED_FOR_MODE`"
     ]
   ],
   [
@@ -111,6 +114,7 @@ const semanticRequirements = new Map<string, string[]>([
     [
       "Every command that supports `--json` also accepts `-j`",
       "`update --check --dry-run`",
+      "Bare `update --json` is inspection-only",
       "one structured error envelope",
       "`status -o arashi-docs -j`"
     ]
@@ -124,6 +128,7 @@ const semanticRequirements = new Map<string, string[]>([
 checkRequirements(aliasRequirements);
 checkRequirements(semanticRequirements);
 checkGeneratedParity();
+checkUpdateJsonPolicy();
 checkDeprecatedGuidance();
 checkContract();
 checkReachability();
@@ -188,6 +193,54 @@ function checkGeneratedParity(): void {
       if (!curated.includes(text)) errors.push(`public/llms.txt is missing ${JSON.stringify(text)}`);
     }
   }
+}
+
+function checkUpdateJsonPolicy(): void {
+  for (const relativePath of ["docs/commands/update.md", "public/commands/update.md"]) {
+    const content = read(relativePath);
+    if (content !== null) errors.push(...updateJsonPolicyErrors(relativePath, content));
+  }
+
+  const canonical = read("docs/commands/update.md");
+  if (canonical === null) return;
+  const deliberateDrifts = [
+    [
+      "native-only",
+      canonical.replace(
+        "behaves identically in the npm wrapper and direct binary",
+        "behaves in the direct binary only",
+      ),
+      "bare update JSON must bind inspection-only behavior to both the npm wrapper and direct binary",
+    ],
+    [
+      "after-mutation",
+      canonical.replace("before update mutation", "after update mutation"),
+      "JSON apply rejection must occur before mutation",
+    ],
+  ] as const;
+  for (const [name, fixture, expectedFinding] of deliberateDrifts) {
+    const findings = updateJsonPolicyErrors(`deliberate-${name}.md`, fixture);
+    if (findings.length !== 1 || !findings[0]?.includes(expectedFinding)) {
+      errors.push(`update-JSON checker accepted deliberate ${name} semantic drift`);
+    }
+  }
+}
+
+function updateJsonPolicyErrors(relativePath: string, content: string): string[] {
+  const findings: string[] = [];
+  const barePolicy =
+    "Bare `--json` is inspection-only: it reports the available update and selected plan in one envelope, never prompts or applies an update, and behaves identically in the npm wrapper and direct binary.";
+  const applyPolicy =
+    "`--json --yes` returns `JSON_UNSUPPORTED_FOR_MODE` for `installer-apply` before update mutation.";
+  if (!content.includes(barePolicy)) {
+    findings.push(
+      `${relativePath}: bare update JSON must bind inspection-only behavior to both the npm wrapper and direct binary`,
+    );
+  }
+  if (!content.includes(applyPolicy)) {
+    findings.push(`${relativePath}: JSON apply rejection must occur before mutation`);
+  }
+  return findings;
 }
 
 function checkDeprecatedGuidance(): void {
@@ -315,7 +368,16 @@ function checkContract(): void {
       compatibilityOption: "--markdown",
       compatibilityBoundary: { supportedThrough: "1.x", earliestRemovalMajor: 2, requiresApprovedBreakingChange: true }
     },
-    update: { conflict: ["--check", "--dry-run"], dryRunAlias: "-n", precedence: "before-lookup-or-mutation", humanJsonParity: true },
+    update: {
+      conflict: ["--check", "--dry-run"],
+      dryRunAlias: "-n",
+      precedence: "before-lookup-or-mutation",
+      humanJsonParity: true,
+      bareJson: "inspection-only",
+      jsonApply: "unsupported",
+      jsonPrompt: false,
+      jsonMutation: false
+    },
     nativeCompletion: "out-of-scope"
   };
   if (JSON.stringify(contract) !== JSON.stringify(expected)) {
