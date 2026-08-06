@@ -8,9 +8,13 @@ const sourceRequirements = new Map<string, string[]>([
       "arashi completion <bash|zsh|fish>",
       "Static command and option completion works outside an Arashi workspace",
       "repositories, configured groups, worktrees, branches, supported shells, and constrained option values",
+      "`switch [filter]` and `remove [target]`",
+      "`move --from` and `move --to`",
+      "branch, worktree name, or path",
+      "`--path`",
       "local workspace state",
       "read-only",
-      "bounded",
+      "200 ms whole-query budget",
       "command arashi",
       "Bash retains the canonical descriptions",
       "does not natively display per-candidate descriptions",
@@ -40,7 +44,8 @@ const generatedRequirements = new Map<string, string[]>([
     [
       "`arashi completion bash|zsh|fish`",
       "static completion works outside workspaces",
-      "local, read-only, and bounded",
+      "local and read-only",
+      "200 ms",
       "Completion command Markdown"
     ]
   ],
