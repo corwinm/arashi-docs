@@ -39,7 +39,7 @@ Static command and option completion works outside an Arashi workspace. Dynamic 
 
 Dynamic ownership is exact: every `--only` segment completes configured repositories and every `--group` segment completes configured groups; `switch [filter]` and `remove [target]` complete a branch, worktree name, or path; `move --from` and `move --to` complete workspace branch, name, or path references; and `--path` narrows switch/remove suggestions to exact worktree paths. Supported-shell arguments and explicitly finite options complete only their declared values.
 
-Dynamic lookup is local and read-only, with a 200 ms whole-query budget. It does not perform network requests or mutate workspace state. Repeated or comma-separated repository and group selectors complete only the active segment and preserve the prefix already entered.
+Dynamic lookup is local and read-only, with a 200 ms whole-query budget. It does not perform network requests or mutate workspace state. It does not execute hooks, does not prompt, and does not start child operations. Repeated or comma-separated repository and group selectors complete only the active segment and preserve the prefix already entered.
 
 The canonical completion model retains candidate descriptions for every supported shell. Zsh and Fish can display per-candidate descriptions. Bash retains the canonical descriptions but native Bash programmable completion does not natively display per-candidate descriptions.
 
