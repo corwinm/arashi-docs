@@ -38,6 +38,7 @@ const coreOrder = [
   "commands/remove.md",
   "commands/prune.md",
   "commands/shell.md",
+  "commands/completion.md",
   "commands/list.md",
   "commands/switch.md",
   "commands/setup.md",
@@ -63,6 +64,7 @@ const requiredRoutes = [
   "commands.md",
   "commands/exec.md",
   "commands/status.md",
+  "commands/completion.md",
   "contributing.md"
 ];
 
@@ -296,7 +298,7 @@ function renderLlmsTxt(): string {
 - Prefer canonical \`arashi switch --launch --ignore-configured-launcher\` for generic automatic launch. Common command-local aliases are \`-v/-f/-j/-o/-g/-n\`; \`add -n\` remains name and \`exec --jobs\` remains long-only.
 - Repository selectors accept repeated and comma-separated \`--only\`/\`--group\`, flatten in order, trim, ignore blank segments beside values, and deduplicate first occurrences. Empty, unknown, or no-match filters fail closed; \`status --only\` is configured-only.
 - \`update --check\` conflicts with \`--dry-run\`/\`-n\` before lookup or mutation. Markdown is the default for \`handoff\`; omit its deprecated explicit Markdown option in preferred guidance.
-- Native shell completion is not added or claimed by this option-rationalization change.
+- Use \`arashi completion bash|zsh|fish\` for native completion. Static completion works outside workspaces; dynamic repositories, groups, worktrees, branches, shells, and constrained values are local, read-only, and bounded. Use \`command arashi\` in activation code to bypass wrappers.
 - Use \`arashi switch --tmux\` or \`arashi create --tmux\` for a per-invocation plain tmux override. Configured \`auto\` remains the persistent contextual choice inside tmux; \`tmux\` is not added to configuration vocabularies.
 - Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--tmux\`, \`--sesh\`, or \`--herdr\` wins, then \`--tab\` or \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
 - Launch defaults to a default new window or independent managed session. \`--tab\` is CLI-only for one \`switch\` or \`create\` invocation and bypasses configured switch and create launch defaults, while explicit launcher selectors remain authoritative. Tab disposition never falls back to a window when unsupported and does not change configuration vocabularies.
@@ -338,6 +340,7 @@ function renderLlmsTxt(): string {
 - [Switch command Markdown](${site}/commands/switch.md)
 - [Create command Markdown](${site}/commands/create.md)
 - [Exec command Markdown](${site}/commands/exec.md)
+- [Completion command Markdown](${site}/commands/completion.md)
 - [Contributing Markdown](${site}/contributing.md)
 
 ## Optional
