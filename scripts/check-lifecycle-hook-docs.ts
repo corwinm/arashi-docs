@@ -259,7 +259,7 @@ function checkPackageWideHookInputPolicy(rootPath: string, found: string[]): voi
     if (content === null) continue;
     if (
       /hooks\.input/i.test(content) ||
-      /["']hooks["']\s*:\s*\{[\s\S]{0,2000}?["']input["']\s*:/i.test(content)
+      /["']hooks["']\s*:\s*\{[^}]{0,2000}?["']input["']\s*:/i.test(content)
     ) {
       found.push(`${relativePath} must not publish persistent hooks.input configuration`);
     }
@@ -339,6 +339,18 @@ function runControlledDriftSelfTest(): void {
     ) {
       throw new Error(
         "Lifecycle-hook documentation checker self-test did not reject nested JSON hooks.input guidance in maintained MDX."
+      );
+    }
+
+    writeFileSync(
+      absoluteDriftPath,
+      '{ "hooks": { "timeout": 300000 } }\n\n```json\n{ "input": "unrelated" }\n```\n'
+    );
+    const unrelatedInputErrors: string[] = [];
+    checkPackageWideHookInputPolicy(fixtureRoot, unrelatedInputErrors);
+    if (unrelatedInputErrors.some((error) => error.includes("persistent hooks.input configuration"))) {
+      throw new Error(
+        "Lifecycle-hook documentation checker self-test rejected an unrelated input property outside the hooks object."
       );
     }
   } finally {
