@@ -1,4 +1,12 @@
-import { readFileSync, readdirSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync
+} from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 const hooksLink = "/workflows/hooks/";
@@ -185,10 +193,11 @@ const generatedRequirements = new Map<string, string[]>([
 ]);
 
 const errors: string[] = [];
+const root = path.resolve(process.cwd());
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkForbiddenAliases();
-checkPackageWideHookInputPolicy();
+checkPackageWideHookInputPolicy(root, errors);
 checkWiring();
 
 if (errors.length > 0) {
@@ -197,8 +206,9 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
+runControlledDriftSelfTest();
 console.log(
-  `Lifecycle-hook documentation contract passed for ${sourceRequirements.size} canonical pages and ${generatedRequirements.size} generated exports.`
+  `Lifecycle-hook documentation contract passed for ${sourceRequirements.size} canonical pages and ${generatedRequirements.size} generated exports, with package-wide controlled-drift self-tests.`
 );
 
 function checkRequirements(requirements: Map<string, string[]>): void {
@@ -228,7 +238,7 @@ function checkForbiddenAliases(): void {
   }
 }
 
-function checkPackageWideHookInputPolicy(): void {
+function checkPackageWideHookInputPolicy(rootPath: string, found: string[]): void {
   const optionGuidanceSurfaces = new Set([
     "docs/workflows/hooks.md",
     "docs/workflows/standalone.md",
@@ -244,41 +254,80 @@ function checkPackageWideHookInputPolicy(): void {
     "public/llms-full.txt"
   ]);
 
-  for (const relativePath of maintainedGuidanceFiles()) {
-    const content = read(relativePath);
+  for (const relativePath of maintainedGuidanceFiles(rootPath)) {
+    const content = readAt(rootPath, relativePath, found);
     if (content === null) continue;
     if (/hooks\.input/i.test(content)) {
-      errors.push(`${relativePath} must not publish persistent hooks.input configuration`);
+      found.push(`${relativePath} must not publish persistent hooks.input configuration`);
     }
     if (/-NonInteractive\b/i.test(content)) {
-      errors.push(`${relativePath} must not publish PowerShell -NonInteractive hook invocation`);
+      found.push(`${relativePath} must not publish PowerShell -NonInteractive hook invocation`);
     }
     if (content.includes("--no-hook-input") && !optionGuidanceSurfaces.has(relativePath)) {
-      errors.push(
+      found.push(
         `${relativePath} must not advertise --no-hook-input outside create/remove lifecycle guidance`
       );
     }
   }
 }
 
-function maintainedGuidanceFiles(): string[] {
+function maintainedGuidanceFiles(rootPath: string): string[] {
   return [
-    ...walk("docs", (relativePath) => relativePath.endsWith(".md")),
     ...walk(
+      rootPath,
+      "docs",
+      (relativePath) => relativePath.endsWith(".md") || relativePath.endsWith(".mdx")
+    ),
+    ...walk(
+      rootPath,
       "public",
       (relativePath) => relativePath.endsWith(".md") || relativePath.endsWith(".txt")
     )
   ];
 }
 
-function walk(relativeRoot: string, include: (relativePath: string) => boolean): string[] {
+function walk(
+  rootPath: string,
+  relativeRoot: string,
+  include: (relativePath: string) => boolean
+): string[] {
   const files: string[] = [];
-  for (const entry of readdirSync(path.resolve(relativeRoot), { withFileTypes: true })) {
+  for (const entry of readdirSync(path.resolve(rootPath, relativeRoot), { withFileTypes: true })) {
     const relativePath = path.posix.join(relativeRoot, entry.name);
-    if (entry.isDirectory()) files.push(...walk(relativePath, include));
+    if (entry.isDirectory()) files.push(...walk(rootPath, relativePath, include));
     else if (include(relativePath)) files.push(relativePath);
   }
   return files;
+}
+
+function runControlledDriftSelfTest(): void {
+  const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "arashi-lifecycle-hook-docs-"));
+  const driftPath = "docs/controlled-drift.mdx";
+  const absoluteDriftPath = path.join(fixtureRoot, driftPath);
+  try {
+    mkdirSync(path.dirname(absoluteDriftPath), { recursive: true });
+    mkdirSync(path.join(fixtureRoot, "public"), { recursive: true });
+
+    writeFileSync(absoluteDriftPath, "Run PowerShell with -NonInteractive for lifecycle hooks.\n");
+    const nonInteractiveErrors: string[] = [];
+    checkPackageWideHookInputPolicy(fixtureRoot, nonInteractiveErrors);
+    if (!nonInteractiveErrors.some((error) => error.includes("-NonInteractive hook invocation"))) {
+      throw new Error(
+        "Lifecycle-hook documentation checker self-test did not reject stale -NonInteractive guidance in maintained MDX."
+      );
+    }
+
+    writeFileSync(absoluteDriftPath, "Set persistent hooks.input to never in configuration.\n");
+    const persistentInputErrors: string[] = [];
+    checkPackageWideHookInputPolicy(fixtureRoot, persistentInputErrors);
+    if (!persistentInputErrors.some((error) => error.includes("persistent hooks.input configuration"))) {
+      throw new Error(
+        "Lifecycle-hook documentation checker self-test did not reject persistent hooks.input guidance in maintained MDX."
+      );
+    }
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true });
+  }
 }
 
 function checkWiring(): void {
@@ -300,10 +349,14 @@ function checkWiring(): void {
 }
 
 function read(relativePath: string): string | null {
+  return readAt(root, relativePath, errors);
+}
+
+function readAt(rootPath: string, relativePath: string, found: string[]): string | null {
   try {
-    return readFileSync(path.resolve(relativePath), "utf8");
+    return readFileSync(path.resolve(rootPath, relativePath), "utf8");
   } catch {
-    errors.push(`${relativePath} is missing`);
+    found.push(`${relativePath} is missing`);
     return null;
   }
 }
