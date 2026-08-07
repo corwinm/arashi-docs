@@ -8,8 +8,6 @@ sidebar:
 
 Use this section when you want command-level guidance.
 
-Native shell completion is not added or claimed by this option-rationalization change. Long options and each command's documented aliases remain the authoritative public surface for future completion work.
-
 ## Command Pages
 
 - [init](/commands/init/) - initialize a workspace.
@@ -25,6 +23,7 @@ Native shell completion is not added or claimed by this option-rationalization c
 - [update](/commands/update/) - check for and apply CLI updates.
 - [switch](/commands/switch/) - open a terminal context for a worktree.
 - [shell](/commands/shell/) - install shell integration and helpers.
+- [completion](/commands/completion/) - generate native Bash, Zsh, or Fish completion.
 - [remove](/commands/remove/) - remove worktrees and branches.
 - [prune](/commands/prune/) - clean stale Git worktree metadata.
 - [pull](/commands/pull/) - pull remote updates across repos.

@@ -118,10 +118,6 @@ const semanticRequirements = new Map<string, string[]>([
       "one structured error envelope",
       "`status -o arashi-docs -j`"
     ]
-  ],
-  [
-    "docs/commands/index.md",
-    ["Native shell completion is not added or claimed by this option-rationalization change"]
   ]
 ]);
 
@@ -187,8 +183,7 @@ function checkGeneratedParity(): void {
       "repeated and comma-separated `--only`/`--group`",
       "`status --only`",
       "`update --check` conflicts with `--dry-run`/`-n`",
-      "Markdown is the default for `handoff`",
-      "Native shell completion is not added or claimed"
+      "Markdown is the default for `handoff`"
     ]) {
       if (!curated.includes(text)) errors.push(`public/llms.txt is missing ${JSON.stringify(text)}`);
     }
