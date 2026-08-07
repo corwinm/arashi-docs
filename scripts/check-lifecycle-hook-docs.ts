@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 const hooksLink = "/workflows/hooks/";
@@ -188,7 +188,7 @@ const errors: string[] = [];
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkForbiddenAliases();
-checkNoPersistentHookInputPolicy();
+checkPackageWideHookInputPolicy();
 checkWiring();
 
 if (errors.length > 0) {
@@ -228,24 +228,57 @@ function checkForbiddenAliases(): void {
   }
 }
 
-function checkNoPersistentHookInputPolicy(): void {
-  for (const relativePath of [
+function checkPackageWideHookInputPolicy(): void {
+  const optionGuidanceSurfaces = new Set([
     "docs/workflows/hooks.md",
-    "docs/workflows/config.md",
+    "docs/workflows/standalone.md",
+    "docs/workflows/json-automation.md",
     "docs/commands/create.md",
     "docs/commands/remove.md",
     "public/workflows/hooks.md",
-    "public/workflows/config.md",
+    "public/workflows/standalone.md",
+    "public/workflows/json-automation.md",
     "public/commands/create.md",
     "public/commands/remove.md",
     "public/llms.txt",
     "public/llms-full.txt"
-  ]) {
+  ]);
+
+  for (const relativePath of maintainedGuidanceFiles()) {
     const content = read(relativePath);
-    if (content?.includes("hooks.input")) {
+    if (content === null) continue;
+    if (/hooks\.input/i.test(content)) {
       errors.push(`${relativePath} must not publish persistent hooks.input configuration`);
     }
+    if (/-NonInteractive\b/i.test(content)) {
+      errors.push(`${relativePath} must not publish PowerShell -NonInteractive hook invocation`);
+    }
+    if (content.includes("--no-hook-input") && !optionGuidanceSurfaces.has(relativePath)) {
+      errors.push(
+        `${relativePath} must not advertise --no-hook-input outside create/remove lifecycle guidance`
+      );
+    }
   }
+}
+
+function maintainedGuidanceFiles(): string[] {
+  return [
+    ...walk("docs", (relativePath) => relativePath.endsWith(".md")),
+    ...walk(
+      "public",
+      (relativePath) => relativePath.endsWith(".md") || relativePath.endsWith(".txt")
+    )
+  ];
+}
+
+function walk(relativeRoot: string, include: (relativePath: string) => boolean): string[] {
+  const files: string[] = [];
+  for (const entry of readdirSync(path.resolve(relativeRoot), { withFileTypes: true })) {
+    const relativePath = path.posix.join(relativeRoot, entry.name);
+    if (entry.isDirectory()) files.push(...walk(relativePath, include));
+    else if (include(relativePath)) files.push(relativePath);
+  }
+  return files;
 }
 
 function checkWiring(): void {
