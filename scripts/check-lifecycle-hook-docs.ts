@@ -257,7 +257,10 @@ function checkPackageWideHookInputPolicy(rootPath: string, found: string[]): voi
   for (const relativePath of maintainedGuidanceFiles(rootPath)) {
     const content = readAt(rootPath, relativePath, found);
     if (content === null) continue;
-    if (/hooks\.input/i.test(content)) {
+    if (
+      /hooks\.input/i.test(content) ||
+      /["']hooks["']\s*:\s*\{[\s\S]{0,2000}?["']input["']\s*:/i.test(content)
+    ) {
       found.push(`${relativePath} must not publish persistent hooks.input configuration`);
     }
     if (/-NonInteractive\b/i.test(content)) {
@@ -323,6 +326,19 @@ function runControlledDriftSelfTest(): void {
     if (!persistentInputErrors.some((error) => error.includes("persistent hooks.input configuration"))) {
       throw new Error(
         "Lifecycle-hook documentation checker self-test did not reject persistent hooks.input guidance in maintained MDX."
+      );
+    }
+
+    writeFileSync(absoluteDriftPath, '{ "hooks": { "input": "disabled" } }\n');
+    const nestedPersistentInputErrors: string[] = [];
+    checkPackageWideHookInputPolicy(fixtureRoot, nestedPersistentInputErrors);
+    if (
+      !nestedPersistentInputErrors.some((error) =>
+        error.includes("persistent hooks.input configuration")
+      )
+    ) {
+      throw new Error(
+        "Lifecycle-hook documentation checker self-test did not reject nested JSON hooks.input guidance in maintained MDX."
       );
     }
   } finally {
