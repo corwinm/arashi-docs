@@ -29,6 +29,7 @@ arashi remove [target] [options]
 - `--keep-branches` remove worktrees but keep branches.
 - `-f, --force` skip confirmation prompts.
 - `-n, --dry-run` preview planned removals without changing worktrees, branches, or lifecycle hooks.
+- `--no-hook-input` execute hooks with immediate EOF on stdin for this invocation only.
 - `--path` treat `target` as a worktree path.
 - `-j, --json` output machine-readable results.
 
@@ -52,6 +53,9 @@ arashi remove feature-login --dry-run --json
 
 # Remove non-interactively and emit JSON
 arashi remove feature-login --force --json
+
+# Execute remove hooks but prevent them from reading the terminal
+arashi remove feature-login --no-hook-input
 ```
 
 ## Notes
@@ -63,6 +67,7 @@ arashi remove feature-login --force --json
 - `arashi remove --dry-run --json` returns a single JSON envelope whose `data` includes `dryRun: true`, pending operations, effective options, blockers, and hook previews for automation.
 - Stale Git-prunable worktree records are excluded from `remove`; use `arashi prune` to clean stale metadata.
 - JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
+- A normal terminal run exposes `ARASHI_HOOK_INPUT=tty`; `--no-hook-input` or JSON uses `disabled`, and non-TTY automation uses `unavailable`. Disabled and unavailable hooks receive immediate EOF. `--no-hook-input` does not skip hooks or confirmations; hook failures and outcomes remain active.
 - `remove` does not close Herdr workspaces because they can contain agents or unsaved terminal state. Close a stale workspace manually, or deliberately opt into a pre-remove `herdr workspace close <workspace-id>` hook that resolves the workspace before the checkout disappears. Never use `herdr worktree remove`; Arashi owns Git worktree removal.
 
 ## Agent Notes

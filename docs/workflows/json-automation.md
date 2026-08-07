@@ -132,6 +132,10 @@ In JSON mode:
 
 If stdout contains human text in JSON mode, that is a bug because it breaks tool consumers.
 
+### Lifecycle hook input
+
+For configured and standalone `create` and `remove`, JSON always sets `ARASHI_HOOK_INPUT=disabled` and gives every executed hook immediate EOF, even when stdin is a TTY. Hooks still execute and can fail normally; `--json` does not behave like create's `--no-hooks`. No prompt text or interactive attribution is streamed to stdout, which remains exactly one JSON document. Dry-run continues to preview hooks without spawning them or reporting an input mode as if execution occurred. See the [Hooks workflow](/workflows/hooks/) for the complete availability matrix and native-shell guidance.
+
 ## Command Support Matrix
 
 | Command | JSON support | Notes |

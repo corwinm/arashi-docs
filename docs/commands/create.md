@@ -38,6 +38,7 @@ arashi create <branch> [options]
 - `--sesh` force sesh launch mode (implies launch behavior).
 - `--herdr` open or focus the primary created worktree in Herdr (implies launch behavior).
 - `--conflict <strategy>` preselect conflict handling (`ABORT`, `REUSE_EXISTING`).
+- `--no-hook-input` execute hooks with immediate EOF on stdin for this invocation only.
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
 - `-n, --dry-run` generate a plan without creating worktrees.
@@ -82,6 +83,9 @@ arashi create feature-auth-refresh --no-launch --no-switch --json
 
 # Create worktrees and move current uncommitted work into them
 arashi create feature-auth-refresh --move-changes
+
+# Run hooks without allowing them to read from the terminal
+arashi create feature-auth-refresh --no-hook-input
 ```
 
 ## Notes
@@ -90,6 +94,7 @@ arashi create feature-auth-refresh --move-changes
 - `create` validates branch names and repository readiness.
 - Configured create runs workspace `pre-create` once before branch/worktree mutation, then each repository's retained-name `pre-create.<repo>` at its post-materialization/pre-setup point, followed by `post-create.<repo>`. Workspace `post-create` runs once after coordinated Git creation and before move-changes or switch/launch handling. Repository hooks run in the new child worktree; workspace hooks run at the workspace root.
 - Any create-hook validation failure, timeout, or nonzero exit fails create and enters the owned Git rollback boundary. Human and JSON results preserve the complete hook outcome ledger and any rollback warning. See the [Hooks workflow](/workflows/hooks/) for scope, environment, platform, timeout, and outcome details.
+- A normal terminal run exposes `ARASHI_HOOK_INPUT=tty`; `--no-hook-input` or JSON uses `disabled`, and non-TTY automation uses `unavailable`. Disabled and unavailable hooks receive immediate EOF. `--no-hook-input` does not skip hooks; it is distinct from `--no-hooks`, which skips hook execution, and `--interactive`, which continues to control configured repository selection. The input opt-out is invocation only and is not persisted.
 - On other failures, coordinated operations can roll back to keep repos consistent.
 - Reconciliation honors existing effective tracked, repository-local, or global rules before using the clone's stored scope or repository-local default. Scope `none` creates no ignore-file changes and warns for safe paths that remain unignored.
 - `--dry-run` previews managed ignore scope, effective sources, planned rules, warnings, and unsafe skips without changing ignore files or clone-local preference state.

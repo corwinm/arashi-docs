@@ -59,5 +59,7 @@ arashi setup --only api --json
 
 `setup` depends on configured repositories and setup scripts, so it requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
 
+A setup script is not a lifecycle hook and does not receive the create/remove terminal-input contract. See the [Hooks workflow](/workflows/hooks/) when automation belongs at a lifecycle boundary instead.
+
 - [add](/commands/add/)
 - [sync](/commands/sync/)

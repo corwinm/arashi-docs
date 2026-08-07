@@ -25,6 +25,23 @@ const sourceRequirements = new Map<string, string[]>([
       ".cmd",
       ".bat",
       "does not discover `.sh`",
+      "ARASHI_HOOK_INPUT",
+      "tty",
+      "disabled",
+      "unavailable",
+      "immediate EOF",
+      "--no-hook-input",
+      "--no-hooks",
+      "--interactive",
+      "invocation-only",
+      "attribution",
+      "sequentially",
+      "without adding a prefix or newline",
+      "Ctrl-C",
+      "read",
+      "Read-Host",
+      "set /p",
+      "passwords, tokens, or other secrets",
       "install -m 755",
       "corepack pnpm --ignore-workspace install --frozen-lockfile",
       "python -m pip"
@@ -32,7 +49,24 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/commands/create.md",
-    [hooksLink, "workspace `pre-create`", "post-materialization", "rollback", "hook outcome"]
+    [
+      hooksLink,
+      "workspace `pre-create`",
+      "post-materialization",
+      "rollback",
+      "hook outcome",
+      "--no-hook-input",
+      "invocation only",
+      "does not skip hooks",
+      "--interactive",
+      "--no-hooks",
+      "immediate EOF",
+      "ARASHI_HOOK_INPUT",
+      "tty",
+      "disabled",
+      "unavailable",
+      "JSON"
+    ]
   ],
   [
     "docs/commands/remove.md",
@@ -41,7 +75,15 @@ const sourceRequirements = new Map<string, string[]>([
       "once per target repository",
       "ARASHI_REMOVE_TARGETS_JSON",
       "dry-run",
-      "post-remove"
+      "post-remove",
+      "--no-hook-input",
+      "does not skip hooks",
+      "immediate EOF",
+      "ARASHI_HOOK_INPUT",
+      "tty",
+      "disabled",
+      "unavailable",
+      "JSON"
     ]
   ],
   [
@@ -64,9 +106,25 @@ const sourceRequirements = new Map<string, string[]>([
       hooksLink,
       "targeted before shared",
       "main-root basename",
-      "configless repository-local and workspace hooks remain inactive"
+      "configless repository-local and workspace hooks remain inactive",
+      "ARASHI_HOOK_INPUT",
+      "--no-hook-input",
+      "JSON",
+      "immediate EOF"
     ]
   ],
+  [
+    "docs/workflows/json-automation.md",
+    [
+      hooksLink,
+      "ARASHI_HOOK_INPUT=disabled",
+      "immediate EOF",
+      "even when stdin is a TTY",
+      "exactly one JSON document",
+      "no prompt text or interactive attribution"
+    ]
+  ],
+  ["docs/commands/setup.md", [hooksLink, "not a lifecycle hook"]],
   [
     "docs/workflows/herdr.md",
     [hooksLink, "ARASHI_REMOVE_TARGETS_JSON", ".worktreePath", "exact checkout path"]
@@ -92,11 +150,33 @@ const generatedRequirements = new Map<string, string[]>([
   ],
   ["public/workflows/herdr.md", sourceRequirements.get("docs/workflows/herdr.md") ?? []],
   [
+    "public/workflows/json-automation.md",
+    sourceRequirements.get("docs/workflows/json-automation.md") ?? []
+  ],
+  ["public/commands/setup.md", sourceRequirements.get("docs/commands/setup.md") ?? []],
+  [
+    "public/llms.txt",
+    [
+      hooksLink,
+      "ARASHI_HOOK_INPUT=tty|disabled|unavailable",
+      "--no-hook-input",
+      "invocation-only",
+      "immediate EOF",
+      "JSON"
+    ]
+  ],
+  [
     "public/llms-full.txt",
     [
       "# Hooks",
       "after that repository worktree is materialized",
       "ARASHI_REMOVE_TARGETS_JSON",
+      "ARASHI_HOOK_INPUT",
+      "--no-hook-input",
+      "immediate EOF",
+      "Read-Host",
+      "set /p",
+      "passwords, tokens, or other secrets",
       "corepack pnpm --ignore-workspace install --frozen-lockfile",
       "targeted before shared",
       ".arashi/setup.sh.example"
@@ -108,6 +188,7 @@ const errors: string[] = [];
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkForbiddenAliases();
+checkNoPersistentHookInputPolicy();
 checkWiring();
 
 if (errors.length > 0) {
@@ -143,6 +224,26 @@ function checkForbiddenAliases(): void {
       if (pattern.test(content)) {
         errors.push(`${relativePath} must not advertise stale runtime alias ${alias}`);
       }
+    }
+  }
+}
+
+function checkNoPersistentHookInputPolicy(): void {
+  for (const relativePath of [
+    "docs/workflows/hooks.md",
+    "docs/workflows/config.md",
+    "docs/commands/create.md",
+    "docs/commands/remove.md",
+    "public/workflows/hooks.md",
+    "public/workflows/config.md",
+    "public/commands/create.md",
+    "public/commands/remove.md",
+    "public/llms.txt",
+    "public/llms-full.txt"
+  ]) {
+    const content = read(relativePath);
+    if (content?.includes("hooks.input")) {
+      errors.push(`${relativePath} must not publish persistent hooks.input configuration`);
     }
   }
 }
