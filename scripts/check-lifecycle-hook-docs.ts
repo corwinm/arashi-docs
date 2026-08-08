@@ -337,12 +337,13 @@ function hasDirectObjectProperty(
 
 function unsupportedHookInputCommands(content: string): string[] {
   const unsupported = new Set<string>();
+  const actionableContent = content.replace(/\\\r?\n[\t ]*/g, " ");
   const actionablePatterns = [
     /\barashi\s+([a-z][a-z0-9-]*)\b[^\n]*?--no-hook-input\b/gi,
     /\b(add|clone|completion|config|doctor|exec|handoff|init|install|list|move|prune|pull|push|setup|shell|status|switch|sync|update)\s+--no-hook-input\b/gi,
   ];
   for (const pattern of actionablePatterns) {
-    for (const match of content.matchAll(pattern)) {
+    for (const match of actionableContent.matchAll(pattern)) {
       const command = match[1].toLowerCase();
       if (command !== "create" && command !== "remove")
         unsupported.add(command);
@@ -488,6 +489,22 @@ function runControlledDriftSelfTest(): void {
     ) {
       throw new Error(
         "self-test did not reject unsupported status --no-hook-input guidance in a canonical file",
+      );
+    }
+
+    writeFileSync(
+      absoluteDriftPath,
+      "Run arashi status \\\n  --no-hook-input to inspect the workspace.\n",
+    );
+    const continuedUnsupportedCommandErrors: string[] = [];
+    checkPackageWideHookInputPolicy(fixtureRoot, continuedUnsupportedCommandErrors);
+    if (
+      !continuedUnsupportedCommandErrors.some((entry) =>
+        entry.includes("status --no-hook-input"),
+      )
+    ) {
+      throw new Error(
+        "self-test did not reject a continued unsupported status --no-hook-input command",
       );
     }
 
