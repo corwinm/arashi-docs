@@ -25,6 +25,56 @@ For configured remove, all four scopes are evaluated separately for every target
 
 Create and remove results retain evaluated hook outcomes, including skips, successes, validation failures, timeouts, and nonzero exits. Human output and JSON output derive from that outcome ledger. JSON success places outcomes in `data.hookOutcomes`; failure places them in `error.details.hookOutcomes`, while hook stdout and stderr stay off JSON stdout.
 
+## Terminal input policy
+
+Every executed create or remove hook receives `ARASHI_HOOK_INPUT` with the command-wide input mode:
+
+| Invocation | `ARASHI_HOOK_INPUT` | Hook stdin |
+| --- | --- | --- |
+| Human command with terminal stdin | `tty` | Inherits the terminal. |
+| `--no-hook-input` | `disabled` | Immediate EOF. |
+| `--json` | `disabled` | Immediate EOF, even when stdin is a TTY. JSON always takes precedence. |
+| Non-TTY or CI invocation | `unavailable` | Immediate EOF rather than an open pipe. |
+| Dry-run | Not reported | Hooks do not execute and no input channel is created. |
+
+`--no-hook-input` is an invocation-only option on `create` and `remove`. It disables only lifecycle-hook stdin: it does not skip hooks or change their order. On create, `--no-hooks` skips hook execution, while `--interactive` still controls repository selection. There is no persistent configuration setting for hook input in this release.
+
+Before a `tty` hook can read, Arashi prints a completed attribution banner with the lifecycle, scope, absolute source script, and applicable workspace or target repository/worktree. Workspace hooks do not borrow a child target. Hooks continue to run sequentially across lifecycle points, scopes, and targets, so two hooks never compete for terminal input.
+
+Interactive hook stdout and stderr are streamed immediately to their corresponding terminal streams without adding a prefix or newline. An unterminated prompt is therefore visible before the hook reads. Arashi captures each stream internally without normalizing blank lines or trailing newlines, but does not add those streams to the public hook outcome schema. JSON and other quiet execution remain capture-only, with no prompt text or attribution on stdout.
+
+Waiting for input remains inside the configured hook timeout. A timeout, nonzero exit, signal, or Ctrl-C follows the same create rollback or remove gate/finalization boundary as any other hook failure. Arashi stops the current hook before continuing and restores the parent terminal for subsequent use.
+
+### Native shell prompts
+
+Use the shell's native read primitive only after checking for `tty`. These examples deliberately skip their question when input is disabled or unavailable.
+
+```bash
+#!/usr/bin/env bash
+set -eu
+
+[ "${ARASHI_HOOK_INPUT:-unavailable}" = "tty" ] || exit 0
+printf "Continue setup? [y/N] "
+IFS= read -r answer
+[ "$answer" = "y" ]
+```
+
+```powershell
+if ($env:ARASHI_HOOK_INPUT -ne "tty") { exit 0 }
+$answer = Read-Host "Continue setup? [y/N]"
+if ($answer -ne "y") { exit 1 }
+```
+
+```bat
+@echo off
+if /I not "%ARASHI_HOOK_INPUT%"=="tty" exit /b 0
+set "answer="
+set /p "answer=Continue setup? [y/N] "
+if /I not "%answer%"=="y" exit /b 1
+```
+
+Lifecycle hooks are trusted executable programs, but prompt answers are not a secret-storage channel. Do not enter passwords, tokens, or other secrets into hook prompts, and do not write hooks that persist answers as credentials.
+
 ## Discovery by mode and platform
 
 Configured create uses only the workspace and repository-specific filenames shown above. It does not activate similarly named repository-local or user-global create scripts.

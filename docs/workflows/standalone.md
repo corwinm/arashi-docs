@@ -70,7 +70,9 @@ Where a command supports JSON, it reports standalone mode and exact repository/w
 
 Repository filters and multi-repository selection have no meaning here. Standalone commands reject `--only`, `--group`, interactive multi-repository selection, and switch scopes such as `--repos` or `--all` rather than silently broadening or ignoring them.
 
-Standalone create/remove lifecycles run platform-native repository-targeted and shared **user-global** hooks under `~/.arashi/hooks/`, targeted before shared. Targeted lookup uses the resolved main-root basename even when invocation begins in a linked worktree. Configless repository-local and workspace hooks remain inactive; use configured mode when those scopes are required. Hook cwd is the resolved standalone main root, create follows the documented rollback boundary, and remove preserves pre-abort/post-finalization outcomes. See the [Hooks workflow](/workflows/hooks/) for native extensions, context, timeout, and failure details.
+Standalone create/remove lifecycles run platform-native repository-targeted and shared **user-global** hooks under `~/.arashi/hooks/`, targeted before shared. Targeted lookup uses the resolved main-root basename even when invocation begins in a linked worktree. Configless repository-local and workspace hooks remain inactive; use configured mode when those scopes are required. Hook cwd is the resolved standalone main root, create follows the documented rollback boundary, and remove preserves pre-abort/post-finalization outcomes.
+
+The same input matrix applies in standalone mode: a human terminal provides `ARASHI_HOOK_INPUT=tty`, `--no-hook-input` or JSON provides `disabled`, and non-TTY automation provides `unavailable`. Disabled and unavailable hooks receive immediate EOF; JSON remains authoritative even with terminal stdin. See the [Hooks workflow](/workflows/hooks/) for native prompt examples, attribution, security, timeout, and failure details.
 
 ## Upgrade to Configured Mode
 
