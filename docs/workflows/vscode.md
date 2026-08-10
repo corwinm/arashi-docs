@@ -42,6 +42,18 @@ With the extension installed, you can:
 
 If the panel is not immediately visible, open the Explorer sidebar and reveal the **Arashi Worktrees** view from the Explorer view menu.
 
+## Show Child Repositories in Source Control
+
+By default, Arashi keeps child repositories at `repos/<repository>`, two directories below the workspace root. If VS Code's built-in **Source Control** view does not show them, add this workspace setting:
+
+```json
+{
+  "git.repositoryScanMaxDepth": 2
+}
+```
+
+Open **Preferences: Open Workspace Settings (JSON)** to add it, then reload the editor window if the repositories do not appear immediately. Custom repository paths may require a different depth; repositories outside the workspace must be added as workspace folders.
+
 ## Recommended Usage Pattern
 
 - Use `arashi switch --vscode <branch>` when you are already in the terminal and want VS Code to open a specific worktree immediately.
