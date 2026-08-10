@@ -44,7 +44,7 @@ If the panel is not immediately visible, open the Explorer sidebar and reveal th
 
 ## Show Child Repositories in Source Control
 
-A configured Arashi workspace keeps child repositories at `repos/<repository>`. Those Git roots are two directories below the workspace folder, while VS Code scans only one level by default. If the built-in **Source Control** view shows the meta-repository but not the child repositories, add this workspace setting:
+A configured Arashi workspace keeps child repositories at `repos/<repository>`, two directories below the workspace root. If VS Code's built-in **Source Control** view does not show them, add this workspace setting:
 
 ```json
 {
@@ -52,11 +52,7 @@ A configured Arashi workspace keeps child repositories at `repos/<repository>`. 
 }
 ```
 
-You can add it through **Preferences: Open Workspace Settings (JSON)**. Keep `git.autoRepositoryDetection` set to `true` (the default) or `subFolders`; `false` and `openEditors` disable the recursive workspace scan. Reload the editor window after changing repository-discovery settings if the repositories do not appear immediately.
-
-This requirement comes from the combination of Arashi's directory layout and VS Code's one-level default, not from a recent Arashi change. VS Code [introduced `git.repositoryScanMaxDepth` in version 1.64](https://code.visualstudio.com/updates/v1_64) (January 2022), then [added nested Git repository discovery in version 1.72](https://code.visualstudio.com/updates/v1_72) (September 2022) while retaining the one-level default.
-
-`git.detectWorktrees` is separate and is **not required** for this Source Control fix. It makes VS Code discover sibling linked worktrees belonging to an already-open repository, which can add worktrees outside the current Arashi workspace to the repositories view. Enable it only if you want VS Code's own worktree-management UI. VS Code [introduced that feature in version 1.103](https://code.visualstudio.com/updates/v1_103) (July 2025); after initially enabling it by default, VS Code [changed the default back to `false`](https://github.com/microsoft/vscode/commit/f92a4853f7f9f6c61b63d91dcb59c61f31bdfff0) in version 1.115.
+Open **Preferences: Open Workspace Settings (JSON)** to add it, then reload the editor window if the repositories do not appear immediately.
 
 ## Recommended Usage Pattern
 
