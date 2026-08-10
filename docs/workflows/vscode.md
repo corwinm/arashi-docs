@@ -44,7 +44,7 @@ If the panel is not immediately visible, open the Explorer sidebar and reveal th
 
 ## Show Child Repositories in Source Control
 
-A configured Arashi workspace keeps child repositories at `repos/<repository>`, two directories below the workspace root. If VS Code's built-in **Source Control** view does not show them, add this workspace setting:
+By default, Arashi keeps child repositories at `repos/<repository>`, two directories below the workspace root. If VS Code's built-in **Source Control** view does not show them, add this workspace setting:
 
 ```json
 {
@@ -52,7 +52,7 @@ A configured Arashi workspace keeps child repositories at `repos/<repository>`, 
 }
 ```
 
-Open **Preferences: Open Workspace Settings (JSON)** to add it, then reload the editor window if the repositories do not appear immediately.
+Open **Preferences: Open Workspace Settings (JSON)** to add it, then reload the editor window if the repositories do not appear immediately. Custom repository paths may require a different depth; repositories outside the workspace must be added as workspace folders.
 
 ## Recommended Usage Pattern
 
