@@ -44,7 +44,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/commands/add.md",
-    ["before config and repository materialization", "global Git", "linked parent worktree", "canonical clone", "active child worktree", "Do not clone the child twice manually"]
+    ["before config and repository materialization", "global Git", "linked parent worktree", "canonical clone", "active child worktree", "single active-workspace clone", "Do not clone the child twice manually"]
   ],
   [
     "docs/commands/create.md",
@@ -91,7 +91,7 @@ const generatedRequirements = new Map<string, string[]>([
   ["public/commands/clone.md", ["repository-local default", "partial result"]],
   [
     "public/commands/add.md",
-    ["global Git", "linked parent worktree", "canonical clone", "active child worktree", "Do not clone the child twice manually"]
+    ["global Git", "linked parent worktree", "canonical clone", "active child worktree", "single active-workspace clone", "Do not clone the child twice manually"]
   ],
   ["public/commands/create.md", ["--dry-run", "changed/restored"]],
   ["public/commands/doctor.md", ["managed ignore", "does not repair"]],
@@ -118,6 +118,7 @@ const generatedRequirements = new Map<string, string[]>([
       "linked parent worktree",
       "canonical clone",
       "active child worktree",
+      "single active-workspace clone",
       "Do not clone the child twice manually"
     ]
   ]

@@ -49,6 +49,8 @@ When run from a linked parent worktree, `arashi add` keeps the child's default-b
 
 Arashi uses a matching remote child branch when one exists, otherwise it creates the branch from the child's default branch. It verifies that both destinations follow the configured ignore policy and rolls back state it created if the add fails.
 
+If `reposDir` cannot be managed as a repository-relative ignore rule—for example, an absolute path or `.`—`add` keeps a single active-workspace clone instead.
+
 Do not clone the child twice manually—the active child is a worktree backed by the canonical clone.
 
 ## Notes
