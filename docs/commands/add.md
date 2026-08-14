@@ -43,20 +43,27 @@ arashi add https://github.com/your-org/web.git --name frontend
 arashi add git@github.com:your-org/data.git --json
 ```
 
+## Adding From a Linked Parent Worktree
+
+When run from a linked parent worktree, `arashi add` keeps the child's default-branch canonical clone under the primary parent and creates an active child worktree on the linked parent's branch. Only the linked checkout's `.arashi/config.json` is updated; adding from the primary checkout remains a single-clone workflow.
+
+Arashi uses a matching remote child branch when one exists, otherwise it creates the branch from the child's default branch. It verifies that both destinations follow the configured ignore policy and rolls back state it created if the add fails.
+
+If `reposDir` cannot be managed as a repository-relative ignore rule—for example, an absolute path or `.`—`add` keeps a single active-workspace clone instead.
+
+Do not clone the child twice manually—the active child is a worktree backed by the canonical clone.
+
 ## Notes
 
 - `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/) for the mode boundary.
 - Run `arashi init` first so workspace config exists.
-- `add` detects the default branch and tracks setup scripts when present.
-- Arashi asks Git for effective tracked, repository-local, and global rules before writing. Missing safe managed paths use the clone's stored scope or the repository-local default; scope `none` warns without changing ignore files.
-- Config, clone-local preference, ignore-file, and clone changes share the command's rollback boundary. If cloning fails and config/filesystem state is restored, `add` also attempts to roll back reconciliation; a surviving repository keeps the rule needed to hide its managed path.
+- Setup-script detection uses the default-branch canonical clone and reports the setup path separately from the active worktree path.
 - Arashi changes only its owned ignore block and never writes global Git configuration.
-- JSON output includes managed ignore sources, warnings or unsafe skips, applied changes, and final `changed`/`restored` state when rollback is involved.
 
 ## Agent Notes
 
-- Surface scope `none` and unsafe-path warnings rather than silently adding manual rules.
-- On failure, use the reported final state to determine whether config, clone, and reconciliation changes remain; do not infer rollback from the exit code alone.
+- Surface scope `none`, tracked-scope canonical coverage failures, and unsafe-path warnings rather than silently adding manual rules.
+- Use the reported canonical and active roles and final rollback state; do not infer placement or cleanup from the invocation directory or exit code alone.
 
 ## Related Commands
 

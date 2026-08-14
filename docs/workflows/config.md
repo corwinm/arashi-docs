@@ -29,6 +29,8 @@ Reconciliation normalizes and deduplicates the two managed directories. It write
 
 Run `arashi doctor` to inspect missing rules, stale Arashi-owned entries, unsafe paths, or an invalid stored scope without modifying anything. This configured lifecycle behavior is separate from the configless workspace discovery tracked in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
 
+From a linked parent worktree, `arashi add` keeps the canonical clone under the primary parent and creates the active child worktree on the matching branch. See the [add command reference](/commands/add/).
+
 ## Command Defaults
 
 Set defaults in `.arashi/config.json` when you want consistent behavior without repeating flags.

@@ -292,6 +292,7 @@ function renderLlmsTxt(): string {
 - Prefer machine-readable command output such as \`arashi status --json\` when automating decisions.
 - Use \`arashi exec --json -- <command>\` for repeated multi-repo inspection or validation commands, with explicit \`--only\` filters for mutating or expensive commands.
 - Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
+- When \`arashi add\` runs from a linked parent worktree, use its reported canonical and active paths instead of cloning the child twice.
 - Treat [Hooks](${site}/workflows/hooks/) as the lifecycle contract: configured create scopes have different mutation points, configured remove evaluates every scope per target, standalone uses targeted-then-shared user-global hooks only, and aggregate cleanup parses \`ARASHI_REMOVE_TARGETS_JSON\`.
 - Hook input uses \`ARASHI_HOOK_INPUT=tty|disabled|unavailable\`. Human terminal create/remove can inherit stdin; the invocation-only \`--no-hook-input\`, JSON, and non-TTY automation provide immediate EOF as documented, with JSON authoritative. No persistent input policy is added.
 - Preserve explicit clone-local \`tracked\` or \`none\` preferences and never modify global Git configuration or a global excludes file to silence a warning.
@@ -341,6 +342,7 @@ function renderLlmsTxt(): string {
 - [Switch command Markdown](${site}/commands/switch.md)
 - [Create command Markdown](${site}/commands/create.md)
 - [Exec command Markdown](${site}/commands/exec.md)
+- [Add command Markdown](${site}/commands/add.md)
 - [Completion command Markdown](${site}/commands/completion.md)
 - [Contributing Markdown](${site}/contributing.md)
 

@@ -16,7 +16,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/workflows/config.md",
-    ["arashi.ignoreScope", "core.excludesFile", "init", "pull", "clone", "add", "create"]
+    ["arashi.ignoreScope", "core.excludesFile", "init", "pull", "clone", "add", "create", "linked parent worktree", "[add command reference](/commands/add/)"]
   ],
   [
     "docs/commands/init.md",
@@ -44,7 +44,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/commands/add.md",
-    ["before config and repository materialization", "rollback boundary", "global Git"]
+    ["before config and repository materialization", "global Git", "linked parent worktree", "canonical clone", "active child worktree", "single active-workspace clone", "Do not clone the child twice manually"]
   ],
   [
     "docs/commands/create.md",
@@ -65,7 +65,10 @@ const generatedRequirements = new Map<string, string[]>([
       "[init command reference](/commands/init/)"
     ]
   ],
-  ["public/workflows/config.md", ["arashi.ignoreScope", "core.excludesFile"]],
+  [
+    "public/workflows/config.md",
+    ["arashi.ignoreScope", "core.excludesFile", "linked parent worktree", "[add command reference](/commands/add/)"]
+  ],
   ["public/workflows/json-automation.md", ["managedIgnore", "restored"]],
   [
     "public/commands/init.md",
@@ -86,11 +89,17 @@ const generatedRequirements = new Map<string, string[]>([
   ],
   ["public/commands/pull.md", ["original filters", "managed ignore"]],
   ["public/commands/clone.md", ["repository-local default", "partial result"]],
-  ["public/commands/add.md", ["rollback boundary", "global Git"]],
+  [
+    "public/commands/add.md",
+    ["global Git", "linked parent worktree", "canonical clone", "active child worktree", "single active-workspace clone", "Do not clone the child twice manually"]
+  ],
   ["public/commands/create.md", ["--dry-run", "changed/restored"]],
   ["public/commands/doctor.md", ["managed ignore", "does not repair"]],
   ["public/workflows/agents-and-specs.md", ["global Git", "managedIgnore"]],
-  ["public/llms.txt", ["repository-local", "global Git configuration"]],
+  [
+    "public/llms.txt",
+    ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)"]
+  ],
   [
     "public/llms-full.txt",
     [
@@ -105,7 +114,12 @@ const generatedRequirements = new Map<string, string[]>([
       "`.arashi/worktrees` remains its compatibility fallback",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
-      "does not run `git check-ignore` or write ignore files"
+      "does not run `git check-ignore` or write ignore files",
+      "linked parent worktree",
+      "canonical clone",
+      "active child worktree",
+      "single active-workspace clone",
+      "Do not clone the child twice manually"
     ]
   ]
 ]);
