@@ -33,8 +33,14 @@ arashi add <git-url> [options]
 ## Examples
 
 ```bash
-# Add a repository using SSH
-arashi add git@github.com:your-org/api.git
+# Explicit-user SCP syntax
+arashi add git@work-github:acme/api.git
+
+# Omitted-user SCP syntax
+arashi add work-github:acme/api.git
+
+# ssh:// syntax
+arashi add ssh://git@work-github/acme/api.git
 
 # Add with a custom workspace name
 arashi add https://github.com/your-org/web.git --name frontend
@@ -42,6 +48,12 @@ arashi add https://github.com/your-org/web.git --name frontend
 # Emit JSON output for scripts
 arashi add git@github.com:your-org/data.git --json
 ```
+
+## SSH Remote Forms
+
+Arashi accepts Git's `[user@]host:path` SCP syntax, including an omitted user, and `ssh://[user@]host/path`. The host is opaque: it may be a hostname or an OpenSSH `Host` alias. For example, `git@work-github:acme/api.git`, `work-github:acme/api.git`, and `ssh://git@work-github/acme/api.git` are supported.
+
+For the command argument, Arashi normalizes outer whitespace once, passes that exact normalized URL to Git, returns it in command output, and stores it unchanged in `.arashi/config.json`. Arashi does not expand the host alias or replace the username, scheme, path, or `.git` suffix.
 
 ## Adding From a Linked Parent Worktree
 
@@ -59,6 +71,7 @@ Do not clone the child twice manually—the active child is a worktree backed by
 - Run `arashi init` first so workspace config exists.
 - Setup-script detection uses the default-branch canonical clone and reports the setup path separately from the active worktree path.
 - Arashi changes only its owned ignore block and never writes global Git configuration.
+- Git and OpenSSH own SSH host resolution and authentication. Arashi does not inspect or configure SSH aliases, keys, or identity files.
 
 ## Agent Notes
 

@@ -59,6 +59,13 @@ arashi clone --all --json
 - Before cloning, Arashi honors any effective tracked, repository-local, or global rule. If a safe managed path is still unignored, it uses the stored clone-local scope or the repository-local default; scope `none` warns without writing.
 - Repeated reconciliation is idempotent. If no clone is retained after failure, ignore and preference changes are restored; when some selected repositories succeed, required reconciliation is retained and reported with the partial result.
 - A fresh clone has no shared ignore preference because `arashi.ignoreScope` is clone-local. It therefore defaults to the common repository's local exclude file and does not unexpectedly change tracked `.gitignore`.
+- When a configured remote already uses SSH, `clone` keeps every configured SSH URL byte-for-byte. An SSH preference can still convert a conventional HTTPS remote to SSH, but Arashi never converts an SSH URL to HTTPS because an alias has no trustworthy automatic HTTPS mapping.
+
+## Troubleshooting SSH Remotes
+
+Git and OpenSSH resolve the host and authenticate. Arashi does not read, resolve, or edit `~/.ssh/config`, identity files, or keys, and it does not run a separate SSH connectivity probe. If an alias cannot be resolved or authenticated, review the underlying Git error and test the same remote with Git in your local environment.
+
+In a multi-repository clone, a failed alias is reported for that repository and Arashi continues with the remaining selected repositories. Successful clones are retained under the existing partial-success contract. For an `add` failure, Arashi uses the existing rollback boundary described in the [add command reference](/commands/add/).
 
 ## Agent Notes
 

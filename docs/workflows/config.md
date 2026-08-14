@@ -31,6 +31,19 @@ Run `arashi doctor` to inspect missing rules, stale Arashi-owned entries, unsafe
 
 From a linked parent worktree, `arashi add` keeps the canonical clone under the primary parent and creates the active child worktree on the matching branch. See the [add command reference](/commands/add/).
 
+## SSH Alias Portability
+
+SSH aliases are machine-local. A `gitUrl` such as `git@work-github:acme/api.git` works only on machines that define the same alias with compatible OpenSSH routing. Arashi stores and passes the remote exactly; it does not synchronize aliases, keys, identity files, or SSH settings.
+
+For portable shared configuration, commit a canonical remote and let each developer use local Git `url.<base>.insteadOf` rewriting when they need different SSH routing. For example, keep `git@github.com:acme/api.git` in `.arashi/config.json`, then configure this only on a machine that uses the `work-github` alias:
+
+```ini
+[url "git@work-github:"]
+    insteadOf = git@github.com:
+```
+
+Git applies the rewrite when cloning. Arashi does not install or synchronize this Git configuration. This keeps the committed workspace portable while leaving account, identity, proxy, and host routing under Git/OpenSSH and each developer's control.
+
 ## Command Defaults
 
 Set defaults in `.arashi/config.json` when you want consistent behavior without repeating flags.
