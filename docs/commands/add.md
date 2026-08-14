@@ -60,8 +60,10 @@ For the coordinated child branch, Arashi uses a matching `origin/<branch>` remot
 Before linked-parent materialization, Arashi checks effective ignore coverage independently for the canonical and active destinations:
 
 - `local` reconciles the common repository exclude authority and verifies that its rule covers both paths.
-- `tracked` can update only the active branch's `.gitignore`. The canonical destination must already be effectively ignored in the canonical checkout; otherwise `add` stops before any write or clone and asks you to reconcile and commit the rule on the parent main branch first.
+- `tracked` can update only the active branch's `.gitignore`. The canonical destination must already be effectively ignored in the canonical checkout; otherwise `add` stops before any write or clone and asks you to reconcile and commit the rule on the branch checked out in the canonical parent checkout first.
 - `none` keeps the explicit opt-out, writes no ignore file, reports each unignored destination, and may continue under that policy.
+
+An absolute `reposDir` remains a shared single-placement destination when `add` is invoked from a linked parent worktree; Arashi does not try to create a canonical clone and active worktree at the same absolute path.
 
 An existing effective tracked, repository-local, or global rule can satisfy either destination. Arashi never writes the canonical checkout's tracked `.gitignore` from the linked parent and never writes global Git configuration.
 
