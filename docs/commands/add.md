@@ -43,20 +43,60 @@ arashi add https://github.com/your-org/web.git --name frontend
 arashi add git@github.com:your-org/data.git --json
 ```
 
+## Repository Placement By Parent Topology
+
+A direct-main add runs when the active configured checkout is the parent repository's canonical non-bare worktree. Arashi clones the child once beneath that checkout's `reposDir`, leaves the canonical clone on the detected child default branch, and updates that checkout's `.arashi/config.json`; it does not create a second child worktree.
+
+A linked-parent add runs when the command starts in a configured linked parent worktree, including from an independent child repository nested beneath it. Arashi resolves the roles through Git topology rather than assuming a `.arashi/worktrees` path:
+
+- The primary parent worktree owns the new canonical clone under its configured `reposDir`. That clone stays on the child's default branch.
+- The linked parent is the active execution checkout. It receives an active child worktree at the equivalent configured path, checked out on the active parent branch.
+- Only the active parent's `.arashi/config.json` receives the new config-relative `path` and `gitUrl` entry. Arashi does not edit the canonical parent's tracked config.
+
+For the coordinated child branch, Arashi uses a matching `origin/<branch>` remote-tracking ref when one exists; otherwise it creates it from the detected default branch. A detached active parent, either destination already existing, or a conflicting checked-out child branch fails closed rather than overwriting or adopting state. Do not clone the child twice manually: the active child is a linked worktree backed by the canonical clone.
+
+## Managed Ignore Safety Across Both Paths
+
+Before linked-parent materialization, Arashi checks effective ignore coverage independently for the canonical and active destinations:
+
+- `local` reconciles the common repository exclude authority and verifies that its rule covers both paths.
+- `tracked` can update only the active branch's `.gitignore`. The canonical destination must already be effectively ignored in the canonical checkout; otherwise `add` stops before any write or clone and asks you to reconcile and commit the rule on the parent main branch first.
+- `none` keeps the explicit opt-out, writes no ignore file, reports each unignored destination, and may continue under that policy.
+
+An existing effective tracked, repository-local, or global rule can satisfy either destination. Arashi never writes the canonical checkout's tracked `.gitignore` from the linked parent and never writes global Git configuration.
+
+## Rollback And Surviving State
+
+Config, clone-local preference, managed-ignore, canonical clone, coordinated branch, active worktree, and active config changes share the command's rollback boundary. Cleanup runs in reverse dependency order and removes only invocation-created state.
+
+The canonical clone owns the Git common directory used by the active child worktree. If rollback cannot remove either the active path or its Git worktree metadata—or cannot determine whether either survives—Arashi retains the canonical clone, coordinated branch, and required ignore coverage. Human and JSON failures report the initiating phase, cleanup failures, and final observed state; do not infer complete rollback from the exit code alone.
+
+## Human And JSON Results
+
+Human success output labels the portable config path, canonical clone and default branch, and, when present, the active child worktree and coordinated branch. Setup guidance refers to the active checkout rather than implying the default-branch clone is the feature checkout.
+
+`--json` emits exactly one JSON envelope with no spinner, prompt, warning prose, or human summary on stdout. The existing config-relative `repository.path` remains stable. `data.repository` also includes:
+
+- `materialization`: `"clone"` for direct/bare placement or `"coordinated-worktree"` for linked-parent placement.
+- `canonicalPath`: the normalized absolute canonical clone path.
+- `worktreePath`: the normalized absolute active path, or `null` without a linked child.
+- `defaultBranch`: the detected child default branch.
+- `coordinatedBranch`: the active parent branch, or `null` without a linked child.
+- `setupScript`: the config-relative setup path or `null`; `setupScriptCreated` remains boolean.
+
+On a rollback failure, inspect `error.details.phase`, `error.details.rollback.complete`, ordered `failures`, and `finalState` for canonical path, active path and metadata, coordinated branch, config entry, exact config-byte restoration (`configRestored`), and managed-ignore state.
+
 ## Notes
 
 - `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/) for the mode boundary.
 - Run `arashi init` first so workspace config exists.
-- `add` detects the default branch and tracks setup scripts when present.
-- Arashi asks Git for effective tracked, repository-local, and global rules before writing. Missing safe managed paths use the clone's stored scope or the repository-local default; scope `none` warns without changing ignore files.
-- Config, clone-local preference, ignore-file, and clone changes share the command's rollback boundary. If cloning fails and config/filesystem state is restored, `add` also attempts to roll back reconciliation; a surviving repository keeps the rule needed to hide its managed path.
+- Setup-script detection uses the default-branch canonical clone and reports the setup path separately from the active worktree path.
 - Arashi changes only its owned ignore block and never writes global Git configuration.
-- JSON output includes managed ignore sources, warnings or unsafe skips, applied changes, and final `changed`/`restored` state when rollback is involved.
 
 ## Agent Notes
 
-- Surface scope `none` and unsafe-path warnings rather than silently adding manual rules.
-- On failure, use the reported final state to determine whether config, clone, and reconciliation changes remain; do not infer rollback from the exit code alone.
+- Surface scope `none`, tracked-scope canonical coverage failures, and unsafe-path warnings rather than silently adding manual rules.
+- Use the reported canonical and active roles and final rollback state; do not infer placement or cleanup from the invocation directory or exit code alone.
 
 ## Related Commands
 
