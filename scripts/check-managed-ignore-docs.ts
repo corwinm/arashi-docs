@@ -16,19 +16,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/workflows/config.md",
-    [
-      "arashi.ignoreScope",
-      "core.excludesFile",
-      "init",
-      "pull",
-      "clone",
-      "add",
-      "create",
-      "linked parent worktree",
-      "canonical clone",
-      "active child worktree",
-      "[add command reference](/commands/add/)"
-    ]
+    ["arashi.ignoreScope", "core.excludesFile", "init", "pull", "clone", "add", "create", "linked parent worktree", "[add command reference](/commands/add/)"]
   ],
   [
     "docs/commands/init.md",
@@ -56,29 +44,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/commands/add.md",
-    [
-      "before config and repository materialization",
-      "rollback boundary",
-      "global Git",
-      "direct-main add",
-      "linked-parent add",
-      "canonical clone",
-      "active child worktree",
-      "active parent's `.arashi/config.json`",
-      "matching `origin/<branch>` remote-tracking ref",
-      "creates it from the detected default branch",
-      "`local`",
-      "`tracked`",
-      "`none`",
-      "retains the canonical clone",
-      "`materialization`",
-      "`canonicalPath`",
-      "`worktreePath`",
-      "`defaultBranch`",
-      "`coordinatedBranch`",
-      "exactly one JSON envelope",
-      "Do not clone the child twice manually"
-    ]
+    ["before config and repository materialization", "global Git", "linked parent worktree", "canonical clone", "active child worktree", "Do not clone the child twice manually"]
   ],
   [
     "docs/commands/create.md",
@@ -101,14 +67,7 @@ const generatedRequirements = new Map<string, string[]>([
   ],
   [
     "public/workflows/config.md",
-    [
-      "arashi.ignoreScope",
-      "core.excludesFile",
-      "linked parent worktree",
-      "canonical clone",
-      "active child worktree",
-      "[add command reference](/commands/add/)"
-    ]
+    ["arashi.ignoreScope", "core.excludesFile", "linked parent worktree", "[add command reference](/commands/add/)"]
   ],
   ["public/workflows/json-automation.md", ["managedIgnore", "restored"]],
   [
@@ -132,38 +91,14 @@ const generatedRequirements = new Map<string, string[]>([
   ["public/commands/clone.md", ["repository-local default", "partial result"]],
   [
     "public/commands/add.md",
-    [
-      "rollback boundary",
-      "global Git",
-      "direct-main add",
-      "linked-parent add",
-      "canonical clone",
-      "active child worktree",
-      "matching `origin/<branch>` remote-tracking ref",
-      "creates it from the detected default branch",
-      "retains the canonical clone",
-      "`materialization`",
-      "`canonicalPath`",
-      "`worktreePath`",
-      "`defaultBranch`",
-      "`coordinatedBranch`",
-      "exactly one JSON envelope",
-      "Do not clone the child twice manually"
-    ]
+    ["global Git", "linked parent worktree", "canonical clone", "active child worktree", "Do not clone the child twice manually"]
   ],
   ["public/commands/create.md", ["--dry-run", "changed/restored"]],
   ["public/commands/doctor.md", ["managed ignore", "does not repair"]],
   ["public/workflows/agents-and-specs.md", ["global Git", "managedIgnore"]],
   [
     "public/llms.txt",
-    [
-      "repository-local",
-      "global Git configuration",
-      "linked parent worktree",
-      "canonical clone",
-      "active child worktree",
-      "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)"
-    ]
+    ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)"]
   ],
   [
     "public/llms-full.txt",
@@ -180,18 +115,9 @@ const generatedRequirements = new Map<string, string[]>([
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files",
-      "direct-main add",
-      "linked-parent add",
+      "linked parent worktree",
       "canonical clone",
       "active child worktree",
-      "matching `origin/<branch>` remote-tracking ref",
-      "retains the canonical clone",
-      "`materialization`",
-      "`canonicalPath`",
-      "`worktreePath`",
-      "`defaultBranch`",
-      "`coordinatedBranch`",
-      "exactly one JSON envelope",
       "Do not clone the child twice manually"
     ]
   ]

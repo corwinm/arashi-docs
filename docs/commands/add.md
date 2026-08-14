@@ -43,50 +43,13 @@ arashi add https://github.com/your-org/web.git --name frontend
 arashi add git@github.com:your-org/data.git --json
 ```
 
-## Repository Placement By Parent Topology
+## Adding From a Linked Parent Worktree
 
-A direct-main add runs when the active configured checkout is the parent repository's canonical non-bare worktree. Arashi clones the child once beneath that checkout's `reposDir`, leaves the canonical clone on the detected child default branch, and updates that checkout's `.arashi/config.json`; it does not create a second child worktree.
+When run from a linked parent worktree, `arashi add` keeps the child's default-branch canonical clone under the primary parent and creates an active child worktree on the linked parent's branch. Only the linked checkout's `.arashi/config.json` is updated; adding from the primary checkout remains a single-clone workflow.
 
-A linked-parent add runs when the command starts in a configured linked parent worktree, including from an independent child repository nested beneath it. Arashi resolves the roles through Git topology rather than assuming a `.arashi/worktrees` path:
+Arashi uses a matching remote child branch when one exists, otherwise it creates the branch from the child's default branch. It verifies that both destinations follow the configured ignore policy and rolls back state it created if the add fails.
 
-- The primary parent worktree owns the new canonical clone under its configured `reposDir`. That clone stays on the child's default branch.
-- The linked parent is the active execution checkout. It receives an active child worktree at the equivalent configured path, checked out on the active parent branch.
-- Only the active parent's `.arashi/config.json` receives the new config-relative `path` and `gitUrl` entry. Arashi does not edit the canonical parent's tracked config.
-
-For the coordinated child branch, Arashi uses a matching `origin/<branch>` remote-tracking ref when one exists; otherwise it creates it from the detected default branch. A detached active parent, either destination already existing, or a conflicting checked-out child branch fails closed rather than overwriting or adopting state. Do not clone the child twice manually: the active child is a linked worktree backed by the canonical clone.
-
-## Managed Ignore Safety Across Both Paths
-
-Before linked-parent materialization, Arashi checks effective ignore coverage independently for the canonical and active destinations:
-
-- `local` reconciles the common repository exclude authority and verifies that its rule covers both paths.
-- `tracked` can update only the active branch's `.gitignore`. The canonical destination must already be effectively ignored in the canonical checkout; otherwise `add` stops before any write or clone and asks you to reconcile and commit the rule on the branch checked out in the canonical parent checkout first.
-- `none` keeps the explicit opt-out, writes no ignore file, reports each unignored destination, and may continue under that policy.
-
-A managed-ignore-unsafe `reposDir`—including an absolute path or a repository-root value such as `.`—retains single-placement behavior in the active workspace when `add` is invoked from a linked parent worktree. Arashi does not require unsafe repository-relative ignore coverage or attempt two materializations.
-
-An existing effective tracked, repository-local, or global rule can satisfy either destination. Arashi never writes the canonical checkout's tracked `.gitignore` from the linked parent and never writes global Git configuration.
-
-## Rollback And Surviving State
-
-Config, clone-local preference, managed-ignore, canonical clone, coordinated branch, active worktree, and active config changes share the command's rollback boundary. Cleanup runs in reverse dependency order and removes only invocation-created state.
-
-The canonical clone owns the Git common directory used by the active child worktree. If rollback cannot remove either the active path or its Git worktree metadata—or cannot determine whether either survives—Arashi retains the canonical clone, coordinated branch, and required ignore coverage. Human and JSON failures report the initiating phase, cleanup failures, and final observed state; do not infer complete rollback from the exit code alone.
-
-## Human And JSON Results
-
-Human success output labels the portable config path, canonical clone and default branch, and, when present, the active child worktree and coordinated branch. Setup guidance refers to the active checkout rather than implying the default-branch clone is the feature checkout.
-
-`--json` emits exactly one JSON envelope with no spinner, prompt, warning prose, or human summary on stdout. The existing config-relative `repository.path` remains stable. `data.repository` also includes:
-
-- `materialization`: `"clone"` for direct/bare placement or `"coordinated-worktree"` for linked-parent placement.
-- `canonicalPath`: the normalized absolute canonical clone path.
-- `worktreePath`: the normalized absolute active path, or `null` without a linked child.
-- `defaultBranch`: the detected child default branch.
-- `coordinatedBranch`: the active parent branch, or `null` without a linked child.
-- `setupScript`: the config-relative setup path or `null`; `setupScriptCreated` remains boolean.
-
-On a rollback failure, inspect `error.details.phase`, `error.details.rollback.complete`, ordered `failures`, and `finalState` for canonical path, active path and metadata, coordinated branch, config entry, exact config-byte restoration (`configRestored`), and managed-ignore state.
+Do not clone the child twice manually—the active child is a worktree backed by the canonical clone.
 
 ## Notes
 
