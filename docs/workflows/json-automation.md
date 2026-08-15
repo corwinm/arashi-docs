@@ -56,6 +56,12 @@ The common fields are:
 
 Command-specific `data` payloads may evolve as commands gain more diagnostics, filters, or result details. Consumers should read the fields they need and ignore unknown fields.
 
+## Create base results
+
+When `create` uses `--base` or `defaults.create.baseBranch`, success and dry-run payloads include an optional `base` object. Its `requestedBranch` removes at most one leading `origin/`, and `source` is `cli` or `config`. The success `data.base.repositories` collection is the complete effective selected set in selected-set order; it is never re-sorted lexically or alphabetically. Each entry uses the exact keys `repositoryName` and `repositoryPath` (a canonical absolute path with symlinks resolved), plus `resolvedRef`, captured `resolvedOid`, and `targetAction` (`created` or `reused`). Omitted-base runs omit this object so existing consumers retain their prior shape.
+
+If resolution fails, `error.code` is `CREATE_BASE_RESOLUTION_FAILED`. The `error.details.repositories` collection contains affected repositories only, preserving selected-set order; unaffected selected repositories are omitted. The surrounding details retain the normalized requested branch and source. Every failure includes `repositoryName` and `repositoryPath`, whose value is the same canonical absolute path used by successful entries, never a relative, lexical alias, or unresolved symlink path. For every failure, `attemptedRefs` is exactly the ordered pair `refs/heads/<normalized>`, `refs/remotes/origin/<normalized>`. Resolution finishes for the whole filtered set before the command fails; no create hook, branch, worktree, or configuration mutation has run. Prefer the high-level code for control flow and inspect the complete details when reporting remediation.
+
 ## Managed Ignore Results
 
 When reconciliation is performed, JSON-capable configured lifecycle commands (`init`, `pull`, `clone`, `add`, and `create`) include a `managedIgnore` result. A no-op or cancelled path that returns before reconciliation may omit this optional field. When present, use it to understand the effective scope, stored preference, normalized managed paths, effective source and matched rule, planned or applied changes, warnings, unsafe skips, and tracked or local file state.

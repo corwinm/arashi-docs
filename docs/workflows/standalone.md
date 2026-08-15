@@ -53,6 +53,16 @@ my-repository/
 
 The layout never adds a repository-name prefix. Commands invoked from the main worktree or any linked worktree resolve the same main repository and shared worktree set.
 
+### Choose a base for one create
+
+Standalone mode accepts an explicit base for the current invocation:
+
+```bash
+arashi create feature/FEAT-1234/docs --base feature/FEAT-1234
+```
+
+This is CLI-only and invocation-only: standalone create does not read or persist `defaults.create.baseBranch`, and it never creates `.arashi` state. The explicit branch resolves from a local branch first and then `origin/<branch>` before hooks or mutation. Without `--base`, standalone compatibility is unchanged and a new target starts from the invocation repository's current `HEAD`; existing local or remote targets keep their normal reuse behavior.
+
 Before `create` or `create --dry-run` mutates a branch, directory, worktree, hook, or config, Arashi asks Git whether the exact normalized destination (for example `.worktrees/feat/standalone-docs`) is effectively ignored. A negation or selective rule that exposes that destination blocks creation even if another `.worktrees/` descendant is ignored. Run `arashi init --zero-config`, then retry; Arashi does not rewrite ignore state during passive discovery.
 
 ## Supported Lifecycle
