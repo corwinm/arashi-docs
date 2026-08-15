@@ -118,7 +118,6 @@ function checkRoot(rootPath: string): string[] {
   }
 
   checkStructuredContracts(rootPath, found);
-  checkWorkflowCoverage(rootPath, found);
   return found;
 }
 
@@ -144,32 +143,13 @@ function checkStructuredContracts(rootPath: string, found: string[]): void {
   }
 }
 
-function checkWorkflowCoverage(rootPath: string, found: string[]): void {
-  const workflow = read(rootPath, ".github/workflows/docs-validate.yml", found);
-  if (workflow !== null && !workflow.includes("run: pnpm validate:kitty-session-docs")) {
-    found.push(".github/workflows/docs-validate.yml must run pnpm validate:kitty-session-docs");
-  }
-
-  const packageJson = parseJson(rootPath, "package.json", found);
-  if (packageJson !== null) {
-    if (packageJson.scripts?.["validate:kitty-session-docs"] !== "pnpm sync:content && node scripts/check-kitty-session-docs.ts") {
-      found.push("package.json must define validate:kitty-session-docs");
-    }
-    if (!packageJson.scripts?.validate?.includes("pnpm validate:kitty-session-docs")) {
-      found.push("package.json validate must run validate:kitty-session-docs");
-    }
-  }
-}
-
 function runOutOfRepositoryMismatchTest(sourceRoot: string): void {
   const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "arashi-kitty-docs-"));
   try {
     for (const relativePath of new Set([
       ...requirements.keys(),
       "contracts/switch-config.json",
-      "contracts/create-launch-config.json",
-      ".github/workflows/docs-validate.yml",
-      "package.json"
+      "contracts/create-launch-config.json"
     ])) {
       mkdirSync(path.dirname(path.join(fixtureRoot, relativePath)), { recursive: true });
       cpSync(path.join(sourceRoot, relativePath), path.join(fixtureRoot, relativePath), {

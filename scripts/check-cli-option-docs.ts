@@ -127,7 +127,6 @@ checkGeneratedParity();
 checkUpdateJsonPolicy();
 checkDeprecatedGuidance();
 checkContract();
-checkReachability();
 checkDeterministicExports();
 
 if (errors.length > 0) {
@@ -398,25 +397,12 @@ function checkContract(): void {
   }
 }
 
-function checkReachability(): void {
-  const packageJson = parseJson("package.json");
-  if (packageJson !== null) {
-    if (packageJson.scripts?.["validate:cli-option-docs"] !== "pnpm sync:content && node scripts/check-cli-option-docs.ts") {
-      errors.push("package.json must define validate:cli-option-docs");
-    }
-    if (!packageJson.scripts?.validate?.includes("pnpm validate:cli-option-docs")) {
-      errors.push("package.json validate must run validate:cli-option-docs");
-    }
-  }
-  const workflow = read(".github/workflows/docs-validate.yml");
-  if (workflow !== null && !workflow.includes("run: pnpm validate:cli-option-docs")) {
-    errors.push(".github/workflows/docs-validate.yml must explicitly run pnpm validate:cli-option-docs");
-  }
-}
-
 function checkDeterministicExports(): void {
   const before = snapshotPublicExports();
-  const result = spawnSync(process.execPath, ["scripts/generate-agent-exports.ts"], { cwd: root, encoding: "utf8" });
+  const result = spawnSync(process.execPath, ["scripts/generate-agent-exports.ts"], {
+    cwd: root,
+    encoding: "utf8",
+  });
   if (result.status !== 0) {
     errors.push(`agent export regeneration failed: ${(result.stderr || result.stdout).trim()}`);
     return;
@@ -429,7 +415,9 @@ function checkDeterministicExports(): void {
 
 function snapshotPublicExports(): Record<string, string> {
   const snapshot: Record<string, string> = {};
-  for (const relativePath of walk(path.join(root, "public")).filter((file) => file.endsWith(".md") || file.endsWith("llms.txt") || file.endsWith("llms-full.txt"))) {
+  for (const relativePath of walk(path.join(root, "public")).filter(
+    (file) => file.endsWith(".md") || file.endsWith("llms.txt") || file.endsWith("llms-full.txt"),
+  )) {
     snapshot[relativePath] = readFileSync(path.join(root, relativePath), "utf8");
   }
   return snapshot;

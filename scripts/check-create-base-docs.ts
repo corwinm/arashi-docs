@@ -438,23 +438,24 @@ function checkReachability(root: string, found: string[]): void {
     if (packageJson.scripts?.["validate:create-base-docs"] !== focusedCommand) {
       found.push("package.json must define validate:create-base-docs");
     }
-    if (
-      !packageJson.scripts?.validate?.includes(
-        "pnpm validate:create-base-docs",
-      )
-    ) {
-      found.push("package.json validate must run validate:create-base-docs");
+    if (!packageJson.scripts?.validate?.includes("pnpm validate:semantic-docs")) {
+      found.push("package.json validate must run validate:semantic-docs");
     }
+  }
+
+  const registry = parseJson(root, "scripts/semantic-doc-checks.json", found);
+  if (!Array.isArray(registry) || !registry.includes("check-create-base-docs.ts")) {
+    found.push(
+      "scripts/semantic-doc-checks.json must register check-create-base-docs.ts",
+    );
   }
 
   const workflow = read(root, ".github/workflows/docs-validate.yml", found);
   if (
     workflow !== null &&
-    !/^\s*run:\s*pnpm validate:create-base-docs\s*$/m.test(workflow)
+    !/^\s*run:\s*pnpm validate\s*$/m.test(workflow)
   ) {
-    found.push(
-      "docs-validate workflow must execute validate:create-base-docs explicitly",
-    );
+    found.push("docs-validate workflow must execute the stable validate aggregate");
   }
 }
 

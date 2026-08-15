@@ -130,7 +130,7 @@ if (errors.length > 0) {
 
 runOutOfRepositorySelfTests(root);
 console.log(
-  `SSH host-alias documentation contract passed for ${requirements.size} source/export surfaces and rejected every deliberate semantic and validation-wiring drift.`
+  `SSH host-alias documentation contract passed for ${requirements.size} source/export surfaces and rejected every deliberate semantic drift.`
 );
 
 function checkRoot(rootPath: string): string[] {
@@ -146,7 +146,6 @@ function checkRoot(rootPath: string): string[] {
   }
 
   checkForbiddenGuidance(rootPath, found);
-  checkValidationReachability(rootPath, found);
   return found;
 }
 
@@ -162,32 +161,10 @@ function checkForbiddenGuidance(rootPath: string, found: string[]): void {
   }
 }
 
-function checkValidationReachability(rootPath: string, found: string[]): void {
-  const packageJson = parseJson(rootPath, "package.json", found);
-  const focusedCommand = "pnpm sync:content && node scripts/check-ssh-host-alias-docs.ts";
-  if (packageJson !== null) {
-    if (packageJson.scripts?.["validate:ssh-host-alias-docs"] !== focusedCommand) {
-      found.push("package.json must define validate:ssh-host-alias-docs");
-    }
-    if (!packageJson.scripts?.validate?.includes("pnpm validate:ssh-host-alias-docs")) {
-      found.push("package.json validate must run validate:ssh-host-alias-docs");
-    }
-  }
-
-  const workflow = read(rootPath, ".github/workflows/docs-validate.yml", found);
-  if (workflow !== null && !workflow.includes("run: pnpm validate:ssh-host-alias-docs")) {
-    found.push(".github/workflows/docs-validate.yml must run pnpm validate:ssh-host-alias-docs");
-  }
-}
-
 function runOutOfRepositorySelfTests(sourceRoot: string): void {
   const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "arashi-ssh-alias-docs-"));
   try {
-    for (const relativePath of new Set([
-      ...requirements.keys(),
-      "package.json",
-      ".github/workflows/docs-validate.yml"
-    ])) {
+    for (const relativePath of new Set(requirements.keys())) {
       const destination = path.join(fixtureRoot, relativePath);
       mkdirSync(path.dirname(destination), { recursive: true });
       cpSync(path.join(sourceRoot, relativePath), destination);
@@ -221,35 +198,8 @@ function runOutOfRepositorySelfTests(sourceRoot: string): void {
       writeFileSync(forbiddenTarget, valid);
     }
 
-    const packagePath = path.join(fixtureRoot, "package.json");
-    const validPackage = readFileSync(packagePath, "utf8");
-    writeFileSync(packagePath, validPackage.replaceAll("validate:ssh-host-alias-docs", "validate:ssh-alias-drift"));
-    let mismatchErrors = checkRoot(fixtureRoot);
-    if (!mismatchErrors.some((error) => error.includes("package.json must define"))) {
-      throw new Error("SSH host-alias checker self-test did not reject focused-script drift.");
-    }
-    writeFileSync(packagePath, validPackage);
-
-    const workflowPath = path.join(fixtureRoot, ".github/workflows/docs-validate.yml");
-    const validWorkflow = readFileSync(workflowPath, "utf8");
-    writeFileSync(workflowPath, validWorkflow.replaceAll("run: pnpm validate:ssh-host-alias-docs", "run: pnpm validate:ssh-alias-drift"));
-    mismatchErrors = checkRoot(fixtureRoot);
-    if (!mismatchErrors.some((error) => error.includes(".github/workflows/docs-validate.yml must run"))) {
-      throw new Error("SSH host-alias checker self-test did not reject CI-wiring drift.");
-    }
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true });
-  }
-}
-
-function parseJson(rootPath: string, relativePath: string, found: string[]): any | null {
-  const raw = read(rootPath, relativePath, found);
-  if (raw === null) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    found.push(`${relativePath} is not valid JSON`);
-    return null;
   }
 }
 

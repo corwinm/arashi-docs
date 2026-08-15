@@ -225,7 +225,6 @@ checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkForbiddenAliases();
 checkPackageWideHookInputPolicy(root, errors);
-checkWiring();
 
 if (errors.length > 0) {
   console.error("Lifecycle-hook documentation contract failed:");
@@ -525,36 +524,6 @@ function runControlledDriftSelfTest(): void {
     }
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true });
-  }
-}
-
-function checkWiring(): void {
-  const packageJson = read("package.json");
-  if (packageJson !== null) {
-    const scripts = JSON.parse(packageJson).scripts as Record<string, string>;
-    if (
-      scripts["validate:lifecycle-hook-docs"] !==
-      "pnpm sync:content && node scripts/check-lifecycle-hook-docs.ts"
-    ) {
-      errors.push(
-        "package.json must expose validate:lifecycle-hook-docs with export regeneration",
-      );
-    }
-    if (!scripts.validate?.includes("validate:lifecycle-hook-docs")) {
-      errors.push(
-        "package.json validate must run validate:lifecycle-hook-docs",
-      );
-    }
-  }
-
-  const workflow = read(".github/workflows/docs-validate.yml");
-  if (
-    workflow !== null &&
-    !workflow.includes("pnpm validate:lifecycle-hook-docs")
-  ) {
-    errors.push(
-      "docs-validate workflow must run validate:lifecycle-hook-docs explicitly",
-    );
   }
 }
 

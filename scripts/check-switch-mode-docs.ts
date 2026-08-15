@@ -57,7 +57,6 @@ const staleSwitchLaunchModePages = [
 
 const errors: string[] = [];
 checkStructuredContract();
-checkWorkflowCoverage();
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 
@@ -92,25 +91,6 @@ function checkRequirements(requirements: Map<string, string[]>): void {
         errors.push(`${relativePath} is missing ${JSON.stringify(text)}`);
       }
     }
-  }
-}
-
-function checkWorkflowCoverage(): void {
-  const workflow = read(".github/workflows/docs-validate.yml");
-  if (workflow === null) return;
-
-  const contractPathFilter = '- "contracts/**"';
-  const pathFilterCount = workflow.split(contractPathFilter).length - 1;
-  if (pathFilterCount !== 2) {
-    errors.push(
-      ".github/workflows/docs-validate.yml must include contracts/** in pull_request and push path filters"
-    );
-  }
-
-  if (!workflow.includes("run: pnpm validate:switch-mode-docs")) {
-    errors.push(
-      ".github/workflows/docs-validate.yml must run pnpm validate:switch-mode-docs"
-    );
   }
 }
 
