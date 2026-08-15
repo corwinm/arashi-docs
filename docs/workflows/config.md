@@ -80,7 +80,7 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 - Kitty remains auto-detected only and does not add a `kitty` value to either persistent mode vocabulary. See the [Kitty workflow guide](/workflows/kitty/) for version, remote-control, reuse, and live-session ownership details.
 - `cd` prefers parent-shell switching, `launch` always uses automatic launcher selection, and `sesh` or `herdr` always selects that launcher.
 - An absent `defaults.switch.mode` preserves automatic launch without preferring parent-shell `cd`.
-- Terminal create reads only `defaults.create`. Editor-hosted create reads only its matching `defaults.editors.<host>.create` scope for `vscode`, `cursor`, or `kiro`; it does not fall back to generic defaults or another editor when that host scope is absent.
+- Terminal create reads its launch and switch settings from `defaults.create`. Editor-hosted create reads those launch and switch settings only from its matching `defaults.editors.<host>.create` scope for `vscode`, `cursor`, or `kiro`; that launch/switch lookup does not fall back to generic defaults or another editor when the host scope is absent.
 
 Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --launch` preserves a configured `sesh` or `herdr` launcher. `switch --ignore-configured-launcher` bypasses that named launcher while retaining its launch behavior, and `switch --launch --ignore-configured-launcher` requests generic automatic launch. `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
 

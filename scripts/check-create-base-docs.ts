@@ -225,7 +225,7 @@ function checkContradictions(
       }
 
       if (
-        !isNegative &&
+        !precedenceActionIsNegated(clause) &&
         (/(?:configuration|config)[^.\n]{0,80}(?:overrides?|beats?|wins? over|takes? precedence over|is preferred (?:to|over)|comes? before)[^.\n]{0,40}(?:--base|\bCLI\b)/i.test(
           clause,
         ) ||
@@ -387,6 +387,13 @@ function actionIsNegated(statement: string, actionIndex: number): boolean {
   );
 }
 
+function precedenceActionIsNegated(clause: string): boolean {
+  const action = /\b(?:overrides?|beats?|wins?|takes?|preferred|comes?|overridden|beaten|superseded)\b/i.exec(
+    clause,
+  );
+  return action?.index !== undefined && actionIsNegated(clause, action.index);
+}
+
 function clauseHasScope(
   statement: string,
   clause: string,
@@ -470,6 +477,14 @@ function runContradictionSelfTest(): void {
     ],
     [
       "Configuration overrides CLI --base; it does not persist the CLI value.",
+      "configuration precedence over CLI",
+    ],
+    [
+      "Configuration overrides CLI --base and does not persist the CLI value.",
+      "configuration precedence over CLI",
+    ],
+    [
+      "Configuration does not persist the CLI value and overrides CLI --base.",
       "configuration precedence over CLI",
     ],
     [
