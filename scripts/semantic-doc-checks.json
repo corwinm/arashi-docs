@@ -1,0 +1,14 @@
+[
+  "check-cli-option-docs.ts",
+  "check-create-launch-docs.ts",
+  "check-kitty-session-docs.ts",
+  "check-lifecycle-hook-docs.ts",
+  "check-managed-ignore-docs.ts",
+  "check-shell-completion-docs.ts",
+  "check-ssh-host-alias-docs.ts",
+  "check-standalone-docs.ts",
+  "check-switch-mode-docs.ts",
+  "check-tab-launch-docs.ts",
+  "check-tmux-launch-docs.ts",
+  "check-windows-git-bash-install-docs.ts"
+]

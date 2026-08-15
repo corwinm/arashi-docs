@@ -95,48 +95,13 @@ function checkRoot(rootPath: string): string[] {
     }
   }
 
-  checkValidationWiring(rootPath, found);
   return found;
-}
-
-function checkValidationWiring(rootPath: string, found: string[]): void {
-  const packageJsonRaw = read(rootPath, "package.json", found);
-  if (packageJsonRaw !== null) {
-    try {
-      const packageJson = JSON.parse(packageJsonRaw);
-      if (
-        packageJson.scripts?.["validate:windows-git-bash-install-docs"] !==
-        "pnpm sync:content && node scripts/check-windows-git-bash-install-docs.ts"
-      ) {
-        found.push("package.json must define validate:windows-git-bash-install-docs");
-      }
-      if (!packageJson.scripts?.validate?.includes("pnpm validate:windows-git-bash-install-docs")) {
-        found.push("package.json validate must run validate:windows-git-bash-install-docs");
-      }
-    } catch {
-      found.push("package.json is not valid JSON");
-    }
-  }
-
-  const workflow = read(rootPath, ".github/workflows/docs-validate.yml", found);
-  if (
-    workflow !== null &&
-    !workflow.includes("run: pnpm validate:windows-git-bash-install-docs")
-  ) {
-    found.push(
-      ".github/workflows/docs-validate.yml must run pnpm validate:windows-git-bash-install-docs"
-    );
-  }
 }
 
 function runOutOfRepositoryMismatchTest(sourceRoot: string): void {
   const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "arashi-windows-git-bash-docs-"));
   try {
-    for (const relativePath of new Set([
-      ...requirements.keys(),
-      "package.json",
-      ".github/workflows/docs-validate.yml"
-    ])) {
+    for (const relativePath of new Set(requirements.keys())) {
       const destination = path.join(fixtureRoot, relativePath);
       mkdirSync(path.dirname(destination), { recursive: true });
       cpSync(path.join(sourceRoot, relativePath), destination);

@@ -58,56 +58,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run markdown lint baseline
-        run: pnpm lint
+      - name: Verify semantic docs registration
+        run: pnpm validate:semantic-docs:registration
 
-      - name: Run docs build and type checks
-        run: pnpm validate:build
-
-      - name: Run internal link and anchor checks
-        run: pnpm validate:links:internal
-
-      - name: Run accessibility smoke checks
-        run: pnpm validate:a11y
-
-      - name: Check managed-ignore documentation contract
-        run: pnpm validate:managed-ignore-docs
-
-      - name: Check standalone documentation contract
-        run: pnpm validate:standalone-docs
-
-      - name: Check lifecycle-hook documentation contract
-        run: pnpm validate:lifecycle-hook-docs
-
-      - name: Check switch-mode documentation contract
-        run: pnpm validate:switch-mode-docs
-
-      - name: Check explicit tmux launch documentation contract
-        run: pnpm validate:tmux-launch-docs
-
-      - name: Check tab launch-disposition documentation contract
-        run: pnpm validate:tab-launch-docs
-
-      - name: Check CLI option documentation contract
-        run: pnpm validate:cli-option-docs
-
-      - name: Check create-launch documentation contract
-        run: pnpm validate:create-launch-docs
-
-      - name: Check managed Kitty session documentation contract
-        run: pnpm validate:kitty-session-docs
-
-      - name: Check Windows Git Bash installation documentation contract
-        run: pnpm validate:windows-git-bash-install-docs
-
-      - name: Check SSH host-alias documentation contract
-        run: pnpm validate:ssh-host-alias-docs
-
-      - name: Enforce canonical docs domain policy
-        run: pnpm validate:docs-domain
-
-      - name: Check README documentation link health
-        run: pnpm validate:readme-link
+      - name: Validate documentation
+        run: pnpm validate
 
   publish-gate:
     name: Publish gate status

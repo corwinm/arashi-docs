@@ -185,7 +185,6 @@ function checkRoot(rootPath: string): string[] {
   checkRequirements(rootPath, generatedRequirements, found);
   checkForbiddenPathSubstitution(rootPath, found);
   checkConfigurationVocabulary(rootPath, found);
-  checkReachability(rootPath, found);
   return found;
 }
 
@@ -299,33 +298,6 @@ function checkConfigurationVocabulary(rootPath: string, found: string[]): void {
   }
 }
 
-function checkReachability(rootPath: string, found: string[]): void {
-  const packageJson = parseJson(rootPath, "package.json", found);
-  if (packageJson !== null) {
-    if (
-      packageJson.scripts?.["validate:tab-launch-docs"] !==
-      "pnpm sync:content && node scripts/check-tab-launch-docs.ts"
-    ) {
-      found.push("package.json must define validate:tab-launch-docs");
-    }
-    if (
-      !packageJson.scripts?.validate?.includes("pnpm validate:tab-launch-docs")
-    ) {
-      found.push("package.json validate must run validate:tab-launch-docs");
-    }
-  }
-
-  const workflow = read(rootPath, ".github/workflows/docs-validate.yml", found);
-  if (
-    workflow !== null &&
-    !workflow.includes("run: pnpm validate:tab-launch-docs")
-  ) {
-    found.push(
-      ".github/workflows/docs-validate.yml must run pnpm validate:tab-launch-docs",
-    );
-  }
-}
-
 function runDeliberateMismatchSelfTest(sourceRoot: string): void {
   const fixtureRoot = mkdtempSync(
     path.join(os.tmpdir(), "arashi-tab-launch-docs-"),
@@ -336,8 +308,6 @@ function runDeliberateMismatchSelfTest(sourceRoot: string): void {
       ...generatedRequirements.map(({ path: relativePath }) => relativePath),
       "contracts/switch-config.json",
       "contracts/create-launch-config.json",
-      "package.json",
-      ".github/workflows/docs-validate.yml",
     ])) {
       const destination = path.join(fixtureRoot, relativePath);
       mkdirSync(path.dirname(destination), { recursive: true });

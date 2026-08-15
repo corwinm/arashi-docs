@@ -93,7 +93,6 @@ const errors: string[] = [];
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkConfigurationContract();
-checkWorkflowReachability();
 
 if (errors.length > 0) {
   console.error("Explicit tmux launch documentation contract failed:");
@@ -129,16 +128,6 @@ function checkConfigurationContract(): void {
     }
   } catch {
     errors.push("contracts/switch-config.json is not valid JSON");
-  }
-}
-
-function checkWorkflowReachability(): void {
-  const workflow = read(".github/workflows/docs-validate.yml");
-  if (workflow === null) return;
-  if (!workflow.includes("run: pnpm validate:tmux-launch-docs")) {
-    errors.push(
-      ".github/workflows/docs-validate.yml must execute pnpm validate:tmux-launch-docs"
-    );
   }
 }
 

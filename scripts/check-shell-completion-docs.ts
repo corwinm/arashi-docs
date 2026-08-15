@@ -69,7 +69,6 @@ const errors: string[] = [];
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkForbiddenStaleGuidance();
-checkValidationReachability();
 
 if (errors.length > 0) {
   console.error("Shell completion documentation contract failed:");
@@ -104,18 +103,6 @@ function checkForbiddenStaleGuidance(): void {
     if (content?.includes("Native shell completion is not added or claimed")) {
       errors.push(`${relativePath} still says native shell completion is unavailable`);
     }
-  }
-}
-
-function checkValidationReachability(): void {
-  const packageJson = read("package.json");
-  if (packageJson === null) return;
-  const scripts = JSON.parse(packageJson).scripts as Record<string, string>;
-  if (scripts["validate:shell-completion-docs"] !== "pnpm sync:content && node scripts/check-shell-completion-docs.ts") {
-    errors.push("package.json must define the focused shell completion documentation check");
-  }
-  if (!scripts.validate?.includes("validate:shell-completion-docs")) {
-    errors.push("pnpm validate must run validate:shell-completion-docs");
   }
 }
 

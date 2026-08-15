@@ -83,7 +83,6 @@ const generatedRequirements = new Map<string, string[]>([
 
 const errors: string[] = [];
 checkStructuredContract();
-checkWorkflowCoverage();
 checkRequirements(sourceRequirements);
 checkRequirements(generatedRequirements);
 checkCanonicalGuidance();
@@ -137,13 +136,6 @@ function checkCanonicalGuidance(): void {
     if (content !== null && /defaults\.create\.launchMode|defaults\.editors\.<host>\.create[^\n]*launchMode/.test(content)) {
       errors.push(`${relativePath} still advertises canonical create launchMode guidance`);
     }
-  }
-}
-
-function checkWorkflowCoverage(): void {
-  const workflow = read(".github/workflows/docs-validate.yml");
-  if (workflow !== null && !workflow.includes("run: pnpm validate:create-launch-docs")) {
-    errors.push(".github/workflows/docs-validate.yml must run pnpm validate:create-launch-docs");
   }
 }
 
