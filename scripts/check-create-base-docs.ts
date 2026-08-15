@@ -205,13 +205,13 @@ function checkContradictions(
       /\s*(?:;|\bbut\b|\bhowever\b|\bwhile\b)\s*/i,
     );
     for (const clause of clauses) {
-      const isNegative =
-        /\b(?:not|never|cannot|can't|does not|doesn't|do not|don't|will not|won't|must not|no fallback)\b/i.test(
-          clause,
-        );
+      const fallbackAction = /\b(?:falls?\s+back|fallback|uses?|tries?|checks?|resolves?\s+from)\b/i.exec(
+        clause,
+      );
 
       if (
-        !isNegative &&
+        fallbackAction?.index !== undefined &&
+        !actionIsNegated(clause, fallbackAction.index) &&
         clauseHasScope(statement, clause, /\b(?:base|base resolution|resolution)\b/i) &&
         (/\bfalls? back\b|\bfallback\b/i.test(clause) ||
           /(?:local|origin)[^.\n]{0,60}(?:missing|unavailable|fails?|not found)[^.\n]{0,100}(?:uses?|tries?|checks?|resolves? from)/i.test(
@@ -236,8 +236,12 @@ function checkContradictions(
         found.push(`${relativePath} must not give configuration precedence over CLI`);
       }
 
+      const standaloneAction = /\b(?:reads?|loads?|persists?|stores?|writes?|defaults?\s+to)\b/i.exec(
+        clause,
+      );
       if (
-        !isNegative &&
+        standaloneAction?.index !== undefined &&
+        !actionIsNegated(clause, standaloneAction.index) &&
         clauseHasScope(statement, clause, /\bstandalone\b/i) &&
         /\b(?:reads?|loads?|persists?|stores?|writes?|defaults? to)\b/i.test(clause) &&
         /(?:defaults\.create\.baseBranch|\bbaseBranch\b)/i.test(clause)
@@ -247,8 +251,12 @@ function checkContradictions(
         );
       }
 
+      const reuseAction = /\b(?:resets?|rebases?|recreates?|rewrites?|changes?|moves?|points?)\b/i.exec(
+        clause,
+      );
       if (
-        !isNegative &&
+        reuseAction?.index !== undefined &&
+        !actionIsNegated(clause, reuseAction.index) &&
         clauseHasScope(
           statement,
           clause,
@@ -262,8 +270,12 @@ function checkContradictions(
         );
       }
 
+      const orderingAction = /\b(?:re-?sorted|sorted|listed|reported|alphabetic(?:al|ally)?)\b/i.exec(
+        clause,
+      );
       if (
-        !isNegative &&
+        orderingAction?.index !== undefined &&
+        !actionIsNegated(clause, orderingAction.index) &&
         clauseHasScope(
           statement,
           clause,
@@ -278,8 +290,12 @@ function checkContradictions(
         );
       }
 
+      const pathAction = /\b(?:relative|noncanonical|non-canonical|lexical|symlink(?:ed)?|alias)\b/i.exec(
+        clause,
+      );
       if (
-        !isNegative &&
+        pathAction?.index !== undefined &&
+        !actionIsNegated(clause, pathAction.index) &&
         /\brepositoryPath\b/i.test(statement) &&
         (/\b(?:relative|noncanonical|non-canonical|lexical|symlink(?:ed)?|alias)\s+(?:repository\s+)?path\b/i.test(
           clause,
@@ -328,8 +344,11 @@ function hasAffirmativeBaseBranchClaim(statement: string): boolean {
     const actionIndex = action.index;
     if (actionIndex === undefined || actionIsNegated(statement, actionIndex)) continue;
 
-    const claim = statement.slice(actionIndex + action[0].length);
-    if (/^[^.\n]{0,40}`?ARASHI_BASE_BRANCH\b/i.test(claim)) return true;
+    const claim = statement.slice(
+      Math.max(0, actionIndex - 40),
+      actionIndex + action[0].length + 40,
+    );
+    if (/`?ARASHI_BASE_BRANCH\b/i.test(claim)) return true;
   }
 
   return false;
@@ -388,7 +407,7 @@ function hasAffirmativeInclusion(statement: string, target: RegExp): boolean {
 
 function actionIsNegated(statement: string, actionIndex: number): boolean {
   const prefix = statement.slice(Math.max(0, actionIndex - 40), actionIndex);
-  return /\b(?:never|cannot|can't|(?:do|does|did|will|would|must|should|can|could|is|are|was|were|be|being)\s+not)\s*$/i.test(
+  return /\b(?:no|not|never|cannot|can't|(?:do|does|did|will|would|must|should|can|could|is|are|was|were|be|being)\s+not)\s+(?:an?\s+|the\s+)?$/i.test(
     prefix,
   );
 }
@@ -510,11 +529,35 @@ function runContradictionSelfTest(): void {
       "fallback beyond the local/origin pair",
     ],
     [
+      "Base resolution falls back to the default branch and does not query upstream.",
+      "fallback beyond the local/origin pair",
+    ],
+    [
+      "Standalone loads defaults.create.baseBranch and does not query upstream.",
+      "standalone base configuration loading or persistence",
+    ],
+    [
+      "REUSE_EXISTING rebases the target branch and does not query upstream.",
+      "ancestry rewriting for reused targets",
+    ],
+    [
+      "Successful create-base repositories are sorted alphabetically and do not query upstream.",
+      "lexical or alphabetical create-base result ordering",
+    ],
+    [
+      "Each repositoryPath may be a relative path and does not query upstream.",
+      "canonical absolute repositoryPath values",
+    ],
+    [
       "Export ARASHI_BASE_BRANCH=main for create hooks.",
       "ARASHI_BASE_BRANCH",
     ],
     [
       "Create hooks receive ARASHI_BASE_BRANCH with the selected base.",
+      "ARASHI_BASE_BRANCH",
+    ],
+    [
+      "`ARASHI_BASE_BRANCH` is available to hooks.",
       "ARASHI_BASE_BRANCH",
     ],
     [
@@ -592,6 +635,8 @@ function runContradictionSelfTest(): void {
     "Arashi does not provide ARASHI_BASE_BRANCH.",
     "Arashi does not expose ARASHI_BASE_BRANCH to hooks.",
     "Arashi never exports ARASHI_BASE_BRANCH.",
+    "`ARASHI_BASE_BRANCH` is not available to hooks.",
+    "`ARASHI_BASE_BRANCH` is never exported to hooks.",
     "Successful repositories use selected-set order, not alphabetical order.",
     "Every repositoryPath is a canonical absolute path, never a relative or symlink alias path.",
     "Create-base failures do not include unaffected repositories.",
