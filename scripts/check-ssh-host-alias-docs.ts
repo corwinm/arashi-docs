@@ -33,6 +33,9 @@ const requirements = new Map<string, string[]>([
       "define the same alias",
       "commit a canonical remote",
       "`url.<base>.insteadOf`",
+      "machine-global Git configuration",
+      "`~/.gitconfig`",
+      "`--global`",
       "[url \"git@work-github:\"]",
       "insteadOf = git@github.com:",
       "Arashi does not install or synchronize this Git configuration"
@@ -63,6 +66,8 @@ const requirements = new Map<string, string[]>([
       "SSH aliases are machine-local",
       "commit a canonical remote",
       "`url.<base>.insteadOf`",
+      "machine-global Git configuration",
+      "`--global`",
       "Arashi does not install or synchronize this Git configuration"
     ]
   ],
@@ -72,7 +77,7 @@ const requirements = new Map<string, string[]>([
       "SSH aliases are machine-local",
       "preserves configured SSH URLs exactly",
       "never maps them to HTTPS automatically",
-      "Git `url.<base>.insteadOf`",
+      "machine-global Git `url.<base>.insteadOf`",
       "SSH alias guidance",
       "https://arashi.haphazard.dev/workflows/config/"
     ]
@@ -90,7 +95,9 @@ const requirements = new Map<string, string[]>([
       "never converts an SSH URL to HTTPS",
       "does not read, resolve, or edit `~/.ssh/config`",
       "SSH aliases are machine-local",
-      "`url.<base>.insteadOf`"
+      "`url.<base>.insteadOf`",
+      "machine-global Git configuration",
+      "`--global`"
     ]
   ]
 ]);
@@ -107,6 +114,10 @@ const forbiddenGuidance = [
   {
     text: "Arashi validates SSH credentials before cloning",
     message: "must not claim that Arashi probes SSH credentials"
+  },
+  {
+    text: "use local Git `url.<base>.insteadOf` rewriting",
+    message: "must not imply that repository-local Git configuration applies to later clones"
   }
 ];
 

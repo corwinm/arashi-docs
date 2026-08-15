@@ -35,7 +35,13 @@ From a linked parent worktree, `arashi add` keeps the canonical clone under the 
 
 SSH aliases are machine-local. A `gitUrl` such as `git@work-github:acme/api.git` works only on machines that define the same alias with compatible OpenSSH routing. Arashi stores and passes the remote exactly; it does not synchronize aliases, keys, identity files, or SSH settings.
 
-For portable shared configuration, commit a canonical remote and let each developer use local Git `url.<base>.insteadOf` rewriting when they need different SSH routing. For example, keep `git@github.com:acme/api.git` in `.arashi/config.json`, then configure this only on a machine that uses the `work-github` alias:
+For portable shared configuration, commit a canonical remote and let each developer use a machine-global Git configuration rule with `url.<base>.insteadOf` when they need different SSH routing. The rule must live in `~/.gitconfig` (or equivalent global Git configuration), not the workspace repository's `.git/config`, because Git must know the rewrite before cloning that repository. For example, keep `git@github.com:acme/api.git` in `.arashi/config.json`, then configure this only on a machine that uses the `work-github` alias:
+
+```bash
+git config --global url."git@work-github:".insteadOf git@github.com:
+```
+
+The `--global` command writes the equivalent configuration:
 
 ```ini
 [url "git@work-github:"]
