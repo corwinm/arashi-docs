@@ -59,7 +59,8 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
   "defaults": {
     "create": {
       "switch": true,
-      "launch": "herdr"
+      "launch": "herdr",
+      "baseBranch": "feature/FEAT-1234"
     },
     "switch": {
       "mode": "herdr"
@@ -69,6 +70,9 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 ```
 
 - `defaults.create.launch` is one post-create choice: `none | auto | sesh | herdr`.
+- `defaults.create.baseBranch` is the workspace-generic branch used to start newly created targets in configured mode. An explicit `create --base <branch>` overrides it: **CLI > configuration > legacy behavior**.
+- When both are absent, legacy behavior remains unchanged: the parent uses the current parent branch and each child uses its detected default branch. The configured value is resolved local-first and then from `origin` independently in every selected repository; a missing base fails the whole preflight without fallback.
+- The base default remains workspace-generic even in an editor-hosted create; editor launch/switch scopes do not override it. It does not apply to standalone mode.
 - `defaults.create.switch` remains an independent boolean. A launch choice other than `none` still selects the newly created primary worktree, so launch implies switch even when `switch` is `false`. Setting `launch` to `none` does not disable an independently enabled switch.
 - An absent `defaults.create.launch` preserves built-in no-launch behavior.
 - `defaults.switch.mode` is the single switch default. Its complete vocabulary is `auto | cd | launch | sesh | herdr`.

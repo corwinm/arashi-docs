@@ -38,6 +38,7 @@ arashi create <branch> [options]
 - `--sesh` force sesh launch mode (implies launch behavior).
 - `--herdr` open or focus the primary created worktree in Herdr (implies launch behavior).
 - `--conflict <strategy>` preselect conflict handling (`ABORT`, `REUSE_EXISTING`).
+- `--base <branch>` start newly created target branches from this branch in each selected repository.
 - `--no-hook-input` execute hooks with immediate EOF on stdin for this invocation only.
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
@@ -78,8 +79,14 @@ arashi create feature-auth-refresh --no-launch
 # Review the plan first
 arashi create feature-auth-refresh --dry-run
 
+# Create a task branch from a long-running feature branch
+arashi create feature/FEAT-1234/docs --base feature/FEAT-1234
+
+# Preview the same selected repositories and resolved bases
+arashi create feature/FEAT-1234/docs --base feature/FEAT-1234 --group docs --dry-run
+
 # Create worktrees and emit JSON for automation
-arashi create feature-auth-refresh --no-launch --no-switch --json
+arashi create feature/FEAT-1234/docs --base feature/FEAT-1234 --no-launch --no-switch --json
 
 # Create worktrees and move current uncommitted work into them
 arashi create feature-auth-refresh --move-changes
@@ -87,6 +94,32 @@ arashi create feature-auth-refresh --move-changes
 # Run hooks without allowing them to read from the terminal
 arashi create feature-auth-refresh --no-hook-input
 ```
+
+## Choosing a base branch
+
+Use `--base <branch>` when a task branch must descend from a long-running branch such as `feature/FEAT-1234`. The precedence is **CLI > configuration > legacy behavior**: `--base` overrides `defaults.create.baseBranch`; with neither, the parent starts from the current parent branch and each child starts from its detected default branch.
+
+Arashi resolves an effective base independently in every effective selected repository, including repositories whose target branch will be reused. Selection by `--only`, `--group`, their intersection, or the interactive picker constrains that set. Resolution prefers the local branch first, then `origin/<branch>`. If any selected repository cannot resolve the base, Arashi aggregates all repository resolution errors and fails with `CREATE_BASE_RESOLUTION_FAILED` before hooks or any workspace mutation. It never falls back to another branch.
+
+Preflight records both the reporting ref and its captured commit OID. New targets use that OID even if the local or remote base ref moves after preflight. A target accepted with `--conflict REUSE_EXISTING` is only materialized: the requested base is still validated, but Arashi does not reset, rebase, recreate, or otherwise change its ancestry.
+
+Human `--dry-run` output names the requested base and each repository's resolved ref/OID and planned create-or-reuse action. With `--json`, the same optional high-level base data is structured for automation; resolution failures use `CREATE_BASE_RESOLUTION_FAILED`. Arashi keeps `ARASHI_BRANCH_NAME` target-oriented and deliberately does not provide an `ARASHI_BASE_BRANCH` hook or environment variable.
+
+### Workaround for older Arashi versions
+
+Before native base selection, pre-create the target branch from the desired base in every repository, then let create reuse it:
+
+```bash
+BASE=feature/FEAT-1234
+TARGET=feature/FEAT-1234/docs
+
+# arashi exec reaches managed children, not the parent.
+arashi exec -- git branch "$TARGET" "$BASE"
+git branch "$TARGET" "$BASE"
+arashi create "$TARGET" --conflict REUSE_EXISTING
+```
+
+This workaround requires the base in every selected repository and an absent target, unless you have independently verified an existing target's ancestry. Filters can narrow the managed children, but `arashi exec` covers managed children, not the parent, so create the parent target separately. `REUSE_EXISTING` does not repair or validate ancestry.
 
 ## Notes
 
