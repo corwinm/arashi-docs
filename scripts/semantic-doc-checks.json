@@ -1,5 +1,6 @@
 [
   "check-cli-option-docs.ts",
+  "check-create-base-docs.ts",
   "check-create-launch-docs.ts",
   "check-kitty-session-docs.ts",
   "check-lifecycle-hook-docs.ts",
