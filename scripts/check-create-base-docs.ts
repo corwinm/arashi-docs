@@ -311,22 +311,28 @@ function checkContradictions(
   }
 
   for (const statement of statements) {
-    const isNegative =
-      /\b(?:never|cannot|can't|does not|doesn't|do not|don't|will not|won't|must not|no)\b/i.test(
-        statement,
-      );
-    if (
-      (/ARASHI_BASE_BRANCH\s*=|exports?\s+ARASHI_BASE_BRANCH/i.test(statement) ||
-        (!isNegative &&
-          /(?:provides?|receives?|sets?|exposes?|includes?|available)[^.\n]{0,40}`?ARASHI_BASE_BRANCH/i.test(
-            statement,
-          )))
-    ) {
+    if (hasAffirmativeBaseBranchClaim(statement)) {
       found.push(
         `${relativePath} must not advertise ARASHI_BASE_BRANCH as a hook or environment variable`,
       );
     }
   }
+}
+
+function hasAffirmativeBaseBranchClaim(statement: string): boolean {
+  if (/ARASHI_BASE_BRANCH\s*=/.test(statement)) return true;
+
+  const actionPattern =
+    /\b(?:exports?|provides?|receives?|sets?|exposes?|includes?|available)\b/gi;
+  for (const action of statement.matchAll(actionPattern)) {
+    const actionIndex = action.index;
+    if (actionIndex === undefined || actionIsNegated(statement, actionIndex)) continue;
+
+    const claim = statement.slice(actionIndex + action[0].length);
+    if (/^[^.\n]{0,40}`?ARASHI_BASE_BRANCH\b/i.test(claim)) return true;
+  }
+
+  return false;
 }
 
 function hasNegatedAffectedOnlyInclusion(statement: string): boolean {
@@ -512,6 +518,14 @@ function runContradictionSelfTest(): void {
       "ARASHI_BASE_BRANCH",
     ],
     [
+      "Arashi does not change ARASHI_BRANCH_NAME, and exposes ARASHI_BASE_BRANCH to hooks.",
+      "ARASHI_BASE_BRANCH",
+    ],
+    [
+      "Arashi exposes ARASHI_BASE_BRANCH to hooks and does not change ARASHI_BRANCH_NAME.",
+      "ARASHI_BASE_BRANCH",
+    ],
+    [
       "Successful create-base repositories are sorted alphabetically by repository name.",
       "lexical or alphabetical create-base result ordering",
     ],
@@ -576,6 +590,8 @@ function runContradictionSelfTest(): void {
     "Base resolution never falls back; deployment fallback uses the current upstream.",
     "For older versions, pre-create the target from the base and reuse it; this workaround does not repair ancestry.",
     "Arashi does not provide ARASHI_BASE_BRANCH.",
+    "Arashi does not expose ARASHI_BASE_BRANCH to hooks.",
+    "Arashi never exports ARASHI_BASE_BRANCH.",
     "Successful repositories use selected-set order, not alphabetical order.",
     "Every repositoryPath is a canonical absolute path, never a relative or symlink alias path.",
     "Create-base failures do not include unaffected repositories.",
