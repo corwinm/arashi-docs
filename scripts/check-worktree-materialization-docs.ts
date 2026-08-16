@@ -104,12 +104,12 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const claims: Array<[RegExp, RegExp, string]> = [
-      [/(?:\b(?:supports?|accepts?|expands?)\b[^.\n]{0,80}\bglobs?\b|\bglobs?\b[^.\n]{0,80}\b(?:supported|accepted|expanded)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded)\b/i, "must not advertise glob support"],
-      [/\b(?:supports?|allows?|accepts?)\b[^.\n]{0,100}\b(?:remapping|destination mapping)\b/i, /\b(?:supports?|allows?|accepts?)\b/i, "must not advertise path remapping"],
-      [/\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlink|materialization)\b/i, /\b(?:supports?|uses?|applies?|materializes?)\b/i, "must keep materialization configured-only"],
-      [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlink|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
+      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded)\b/i, "must not advertise glob support"],
+      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b|\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:supported|allowed|accepted)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|allows?|allowed|accepts?|accepted)\b/i, "must not advertise path remapping"],
+      [/\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:supports?|uses?|applies?|materializes?)\b/i, "must keep materialization configured-only"],
+      [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
       [/\b(?:overwrites?|replaces?)\b[^.\n]{0,100}\b(?:destination|target|existing (?:file|path))\b/i, /\b(?:overwrites?|replaces?)\b/i, "must not advertise overwrite behavior"],
-      [/\b(?:copy|symlink|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
+      [/\b(?:copy|symlinks?|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
       [/\bsymlink\b[^.\n]{0,160}\bfalls? back\b[^.\n]{0,120}\b(?:copy|hard[- ]?link|junction)\b/i, /\bfalls? back\b/i, "must not advertise native symlink action fallback"],
       [/\bmaterialization\b[^.\n]{0,120}\b(?:accepts?|uses?|reads?)\b[^.\n]{0,120}\bexternal sources?\b/i, /\b(?:accepts?|uses?|reads?)\b/i, "must not advertise external materialization sources"],
       [/\brepository pre-create\b[^.\n]{0,100}\bpost-materialization\b/i, /\bpost-materialization\b/i, "must not use ambiguous pre-create lifecycle wording"],
@@ -172,7 +172,7 @@ function runControlledGuidanceSelfTest(): void {
     "Every destination must remain inside the worktree.",
     "Materialization does not fall back to another source checkout or repository.",
     "A native symlink fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback.",
-    "Use lifecycle hooks for external sources and interpolation.",
+    "Use lifecycle hooks for external sources and interpolation. Lifecycle hooks support globs and remapping.",
     "arashi doctor diagnoses materialization sources and destinations non-mutatively without repair.",
     "--dry-run previews the ordered materialization plan before any mutation.",
   ].join(" ");
