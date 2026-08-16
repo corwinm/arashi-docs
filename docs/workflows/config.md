@@ -86,6 +86,28 @@ Configured Herdr does not require the command to start inside a Herdr-managed pa
 
 Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
 
+## Worktree file materialization
+
+In configured workspaces only, `repos.<name>.copy` is a direct array and `repos.<name>.symlink` is a direct array of repository-relative paths:
+
+```json
+{
+  "repos": {
+    "web": {
+      "path": "repos/web",
+      "copy": [".env", "config/secrets.json"],
+      "symlink": [".turbo"]
+    }
+  }
+}
+```
+
+Each entry materializes at the same relative path in the new worktree, using the Git-primary child checkout as its source. Use `copy` for an independent, isolated `.env`, local configuration, or secrets file that may change per worktree. Use `symlink` only to share intentional state or dependencies across worktrees. Prefer package-manager content-addressed stores and per-worktree installs; symlinking `node_modules` is risky because branches, lockfiles, runtimes, native modules, and install scripts can diverge.
+
+The API stays deliberately narrow: globs are not supported, path remapping is not supported, and standalone mode is not supported. Use [lifecycle hooks](/workflows/hooks/) when you need globs, remapping, external sources, interpolation, required entries, generated files, or conditional behavior.
+
+`arashi doctor` non-mutatively diagnoses configured materialization source availability and destination safety without reading file contents, running hooks, repairing state, or creating capability probes.
+
 ## Hook timeout
 
 Configured workspaces can define short lifecycle commands at `hooks.scripts.<lifecycle>` for workspace ownership and at `repos.<name>.hooks.<lifecycle>` for repository ownership. The allowed lifecycle keys are `pre-create`, `post-create`, `pre-remove`, and `post-remove`. A string is Bash shorthand; an interpreter map may contain only non-empty `bash`, `powershell`, and `cmd` values.

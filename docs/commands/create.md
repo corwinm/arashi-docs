@@ -121,6 +121,14 @@ arashi create "$TARGET" --conflict REUSE_EXISTING
 
 This workaround requires the base in every selected repository and an absent target, unless you have independently verified an existing target's ancestry. Filters can narrow the managed children, but `arashi exec` covers managed children, not the parent, so create the parent target separately. `REUSE_EXISTING` does not repair or validate ancestry.
 
+## Configured file materialization
+
+For each selected configured child repository, the construction order is `pre-create`, `copy`, `symlink`, then `post-create`. Copy and symlink entries retain their configured array order, so post-create hooks can rely on materialized paths being ready. `--no-hooks` does not disable copy, symlink, or other materialization.
+
+Missing sources are skipped with a visible non-fatal outcome. Arashi never overwrites an existing destination, and every destination must remain inside the new worktree; unsafe paths or an existing destination fail that repository's materialization. A native `symlink` fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback. Materialization does not fall back to the caller's checkout or another source repository: it always reads from the Git-primary child checkout.
+
+`arashi create --dry-run` previews the ordered materialization plan in declaration order before any worktree or file mutation. See the [Config workflow](/workflows/config/#worktree-file-materialization) to choose between isolated copies and intentionally shared symlinks.
+
 ## Notes
 
 - In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [Standalone Repository workflow](/workflows/standalone/).
