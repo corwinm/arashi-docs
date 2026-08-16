@@ -104,7 +104,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const claims: Array<[RegExp, RegExp, string]> = [
-      [/\b(?:supports?|accepts?|expands?)\b[^.\n]{0,80}\bglobs?\b/i, /\b(?:supports?|accepts?|expands?)\b/i, "must not advertise glob support"],
+      [/(?:\b(?:supports?|accepts?|expands?)\b[^.\n]{0,80}\bglobs?\b|\bglobs?\b[^.\n]{0,80}\b(?:supported|accepted|expanded)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded)\b/i, "must not advertise glob support"],
       [/\b(?:supports?|allows?|accepts?)\b[^.\n]{0,100}\b(?:remapping|destination mapping)\b/i, /\b(?:supports?|allows?|accepts?)\b/i, "must not advertise path remapping"],
       [/\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlink|materialization)\b/i, /\b(?:supports?|uses?|applies?|materializes?)\b/i, "must keep materialization configured-only"],
       [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlink|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
@@ -112,6 +112,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
       [/\b(?:copy|symlink|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
       [/\bsymlink\b[^.\n]{0,160}\bfalls? back\b[^.\n]{0,120}\b(?:copy|hard[- ]?link|junction)\b/i, /\bfalls? back\b/i, "must not advertise native symlink action fallback"],
       [/\bmaterialization\b[^.\n]{0,120}\b(?:accepts?|uses?|reads?)\b[^.\n]{0,120}\bexternal sources?\b/i, /\b(?:accepts?|uses?|reads?)\b/i, "must not advertise external materialization sources"],
+      [/\brepository pre-create\b[^.\n]{0,100}\bpost-materialization\b/i, /\bpost-materialization\b/i, "must not use ambiguous pre-create lifecycle wording"],
     ];
     for (const [pattern, actionPattern, message] of claims) {
       const match = pattern.exec(statement);
@@ -181,6 +182,8 @@ function runControlledGuidanceSelfTest(): void {
 
   const invalidClaims: Array<[string, RegExp]> = [
     ["Arashi supports globs in copy entries.", /glob support/],
+    ["Globs are supported in copy entries.", /glob support/],
+    ["Repository pre-create runs at its post-materialization point.", /pre-create lifecycle wording/],
     ["Arashi allows destination mapping for symlinks.", /path remapping/],
     ["Standalone mode materializes copy entries.", /configured-only/],
     ["--no-hooks disables copy and symlink materialization.", /--no-hooks independent/],

@@ -16,7 +16,7 @@ const sourceRequirements = new Map<string, string[]>([
     "docs/workflows/hooks.md",
     [
       "pre-create.<repo>",
-      "after that repository worktree is materialized",
+      "After that Git worktree is created and before configured file materialization/setup",
       "before move-changes or switch/launch handling",
       "repository → workspace → global-targeted → global-shared",
       "once per target repository",
@@ -60,7 +60,7 @@ const sourceRequirements = new Map<string, string[]>([
     [
       hooksLink,
       "workspace `pre-create`",
-      "post-materialization",
+      "after Git worktree creation and before configured file materialization/setup",
       "rollback",
       "hook outcome",
       "--no-hook-input",
@@ -204,7 +204,7 @@ const generatedRequirements = new Map<string, string[]>([
     "public/llms-full.txt",
     [
       "# Hooks",
-      "after that repository worktree is materialized",
+      "After that Git worktree is created and before configured file materialization/setup",
       "ARASHI_REMOVE_TARGETS_JSON",
       "ARASHI_HOOK_INPUT",
       "--no-hook-input",
