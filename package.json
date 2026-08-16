@@ -28,6 +28,7 @@
     "validate:cli-option-docs": "pnpm sync:content && node scripts/check-cli-option-docs.ts",
     "validate:create-launch-docs": "pnpm sync:content && node scripts/check-create-launch-docs.ts",
     "validate:create-base-docs": "pnpm sync:content && node scripts/check-create-base-docs.ts",
+    "validate:executable-alias-docs": "pnpm sync:content && node scripts/check-executable-alias-docs.ts",
     "validate:kitty-session-docs": "pnpm sync:content && node scripts/check-kitty-session-docs.ts",
     "validate:windows-git-bash-install-docs": "pnpm sync:content && node scripts/check-windows-git-bash-install-docs.ts",
     "validate:shell-completion-docs": "pnpm sync:content && node scripts/check-shell-completion-docs.ts",

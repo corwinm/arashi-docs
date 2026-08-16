@@ -286,6 +286,7 @@ function renderLlmsTxt(): string {
 ## Agent Guidance
 
 - Start by inspecting workspace state with \`arashi status\`.
+- \`aw\` means “Arashi Workspace”. \`arashi\` remains canonical and primary examples use it; supported npm, macOS/Linux, and Windows installations provide both names. See [Getting started](${site}/getting-started/) for installation and collision guidance.
 - In a single repository, use \`arashi init --zero-config\` and the root \`.worktrees/<branch>\` convention; use ordinary \`arashi init\` for configured coordination.
 - Use the meta-repo for shared context, OpenSpec proposals, planning, and cross-repo coordination.
 - Put implementation, tests, and repo-specific docs in the owning child repository under \`repos/<project>/\`.

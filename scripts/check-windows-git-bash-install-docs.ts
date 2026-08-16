@@ -13,13 +13,17 @@ const landingForbiddenText =
 const installationRequirements = [
   "canonical Windows installer",
   "extensionless `arashi` command for Git Bash",
+  "extensionless `aw` command for Git Bash",
   "`arashi.bin.exe`",
   "`arashi`",
   "`arashi.ps1`",
   "`arashi.bat`",
+  "`aw`",
+  "`aw.ps1`",
+  "`aw.bat`",
   "one GitHub release",
   "`arashi-checksums.txt`",
-  "Verify all four payload assets against `arashi-checksums.txt`",
+  "Verify all seven payload assets against `arashi-checksums.txt`",
   "persistent user PATH",
   "new Git Bash window",
   "does not edit Git Bash profile files"
@@ -114,7 +118,7 @@ function runOutOfRepositoryMismatchTest(sourceRoot: string): void {
       valid
         .replaceAll("one GitHub release", "different GitHub releases")
         .replaceAll(
-          "Verify all four payload assets against `arashi-checksums.txt`",
+          "Verify all seven payload assets against `arashi-checksums.txt`",
           "Copy the payload without verification"
         )
     );
@@ -126,11 +130,11 @@ function runOutOfRepositoryMismatchTest(sourceRoot: string): void {
     }
     if (
       !mismatchErrors.some((error) =>
-        error.includes('"Verify all four payload assets against `arashi-checksums.txt`"')
+        error.includes('"Verify all seven payload assets against `arashi-checksums.txt`"')
       )
     ) {
       throw new Error(
-        "Windows Git Bash installation documentation checker self-test failed to reject missing four-file checksum verification."
+        "Windows Git Bash installation documentation checker self-test failed to reject missing seven-file checksum verification."
       );
     }
 

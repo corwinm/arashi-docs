@@ -12,6 +12,8 @@ Use this section when you are new to Arashi and need a quick setup and first wor
 
 Choose the install method for your platform and environment.
 
+`aw` means “Arashi Workspace”. `arashi` remains the canonical command and is used in primary examples, while official npm and direct installations provide `aw` as a supported shorthand.
+
 ### Prerequisites
 
 - `git` available in your shell
@@ -39,6 +41,7 @@ arashi --version
 
 The installer defaults to `~/.arashi/bin`, updates your shell profile so `arashi` is available on `PATH` in new shells, and in interactive installs can offer shell integration for `arashi switch --cd`.
 It also runs a quick `arashi --version` smoke test before declaring success.
+The macOS/Linux installer provides both `arashi` and `aw` and routes them to the same Arashi release.
 
 For unattended installs, set `ARASHI_SHELL_INTEGRATION=yes` to enable that automatically or `ARASHI_SHELL_INTEGRATION=no` to skip it.
 
@@ -60,7 +63,7 @@ Pin a specific version when invoking a downloaded script:
 .\install.ps1 -Version 1.16.0
 ```
 
-The PowerShell script is the canonical Windows installer. By default, it installs the verified four-file payload—`arashi.bin.exe`, the extensionless `arashi` command for Git Bash, `arashi.ps1`, and `arashi.bat`—in `%USERPROFILE%\.arashi\bin`, adds that directory to the persistent user PATH, and tells you to open a new terminal. Open a new Git Bash window before running `arashi --version` so it inherits the PATH change.
+The PowerShell script is the canonical Windows installer. The PowerShell installer provides both `arashi` and `aw` for Git Bash, PowerShell, and Command Prompt. By default, it installs `arashi.bin.exe`, the extensionless `arashi` command for Git Bash, `arashi.ps1`, `arashi.bat`, the extensionless `aw` command for Git Bash, `aw.ps1`, and `aw.bat` in `%USERPROFILE%\.arashi\bin`, adds that directory to the persistent user PATH, and tells you to open a new terminal. Both names execute the same native binary. Open a new Git Bash window before running `arashi --version` so it inherits the PATH change.
 Use `-InstallDir` or `ARASHI_INSTALL_DIR` for a custom user-writable directory. Use `-NoModifyPath` or `ARASHI_NO_MODIFY_PATH=1` to leave PATH unchanged and add the install directory to PATH yourself. The installer does not edit Git Bash profile files.
 
 ### Method 3: npm global install
@@ -75,12 +78,20 @@ Arashi downloads the matching platform binary on first use. To preinstall it exp
 arashi install
 ```
 
+npm installs provide both `arashi` and `aw`; both names use the same package and platform binary.
+
 For npm-managed bootstrap automation, `arashi install -j` and `arashi install --json` are equivalent and emit the same machine-readable result exactly once.
 
 Verify install:
 
 ```bash
 arashi --version
+```
+
+Canonical examples continue to use `arashi`. For representative shorthand after installation:
+
+```bash
+aw status
 ```
 
 ### Manual Windows fallback
@@ -91,9 +102,12 @@ If you do not want to pipe a remote script into PowerShell, download these asset
 - `arashi`
 - `arashi.ps1`
 - `arashi.bat`
+- `aw`
+- `aw.ps1`
+- `aw.bat`
 - `arashi-checksums.txt`
 
-Download and verify the complete set from one GitHub release. Verify all four payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, and `arashi.bat` together in one directory on PATH. Open a new Git Bash window before running `arashi --version` there.
+Download and verify the complete set from one GitHub release. Verify all seven payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, `arashi.bat`, `aw`, `aw.ps1`, and `aw.bat` together in one directory on PATH. Open a new shell before running `arashi --version` and `aw --version` there. Manually placed alias wrappers have no direct-installer ownership ledger. Before migrating to the official installer, deliberately move or remove `aw`, `aw.ps1`, and `aw.bat`; do the same for any other manually placed file that reports a collision.
 
 ### Troubleshooting and fallback
 
@@ -106,6 +120,8 @@ Download and verify the complete set from one GitHub release. Verify all four pa
 - If Git Bash reports `arashi: command not found` after a PowerShell install, confirm `%USERPROFILE%\.arashi\bin` is on the persistent user PATH, then open a new Git Bash window. An already-open shell does not inherit the update.
 - With `-NoModifyPath`, add the install directory to PATH yourself. Do not add an installer-managed entry to `.bashrc`, `.bash_profile`, or `.profile`; the installer does not edit Git Bash profile files.
 - If your environment blocks local `.ps1` scripts, inspect `install.ps1` first, then add `-ExecutionPolicy Bypass` to the `powershell` invocation for this one process or use the manual Windows fallback.
+- If installation reports an unrelated existing `aw` command on PATH or at the destination, inspect it and deliberately move or remove it before retrying. Arashi does not overwrite or shadow unrelated commands.
+- A user-created shell alias for `aw` is an unsupported interim workaround for older releases, not equivalent to the supported executable. Upgrade to a release that provides both names, then remove the workaround so shell integration and completion can manage `aw` safely.
 
 ## First Workflow
 

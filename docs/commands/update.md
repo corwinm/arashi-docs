@@ -25,6 +25,8 @@ arashi update [--check] [--dry-run] [--yes]
 
 Arashi first detects how the current CLI is installed.
 
+For supported npm-managed and direct-installer installations, an update updates both `arashi` and `aw`; `arashi` remains canonical and both names continue to use the same release.
+
 - npm-managed installs can update the package and then refresh the matching platform binary when the package manager can be confidently detected.
 - Package-manager detection supports npm, pnpm, Yarn, Bun, and Vite+ managed globals.
 - Vite+ installs update with `vp update -g arashi`.

@@ -17,6 +17,7 @@ arashi completion <bash|zsh|fish>
 ```
 
 The command writes a shell script to stdout. Source it from your shell startup file or current session; it does not edit startup files itself.
+Generated completion registers both `arashi` and `aw` with the same candidates and descriptions; `arashi` remains the canonical backend and documentation spelling.
 
 ## Examples
 
