@@ -47,10 +47,10 @@ Keep inline commands fail-fast so a later success does not mask an earlier failu
 
 | Mode and lifecycle | Discovery and multiplicity | Timing | Working directory | Failure behavior |
 | --- | --- | --- | --- | --- |
-| Configured workspace `pre-create` | `.arashi/hooks/pre-create<ext>`, once | Before branch or worktree mutation | Configured workspace root | Create fails before mutation. |
-| Configured repository `pre-create.<repo>` | `.arashi/hooks/pre-create.<repo><ext>`, once for that selected repository | After that repository worktree is materialized; this retained name means post-materialization and pre-setup | New child worktree | Create fails and rolls back Git mutations owned by this invocation. |
-| Configured repository `post-create.<repo>` | `.arashi/hooks/post-create.<repo><ext>`, once for that selected repository | After its repository pre hook | New child worktree | Create fails and enters the same rollback boundary. |
-| Configured workspace `post-create` | `.arashi/hooks/post-create<ext>`, once | After coordinated Git creation and before move-changes or switch/launch handling | Configured workspace root | Create fails and enters the same rollback boundary. |
+| Configured workspace `pre-create` | Inline `hooks.scripts.pre-create` or native `.arashi/hooks/pre-create<ext>`, one source once | Before branch or worktree mutation | Configured workspace root | Create fails before mutation. |
+| Configured repository `pre-create.<repo>` | Inline `repos.<repo>.hooks.pre-create` or native `.arashi/hooks/pre-create.<repo><ext>`, one source once for that selected repository | After that repository worktree is materialized; this retained name means post-materialization and pre-setup | New child worktree | Create fails and rolls back Git mutations owned by this invocation. |
+| Configured repository `post-create.<repo>` | Inline `repos.<repo>.hooks.post-create` or native `.arashi/hooks/post-create.<repo><ext>`, one source once for that selected repository | After its repository pre hook | New child worktree | Create fails and enters the same rollback boundary. |
+| Configured workspace `post-create` | Inline `hooks.scripts.post-create` or native `.arashi/hooks/post-create<ext>`, one source once | After coordinated Git creation and before move-changes or switch/launch handling | Configured workspace root | Create fails and enters the same rollback boundary. |
 | Configured `pre-remove` | Repository, workspace, global-targeted, then global-shared for each target | Before destructive removal | Scope-dependent; see below | Any failure or timeout aborts removal. |
 | Configured `post-remove` | Repository → workspace → global-targeted → global-shared for each target | After removal attempts, including partial failures | Scope-dependent; see below | Outcomes are retained and the command exits nonzero on hook failure. |
 | Standalone create/remove | User-global targeted before shared, once at each applicable location | At the matching pre/post lifecycle point | Resolved standalone main root | Create uses rollback; remove preserves pre-abort and post-finalization behavior. |
@@ -75,7 +75,7 @@ Every executed create or remove hook receives `ARASHI_HOOK_INPUT` with the comma
 
 `--no-hook-input` is shared by create and remove as an invocation-only option. It disables only lifecycle-hook stdin: it does not skip hooks or change their order. `--no-hooks` is create-only and skips configured create hooks; remove does not have that option. On create, `--interactive` still controls repository selection. There is no persistent configuration setting for hook input in this release.
 
-Before a `tty` hook can read, Arashi prints a completed attribution banner with the lifecycle, scope, absolute source script, and applicable workspace or target repository/worktree. Workspace hooks do not borrow a child target. Hooks continue to run sequentially across lifecycle points, scopes, and targets, so two hooks never compete for terminal input.
+Before a `tty` hook can read, Arashi prints a completed attribution banner with the lifecycle, scope, and source attribution: inline hooks identify their source kind and owner, while native file hooks identify the absolute script path. The banner also names the applicable workspace or target repository/worktree. Workspace hooks do not borrow a child target. Hooks continue to run sequentially across lifecycle points, scopes, and targets, so two hooks never compete for terminal input.
 
 Interactive hook stdout and stderr are streamed immediately to their corresponding terminal streams without adding a prefix or newline. An unterminated prompt is therefore visible before the hook reads. Arashi captures each stream internally without normalizing blank lines or trailing newlines, but does not add those streams to the public hook outcome schema. JSON and other quiet execution remain capture-only, with no prompt text or attribution on stdout.
 
@@ -113,7 +113,7 @@ Lifecycle hooks are trusted executable programs, but prompt answers are not a se
 
 ## Discovery by mode and platform
 
-Configured create uses only the workspace and repository-specific filenames shown above. It does not activate similarly named repository-local or user-global create scripts.
+Configured create discovers either inline configuration or native files as alternatives at the workspace and repository-specific logical locations shown above. It does not activate similarly named repository-local or user-global create scripts.
 
 Configured remove searches each target in this order:
 

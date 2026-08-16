@@ -40,19 +40,29 @@ const completeInlineContract: Requirement[] = [
 const ownershipContract = completeInlineContract.slice(0, 12);
 const automationContract = completeInlineContract.slice(11);
 const automationPageContract = automationContract.filter(([label]) => /remove dry-run|configured-create|source metadata|source path|no-disclosure/.test(label));
+const reviewedGuidanceContract: Requirement[] = [
+  [
+    "configured-create inline/file discovery alternatives",
+    /configured create[^.\n]{0,180}(?:inline|configuration)[^.\n]{0,120}(?:native )?files?[^.\n]{0,100}(?:alternative|either|or)/i,
+  ],
+  [
+    "TTY source-aware attribution",
+    /(?:tty|terminal)[^.\n]{0,180}(?:banner|attribution)[^.\n]{0,180}inline[^.\n]{0,160}(?:owner|source kind)[^.\n]{0,180}(?:native|file)[^.\n]{0,160}absolute[^.\n]{0,80}(?:path|script)/i,
+  ],
+];
 const surfaces = new Map<string, Requirement[]>([
-  ["docs/workflows/hooks.md", completeInlineContract],
+  ["docs/workflows/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
   ["docs/workflows/config.md", ownershipContract],
   ["docs/workflows/json-automation.md", automationPageContract],
   ["docs/commands/create.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|configured-create|source metadata|no-disclosure/.test(label))],
   ["docs/commands/remove.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|remove dry-run|source metadata|no-disclosure/.test(label))],
-  ["public/workflows/hooks.md", completeInlineContract],
+  ["public/workflows/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
   ["public/workflows/config.md", ownershipContract],
   ["public/workflows/json-automation.md", automationPageContract],
   ["public/commands/create.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|configured-create|source metadata|no-disclosure/.test(label))],
   ["public/commands/remove.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|remove dry-run|source metadata|no-disclosure/.test(label))],
-  ["public/llms.txt", completeInlineContract],
-  ["public/llms-full.txt", completeInlineContract],
+  ["public/llms.txt", [...completeInlineContract, ...reviewedGuidanceContract]],
+  ["public/llms-full.txt", [...completeInlineContract, ...reviewedGuidanceContract]],
 ]);
 
 const root = path.resolve(process.cwd());
@@ -103,6 +113,18 @@ function checkContradictions(relativePath: string, content: string, found: strin
     );
     if (terminalChoosesInlineInterpreter) {
       found.push(`${relativePath} must not make terminal selection choose an inline interpreter`);
+    }
+    const configuredCreateFileOnly = /configured create[^.\n]{0,120}\b(?:uses?|discovers?|searches?) only\b[^.\n]{0,120}(?:filenames?|files?|scripts?)/i.test(statement);
+    const nativeOnlyQualification = /native (?:sources?|files?|hooks?)[^.\n]{0,80}configured create/i.test(statement);
+    const preservesInlineAlternative = /inline (?:configuration|sources?|hooks?)[^.\n]{0,100}(?:alternative|remains?)/i.test(statement);
+    if (configuredCreateFileOnly && !(nativeOnlyQualification && preservesInlineAlternative)) {
+      found.push(`${relativePath} must not describe configured create discovery as file-only`);
+    }
+    const absoluteSourceScriptAttribution = /(?:banner|attribution)[^.\n]{0,120}\babsolute source script\b/i.test(statement);
+    const nativePathQualification = /native (?:file |hook'?s? )?[^.\n]{0,60}absolute source script/i.test(statement);
+    const identifiesInlineOwner = /inline hooks?[^.\n]{0,80}(?:source )?(?:kind|owner)/i.test(statement);
+    if (absoluteSourceScriptAttribution && !(nativePathQualification && identifiesInlineOwner)) {
+      found.push(`${relativePath} must not promise an absolute source script for pathless inline hooks`);
     }
     for (const clause of splitContrastClauses(statement)) {
       if (hasAffirmativeSnippetDisclosure(clause)) {
@@ -213,6 +235,16 @@ function runControlledMismatchSelfTest(): void {
         "The terminal host chooses the inline interpreter.",
         /terminal selection/,
       ],
+      [
+        "configured create filename-only discovery",
+        "Configured create uses only the workspace and repository-specific filenames shown above.",
+        /file-only/,
+      ],
+      [
+        "pathless inline TTY attribution",
+        "Before a tty hook reads, the attribution banner prints the absolute source script.",
+        /pathless inline hooks/,
+      ],
     ];
     const missedAdversarialClaims: string[] = [];
     for (const [label, claim, expected] of adversarialClaims) {
@@ -251,6 +283,24 @@ function runControlledMismatchSelfTest(): void {
     );
     if (legitimateTerminalContext.length > 0) {
       missedAdversarialClaims.push("unrelated terminal-host clause rejected");
+    }
+    const legitimateNativeDiscoveryQualification: string[] = [];
+    checkContradictions(
+      fixturePath,
+      "For native sources, configured create uses only workspace and repository-specific filenames; inline configuration remains an alternative.",
+      legitimateNativeDiscoveryQualification,
+    );
+    if (legitimateNativeDiscoveryQualification.length > 0) {
+      missedAdversarialClaims.push("native-only discovery qualification rejected");
+    }
+    const legitimateSourceAwareAttribution: string[] = [];
+    checkContradictions(
+      fixturePath,
+      "The banner identifies a native hook's absolute source script; inline hooks identify their source owner.",
+      legitimateSourceAwareAttribution,
+    );
+    if (legitimateSourceAwareAttribution.length > 0) {
+      missedAdversarialClaims.push("source-aware native attribution rejected");
     }
     assert.deepEqual(missedAdversarialClaims, [], "checker mishandled adversarial guidance");
   } finally {
