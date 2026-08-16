@@ -12,7 +12,7 @@ Use this section when you are new to Arashi and need a quick setup and first wor
 
 Choose the install method for your platform and environment.
 
-`aw` means “Arashi Workspace”. `arashi` remains the canonical command and is used in primary examples, while official npm and direct installations provide `aw` as a supported shorthand.
+`aw` is a shorter alias for `arashi`.
 
 ### Prerequisites
 
