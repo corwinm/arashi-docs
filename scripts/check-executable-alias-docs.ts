@@ -3,19 +3,11 @@ import os from "node:os";
 import path from "node:path";
 
 const sourceRequirements = new Map<string, string[]>([
-  [
-    "docs/index.mdx",
-    [
-      "`aw` means “Arashi Workspace”",
-      "`arashi` remains the canonical command",
-      "supported installations provide both names"
-    ]
-  ],
+  ["docs/index.mdx", []],
   [
     "docs/getting-started/index.md",
     [
-      "`aw` means “Arashi Workspace”",
-      "`arashi` remains the canonical command",
+      "`aw` is a shorter alias for `arashi`",
       "macOS/Linux installer provides both `arashi` and `aw`",
       "PowerShell installer provides both `arashi` and `aw`",
       "npm installs provide both `arashi` and `aw`",
@@ -46,7 +38,7 @@ const sourceRequirements = new Map<string, string[]>([
 ]);
 
 const generatedRequirements = new Map<string, string[]>([
-  ["public/index.md", sourceRequirements.get("docs/index.mdx") ?? []],
+  ["public/index.md", []],
   ["public/getting-started.md", sourceRequirements.get("docs/getting-started/index.md") ?? []],
   ["public/commands/shell.md", sourceRequirements.get("docs/commands/shell.md") ?? []],
   ["public/commands/completion.md", sourceRequirements.get("docs/commands/completion.md") ?? []],
@@ -54,17 +46,14 @@ const generatedRequirements = new Map<string, string[]>([
   [
     "public/llms.txt",
     [
-      "`aw` means “Arashi Workspace”",
-      "`arashi` remains canonical",
-      "supported npm, macOS/Linux, and Windows installations provide both names",
+      "`aw` is a shorter alias for `arashi`",
       "Getting started"
     ]
   ],
   [
     "public/llms-full.txt",
     [
-      "`aw` means “Arashi Workspace”",
-      "`arashi` remains the canonical command",
+      "`aw` is a shorter alias for `arashi`",
       "macOS/Linux installer provides both `arashi` and `aw`",
       "PowerShell installer provides both `arashi` and `aw`",
       "npm installs provide both `arashi` and `aw`",
@@ -225,32 +214,11 @@ function runControlledMismatchTests(sourceRoot: string): void {
   try {
     const replacementCases = [
       {
-        label: "alias expansion mutation",
+        label: "alias shorthand mutation",
         path: "docs/getting-started/index.md",
-        oldText: "`aw` means “Arashi Workspace”",
-        newText: "`aw` means “Arashi Worktree”",
-        diagnostic: 'docs/getting-started/index.md is missing "`aw` means “Arashi Workspace”"'
-      },
-      {
-        label: "alias expansion removal",
-        path: "docs/getting-started/index.md",
-        oldText: "`aw` means “Arashi Workspace”",
-        newText: "`aw` is the supported shorthand",
-        diagnostic: 'docs/getting-started/index.md is missing "`aw` means “Arashi Workspace”"'
-      },
-      {
-        label: "canonical identity mutation",
-        path: "docs/getting-started/index.md",
-        oldText: "`arashi` remains the canonical command",
+        oldText: "`aw` is a shorter alias for `arashi`",
         newText: "`aw` is now the canonical command",
-        diagnostic: 'docs/getting-started/index.md is missing "`arashi` remains the canonical command"'
-      },
-      {
-        label: "canonical identity removal",
-        path: "docs/getting-started/index.md",
-        oldText: "`arashi` remains the canonical command",
-        newText: "Both executable names invoke the same CLI",
-        diagnostic: 'docs/getting-started/index.md is missing "`arashi` remains the canonical command"'
+        diagnostic: 'docs/getting-started/index.md is missing "`aw` is a shorter alias for `arashi`"'
       },
       {
         label: "npm channel loss",
@@ -318,8 +286,8 @@ function runControlledMismatchTests(sourceRoot: string): void {
       {
         label: "llms.txt-only drift",
         path: "public/llms.txt",
-        oldText: "supported npm, macOS/Linux, and Windows installations provide both names",
-        newText: "supported npm installations provide both names",
+        oldText: "`aw` is a shorter alias for `arashi`",
+        newText: "`aw` is the primary command",
         diagnostic: "public/llms.txt is missing"
       },
       {
