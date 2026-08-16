@@ -225,6 +225,34 @@ function runControlledMismatchTests(sourceRoot: string): void {
   try {
     const replacementCases = [
       {
+        label: "alias expansion mutation",
+        path: "docs/getting-started/index.md",
+        oldText: "`aw` means “Arashi Workspace”",
+        newText: "`aw` means “Arashi Worktree”",
+        diagnostic: 'docs/getting-started/index.md is missing "`aw` means “Arashi Workspace”"'
+      },
+      {
+        label: "alias expansion removal",
+        path: "docs/getting-started/index.md",
+        oldText: "`aw` means “Arashi Workspace”",
+        newText: "`aw` is the supported shorthand",
+        diagnostic: 'docs/getting-started/index.md is missing "`aw` means “Arashi Workspace”"'
+      },
+      {
+        label: "canonical identity mutation",
+        path: "docs/getting-started/index.md",
+        oldText: "`arashi` remains the canonical command",
+        newText: "`aw` is now the canonical command",
+        diagnostic: 'docs/getting-started/index.md is missing "`arashi` remains the canonical command"'
+      },
+      {
+        label: "canonical identity removal",
+        path: "docs/getting-started/index.md",
+        oldText: "`arashi` remains the canonical command",
+        newText: "Both executable names invoke the same CLI",
+        diagnostic: 'docs/getting-started/index.md is missing "`arashi` remains the canonical command"'
+      },
+      {
         label: "npm channel loss",
         path: "docs/getting-started/index.md",
         oldText: "npm installs provide both `arashi` and `aw`",
