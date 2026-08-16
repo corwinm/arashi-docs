@@ -7,7 +7,41 @@ sidebar:
   order: 3
 ---
 
-Use lifecycle hooks for trusted setup and cleanup around `arashi create` and `arashi remove`. Hook discovery is based on filesystem conventions, not entries in `.arashi/config.json`.
+Use lifecycle hooks for trusted setup and cleanup around `arashi create` and `arashi remove`. Use short reviewable inline commands; put substantial or reusable logic in native files. Standalone hooks remain native files only, as do user-global hooks.
+
+## Inline configured hooks
+
+Workspace owners configure `hooks.scripts.<lifecycle>`, while repository owners configure `repos.<name>.hooks.<lifecycle>`. The four lifecycle keys are `pre-create`, `post-create`, `pre-remove`, and `post-remove`. A string is Bash shorthand; use a closed interpreter map with one or more of `bash`, `powershell`, and `cmd` when the same hook needs native variants:
+
+```json
+{
+  "hooks": {
+    "scripts": {
+      "pre-create": "printf 'Starting create\n'",
+      "post-remove": {
+        "bash": "test -n \"$ARASHI_HOOK_TARGET_REPOSITORY\" && printf 'Removed %s\n' \"$ARASHI_HOOK_TARGET_REPOSITORY\"",
+        "powershell": "if (-not $env:ARASHI_HOOK_TARGET_REPOSITORY) { exit 1 }; Write-Output \"Removed $env:ARASHI_HOOK_TARGET_REPOSITORY\"",
+        "cmd": "if not defined ARASHI_HOOK_TARGET_REPOSITORY exit /b 1 & echo Removed %ARASHI_HOOK_TARGET_REPOSITORY%"
+      }
+    }
+  },
+  "repos": {
+    "web": {
+      "path": "repos/web",
+      "hooks": {
+        "pre-create": "test -f package.json",
+        "post-create": "corepack pnpm install --frozen-lockfile"
+      }
+    }
+  }
+}
+```
+
+Inline sources occupy the same lifecycle locations as native files; they are alternatives, not extra hooks. If inline and file sources claim the same logical location, Arashi reports an inline/file ambiguity and runs neither. Different scopes still compose in the lifecycle order below.
+
+Inline snippets are non-portable unless compatible interpreter variants are supplied. Interpreter selection is deterministic rather than terminal-dependent. On POSIX, Arashi uses configured Bash and scans non-empty `PATH` entries in order for the first executable `bash`. On Windows, it tries configured PowerShell, then cmd, then Bash. `SystemRoot` supplies the fixed PowerShell and cmd paths, while `PATH` order selects `bash.exe`. If no configured compatible executable is found, the hook fails preflight as `interpreter_unavailable` before lifecycle mutation.
+
+Keep inline commands fail-fast so a later success does not mask an earlier failure. Inline snippets must not contain secrets, tokens, or passwords: configuration is shared and outcomes, previews, diagnostics, and logs do not reveal snippet or command text.
 
 ## Lifecycle matrix
 
@@ -25,6 +59,8 @@ For configured remove, all four scopes are evaluated separately for every target
 
 Create and remove results retain evaluated hook outcomes, including skips, successes, validation failures, timeouts, and nonzero exits. Human output and JSON output derive from that outcome ledger. JSON success places outcomes in `data.hookOutcomes`; failure places them in `error.details.hookOutcomes`, while hook stdout and stderr stay off JSON stdout.
 
+Public results describe a configured source with `sourceKind: "inline-config"`, `sourceOwnerKind`, and `sourceOwnerName`; `sourceScriptPath` is null because an inline source has no file path. `remove --dry-run` provides source-aware hook previews with source kind and source owner metadata but never executes a hook. Configured-create dry-run performs no hook discovery, returns an empty hook ledger, and has no hook preview.
+
 ## Terminal input policy
 
 Every executed create or remove hook receives `ARASHI_HOOK_INPUT` with the command-wide input mode:
@@ -37,7 +73,7 @@ Every executed create or remove hook receives `ARASHI_HOOK_INPUT` with the comma
 | Non-TTY or CI invocation | `unavailable` | Immediate EOF rather than an open pipe. |
 | Dry-run | Not reported | Hooks do not execute and no input channel is created. |
 
-`--no-hook-input` is an invocation-only option on `create` and `remove`. It disables only lifecycle-hook stdin: it does not skip hooks or change their order. On create, `--no-hooks` skips hook execution, while `--interactive` still controls repository selection. There is no persistent configuration setting for hook input in this release.
+`--no-hook-input` is shared by create and remove as an invocation-only option. It disables only lifecycle-hook stdin: it does not skip hooks or change their order. `--no-hooks` is create-only and skips configured create hooks; remove does not have that option. On create, `--interactive` still controls repository selection. There is no persistent configuration setting for hook input in this release.
 
 Before a `tty` hook can read, Arashi prints a completed attribution banner with the lifecycle, scope, absolute source script, and applicable workspace or target repository/worktree. Workspace hooks do not borrow a child target. Hooks continue to run sequentially across lifecycle points, scopes, and targets, so two hooks never compete for terminal input.
 
@@ -126,7 +162,7 @@ Every executed lifecycle hook receives common executor-owned metadata where appl
 | --- | --- |
 | `ARASHI_HOOK_NAME` | Logical discovered name, including the repository suffix for configured repository-specific create. |
 | `ARASHI_HOOK_SCOPE` | `workspace`, `repository`, `global-repository`, or `global-shared`. |
-| `ARASHI_HOOK_SOURCE_PATH` | Exact absolute discovered script path. |
+| `ARASHI_HOOK_SOURCE_PATH` | Exact absolute discovered script path for a native file; omitted for an inline source. |
 | `ARASHI_HOOK_EXECUTION_PATH` | Exact absolute process cwd. |
 | `ARASHI_HOOK_WORKSPACE_MODE` | `configured` or `standalone`. |
 | `ARASHI_MAIN_REPO_PATH` | Canonical configured workspace root or standalone main root. |
