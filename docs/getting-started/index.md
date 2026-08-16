@@ -107,7 +107,7 @@ If you do not want to pipe a remote script into PowerShell, download these asset
 - `aw.bat`
 - `arashi-checksums.txt`
 
-Download and verify the complete set from one GitHub release. Verify all seven payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, `arashi.bat`, `aw`, `aw.ps1`, and `aw.bat` together in one directory on PATH. Open a new shell before running `arashi --version` and `aw --version` there. Before later switching to the official installer, deliberately move or remove these manually placed `aw` files if the installer reports a collision.
+Download and verify the complete set from one GitHub release. Verify all seven payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, `arashi.bat`, `aw`, `aw.ps1`, and `aw.bat` together in one directory on PATH. Open a new shell before running `arashi --version` and `aw --version` there. Manually placed alias wrappers have no direct-installer ownership ledger. Before migrating to the official installer, deliberately move or remove `aw`, `aw.ps1`, and `aw.bat`; do the same for any other manually placed file that reports a collision.
 
 ### Troubleshooting and fallback
 
