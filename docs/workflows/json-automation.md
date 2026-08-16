@@ -140,7 +140,9 @@ If stdout contains human text in JSON mode, that is a bug because it breaks tool
 
 ### Lifecycle hook input
 
-For configured and standalone `create` and `remove`, JSON always sets `ARASHI_HOOK_INPUT=disabled` and gives every executed hook immediate EOF, even when stdin is a TTY. Hooks still execute and can fail normally; `--json` does not behave like create's `--no-hooks`. No prompt text or interactive attribution is streamed to stdout, which remains exactly one JSON document. Dry-run continues to preview hooks without spawning them or reporting an input mode as if execution occurred. See the [Hooks workflow](/workflows/hooks/) for the complete availability matrix and native-shell guidance.
+For configured and standalone `create` and `remove`, JSON always sets `ARASHI_HOOK_INPUT=disabled` and gives every executed hook immediate EOF, even when stdin is a TTY. Hooks still execute and can fail normally; `--json` does not behave like create's `--no-hooks`. No prompt text or interactive attribution is streamed to stdout, which remains exactly one JSON document. Dry-run continues to preview hooks without spawning them or reporting an input mode as if execution occurred. See the [Hooks workflow](/workflows/hooks/#terminal-input-policy) for native-shell examples, timeout, sequential attribution, and the no-secrets boundary.
+
+Configured inline hooks preserve the same one-document automation contract. Remove dry-run exposes source kind and source owner metadata in previews. Outcomes identify `sourceKind: "inline-config"`, `sourceOwnerKind`, and `sourceOwnerName`; `sourceScriptPath` is null or omitted because there is no file. Outcomes, previews, diagnostics, and logs never include snippet command text. Configured-create dry-run still performs no hook discovery, returns an empty hook ledger, and has no hook preview. See [Inline configured hooks](/workflows/hooks/#inline-configured-hooks) for ownership, interpreter selection, and ambiguity behavior.
 
 ## Command Support Matrix
 

@@ -88,6 +88,34 @@ Install shell integration with `arashi shell install` if you want `defaults.swit
 
 ## Hook timeout
 
+Configured workspaces can define short lifecycle commands at `hooks.scripts.<lifecycle>` for workspace ownership and at `repos.<name>.hooks.<lifecycle>` for repository ownership. The allowed lifecycle keys are `pre-create`, `post-create`, `pre-remove`, and `post-remove`. A string is Bash shorthand; an interpreter map may contain only non-empty `bash`, `powershell`, and `cmd` values.
+
+On POSIX, inline selection uses configured Bash and scans `PATH` in order for the first executable `bash`. On Windows, selection tries configured PowerShell, then cmd, then Bash. `SystemRoot` supplies the fixed PowerShell and cmd paths, while `PATH` selects `bash.exe`. A configured location with no compatible available executable fails as `interpreter_unavailable` before mutation.
+
+An inline definition and native file cannot both own the same logical location: Arashi reports an inline/file ambiguity and neither source runs. Prefer short reviewable inline commands and keep substantial or reusable logic in the native files described by the [Hooks workflow](/workflows/hooks/). Inline snippets are non-portable unless compatible interpreter variants are supplied.
+
+```json
+{
+  "hooks": {
+    "scripts": {
+      "pre-create": "printf 'Starting create\n'"
+    }
+  },
+  "repos": {
+    "web": {
+      "path": "repos/web",
+      "hooks": {
+        "post-create": {
+          "bash": "corepack pnpm install --frozen-lockfile",
+          "powershell": "corepack pnpm install --frozen-lockfile",
+          "cmd": "corepack pnpm install --frozen-lockfile"
+        }
+      }
+    }
+  }
+}
+```
+
 All lifecycle scopes use a default timeout of `300000` milliseconds. Set `hooks.timeout` to an integer from `1` through `2147483647` when trusted configured create/remove hooks need a different limit:
 
 ```json

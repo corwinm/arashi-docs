@@ -68,6 +68,7 @@ arashi remove feature-login --no-hook-input
 - Stale Git-prunable worktree records are excluded from `remove`; use `arashi prune` to clean stale metadata.
 - JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
 - A normal terminal run exposes `ARASHI_HOOK_INPUT=tty`; `--no-hook-input` or JSON uses `disabled`, and non-TTY automation uses `unavailable`. Disabled and unavailable hooks receive immediate EOF. `--no-hook-input` does not skip hooks or confirmations; hook failures and outcomes remain active.
+- `--no-hooks` is create-only and remove does not provide it; `--no-hook-input` is shared by create and remove.
 - `remove` does not close Herdr workspaces because they can contain agents or unsaved terminal state. Close a stale workspace manually, or deliberately opt into a pre-remove `herdr workspace close <workspace-id>` hook that resolves the workspace before the checkout disappears. Never use `herdr worktree remove`; Arashi owns Git worktree removal.
 
 ## Agent Notes
@@ -84,6 +85,7 @@ Behavior:
 
 - Any failing or timed-out `pre-remove` hook aborts destructive remove actions.
 - Dry-run mode reports hooks that would be considered but never executes `pre-remove` or `post-remove` scripts and never fabricates execution outcomes.
+- Remove dry-run provides source-aware previews with source kind and source owner metadata. Inline sources are identified by `sourceKind: "inline-config"`, `sourceOwnerKind`, and `sourceOwnerName`; outcomes, previews, diagnostics, and logs do not reveal snippet text.
 - `post-remove` hooks still run after partial remove failures; removal errors and all hook outcomes remain available in human and JSON results.
 - Any failing `post-remove` hook contributes to a nonzero command result without collapsing earlier timeout or removal failures.
 - Per-target scalar context comes only from the current repository. Command-wide cleanup parses `ARASHI_REMOVE_TARGETS_JSON`; comma-separated compatibility aggregates are lossy.

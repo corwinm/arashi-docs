@@ -19,6 +19,7 @@
     "validate:a11y": "pnpm validate:build && node scripts/check-a11y-smoke.ts",
     "validate:a11y:prepared": "node scripts/check-a11y-smoke.ts",
     "validate:managed-ignore-docs": "pnpm sync:content && node scripts/check-managed-ignore-docs.ts",
+    "validate:inline-lifecycle-hook-docs": "pnpm sync:content && node scripts/check-inline-lifecycle-hook-docs.ts",
     "validate:standalone-docs": "pnpm sync:content && node scripts/check-standalone-docs.ts",
     "validate:lifecycle-hook-docs": "pnpm sync:content && node scripts/check-lifecycle-hook-docs.ts",
     "validate:switch-mode-docs": "pnpm sync:content && node scripts/check-switch-mode-docs.ts",
