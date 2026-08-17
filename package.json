@@ -31,6 +31,7 @@
     "validate:executable-alias-docs": "pnpm sync:content && node scripts/check-executable-alias-docs.ts",
     "validate:kitty-session-docs": "pnpm sync:content && node scripts/check-kitty-session-docs.ts",
     "validate:windows-git-bash-install-docs": "pnpm sync:content && node scripts/check-windows-git-bash-install-docs.ts",
+    "validate:worktree-materialization-docs": "pnpm sync:content && node scripts/check-worktree-materialization-docs.ts",
     "validate:shell-completion-docs": "pnpm sync:content && node scripts/check-shell-completion-docs.ts",
     "validate:ssh-host-alias-docs": "pnpm sync:content && node scripts/check-ssh-host-alias-docs.ts",
     "validate:links:external": "node scripts/check-external-links.ts",

@@ -13,5 +13,6 @@
   "check-switch-mode-docs.ts",
   "check-tab-launch-docs.ts",
   "check-tmux-launch-docs.ts",
-  "check-windows-git-bash-install-docs.ts"
+  "check-windows-git-bash-install-docs.ts",
+  "check-worktree-materialization-docs.ts"
 ]
