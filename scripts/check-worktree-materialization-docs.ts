@@ -104,11 +104,11 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const clauses = statement.split(
-      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?)\b)/i,
+      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must)\b)/i,
     );
     const claims: Array<[RegExp, RegExp, string]> = [
-      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded)\b/i, "must not advertise glob support"],
-      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b|\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:supported|allowed|accepted)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|allows?|allowed|accepts?|accepted)\b/i, "must not advertise path remapping"],
+      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded|uses?|used)\b/i, "must not advertise glob support"],
+      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|allows?|accepts?|uses?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b|\b(?:supports?|allows?|accepts?|uses?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:supported|allowed|accepted|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|allows?|allowed|accepts?|accepted|uses?|used)\b/i, "must not advertise path remapping"],
       [/(?:\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b|\bstandalone(?: mode)?\b[^.\n]{0,60}\b(?:copy|symlinks?|materialization)\b[^.\n]{0,40}\b(?:is|are)\s+(?:supported|available|applied|materialized)\b|\bstandalone(?: mode)?\b[^.\n]{0,40}\b(?:is|are)\s+(?:supported|available|applied|materialized)\b[^.\n]{0,40}\b(?:for|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:copy|symlink|materialization)(?:\s+entries?)?\b[^.\n]{0,80}\b(?:supported|available|applied|materialized)\b[^.\n]{0,60}\b(?:in|by|for)\s+standalone(?: mode)?\b)/i, /\b(?:supports?|supported|available|uses?|applies?|applied|materializes?|materialized)\b/i, "must keep materialization configured-only"],
       [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
       [/\b(?:overwrites?|replaces?)\b[^.\n]{0,100}\b(?:destination|target|existing (?:file|path))\b/i, /\b(?:overwrites?|replaces?)\b/i, "must not advertise overwrite behavior"],
@@ -123,7 +123,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
       const elidedMaterializationAction =
         !explicitMaterialization &&
         materializationContext &&
-        /^\s*(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|should|is|are)\s+not\s+)?(?:supports?|supported|accepts?|accepted|allows?|allowed|expands?|expanded)\b/i.test(
+        /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not\s+)?(?:supports?|supported|accepts?|accepted|allows?|allowed|expands?|expanded|uses?|used)\b/i.test(
           rawClause,
         );
       const clause = elidedMaterializationAction ? `materialization ${rawClause}` : rawClause;
@@ -146,7 +146,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
 
 function isNegated(statement: string, actionIndex: number): boolean {
   const prefix = statement.slice(Math.max(0, actionIndex - 36), actionIndex);
-  if (/\b(?:not|never|cannot|[a-z]+n['’]t|(?:do|does|will|must|can|should|is|are)\s+not)\s*$/i.test(prefix)) {
+  if (/\b(?:not|never|cannot|[a-z]+n['’]t|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not)(?:\s+be)?\s*$/i.test(prefix)) {
     return true;
   }
   return /\bneither\b[^.\n]{0,100}\b(?:copy|symlinks?|materialization)\b[^.\n]{0,60}$/i.test(
@@ -197,6 +197,8 @@ function runControlledGuidanceSelfTest(): void {
     "Neither copy nor symlink entries support globs.",
     "Copy entries don't support globs, whereas symlink entries don’t accept globs.",
     "Copy entries don't support globs, and symlink entries won’t accept globs.",
+    "Copy entries cannot use globs, and symlink entries can’t use globs.",
+    "Copy entries may not use globs.",
     "Although copy entries do not support globs, lifecycle hooks support globs.",
     "Ordering is pre-create, copy, symlink, post-create.",
     "--no-hooks does not disable materialization.",
@@ -215,6 +217,10 @@ function runControlledGuidanceSelfTest(): void {
 
   const invalidClaims: Array<[string, RegExp, number?]> = [
     ["Arashi supports globs in copy entries.", /glob support/],
+    ["Copy entries can use globs.", /glob support/],
+    ["Copy entries may use globs.", /glob support/],
+    ["Globs can be used in copy entries.", /glob support/],
+    ["Copy entries can use destination mapping.", /path remapping/],
     ["Copy entries do not support globs, but symlink entries support globs.", /glob support/],
     ["Although copy entries do not support globs, symlink entries support globs.", /glob support/],
     ["Copy entries do not support globs although symlink entries support globs.", /glob support/],
