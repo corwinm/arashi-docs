@@ -106,7 +106,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
     const claims: Array<[RegExp, RegExp, string]> = [
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded)\b/i, "must not advertise glob support"],
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b|\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:supported|allowed|accepted)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|allows?|allowed|accepts?|accepted)\b/i, "must not advertise path remapping"],
-      [/\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:supports?|uses?|applies?|materializes?)\b/i, "must keep materialization configured-only"],
+      [/(?:\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b|\bstandalone(?: mode)?\b[^.\n]{0,60}\b(?:copy|symlinks?|materialization)\b[^.\n]{0,40}\b(?:is|are)\s+(?:supported|available|applied|materialized)\b|\bstandalone(?: mode)?\b[^.\n]{0,40}\b(?:is|are)\s+(?:supported|available|applied|materialized)\b[^.\n]{0,40}\b(?:for|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:copy|symlink|materialization)(?:\s+entries?)?\b[^.\n]{0,80}\b(?:supported|available|applied|materialized)\b[^.\n]{0,60}\b(?:in|by|for)\s+standalone(?: mode)?\b)/i, /\b(?:supports?|supported|available|uses?|applies?|applied|materializes?|materialized)\b/i, "must keep materialization configured-only"],
       [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
       [/\b(?:overwrites?|replaces?)\b[^.\n]{0,100}\b(?:destination|target|existing (?:file|path))\b/i, /\b(?:overwrites?|replaces?)\b/i, "must not advertise overwrite behavior"],
       [/\b(?:copy|symlinks?|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
@@ -129,7 +129,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
 
 function isNegated(statement: string, actionIndex: number): boolean {
   const prefix = statement.slice(Math.max(0, actionIndex - 36), actionIndex);
-  return /\b(?:not|never|cannot|can't|doesn't|won't|(?:do|does|will|must|can|should)\s+not)\s*$/i.test(prefix);
+  return /\b(?:not|never|cannot|[a-z]+n['’]t|(?:do|does|will|must|can|should|is|are)\s+not)\s*$/i.test(prefix);
 }
 
 function checkReachability(rootPath: string, found: string[]): void {
@@ -165,6 +165,11 @@ function runControlledGuidanceSelfTest(): void {
     "This is available in configured workspaces only.",
     "Choose copy for an independent isolated file, or symlink to share dependencies with the primary checkout.",
     "Globs are not supported, remapping is unsupported, and standalone mode is not supported.",
+    "Copy entries are not supported in standalone mode.",
+    "Copy entries aren't supported in standalone mode.",
+    "Copy entries aren’t supported in standalone mode.",
+    "Standalone mode doesn't materialize copy entries.",
+    "Standalone mode doesn’t materialize copy entries.",
     "Ordering is pre-create, copy, symlink, post-create.",
     "--no-hooks does not disable materialization.",
     "Missing sources are skipped.",
@@ -186,6 +191,9 @@ function runControlledGuidanceSelfTest(): void {
     ["Repository pre-create runs at its post-materialization point.", /pre-create lifecycle wording/],
     ["Arashi allows destination mapping for symlinks.", /path remapping/],
     ["Standalone mode materializes copy entries.", /configured-only/],
+    ["Copy entries are supported in standalone mode.", /configured-only/],
+    ["Standalone materialization is supported.", /configured-only/],
+    ["Standalone mode is supported for materialization.", /configured-only/],
     ["--no-hooks disables copy and symlink materialization.", /--no-hooks independent/],
     ["Arashi overwrites an existing destination.", /overwrite behavior/],
     ["Copy materialization falls back to another source checkout.", /source fallback/],
