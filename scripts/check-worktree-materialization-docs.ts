@@ -104,7 +104,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const clauses = statement.split(
-      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+)?|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond)\b)/i,
+      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+)?|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond|overwrites?|replaces?|destinations?|targets?|files?|paths?|existing)\b)/i,
     );
     const claims: Array<[RegExp, RegExp, string]> = [
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded|uses?|used)\b/i, "must not advertise glob support"],
@@ -113,7 +113,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
       [/(?:\b(?:copy|symlinks?|materialization)\s+destinations?\b[^.\n]{0,80}\b(?:outside|beyond)\b[^.\n]{0,50}\b(?:new\s+)?worktree\b|\b(?:copy|symlinks?|materialization)\s+destinations?\b[^.\n]{0,80}\b(?:escapes?|leaves?)\b[^.\n]{0,50}\b(?:new\s+)?worktree\b|\bdestinations?\b[^.\n]{0,40}\b(?:outside|beyond)\b[^.\n]{0,40}\b(?:new\s+)?worktree\b[^.\n]{0,50}\b(?:supported|allowed|used)\b[^.\n]{0,50}\b(?:copy|symlinks?|materialization)\b)/i, /\b(?:outside|beyond|escapes?|leaves?|supported|allowed|used)\b/i, "must preserve destination containment"],
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,80}\b(?:supports?|accepts?|allows?|uses?)\b[^.\n]{0,50}\b(?:absolute paths?|parent traversal(?: paths?)?)\b|\b(?:absolute paths?|parent traversal(?: paths?)?)\b[^.\n]{0,50}\b(?:supported|accepted|allowed|used)\b[^.\n]{0,50}\b(?:by|for|in)\s+(?:copy|symlinks?|materialization)(?:\s+entries)?\b)/i, /\b(?:supports?|supported|accepts?|accepted|allows?|allowed|uses?|used)\b/i, "must preserve destination containment"],
       [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
-      [/\b(?:overwrites?|replaces?)\b[^.\n]{0,100}\b(?:destination|target|existing (?:file|path))\b/i, /\b(?:overwrites?|replaces?)\b/i, "must not advertise overwrite behavior"],
+      [/(?:\b(?:Arashi|copy|symlinks?|materialization)\b[^.\n]{0,100}\b(?:overwrites?|replaces?)\b[^.\n]{0,80}\b(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b|\b(?:copy|symlinks?|materialization)\b[^.\n]{0,80}\b(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b[^.\n]{0,80}\b(?:overwritten|replaced)\b|\b(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b[^.\n]{0,80}\b(?:overwritten|replaced)\b[^.\n]{0,80}\b(?:during|by|for|through)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:overwrites?|replaces?|overwritten|replaced)\b/i, "must not advertise overwrite behavior"],
       [/\b(?:copy|symlinks?|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
       [/\bsymlink\b[^.\n]{0,160}\bfalls? back\b[^.\n]{0,120}\b(?:copy|hard[- ]?link|junction)\b/i, /\bfalls? back\b/i, "must not advertise native symlink action fallback"],
       [/\bmaterialization\b[^.\n]{0,120}\b(?:accepts?|uses?|reads?)\b[^.\n]{0,120}\bexternal sources?\b/i, /\b(?:accepts?|uses?|reads?)\b/i, "must not advertise external materialization sources"],
@@ -125,7 +125,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
       const elidedMaterializationAction =
         !explicitMaterialization &&
         materializationContext &&
-        /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not\s+)?(?:supports?|supported|accepts?|accepted|allows?|allowed|expands?|expanded|uses?|used)\b/i.test(
+        /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not\s+)?(?:supports?|supported|accepts?|accepted|allows?|allowed|expands?|expanded|uses?|used|overwrites?|replaces?)\b/i.test(
           rawClause,
         );
       const elidedContainmentAction =
@@ -134,19 +134,32 @@ function checkContradictions(relativePath: string, content: string, found: strin
         /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:can|may|could|might|will|would|should|must|is|are)\s+not\s+)?(?:be\s+)?(?:outside|beyond|escapes?|leaves?)\b/i.test(
           rawClause,
         );
+      const elidedPassiveOverwrite =
+        !explicitMaterialization &&
+        materializationContext &&
+        /^\s*(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b[^.\n]{0,80}\b(?:(?:can|may|could|might|will|would|should|must)\s+be\s+)?(?:overwritten|replaced)\b/i.test(
+          rawClause,
+        );
       const clause = elidedContainmentAction
         ? `materialization destinations ${rawClause}`
-        : elidedMaterializationAction
+        : elidedMaterializationAction || elidedPassiveOverwrite
           ? `materialization ${rawClause}`
           : rawClause;
       if (explicitMaterialization) materializationContext = true;
-      if (/\b(?:lifecycle\s+)?hooks?\b/i.test(rawClause)) materializationContext = false;
+      const lifecycleHookContext = /\b(?:lifecycle\s+)?hooks?\b/i.test(rawClause);
+      if (lifecycleHookContext) materializationContext = false;
       for (const [pattern, actionPattern, message] of claims) {
         const globalPattern = new RegExp(pattern.source, `${pattern.flags}g`);
         for (const match of clause.matchAll(globalPattern)) {
           if (match.index === undefined) continue;
           const action = actionPattern.exec(match[0]);
           const actionIndex = match.index + (action?.index ?? 0);
+          if (
+            message === "must not advertise overwrite behavior" &&
+            isLifecycleHookOwnedAction(clause, actionIndex)
+          ) {
+            continue;
+          }
           if (!isNegated(clause, actionIndex)) {
             found.push(`${relativePath} ${message}`);
           }
@@ -154,6 +167,18 @@ function checkContradictions(relativePath: string, content: string, found: strin
       }
     }
   }
+}
+
+function isLifecycleHookOwnedAction(statement: string, actionIndex: number): boolean {
+  const ownerPrefix = statement.slice(0, actionIndex);
+  return (
+    /^\s*(?:(?:before|after)\s+materialization\b[^,;.]*[, ]+)?(?:lifecycle\s+)?hooks?\b[^.;]{0,160}$/i.test(
+      ownerPrefix,
+    ) ||
+    /\b(?:before|after)\s+(?:lifecycle\s+)?hooks?\s+(?:(?:can|may|could|might|will|would|should|must)\s+)?$/i.test(
+      ownerPrefix,
+    )
+  );
 }
 
 function isNegated(statement: string, actionIndex: number): boolean {
@@ -222,6 +247,13 @@ function runControlledGuidanceSelfTest(): void {
     "--no-hooks does not disable materialization.",
     "Missing sources are skipped.",
     "Arashi never overwrites an existing destination.",
+    "Materialization does not overwrite existing destinations.",
+    "Existing destinations aren’t replaced during materialization.",
+    "Lifecycle hooks may overwrite their own generated destinations.",
+    "Lifecycle hooks that run after materialization may overwrite their own generated destinations.",
+    "Materialization runs before lifecycle hooks overwrite their own generated destinations.",
+    "Materialization runs after lifecycle hooks overwrite their own generated destinations.",
+    "Materialization runs before lifecycle hooks may replace their own generated targets.",
     "Every destination must remain inside the worktree.",
     "Materialization does not fall back to another source checkout or repository.",
     "A native symlink fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback.",
@@ -270,6 +302,15 @@ function runControlledGuidanceSelfTest(): void {
     ["Standalone mode is supported for materialization.", /configured-only/],
     ["--no-hooks disables copy and symlink materialization.", /--no-hooks independent/],
     ["Arashi overwrites an existing destination.", /overwrite behavior/],
+    ["Materialization overwrites existing destinations.", /overwrite behavior/],
+    ["Existing destinations are overwritten during materialization.", /overwrite behavior/],
+    ["Existing targets can be replaced by copy materialization.", /overwrite behavior/],
+    ["Materialization does not overwrite destinations, but overwrites destinations.", /overwrite behavior/],
+    ["Materialization overwrites destinations, and replaces targets.", /overwrite behavior/, 2],
+    ["Materialization does not overwrite existing destinations and existing targets are replaced.", /overwrite behavior/],
+    ["Materialization overwrites destinations and existing targets are replaced.", /overwrite behavior/, 2],
+    ["Materialization overwrites existing destinations before lifecycle hooks run.", /overwrite behavior/],
+    ["Materialization replaces existing targets after lifecycle hooks finish.", /overwrite behavior/],
     ["Copy materialization falls back to another source checkout.", /source fallback/],
     ["On Windows, a rejected native symlink falls back to a junction.", /native symlink action fallback/],
     ["Materialization accepts external sources when configured.", /external materialization sources/],
