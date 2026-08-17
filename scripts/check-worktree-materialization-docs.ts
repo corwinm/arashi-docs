@@ -104,7 +104,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const clauses = statement.split(
-      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+(?:also\s+)?)?|\s+(?:and|or)\s+(?:also\s+)?(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond|overwrites?|replaces?|destinations?|targets?|files?|paths?|existing|missing|fails?|aborts?|aborted|stops?|prevents?|fatal)\b)/i,
+      /\b(?:as well as|even though|even when|even if|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+(?:also\s+)?)?|\s+(?:and|or)\s+(?:also\s+)?(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond|overwrites?|replaces?|destinations?|targets?|files?|paths?|existing|missing|fails?|aborts?|aborted|stops?|prevents?|fatal)\b)/i,
     );
     const claims: Array<[RegExp, RegExp, string]> = [
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded|uses?|used)\b/i, "must not advertise glob support"],
@@ -353,6 +353,8 @@ function runControlledGuidanceSelfTest(): void {
     ["Copy entries do not support globs, but symlink entries support globs.", /glob support/],
     ["Although copy entries do not support globs, symlink entries support globs.", /glob support/],
     ["Copy entries do not support globs although symlink entries support globs.", /glob support/],
+    ["Copy entries do not support globs even when symlink entries support globs.", /glob support/],
+    ["Copy entries do not support globs even if symlink entries support globs.", /glob support/],
     ["Copy entries do not support globs because symlink entries support globs.", /glob support/],
     ["Copy entries support globs as well as symlink entries accept globs.", /glob support/, 2],
     ["Copy entries do not support globs, whereas symlink entries support globs.", /glob support/],
