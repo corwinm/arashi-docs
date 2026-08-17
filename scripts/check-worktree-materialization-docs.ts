@@ -104,12 +104,14 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const clauses = statement.split(
-      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must)\b)/i,
+      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+)?|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond)\b)/i,
     );
     const claims: Array<[RegExp, RegExp, string]> = [
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded|uses?|used)\b/i, "must not advertise glob support"],
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|allows?|accepts?|uses?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b|\b(?:supports?|allows?|accepts?|uses?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:supported|allowed|accepted|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|allows?|allowed|accepts?|accepted|uses?|used)\b/i, "must not advertise path remapping"],
       [/(?:\bstandalone(?: mode)?\b[^.\n]{0,100}\b(?:supports?|uses?|applies?|materializes?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b|\bstandalone(?: mode)?\b[^.\n]{0,60}\b(?:copy|symlinks?|materialization)\b[^.\n]{0,40}\b(?:is|are)\s+(?:supported|available|applied|materialized)\b|\bstandalone(?: mode)?\b[^.\n]{0,40}\b(?:is|are)\s+(?:supported|available|applied|materialized)\b[^.\n]{0,40}\b(?:for|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:copy|symlink|materialization)(?:\s+entries?)?\b[^.\n]{0,80}\b(?:supported|available|applied|materialized)\b[^.\n]{0,60}\b(?:in|by|for)\s+standalone(?: mode)?\b)/i, /\b(?:supports?|supported|available|uses?|applies?|applied|materializes?|materialized)\b/i, "must keep materialization configured-only"],
+      [/(?:\b(?:copy|symlinks?|materialization)\s+destinations?\b[^.\n]{0,80}\b(?:outside|beyond)\b[^.\n]{0,50}\b(?:new\s+)?worktree\b|\b(?:copy|symlinks?|materialization)\s+destinations?\b[^.\n]{0,80}\b(?:escapes?|leaves?)\b[^.\n]{0,50}\b(?:new\s+)?worktree\b|\bdestinations?\b[^.\n]{0,40}\b(?:outside|beyond)\b[^.\n]{0,40}\b(?:new\s+)?worktree\b[^.\n]{0,50}\b(?:supported|allowed|used)\b[^.\n]{0,50}\b(?:copy|symlinks?|materialization)\b)/i, /\b(?:outside|beyond|escapes?|leaves?|supported|allowed|used)\b/i, "must preserve destination containment"],
+      [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,80}\b(?:supports?|accepts?|allows?|uses?)\b[^.\n]{0,50}\b(?:absolute paths?|parent traversal(?: paths?)?)\b|\b(?:absolute paths?|parent traversal(?: paths?)?)\b[^.\n]{0,50}\b(?:supported|accepted|allowed|used)\b[^.\n]{0,50}\b(?:by|for|in)\s+(?:copy|symlinks?|materialization)(?:\s+entries)?\b)/i, /\b(?:supports?|supported|accepts?|accepted|allows?|allowed|uses?|used)\b/i, "must preserve destination containment"],
       [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
       [/\b(?:overwrites?|replaces?)\b[^.\n]{0,100}\b(?:destination|target|existing (?:file|path))\b/i, /\b(?:overwrites?|replaces?)\b/i, "must not advertise overwrite behavior"],
       [/\b(?:copy|symlinks?|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
@@ -126,7 +128,17 @@ function checkContradictions(relativePath: string, content: string, found: strin
         /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not\s+)?(?:supports?|supported|accepts?|accepted|allows?|allowed|expands?|expanded|uses?|used)\b/i.test(
           rawClause,
         );
-      const clause = elidedMaterializationAction ? `materialization ${rawClause}` : rawClause;
+      const elidedContainmentAction =
+        !explicitMaterialization &&
+        materializationContext &&
+        /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:can|may|could|might|will|would|should|must|is|are)\s+not\s+)?(?:be\s+)?(?:outside|beyond|escapes?|leaves?)\b/i.test(
+          rawClause,
+        );
+      const clause = elidedContainmentAction
+        ? `materialization destinations ${rawClause}`
+        : elidedMaterializationAction
+          ? `materialization ${rawClause}`
+          : rawClause;
       if (explicitMaterialization) materializationContext = true;
       if (/\b(?:lifecycle\s+)?hooks?\b/i.test(rawClause)) materializationContext = false;
       for (const [pattern, actionPattern, message] of claims) {
@@ -199,6 +211,12 @@ function runControlledGuidanceSelfTest(): void {
     "Copy entries don't support globs, and symlink entries won’t accept globs.",
     "Copy entries cannot use globs, and symlink entries can’t use globs.",
     "Copy entries may not use globs.",
+    "Materialization destinations may not be outside the new worktree.",
+    "Copy destinations cannot escape the new worktree.",
+    "Copy entries may not use absolute paths or parent traversal.",
+    "Absolute paths cannot be used by copy entries.",
+    "Parent traversal paths aren’t accepted by symlink entries.",
+    "Lifecycle hook destinations may be outside the new worktree.",
     "Although copy entries do not support globs, lifecycle hooks support globs.",
     "Ordering is pre-create, copy, symlink, post-create.",
     "--no-hooks does not disable materialization.",
@@ -221,6 +239,19 @@ function runControlledGuidanceSelfTest(): void {
     ["Copy entries may use globs.", /glob support/],
     ["Globs can be used in copy entries.", /glob support/],
     ["Copy entries can use destination mapping.", /path remapping/],
+    ["Materialization destinations may be outside the new worktree.", /destination containment/],
+    ["Copy destinations can escape the new worktree.", /destination containment/],
+    ["Destinations outside the new worktree are supported for materialization.", /destination containment/],
+    ["Copy entries may use absolute paths.", /destination containment/],
+    ["Symlink entries can accept parent traversal paths.", /destination containment/],
+    ["Absolute paths can be used by copy entries.", /destination containment/],
+    ["Parent traversal paths are accepted by symlink entries.", /destination containment/],
+    ["Copy destinations cannot escape the new worktree, but can escape the new worktree.", /destination containment/],
+    ["Copy destinations may not be outside the new worktree, but may be outside the new worktree.", /destination containment/],
+    ["Copy destinations can escape the new worktree and can be outside the new worktree.", /destination containment/, 2],
+    ["Copy destinations escape the new worktree and leave the new worktree.", /destination containment/, 2],
+    ["Copy destinations escape the new worktree, and leave the new worktree.", /destination containment/, 2],
+    ["Copy destinations can escape the new worktree, and can be outside the new worktree.", /destination containment/, 2],
     ["Copy entries do not support globs, but symlink entries support globs.", /glob support/],
     ["Although copy entries do not support globs, symlink entries support globs.", /glob support/],
     ["Copy entries do not support globs although symlink entries support globs.", /glob support/],
