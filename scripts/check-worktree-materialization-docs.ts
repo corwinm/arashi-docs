@@ -104,7 +104,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const clauses = statement.split(
-      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+)?|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond|overwrites?|replaces?|destinations?|targets?|files?|paths?|existing)\b)/i,
+      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*(?:(?:and|or)\s+(?:also\s+)?)?|\s+(?:and|or)\s+(?:also\s+)?(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?|uses?|can|may|could|might|will|would|should|must|escapes?|leaves?|outside|beyond|overwrites?|replaces?|destinations?|targets?|files?|paths?|existing|missing|fails?|aborts?|aborted|stops?|prevents?|fatal)\b)/i,
     );
     const claims: Array<[RegExp, RegExp, string]> = [
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?|uses?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded|used)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded|uses?|used)\b/i, "must not advertise glob support"],
@@ -113,6 +113,7 @@ function checkContradictions(relativePath: string, content: string, found: strin
       [/(?:\b(?:copy|symlinks?|materialization)\s+destinations?\b[^.\n]{0,80}\b(?:outside|beyond)\b[^.\n]{0,50}\b(?:new\s+)?worktree\b|\b(?:copy|symlinks?|materialization)\s+destinations?\b[^.\n]{0,80}\b(?:escapes?|leaves?)\b[^.\n]{0,50}\b(?:new\s+)?worktree\b|\bdestinations?\b[^.\n]{0,40}\b(?:outside|beyond)\b[^.\n]{0,40}\b(?:new\s+)?worktree\b[^.\n]{0,50}\b(?:supported|allowed|used)\b[^.\n]{0,50}\b(?:copy|symlinks?|materialization)\b)/i, /\b(?:outside|beyond|escapes?|leaves?|supported|allowed|used)\b/i, "must preserve destination containment"],
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,80}\b(?:supports?|accepts?|allows?|uses?)\b[^.\n]{0,50}\b(?:absolute paths?|parent traversal(?: paths?)?)\b|\b(?:absolute paths?|parent traversal(?: paths?)?)\b[^.\n]{0,50}\b(?:supported|accepted|allowed|used)\b[^.\n]{0,50}\b(?:by|for|in)\s+(?:copy|symlinks?|materialization)(?:\s+entries)?\b)/i, /\b(?:supports?|supported|accepts?|accepted|allows?|allowed|uses?|used)\b/i, "must preserve destination containment"],
       [/--no-hooks[^.\n]{0,120}\b(?:disables?|skips?|prevents?)\b[^.\n]{0,80}\b(?:copy|symlinks?|materialization)\b/i, /\b(?:disables?|skips?|prevents?)\b/i, "must keep --no-hooks independent from materialization"],
+      [/(?:\bmissing\s+(?:(?:copy|symlinks?|materialization|lifecycle[ -]hooks?)\s+)?sources?\b[^.\n]{0,100}\b(?:fails?|aborts?|aborted|stops?|prevents?|fatal)\b|\b(?:(?:copy|symlinks?|materialization|lifecycle[ -]hooks?)\s+)?sources?\b[^.\n]{0,40}\bmissing\b[^.\n]{0,100}\b(?:fails?|aborts?|aborted|stops?|prevents?|fatal)\b|\b(?:create|creation|worktree(?: creation)?)\b[^.\n]{0,100}\b(?:fails?|aborts?|aborted|stops?|prevented|fatal)\b[^.\n]{0,100}\b(?:(?:copy|symlinks?|materialization|lifecycle[ -]hooks?)\s+)?sources?\b[^.\n]{0,30}\bmissing\b|\b(?:create|creation|worktree(?: creation)?)\b[^.\n]{0,100}\b(?:fails?|aborts?|aborted|stops?|prevented)\b[^.\n]{0,100}\bmissing\s+(?:(?:copy|symlinks?|materialization|lifecycle[ -]hooks?)\s+)?sources?\b)/i, /\b(?:fails?|aborts?|aborted|stops?|prevents?|prevented|fatal)\b/i, "must keep missing sources nonfatal"],
       [/(?:\b(?:Arashi|copy|symlinks?|materialization)\b[^.\n]{0,100}\b(?:overwrites?|replaces?)\b[^.\n]{0,80}\b(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b|\b(?:copy|symlinks?|materialization)\b[^.\n]{0,80}\b(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b[^.\n]{0,80}\b(?:overwritten|replaced)\b|\b(?:existing\s+)?(?:destinations?|targets?|files?|paths?)\b[^.\n]{0,80}\b(?:overwritten|replaced)\b[^.\n]{0,80}\b(?:during|by|for|through)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:overwrites?|replaces?|overwritten|replaced)\b/i, "must not advertise overwrite behavior"],
       [/\b(?:copy|symlinks?|materialization)\b[^.\n]{0,120}\b(?:falls? back|fallback)\b[^.\n]{0,120}\b(?:source|checkout|repository)\b/i, /\b(?:falls? back|fallback)\b/i, "must not advertise source fallback"],
       [/\bsymlink\b[^.\n]{0,160}\bfalls? back\b[^.\n]{0,120}\b(?:copy|hard[- ]?link|junction)\b/i, /\bfalls? back\b/i, "must not advertise native symlink action fallback"],
@@ -120,6 +121,8 @@ function checkContradictions(relativePath: string, content: string, found: strin
       [/\brepository pre-create\b[^.\n]{0,100}\bpost-materialization\b/i, /\bpost-materialization\b/i, "must not use ambiguous pre-create lifecycle wording"],
     ];
     let materializationContext = false;
+    let missingSourceContext = false;
+    let missingSourceHookOwned = false;
     for (const rawClause of clauses) {
       const explicitMaterialization = /\b(?:copy|symlinks?|materialization)\b/i.test(rawClause);
       const elidedMaterializationAction =
@@ -134,6 +137,16 @@ function checkContradictions(relativePath: string, content: string, found: strin
         /^\s*(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:can|may|could|might|will|would|should|must|is|are)\s+not\s+)?(?:be\s+)?(?:outside|beyond|escapes?|leaves?)\b/i.test(
           rawClause,
         );
+      const explicitMissingSource =
+        /\bmissing\s+(?:(?:copy|symlinks?|materialization|lifecycle[ -]hooks?)\s+)?sources?\b|\b(?:(?:copy|symlinks?|materialization|lifecycle[ -]hooks?)\s+)?sources?\b[^.\n]{0,30}\bmissing\b/i.test(
+          rawClause,
+        );
+      const elidedMissingSourceFailure =
+        !explicitMissingSource &&
+        missingSourceContext &&
+        /^\s*(?:(?:so|therefore|thus|consequently)\s+)?(?:(?:create|creation|worktree(?: creation)?)\s+)?(?:(?:can|may|could|might|will|would|should|must)\s+)?(?:(?:is|are|be)\s+)?(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not\s+)?(?:be\s+)?(?:fails?|aborts?|aborted|stops?|prevents?|prevented|fatal)\b/i.test(
+          rawClause,
+        );
       const elidedPassiveOverwrite =
         !explicitMaterialization &&
         materializationContext &&
@@ -142,10 +155,16 @@ function checkContradictions(relativePath: string, content: string, found: strin
         );
       const clause = elidedContainmentAction
         ? `materialization destinations ${rawClause}`
-        : elidedMaterializationAction || elidedPassiveOverwrite
-          ? `materialization ${rawClause}`
-          : rawClause;
+        : elidedMissingSourceFailure
+          ? `${missingSourceHookOwned ? "missing lifecycle hook sources" : "missing materialization sources"} ${rawClause}`
+          : elidedMaterializationAction || elidedPassiveOverwrite
+            ? `materialization ${rawClause}`
+            : rawClause;
       if (explicitMaterialization) materializationContext = true;
+      if (explicitMissingSource) {
+        missingSourceContext = true;
+        missingSourceHookOwned = /\blifecycle[ -]hooks?\b/i.test(rawClause);
+      }
       const lifecycleHookContext = /\b(?:lifecycle\s+)?hooks?\b/i.test(rawClause);
       if (lifecycleHookContext) materializationContext = false;
       for (const [pattern, actionPattern, message] of claims) {
@@ -155,8 +174,10 @@ function checkContradictions(relativePath: string, content: string, found: strin
           const action = actionPattern.exec(match[0]);
           const actionIndex = match.index + (action?.index ?? 0);
           if (
-            message === "must not advertise overwrite behavior" &&
-            isLifecycleHookOwnedAction(clause, actionIndex)
+            (message === "must not advertise overwrite behavior" &&
+              isLifecycleHookOwnedAction(clause, actionIndex)) ||
+            (message === "must keep missing sources nonfatal" &&
+              isLifecycleHookOwnedMissingSourceFailure(clause, actionIndex))
           ) {
             continue;
           }
@@ -167,6 +188,24 @@ function checkContradictions(relativePath: string, content: string, found: strin
       }
     }
   }
+}
+
+function isLifecycleHookOwnedMissingSourceFailure(
+  statement: string,
+  actionIndex: number,
+): boolean {
+  if (
+    /\bmissing\s+lifecycle[ -]hooks?\s+sources?\b|\blifecycle[ -]hooks?\s+sources?\b[^.\n]{0,30}\bmissing\b/i.test(
+      statement,
+    )
+  ) {
+    return true;
+  }
+  const ownerPrefix = statement.slice(0, actionIndex);
+  return (
+    /^\s*(?:lifecycle\s+)?hooks?\b[^.;]{0,160}$/i.test(ownerPrefix) ||
+    /\b(?:before|after)\s+(?:lifecycle\s+)?hooks?\b[^.;]{0,120}$/i.test(ownerPrefix)
+  );
 }
 
 function isLifecycleHookOwnedAction(statement: string, actionIndex: number): boolean {
@@ -182,8 +221,13 @@ function isLifecycleHookOwnedAction(statement: string, actionIndex: number): boo
 }
 
 function isNegated(statement: string, actionIndex: number): boolean {
-  const prefix = statement.slice(Math.max(0, actionIndex - 36), actionIndex);
-  if (/\b(?:not|never|cannot|[a-z]+n['’]t|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not)(?:\s+be)?\s*$/i.test(prefix)) {
+  const prefix = statement.slice(Math.max(0, actionIndex - 100), actionIndex);
+  if (
+    /\b(?:not|never|cannot|non[- ]?|[a-z]+n['’]t|(?:do|does|will|must|can|may|could|might|would|should|is|are)\s+not)(?:\s+be)?(?:\s+[a-z]+){0,8}\s*$/i.test(
+      prefix,
+    ) ||
+    /\bskipped\b[^.;]{0,50}\b(?:rather than|instead of)\b[^.;]{0,50}$/i.test(prefix)
+  ) {
     return true;
   }
   return /\bneither\b[^.\n]{0,100}\b(?:copy|symlinks?|materialization)\b[^.\n]{0,60}$/i.test(
@@ -246,6 +290,17 @@ function runControlledGuidanceSelfTest(): void {
     "Ordering is pre-create, copy, symlink, post-create.",
     "--no-hooks does not disable materialization.",
     "Missing sources are skipped.",
+    "Missing sources are skipped with a visible non-fatal outcome.",
+    "Missing materialization sources do not fail create.",
+    "Missing copy sources cannot abort creation.",
+    "Missing symlink sources are not fatal.",
+    "Missing sources do not cause create to fail.",
+    "Missing copy sources should not make create fail.",
+    "Missing sources are skipped rather than causing create to fail.",
+    "Lifecycle hooks cause create to fail when their source is missing.",
+    "Materialization runs before lifecycle hooks cause create to fail when their source is missing.",
+    "Missing lifecycle hook sources may fail create and abort creation.",
+    "Missing lifecycle hook sources may fail create.",
     "Arashi never overwrites an existing destination.",
     "Materialization does not overwrite existing destinations.",
     "Existing destinations aren’t replaced during materialization.",
@@ -301,6 +356,22 @@ function runControlledGuidanceSelfTest(): void {
     ["Standalone materialization is supported.", /configured-only/],
     ["Standalone mode is supported for materialization.", /configured-only/],
     ["--no-hooks disables copy and symlink materialization.", /--no-hooks independent/],
+    ["Missing materialization sources fail create immediately.", /missing sources nonfatal/],
+    ["Missing copy sources abort creation.", /missing sources nonfatal/],
+    ["Copy sources are missing, so create fails.", /missing sources nonfatal/],
+    ["Copy sources are missing so create fails.", /missing sources nonfatal/],
+    ["Copy sources are missing, so creation is aborted.", /missing sources nonfatal/],
+    ["Copy sources are missing, so creation can be aborted.", /missing sources nonfatal/],
+    ["Copy sources are missing; therefore create fails.", /missing sources nonfatal/],
+    ["Missing lifecycle hook sources may fail create and missing materialization sources abort creation.", /missing sources nonfatal/],
+    ["Missing materialization sources fail create and missing lifecycle hook sources may abort creation.", /missing sources nonfatal/],
+    ["A missing symlink source can fail worktree creation.", /missing sources nonfatal/],
+    ["Missing materialization sources are fatal.", /missing sources nonfatal/],
+    ["Create is aborted by a missing copy source.", /missing sources nonfatal/],
+    ["Worktree creation fails when materialization sources are missing.", /missing sources nonfatal/],
+    ["Missing copy sources fail create and abort creation.", /missing sources nonfatal/, 2],
+    ["Missing copy sources fail create and also abort creation.", /missing sources nonfatal/, 2],
+    ["Missing copy sources do not fail create, but abort creation.", /missing sources nonfatal/],
     ["Arashi overwrites an existing destination.", /overwrite behavior/],
     ["Materialization overwrites existing destinations.", /overwrite behavior/],
     ["Existing destinations are overwritten during materialization.", /overwrite behavior/],
