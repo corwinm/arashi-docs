@@ -19,7 +19,7 @@ Clean up feature branches and worktrees when work is done or abandoned.
 ## Usage
 
 ```bash
-arashi remove [target] [options]
+aw remove [target] [options]
 ```
 
 ## Key Options
@@ -37,25 +37,25 @@ arashi remove [target] [options]
 
 ```bash
 # Remove a branch across managed repositories
-arashi remove feature-login
+aw remove feature-login
 
 # Interactive selection mode
-arashi remove
+aw remove
 
 # Remove by path
-arashi remove ./repos/api/feature-login --path
+aw remove ./repos/api/feature-login --path
 
 # Preview the removal plan without changing files or branches
-arashi remove feature-login --dry-run
+aw remove feature-login --dry-run
 
 # Emit a machine-readable non-mutating plan for agents and scripts
-arashi remove feature-login --dry-run --json
+aw remove feature-login --dry-run --json
 
 # Remove non-interactively and emit JSON
-arashi remove feature-login --force --json
+aw remove feature-login --force --json
 
 # Execute remove hooks but prevent them from reading the terminal
-arashi remove feature-login --no-hook-input
+aw remove feature-login --no-hook-input
 ```
 
 ## Notes
@@ -64,8 +64,8 @@ arashi remove feature-login --no-hook-input
 - If both `--keep-worktrees` and `--keep-branches` are set, no operation is performed.
 - Dirty worktrees require explicit confirmation unless `--no-check-dirty` is used.
 - `--dry-run` suppresses confirmation prompts and reports the planned worktree removals, branch deletions, dirty-worktree blockers, skipped main worktrees, missing branches, and configured remove hooks without mutating anything.
-- `arashi remove --dry-run --json` returns a single JSON envelope whose `data` includes `dryRun: true`, pending operations, effective options, blockers, and hook previews for automation.
-- Stale Git-prunable worktree records are excluded from `remove`; use `arashi prune` to clean stale metadata.
+- `aw remove --dry-run --json` returns a single JSON envelope whose `data` includes `dryRun: true`, pending operations, effective options, blockers, and hook previews for automation.
+- Stale Git-prunable worktree records are excluded from `remove`; use `aw prune` to clean stale metadata.
 - JSON mode does not prompt; pass explicit safety flags such as `--force` or `--no-check-dirty` when appropriate.
 - A normal terminal run exposes `ARASHI_HOOK_INPUT=tty`; `--no-hook-input` or JSON uses `disabled`, and non-TTY automation uses `unavailable`. Disabled and unavailable hooks receive immediate EOF. `--no-hook-input` does not skip hooks or confirmations; hook failures and outcomes remain active.
 - `--no-hooks` is create-only and remove does not provide it; `--no-hook-input` is shared by create and remove.
@@ -73,8 +73,8 @@ arashi remove feature-login --no-hook-input
 
 ## Agent Notes
 
-- Treat `remove` as destructive: confirm the target branch/worktree and inspect `arashi status` before running it.
-- Prefer `arashi remove <branch> --force --json` only after the user has asked for cleanup and the relevant work is merged or intentionally abandoned.
+- Treat `remove` as destructive: confirm the target branch/worktree and inspect `aw status` before running it.
+- Prefer `aw remove <branch> --force --json` only after the user has asked for cleanup and the relevant work is merged or intentionally abandoned.
 - Do not bypass dirty checks unless the user explicitly accepts losing or preserving those changes another way.
 
 ## Lifecycle Hooks

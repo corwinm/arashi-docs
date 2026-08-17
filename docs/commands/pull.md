@@ -21,7 +21,7 @@ Update repositories in your workspace without entering each one manually.
 ## Usage
 
 ```bash
-arashi pull [options]
+aw pull [options]
 ```
 
 ## Key Options
@@ -35,19 +35,19 @@ arashi pull [options]
 
 ```bash
 # Pull all eligible repositories
-arashi pull
+aw pull
 
 # Pull selected repositories only
-arashi pull --only api --only web
+aw pull --only api --only web
 
 # Pull infrastructure repositories only
-arashi pull --group infra
+aw pull --group infra
 
 # Pull with detailed command output
-arashi pull --verbose
+aw pull --verbose
 
 # Pull selected repositories and emit JSON
-arashi pull --only api --json
+aw pull --only api --json
 ```
 
 ## Notes
@@ -56,7 +56,7 @@ arashi pull --only api --json
 - `--group` targets configured semantic sets; with `--only`, it narrows the explicit repository selection by intersection.
 - The parent repository follows the original `--only` and `--group` filters. It runs first only when those filters select it; `pull` does not pull the parent solely to refresh configuration.
 - After a selected parent pull succeeds, Arashi reloads `.arashi/config.json`, reapplies the original filters to the post-pull repositories and groups, reconciles the resulting `reposDir` and `worktreesDir`, and then pulls the selected children. An unfiltered run uses all children in the reloaded config.
-- If an original name or group filter no longer resolves after reload, `pull` stops before remaining child pulls with a structured selection failure. A newly configured child that is absent locally is not cloned implicitly; it is skipped with `arashi clone` guidance.
+- If an original name or group filter no longer resolves after reload, `pull` stops before remaining child pulls with a structured selection failure. A newly configured child that is absent locally is not cloned implicitly; it is skipped with `aw clone` guidance.
 - If the parent is excluded, or its pull fails and rolls back, child selection and reconciliation continue from the pre-pull configuration snapshot.
 - Reconciliation honors effective tracked, repository-local, or global ignore rules. Missing safe rules use the clone's stored scope or the repository-local default; scope `none` leaves files unchanged and reports unignored paths. Arashi never writes global Git configuration.
 - If a later child fails after a new parent configuration remains active, the managed ignore state required by that configuration is retained. State needed only by an abandoned, rolled-back parent update is restored.
@@ -65,14 +65,14 @@ arashi pull --only api --json
 
 ## Agent Notes
 
-- Use `arashi pull` before starting a new coordinated worktree when `arashi status` shows repositories are behind.
+- Use `aw pull` before starting a new coordinated worktree when `aw status` shows repositories are behind.
 - Prefer `--group <group>` when the user has scoped work to a known semantic set, or `--only <repo>` when the work is limited to one repository.
 - Do not assume child selection is fixed when the selected parent can pull a changed config; inspect the post-reload structured results.
-- Re-run `arashi status` after pulling to confirm the workspace is ready for edits.
+- Re-run `aw status` after pulling to confirm the workspace is ready for edits.
 
 ## Related Commands
 
-`pull` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`pull` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
 
 - [push](/commands/push/)
 - [sync](/commands/sync/)

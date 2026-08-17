@@ -42,9 +42,9 @@ const canonicalRequirements = [
   "Terminal.app",
   "| Terminal.app | New window | Unsupported | No supported true-tab automation |",
   "press Command-T",
-  "`arashi switch --cd`",
+  "`aw switch --cd`",
   "requires active Arashi shell integration",
-  "`arashi switch --launch --ignore-configured-launcher`",
+  "`aw switch --launch --ignore-configured-launcher`",
   "when automatic launcher resolution selects Terminal.app",
   "iTerm2",
   "| macOS Ghostty older than 1.3 or missing supported-version evidence | New window | Unsupported | No supported tab API |",
@@ -164,7 +164,7 @@ const generatedRequirements: Requirement[] = [
   },
 ];
 
-const invalidPathSubstitution = 'cd "$(arashi switch --launch --ignore-configured-launcher)"';
+const invalidPathSubstitution = 'cd "$(aw switch --launch --ignore-configured-launcher)"';
 
 const root = path.resolve(process.cwd());
 const errors = checkRoot(root);
@@ -338,7 +338,7 @@ function runDeliberateMismatchSelfTest(sourceRoot: string): void {
 
     writeFileSync(
       workflowPath,
-      `${valid}\n\nWithout shell integration, run \`cd "$(arashi switch --launch --ignore-configured-launcher)"\`.\n`,
+      `${valid}\n\nWithout shell integration, run \`cd "$(aw switch --launch --ignore-configured-launcher)"\`.\n`,
     );
     const invalidPathSubstitutionErrors = checkRoot(fixtureRoot);
     if (

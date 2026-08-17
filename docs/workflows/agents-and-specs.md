@@ -13,14 +13,14 @@ Use this guide when you want an agent to work safely inside an Arashi meta-repo.
 
 If you are an agent entering an Arashi-managed workspace:
 
-1. Start in the meta-repo root and run `arashi doctor` as a safe, non-mutating workspace-health diagnostic.
+1. Start in the meta-repo root and run `aw doctor` as a safe, non-mutating workspace-health diagnostic.
 2. Read the root `AGENTS.md` or equivalent workspace instructions, then read the owning child repo's instructions before editing.
 3. Identify which child repo owns the implementation.
 4. Keep implementation, tests, and repo-specific docs in `repos/<project>/`.
 5. Keep shared context, OpenSpec proposals, plans, and cross-repo coordination in the meta-repo.
-6. Inspect detailed repository state with `arashi status` when `doctor` findings or the task require it.
+6. Inspect detailed repository state with `aw status` when `doctor` findings or the task require it.
 7. Validate every affected repo before review or handoff.
-8. Generate an `arashi handoff` report when pausing, switching agents, or leaving dirty work.
+8. Generate an `aw handoff` report when pausing, switching agents, or leaving dirty work.
 9. Use focused PRs and cross-link related PRs when work spans repositories.
 
 ## Core Idea
@@ -88,18 +88,18 @@ Then add smaller `AGENTS.md` files inside the child repos so the agent can pick 
 3. have the agent implement the change in the child repo
 4. update related docs or coordination files in the meta-repo when needed
 5. validate each affected repo before review or handoff
-6. run `arashi handoff` with links, validation evidence, remaining work, risks, and next commands before pausing or transferring context
+6. run `aw handoff` with links, validation evidence, remaining work, risks, and next commands before pausing or transferring context
 
 For multi-repo work, do not try to make one commit span the whole workspace. Commit and open PRs from each affected repository, then cross-link those PRs so reviewers can follow the complete change.
 
 ## Handoff Reports
 
-Use `arashi handoff` to create a concise report when an agent is about to pause, switch with another agent, request review, or leave a dirty coordinated workspace. The command is read-only: it gathers current Arashi status and renders Markdown by default, but it does not run validations, write files, stage changes, commit, push, or delete worktrees.
+Use `aw handoff` to create a concise report when an agent is about to pause, switch with another agent, request review, or leave a dirty coordinated workspace. The command is read-only: it gathers current Arashi status and renders Markdown by default, but it does not run validations, write files, stage changes, commit, push, or delete worktrees.
 
 Include context Arashi cannot infer:
 
 ```bash
-arashi handoff \
+aw handoff \
   --link https://github.com/corwinm/arashi-arashi/issues/186 \
   --link https://github.com/corwinm/arashi/pull/123 \
   --validation "pnpm test — passed" \
@@ -111,7 +111,7 @@ arashi handoff \
 
 Use `--validation` only for commands and results that were actually run. If a check is pending or unverified, put it in `--todo` or `--risk` so the next worker does not mistake it for merge-ready evidence.
 
-Use `arashi handoff --json` when an agent or script needs to parse the report. JSON mode uses the standard single-document Arashi envelope and includes workspace metadata, current repository context, per-repository status records, supplied context arrays, warnings, and generated next-command hints.
+Use `aw handoff --json` when an agent or script needs to parse the report. JSON mode uses the standard single-document Arashi envelope and includes workspace metadata, current repository context, per-repository status records, supplied context arrays, warnings, and generated next-command hints.
 
 ## Specs Pair Well, But They Are Optional
 
@@ -132,23 +132,23 @@ Agents should prefer `--json` when they need to inspect Arashi state or make dec
 Good agent-facing commands include:
 
 ```bash
-arashi doctor --json
-arashi status --json
-arashi list --json
-arashi exec --json -- git status --short
-arashi handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
-arashi status --group docs --json
-arashi exec --only arashi-docs --json -- pnpm validate
-arashi exec --group agents --json -- pnpm validate
-arashi create feature-branch --no-launch --no-switch --json
-arashi clone --all --json
-arashi pull --group docs --json
-arashi setup --only api --json
+aw doctor --json
+aw status --json
+aw list --json
+aw exec --json -- git status --short
+aw handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
+aw status --group docs --json
+aw exec --only arashi-docs --json -- pnpm validate
+aw exec --group agents --json -- pnpm validate
+aw create feature-branch --no-launch --no-switch --json
+aw clone --all --json
+aw pull --group docs --json
+aw setup --only api --json
 ```
 
 In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text. See the [JSON automation reference](/workflows/json-automation/) for the full envelope contract, stdout/stderr guarantees, and command support matrix.
 
-Use `arashi doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
+Use `aw doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
 
 ## Managed Ignore Guidance For Agents
 
@@ -162,11 +162,11 @@ Treat the clone-local ignore scope as user intent:
 
 Explicit `tracked` and `none` values live in local Git configuration under `arashi.ignoreScope`, not shared `.arashi/config.json`. Do not copy that preference between clones or change it merely to silence a warning. Never create, edit, or unset global Git configuration or the user's global excludes file; Arashi may honor an existing effective global rule, but global Git state is read-only for this workflow.
 
-In JSON lifecycle results, inspect `managedIgnore` for effective sources, planned/applied rules, unsafe skips, warnings, and final changed/restored state. Do not assume a failed command removed reconciliation: partial success may retain rules needed by surviving repositories, worktrees, or pulled config. Use `arashi doctor --json` for non-mutating missing, stale, invalid-scope, and unsafe-path diagnostics.
+In JSON lifecycle results, inspect `managedIgnore` for effective sources, planned/applied rules, unsafe skips, warnings, and final changed/restored state. Do not assume a failed command removed reconciliation: partial success may retain rules needed by surviving repositories, worktrees, or pulled config. Use `aw doctor --json` for non-mutating missing, stale, invalid-scope, and unsafe-path diagnostics.
 
 This guidance applies to configured workspaces. It does not assume the separate configless discovery proposed in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
 
-Use `arashi exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer `--group <group>` for known semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`; use `--only <repos>` for one-off repository lists. For mutating, expensive, network-heavy, or long-running commands, always apply an explicit `--group` or `--only` filter unless the user asked for every managed repository. When both filters are supplied, `--group` intersects with and narrows `--only`.
+Use `aw exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer `--group <group>` for known semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`; use `--only <repos>` for one-off repository lists. For mutating, expensive, network-heavy, or long-running commands, always apply an explicit `--group` or `--only` filter unless the user asked for every managed repository. When both filters are supplied, `--group` intersects with and narrows `--only`.
 
 JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.
 
@@ -174,10 +174,10 @@ JSON mode is non-interactive. If a command would normally prompt, launch an edit
 
 Arashi supports intentionally partial coordinated worktrees when a task only needs some child repositories.
 
-- Use `arashi create <branch> --interactive` to choose child repositories while still creating the parent/meta worktree.
-- Default and short `arashi status` output hide omitted child repositories so partial worktrees do not look broken during everyday checks.
-- Use `arashi status --verbose` or `arashi status --json` when an agent needs to inspect every configured repository, including missing child repositories.
-- From inside a partial worktree, use `arashi clone` or `arashi clone --all --json` to add missing child repositories on the current branch.
+- Use `aw create <branch> --interactive` to choose child repositories while still creating the parent/meta worktree.
+- Default and short `aw status` output hide omitted child repositories so partial worktrees do not look broken during everyday checks.
+- Use `aw status --verbose` or `aw status --json` when an agent needs to inspect every configured repository, including missing child repositories.
+- From inside a partial worktree, use `aw clone` or `aw clone --all --json` to add missing child repositories on the current branch.
 
 ## Related References
 

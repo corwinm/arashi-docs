@@ -21,7 +21,7 @@ Set up a workspace so Arashi can track repositories and worktrees.
 ## Usage
 
 ```bash
-arashi init [options]
+aw init [options]
 ```
 
 ## Key Options
@@ -40,40 +40,40 @@ arashi init [options]
 
 ```bash
 # Standard initialization
-arashi init
+aw init
 
 # Share missing managed rules in the workspace-root .gitignore
-arashi init --ignore-scope tracked
+aw init --ignore-scope tracked
 
 # Manage ignore rules manually and receive warnings for unignored paths
-arashi init --ignore-scope none
+aw init --ignore-scope none
 
 # Reset an existing clone to the repository-local default without --force
-arashi init --ignore-scope local
+aw init --ignore-scope local
 
 # Run from a parent directory, then enter '.' at the prompt to initialize the current directory
-arashi init
+aw init
 
 # Run from a parent directory, then enter 'my-arashi-repo' at the prompt to create a child repo
-arashi init
+aw init
 
 # Use a custom repositories directory
-arashi init --repos-dir ../workspace-repos
+aw init --repos-dir ../workspace-repos
 
 # Use a custom worktree base directory
-arashi init --worktrees-dir ../workspace-worktrees
+aw init --worktrees-dir ../workspace-worktrees
 
 # Reinitialize safely and preview file changes
-arashi init --force --dry-run
+aw init --force --dry-run
 
 # Initialize and emit JSON for automation
-arashi init --json
+aw init --json
 
 # Use Arashi ad hoc in a project without persisted Arashi configuration
-arashi init --zero-config
+aw init --zero-config
 
 # Preview the standalone bootstrap as structured output
-arashi init --zero-config --dry-run --json
+aw init --zero-config --dry-run --json
 ```
 
 ## Notes
@@ -98,10 +98,10 @@ arashi init --zero-config --dry-run --json
 - Only normalized repository-relative subdirectories are safe to write. Repository root (`.`/`./`), absolute paths, and parent traversal (`../` variants) are reported and skipped.
 - Reconciliation updates only Arashi-owned ignore blocks and removes stale owned entries in the active writable scope. User-authored rules remain untouched; `none` freezes existing ignore content.
 - `--dry-run` includes planned scope, preference, and ignore changes without modifying them. JSON results expose effective sources, planned or applied rules, warnings, unsafe skips, and final changed/restored state under structured managed ignore data.
-- Prefer ordinary `arashi init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
+- Prefer ordinary `aw init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
 - `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It is an ad hoc path for otherwise-unconfigured projects and never writes tracked or global ignore state, `.arashi/`, hooks, or config.
 - Zero-config mode accepts `--dry-run`, `--verbose`, and `--json`; it rejects configured-init options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` before mutation.
-- Use the [Standalone Repository workflow](/workflows/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `arashi init`.
+- Use the [Standalone Repository workflow](/workflows/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
 
 ## Related Commands
 

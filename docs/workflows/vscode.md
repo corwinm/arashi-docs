@@ -16,7 +16,7 @@ Cursor and Kiro are VS Code forks, so the same editor-first workflow generally a
 Use the CLI when you are already in the terminal and want to open a specific worktree immediately.
 
 ```bash
-arashi switch --vscode feature-auth
+aw switch --vscode feature-auth
 ```
 
 - Best for editor-first workflows where the terminal is secondary.
@@ -56,7 +56,7 @@ Open **Preferences: Open Workspace Settings (JSON)** to add it, then reload the 
 
 ## Recommended Usage Pattern
 
-- Use `arashi switch --vscode <branch>` when you are already in the terminal and want VS Code to open a specific worktree immediately.
+- Use `aw switch --vscode <branch>` when you are already in the terminal and want VS Code to open a specific worktree immediately.
 - Use the extension when VS Code is your primary shell for day-to-day worktree management and you want a persistent worktree panel.
 - Set `arashi.binaryPath`, `arashi.workspaceRoot`, or `arashi.commandTimeoutMs` in VS Code settings when the editor should target a specific binary or workspace root.
 - Use `--cursor` or `--kiro` when you want the same VS Code-style workflow in those editors.

@@ -34,7 +34,7 @@ Do not paste raw `kitten @ ls` output into logs or issue reports. It can contain
 ## Switch and Reuse
 
 ```bash
-arashi switch feature-auth
+aw switch feature-auth
 ```
 
 When automatic launch is active, managed Kitty runs after integrated IDE detection and before parent-shell `cd`. Higher-precedence explicit or configured launchers remain authoritative, and tmux nested inside Kitty remains tmux.
@@ -50,7 +50,7 @@ Arashi serializes reuse-or-launch decisions for each worktree with a cross-proce
 Automatic post-create launch uses the same managed Kitty behavior:
 
 ```bash
-arashi create feature-auth --launch
+aw create feature-auth --launch
 ```
 
 Both configured and standalone creation route through the shared reuse-or-launch path when Kitty is automatically detected. If Kitty launch fails after creation, the created worktrees remain available; Arashi reports the launch failure separately instead of rolling back successful Git worktree creation.
@@ -63,7 +63,7 @@ In managed Kitty, `--tab` uses the exact identity-backed worktree tab. Unmanaged
 
 Managed Kitty sessions are live only. Arashi does not generate or update a persistent `.kitty-session` file, restore windows after Kitty exits, or configure layouts and startup commands.
 
-Arashi owns Git worktrees; Kitty owns its windows and sessions. `arashi remove` does not close Kitty windows or sessions and does not perform automatic cleanup. Close stale Kitty windows manually when you no longer need them.
+Arashi owns Git worktrees; Kitty owns its windows and sessions. `aw remove` does not close Kitty windows or sessions and does not perform automatic cleanup. Close stale Kitty windows manually when you no longer need them.
 
 ## Troubleshooting
 

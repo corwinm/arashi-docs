@@ -42,7 +42,7 @@ const requirements = new Map<string, string[]>([
   [
     "docs/workflows/standalone.md",
     [
-      "arashi create feature/FEAT-1234/docs --base feature/FEAT-1234",
+      "aw create feature/FEAT-1234/docs --base feature/FEAT-1234",
       "invocation-only",
       "does not read or persist `defaults.create.baseBranch`",
       "current `HEAD`",
@@ -113,7 +113,7 @@ const requirements = new Map<string, string[]>([
     [
       "Create base branches",
       "`defaults.create.baseBranch`",
-      "`arashi create <target> --base <branch>`",
+      "`aw create <target> --base <branch>`",
       "CLI > configuration > legacy behavior",
       "Standalone create base selection is CLI-only and invocation-only",
       "does not read or persist `defaults.create.baseBranch`",

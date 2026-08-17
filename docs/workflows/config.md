@@ -7,7 +7,7 @@ sidebar:
   order: 2
 ---
 
-Use this guide after `arashi init` when you want Arashi to create and switch worktrees in a repeatable way without repeating flags on every command.
+Use this guide after `aw init` when you want Arashi to create and switch worktrees in a repeatable way without repeating flags on every command.
 
 ## Managed Paths And Ignore Scope
 
@@ -18,18 +18,18 @@ The built-in ignore scope is `local`. Missing rules go to the common repository'
 Use `init` to choose or change the clone-local policy:
 
 ```bash
-arashi init --ignore-scope tracked # Write missing rules to the root .gitignore
-arashi init --ignore-scope none    # Report unignored paths without writing rules
-arashi init --ignore-scope local   # Restore the repository-local default
+aw init --ignore-scope tracked # Write missing rules to the root .gitignore
+aw init --ignore-scope none    # Report unignored paths without writing rules
+aw init --ignore-scope local   # Restore the repository-local default
 ```
 
 Only explicit non-default preferences are stored, under the clone-local Git key `arashi.ignoreScope`. They are deliberately absent from `.arashi/config.json`: `tracked` is a team-level content choice for the current clone, while `none` leaves ignore management to the user. Selecting `local` removes the key. Arashi can honor an existing global exclude rule, but it never writes global Git configuration.
 
 Reconciliation normalizes and deduplicates the two managed directories. It writes only safe repository-relative subdirectory rules and skips repository root, absolute paths, and parent traversal. Arashi updates only entries in its own managed block; matching user-authored rules are left alone. With `none`, even stale Arashi-owned entries are reported rather than changed.
 
-Run `arashi doctor` to inspect missing rules, stale Arashi-owned entries, unsafe paths, or an invalid stored scope without modifying anything. This configured lifecycle behavior is separate from the configless workspace discovery tracked in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
+Run `aw doctor` to inspect missing rules, stale Arashi-owned entries, unsafe paths, or an invalid stored scope without modifying anything. This configured lifecycle behavior is separate from the configless workspace discovery tracked in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
 
-From a linked parent worktree, `arashi add` keeps the canonical clone under the primary parent and creates the active child worktree on the matching branch. See the [add command reference](/commands/add/).
+From a linked parent worktree, `aw add` keeps the canonical clone under the primary parent and creates the active child worktree on the matching branch. See the [add command reference](/commands/add/).
 
 ## SSH Alias Portability
 
@@ -84,7 +84,7 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 
 Configured Herdr does not require the command to start inside a Herdr-managed pane, but the Herdr v0.7.4 CLI must be on `PATH` and able to reach a running default session/socket. `switch --launch` preserves a configured `sesh` or `herdr` launcher. `switch --ignore-configured-launcher` bypasses that named launcher while retaining its launch behavior, and `switch --launch --ignore-configured-launcher` requests generic automatic launch. `create --no-launch` suppresses configured post-create Herdr launch. Explicit `--herdr` remains authoritative.
 
-Install shell integration with `arashi shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
+Install shell integration with `aw shell install` if you want `defaults.switch.mode: "cd"` or `"auto"` to support parent-shell directory changes.
 
 ## Worktree file materialization
 
@@ -106,7 +106,7 @@ Each entry materializes at the same relative path in the new worktree, using the
 
 The API stays deliberately narrow: globs are not supported, path remapping is not supported, and standalone mode is not supported. Use [lifecycle hooks](/workflows/hooks/) when you need globs, remapping, external sources, interpolation, required entries, generated files, or conditional behavior.
 
-`arashi doctor` non-mutatively diagnoses configured materialization source availability and destination safety without reading file contents, running hooks, repairing state, or creating capability probes.
+`aw doctor` non-mutatively diagnoses configured materialization source availability and destination safety without reading file contents, running hooks, repairing state, or creating capability probes.
 
 ## Hook timeout
 
@@ -190,7 +190,7 @@ If `launchMode` and `launch_mode` are both present with equal values, Arashi col
 ## Suggested Setup Sequence
 
 1. Start with `defaults.create` and `defaults.switch` so the default behavior matches your team.
-2. Enable shell integration if you want `arashi switch --cd` behavior.
+2. Enable shell integration if you want `aw switch --cd` behavior.
 3. Add hooks after you confirm the create and switch flow you want to automate.
 4. Keep shared defaults in config and move environment-specific setup into hooks.
 
@@ -240,12 +240,12 @@ A repository can belong to more than one group when it serves multiple roles. Re
 Use `--group <group>` with repo-selecting commands to target a semantic set without enumerating repository names:
 
 ```bash
-arashi status --group docs
-arashi create feat/update-docs --group docs --no-launch --no-switch
-arashi exec --group agents -- pnpm validate
+aw status --group docs
+aw create feat/update-docs --group docs --no-launch --no-switch
+aw exec --group agents -- pnpm validate
 ```
 
-When `--group` and `--only` are supplied together, Arashi intersects the filters: `--group` narrows the explicit repository list instead of broadening it. For example, `arashi exec --only arashi,arashi-docs --group docs -- pnpm validate` runs only in `arashi-docs` if that is the only selected repository in the `docs` group. Unknown groups and valid filters that produce an empty intersection are reported as selection errors before mutating commands run.
+When `--group` and `--only` are supplied together, Arashi intersects the filters: `--group` narrows the explicit repository list instead of broadening it. For example, `aw exec --only arashi,arashi-docs --group docs -- pnpm validate` runs only in `arashi-docs` if that is the only selected repository in the `docs` group. Unknown groups and valid filters that produce an empty intersection are reported as selection errors before mutating commands run.
 
 ### Repeated and comma-separated selectors
 

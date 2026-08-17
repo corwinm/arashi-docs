@@ -21,7 +21,7 @@ Carry in-progress edits from one Arashi workspace into another after work starte
 ## Usage
 
 ```bash
-arashi move [options]
+aw move [options]
 ```
 
 ## Key Options
@@ -36,16 +36,16 @@ When `--from` is omitted, Arashi uses the current dirty workspace when it can. W
 
 ```bash
 # Move current workspace changes into a feature workspace
-arashi move --to feature-auth-refresh
+aw move --to feature-auth-refresh
 
 # Move changes between two named coordinated workspaces
-arashi move --from main --to feature-auth-refresh
+aw move --from main --to feature-auth-refresh
 
 # Use exact worktree paths when branch names are ambiguous
-arashi move --from /path/to/source --to /path/to/target
+aw move --from /path/to/source --to /path/to/target
 
 # Emit structured output for automation
-arashi move --from main --to feature-auth-refresh --json
+aw move --from main --to feature-auth-refresh --json
 ```
 
 ## Notes
@@ -54,12 +54,12 @@ arashi move --from main --to feature-auth-refresh --json
 - Target repositories must be clean before receiving changes.
 - Clean source repositories are skipped.
 - If target apply fails, Arashi attempts to restore the source and reports a recovery command when manual recovery is needed.
-- `arashi create` can suggest this command when it detects uncommitted changes in the source workspace. Use `arashi create <branch> --move-changes` to move compatible changes immediately after creating the target worktree.
+- `aw create` can suggest this command when it detects uncommitted changes in the source workspace. Use `aw create <branch> --move-changes` to move compatible changes immediately after creating the target worktree.
 
 ## Agent Notes
 
-- Prefer `arashi create <branch> --move-changes --json --no-launch --no-switch` when a user explicitly wants to create a worktree and carry current uncommitted work into it.
-- Use `arashi move --from <source> --to <target> --json` for unattended automation.
+- Prefer `aw create <branch> --move-changes --json --no-launch --no-switch` when a user explicitly wants to create a worktree and carry current uncommitted work into it.
+- Use `aw move --from <source> --to <target> --json` for unattended automation.
 - Do not use `move` when the target workspace is intentionally dirty; ask the user how to reconcile the target edits first.
 - Preserve and surface any recovery command exactly as printed.
 

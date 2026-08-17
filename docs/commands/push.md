@@ -20,7 +20,7 @@ Publish the current coordinated branch before opening related PRs across the par
 ## Usage
 
 ```bash
-arashi push [options]
+aw push [options]
 ```
 
 ## Key Options
@@ -35,22 +35,22 @@ arashi push [options]
 
 ```bash
 # Publish eligible repositories with existing upstreams
-arashi push
+aw push
 
 # Publish a new coordinated branch
-arashi push --set-upstream
+aw push --set-upstream
 
 # Publish only the CLI repo
-arashi push --only arashi --set-upstream
+aw push --only arashi --set-upstream
 
 # Publish changed documentation repositories only
-arashi push --group docs --set-upstream
+aw push --group docs --set-upstream
 
 # Preview before publishing
-arashi push --set-upstream --dry-run
+aw push --set-upstream --dry-run
 
 # Use automation-safe output
-arashi push --set-upstream --json
+aw push --set-upstream --json
 ```
 
 ## Notes
@@ -63,13 +63,13 @@ arashi push --set-upstream --json
 
 ## Agent Notes
 
-- Use `arashi push --set-upstream` after committing implementation changes and before opening related PRs.
+- Use `aw push --set-upstream` after committing implementation changes and before opening related PRs.
 - Use `--group <group>` for known semantic sets and `--only <repo>` for focused child-repo PRs instead of pushing every coordinated worktree.
 - Do not manufacture remote branches for clean, untouched child repositories just because the coordinated branch exists locally.
 
 ## Related Commands
 
-`push` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`push` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
 
 - [pull](/commands/pull/)
 - [sync](/commands/sync/)

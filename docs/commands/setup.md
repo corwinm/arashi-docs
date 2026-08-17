@@ -19,7 +19,7 @@ Bootstrap development environments consistently across repositories.
 ## Usage
 
 ```bash
-arashi setup [options]
+aw setup [options]
 ```
 
 ## Key Options
@@ -33,19 +33,19 @@ arashi setup [options]
 
 ```bash
 # Run setup across all repositories
-arashi setup
+aw setup
 
 # Run setup for selected repositories
-arashi setup --only api --only web
+aw setup --only api --only web
 
 # Run setup for extension repositories
-arashi setup --group extensions
+aw setup --group extensions
 
 # Show full script output while setup runs
-arashi setup --verbose
+aw setup --verbose
 
 # Run setup for one repo and emit JSON
-arashi setup --only api --json
+aw setup --only api --json
 ```
 
 ## Notes
@@ -57,7 +57,7 @@ arashi setup --only api --json
 
 ## Related Commands
 
-`setup` depends on configured repositories and setup scripts, so it requires configured mode. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`setup` depends on configured repositories and setup scripts, so it requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
 
 A setup script is not a lifecycle hook and does not receive the create/remove terminal-input contract. See the [Hooks workflow](/workflows/hooks/) when automation belongs at a lifecycle boundary instead.
 

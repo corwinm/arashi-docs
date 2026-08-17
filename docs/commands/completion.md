@@ -13,26 +13,26 @@ Generate native shell completion for Arashi commands, options, and safe workspac
 ## Usage
 
 ```bash
-arashi completion <bash|zsh|fish>
+aw completion <bash|zsh|fish>
 ```
 
 The command writes a shell script to stdout. Source it from your shell startup file or current session; it does not edit startup files itself.
-Generated completion registers both `arashi` and `aw` with the same candidates and descriptions; `arashi` remains the canonical backend and documentation spelling.
+Generated completion registers both `arashi` and `aw` with the same candidates and descriptions; documented activation examples use `aw`.
 
 ## Examples
 
 ```bash
 # Bash
-source <(command arashi completion bash)
+source <(command aw completion bash)
 
 # Zsh
-source <(command arashi completion zsh)
+source <(command aw completion zsh)
 
 # Fish
-command arashi completion fish | source
+command aw completion fish | source
 ```
 
-Use `command arashi` in activation code so completion generation bypasses any installed `arashi` wrapper function.
+Use `command aw` in activation code so completion generation bypasses any installed `arashi` wrapper function.
 
 ## Candidate Behavior
 
@@ -46,10 +46,10 @@ The canonical completion model retains candidate descriptions for every supporte
 
 ## Troubleshooting
 
-- If static suggestions are missing, confirm `command arashi completion <shell>` prints a script, source it again, and restart the shell if needed.
+- If static suggestions are missing, confirm `command aw completion <shell>` prints a script, source it again, and restart the shell if needed.
 - Outside a workspace, when local discovery fails, or when the 200 ms whole-query budget expires, completion silently returns no dynamic candidates while static command and option completion keeps working.
 - Empty dynamic results do not trigger a network fallback: completion does not perform network requests or mutate workspace state.
-- If an installed shell wrapper behaves differently from direct invocation, keep `command arashi` in the completion activation line so generation bypasses the wrapper.
+- If an installed shell wrapper behaves differently from direct invocation, keep `command aw` in the completion activation line so generation bypasses the wrapper.
 
 ## Related
 

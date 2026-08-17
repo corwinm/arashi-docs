@@ -493,7 +493,7 @@ function runControlledDriftSelfTest(): void {
 
     writeFileSync(
       absoluteDriftPath,
-      "Run arashi status \\\n  --no-hook-input to inspect the workspace.\n",
+      "Run aw status \\\n  --no-hook-input to inspect the workspace.\n",
     );
     const continuedUnsupportedCommandErrors: string[] = [];
     checkPackageWideHookInputPolicy(fixtureRoot, continuedUnsupportedCommandErrors);

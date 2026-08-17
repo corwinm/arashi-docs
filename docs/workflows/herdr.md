@@ -27,13 +27,13 @@ herdr --version
 Open an existing worktree from any terminal that can reach the running Herdr session:
 
 ```bash
-arashi switch --herdr feature-auth
+aw switch --herdr feature-auth
 ```
 
 Create worktrees and open the primary created worktree in Herdr:
 
 ```bash
-arashi create feature-auth --herdr
+aw create feature-auth --herdr
 ```
 
 On `create`, `--herdr` implies post-create launch, like `--sesh`. An explicit `--herdr` takes precedence over `--no-launch`. Do not combine it with `--sesh`; on `switch`, do not combine it with `--sesh`, an explicit IDE flag, or `--cd`. Arashi rejects conflicting explicit launchers before launch, and it rejects `create --json --herdr` before worktree creation. `switch --json --herdr` remains a non-mutating unsupported mode.
@@ -57,9 +57,9 @@ Set the single create launch choice and the unified switch mode to `herdr`:
 
 Editor-scoped create defaults under `defaults.editors.<host>.create` use the same `launch: "herdr"` choice for `vscode`, `cursor`, and `kiro`. An editor-hosted invocation reads only its matching host scope and does not inherit generic or another host's create defaults. Configured Herdr works outside a Herdr-managed pane as long as the CLI can reach the running default session.
 
-- `arashi switch --ignore-configured-launcher ...` bypasses configured Herdr for that invocation while retaining launch behavior through automatic resolution.
-- `arashi switch --launch ...` forces launch behavior while preserving configured Herdr.
-- `arashi create --no-launch ...` suppresses configured Herdr unless explicit `--herdr` is also present.
+- `aw switch --ignore-configured-launcher ...` bypasses configured Herdr for that invocation while retaining launch behavior through automatic resolution.
+- `aw switch --launch ...` forces launch behavior while preserving configured Herdr.
+- `aw create --no-launch ...` suppresses configured Herdr unless explicit `--herdr` is also present.
 
 ## Automatic Detection And Precedence
 
@@ -124,7 +124,7 @@ Arashi reports `LAUNCH_FAILED` with the selected worktree and attempted command 
 
 ## Optional Cleanup Before Remove
 
-`arashi remove` intentionally does not close Herdr workspaces. A workspace can contain agents or unsaved terminal state, so automatic cleanup could destroy useful work. After a Git worktree is removed, its Herdr workspace may remain stale; inspect it and close it manually only when its state is no longer needed:
+`aw remove` intentionally does not close Herdr workspaces. A workspace can contain agents or unsaved terminal state, so automatic cleanup could destroy useful work. After a Git worktree is removed, its Herdr workspace may remain stale; inspect it and close it manually only when its state is no longer needed:
 
 ```bash
 herdr workspace list
