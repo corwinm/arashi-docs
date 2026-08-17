@@ -103,6 +103,9 @@ function checkGuidance(
 function checkContradictions(relativePath: string, content: string, found: string[]): void {
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
+    const clauses = statement.split(
+      /\b(?:as well as|even though|although|though|because|since|but|yet|however|while|whereas|nevertheless|nonetheless|instead)\b|;|,\s*|\s+(?:and|or)\s+(?=(?:copy|symlinks?|materialization|standalone|supports?|accepts?|allows?|expands?)\b)/i,
+    );
     const claims: Array<[RegExp, RegExp, string]> = [
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b|\b(?:supports?|accepts?|expands?)\b[^.\n]{0,40}\bglobs?\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\bglobs?\b[^.\n]{0,40}\b(?:supported|accepted|expanded)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|accepts?|accepted|expands?|expanded)\b/i, "must not advertise glob support"],
       [/(?:\b(?:copy|symlinks?|materialization)(?:\s+(?:entries|arrays|configuration))?\b[^.\n]{0,60}\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b|\b(?:supports?|allows?|accepts?)\b[^.\n]{0,50}\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:in|for|through|via|with)\s+(?:copy|symlinks?|materialization)\b|\b(?:remapping|destination mapping)\b[^.\n]{0,40}\b(?:supported|allowed|accepted)\b[^.\n]{0,40}\b(?:in|by|for|through|via)\s+(?:copy|symlinks?|materialization)\b)/i, /\b(?:supports?|supported|allows?|allowed|accepts?|accepted)\b/i, "must not advertise path remapping"],
@@ -114,14 +117,28 @@ function checkContradictions(relativePath: string, content: string, found: strin
       [/\bmaterialization\b[^.\n]{0,120}\b(?:accepts?|uses?|reads?)\b[^.\n]{0,120}\bexternal sources?\b/i, /\b(?:accepts?|uses?|reads?)\b/i, "must not advertise external materialization sources"],
       [/\brepository pre-create\b[^.\n]{0,100}\bpost-materialization\b/i, /\bpost-materialization\b/i, "must not use ambiguous pre-create lifecycle wording"],
     ];
-    for (const [pattern, actionPattern, message] of claims) {
-      const match = pattern.exec(statement);
-      if (match?.index === undefined) continue;
-      const matchedText = match[0];
-      const action = actionPattern.exec(matchedText);
-      const actionIndex = match.index + (action?.index ?? 0);
-      if (!isNegated(statement, actionIndex)) {
-        found.push(`${relativePath} ${message}`);
+    let materializationContext = false;
+    for (const rawClause of clauses) {
+      const explicitMaterialization = /\b(?:copy|symlinks?|materialization)\b/i.test(rawClause);
+      const elidedMaterializationAction =
+        !explicitMaterialization &&
+        materializationContext &&
+        /^\s*(?:(?:not|never|cannot)\s+|[a-z]+n['’]t\s+|(?:do|does|will|must|can|should|is|are)\s+not\s+)?(?:supports?|supported|accepts?|accepted|allows?|allowed|expands?|expanded)\b/i.test(
+          rawClause,
+        );
+      const clause = elidedMaterializationAction ? `materialization ${rawClause}` : rawClause;
+      if (explicitMaterialization) materializationContext = true;
+      if (/\b(?:lifecycle\s+)?hooks?\b/i.test(rawClause)) materializationContext = false;
+      for (const [pattern, actionPattern, message] of claims) {
+        const globalPattern = new RegExp(pattern.source, `${pattern.flags}g`);
+        for (const match of clause.matchAll(globalPattern)) {
+          if (match.index === undefined) continue;
+          const action = actionPattern.exec(match[0]);
+          const actionIndex = match.index + (action?.index ?? 0);
+          if (!isNegated(clause, actionIndex)) {
+            found.push(`${relativePath} ${message}`);
+          }
+        }
       }
     }
   }
@@ -129,7 +146,12 @@ function checkContradictions(relativePath: string, content: string, found: strin
 
 function isNegated(statement: string, actionIndex: number): boolean {
   const prefix = statement.slice(Math.max(0, actionIndex - 36), actionIndex);
-  return /\b(?:not|never|cannot|[a-z]+n['’]t|(?:do|does|will|must|can|should|is|are)\s+not)\s*$/i.test(prefix);
+  if (/\b(?:not|never|cannot|[a-z]+n['’]t|(?:do|does|will|must|can|should|is|are)\s+not)\s*$/i.test(prefix)) {
+    return true;
+  }
+  return /\bneither\b[^.\n]{0,100}\b(?:copy|symlinks?|materialization)\b[^.\n]{0,60}$/i.test(
+    statement.slice(Math.max(0, actionIndex - 140), actionIndex),
+  );
 }
 
 function checkReachability(rootPath: string, found: string[]): void {
@@ -170,6 +192,12 @@ function runControlledGuidanceSelfTest(): void {
     "Copy entries aren’t supported in standalone mode.",
     "Standalone mode doesn't materialize copy entries.",
     "Standalone mode doesn’t materialize copy entries.",
+    "Copy entries do not support globs, and symlink entries do not support globs.",
+    "Copy entries do not support globs, but lifecycle hooks support globs.",
+    "Neither copy nor symlink entries support globs.",
+    "Copy entries don't support globs, whereas symlink entries don’t accept globs.",
+    "Copy entries don't support globs, and symlink entries won’t accept globs.",
+    "Although copy entries do not support globs, lifecycle hooks support globs.",
     "Ordering is pre-create, copy, symlink, post-create.",
     "--no-hooks does not disable materialization.",
     "Missing sources are skipped.",
@@ -185,8 +213,17 @@ function runControlledGuidanceSelfTest(): void {
   checkGuidance("fixture.md", valid, combinedContract, validErrors);
   assert.deepEqual(validErrors, []);
 
-  const invalidClaims: Array<[string, RegExp]> = [
+  const invalidClaims: Array<[string, RegExp, number?]> = [
     ["Arashi supports globs in copy entries.", /glob support/],
+    ["Copy entries do not support globs, but symlink entries support globs.", /glob support/],
+    ["Although copy entries do not support globs, symlink entries support globs.", /glob support/],
+    ["Copy entries do not support globs although symlink entries support globs.", /glob support/],
+    ["Copy entries do not support globs because symlink entries support globs.", /glob support/],
+    ["Copy entries support globs as well as symlink entries accept globs.", /glob support/, 2],
+    ["Copy entries do not support globs, whereas symlink entries support globs.", /glob support/],
+    ["Copy entries do not support globs, but support globs.", /glob support/],
+    ["Copy entries do not support globs and support globs.", /glob support/],
+    ["Copy entries do not support globs, support globs.", /glob support/],
     ["Globs are supported in copy entries.", /glob support/],
     ["Repository pre-create runs at its post-materialization point.", /pre-create lifecycle wording/],
     ["Arashi allows destination mapping for symlinks.", /path remapping/],
@@ -201,10 +238,13 @@ function runControlledGuidanceSelfTest(): void {
     ["Materialization accepts external sources when configured.", /external materialization sources/],
   ];
   const missed: string[] = [];
-  for (const [claim, expected] of invalidClaims) {
+  for (const [claim, expected, expectedCount = 1] of invalidClaims) {
     const errors: string[] = [];
     checkContradictions("fixture.md", claim, errors);
-    if (!expected.test(errors.join("\n"))) missed.push(claim);
+    const matchingCount = errors.filter((error) => expected.test(error)).length;
+    if (matchingCount !== expectedCount) {
+      missed.push(`${claim} (expected ${expectedCount}, received ${matchingCount})`);
+    }
   }
   assert.deepEqual(missed, [], "checker missed controlled invalid guidance");
 }
