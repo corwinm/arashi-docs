@@ -373,13 +373,30 @@ function checkContradictions(
         );
       }
 
-      const standaloneRepositoryOverrideAction =
-        /\b(?:accepts?|supports?|allows?|uses?)\b/i.exec(clause);
+      const repositoryOverrideIndex = clause.search(/--repo-base/i);
+      const repositoryOverrideActions = [
+        ...clause.matchAll(
+          /\b(?:accepts?|supports?|allows?|uses?|rejects?|disallows?|forbids?)\b/gi,
+        ),
+      ];
+      const standaloneRepositoryOverrideAction = repositoryOverrideActions
+        .filter((match) => match.index !== undefined)
+        .sort(
+          (left, right) =>
+            Math.abs(left.index! - repositoryOverrideIndex) -
+            Math.abs(right.index! - repositoryOverrideIndex),
+        )[0];
+      const repositoryOverrideActionRejects =
+        standaloneRepositoryOverrideAction &&
+        /^(?:rejects?|disallows?|forbids?)$/i.test(
+          standaloneRepositoryOverrideAction[0],
+        );
       if (
+        repositoryOverrideIndex >= 0 &&
         standaloneRepositoryOverrideAction?.index !== undefined &&
+        !repositoryOverrideActionRejects &&
         !actionIsNegated(clause, standaloneRepositoryOverrideAction.index) &&
-        clauseHasScope(statement, clause, /\bstandalone\b/i) &&
-        /--repo-base/i.test(clause)
+        clauseHasScope(statement, clause, /\bstandalone\b/i)
       ) {
         found.push(
           `${relativePath} must reject repository-specific overrides in standalone mode`,
@@ -388,13 +405,24 @@ function checkContradictions(
 
       const coordinatedCloneAction =
         /\b(?:checks? out|leaves?|materializes?)\b/i.exec(clause);
+      const coordinatedBranchObjects = [
+        ...clause.matchAll(/\b(?:(?:effective )?base|target) branch\b/gi),
+      ];
+      const coordinatedCloneObject = coordinatedBranchObjects
+        .filter(
+          (match) =>
+            match.index !== undefined &&
+            coordinatedCloneAction?.index !== undefined &&
+            match.index >= coordinatedCloneAction.index,
+        )
+        .sort((left, right) => left.index! - right.index!)[0];
       if (
         coordinatedCloneAction?.index !== undefined &&
+        coordinatedCloneObject?.index !== undefined &&
+        /\b(?:effective )?base branch\b/i.test(coordinatedCloneObject[0]) &&
         !actionIsNegated(clause, coordinatedCloneAction.index) &&
         clauseHasScope(statement, clause, /\bcoordinated\b/i) &&
-        /\bclone\b/i.test(statement) &&
-        /\b(?:effective )?base branch\b/i.test(clause) &&
-        !/\bnot\s+(?:the\s+)?(?:effective\s+)?base branch\b/i.test(clause)
+        /\bclone\b/i.test(statement)
       ) {
         found.push(
           `${relativePath} must keep coordinated clone checked out on its target branch`,
@@ -788,6 +816,8 @@ function runContradictionSelfTest(): void {
     "defaults.create.baseBranch applies to create and does not apply to clone.",
     "Clone ignores defaults.create.baseBranch until migration.",
     "Coordinated clone materializes the target branch, not the base branch.",
+    "Coordinated clone checks out the target branch created from the effective base branch.",
+    "Standalone create supports --base and rejects --repo-base.",
     "Repository CLI --repo-base overrides invocation-wide CLI --base.",
     "Standalone create rejects --repo-base.",
   ].join("\n");
