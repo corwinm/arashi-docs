@@ -431,9 +431,34 @@ function checkContradictions(
 
     }
 
-    if (
-      /(?:--base|invocation(?:-wide)? CLI)\s+\b(?:overrides?|beats?|wins? over|takes? precedence over)\b\s+(?:the\s+)?(?:--repo-base|repository CLI)/i.test(
+    const invertedPrecedence =
+      /(?:--base|invocation(?:-wide)? CLI)\s+\b(?:overrides?|beats?|wins? over|takes? precedence over)\b\s+(?:the\s+)?(?:--repo-base|repository CLI)/i.exec(
         statement,
+      );
+    const invertedPrecedenceAction = invertedPrecedence?.[0].search(
+      /\b(?:overrides?|beats?|wins? over|takes? precedence over)\b/i,
+    );
+    const invertedPrecedenceSubjectIsNegated =
+      invertedPrecedence?.index !== undefined &&
+      invertedPrecedenceAction !== undefined &&
+      invertedPrecedenceAction >= 0 &&
+      /\b(?:do|does|did)\s+not\s+let\b[^.!?]{0,64}$/i.test(
+        statement.slice(
+          Math.max(
+            0,
+            invertedPrecedence.index + invertedPrecedenceAction - 80,
+          ),
+          invertedPrecedence.index + invertedPrecedenceAction,
+        ),
+      );
+    if (
+      invertedPrecedence?.index !== undefined &&
+      invertedPrecedenceAction !== undefined &&
+      invertedPrecedenceAction >= 0 &&
+      !invertedPrecedenceSubjectIsNegated &&
+      !actionIsNegated(
+        statement,
+        invertedPrecedence.index + invertedPrecedenceAction,
       )
     ) {
       found.push(
@@ -819,6 +844,7 @@ function runContradictionSelfTest(): void {
     "Coordinated clone checks out the target branch created from the effective base branch.",
     "Standalone create supports --base and rejects --repo-base.",
     "Repository CLI --repo-base overrides invocation-wide CLI --base.",
+    "Do not let invocation-wide CLI --base override repository CLI --repo-base.",
     "Standalone create rejects --repo-base.",
   ].join("\n");
   const legitimateErrors: string[] = [];
