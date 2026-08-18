@@ -61,6 +61,52 @@ const requirements = new Map<string, string[]>([
     ],
   ],
   [
+    "docs/commands/status.md",
+    [
+      "current-upstream, configured-base, and detected remote-default relationships independently",
+      "root `baseBranch` applies as the fallback",
+      "human output combines the line while JSON preserves both roles",
+      "Standalone status has no persisted configured-base policy and remains unchanged",
+    ],
+  ],
+  [
+    "docs/commands/pull.md",
+    [
+      "refreshed configured remote base into its current branch",
+      "does not silently substitute the current upstream or remote default",
+      "no effective base is configured, pull preserves its current-upstream behavior",
+      "reloads configuration before later child base resolution",
+    ],
+  ],
+  [
+    "docs/commands/push.md",
+    [
+      "refreshed configured base as the publishability baseline only when the current branch has no upstream",
+      "destination remains the current branch on the selected remote",
+      "fails planning rather than silently falling back to the remote default",
+      "Dry-run never updates remote branches, but it may fetch a configured base",
+    ],
+  ],
+  [
+    "docs/commands/handoff.md",
+    [
+      "configured-base lag/unavailability",
+      "preserve upstream, configured-base, and remote-default relationships",
+      "Markdown uses one combined diagnostic while JSON retains both role records",
+      "Standalone handoff remains unchanged",
+    ],
+  ],
+  [
+    "docs/commands/doctor.md",
+    [
+      "`REPOSITORY_CONFIGURED_BASE_BEHIND`",
+      "`REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`",
+      "Structured details retain the configured source, logical branch, selected remote/ref",
+      "instead of duplicating a default-branch diagnostic",
+      "Standalone doctor remains unchanged",
+    ],
+  ],
+  [
     "docs/workflows/index.md",
     [
       "shared base-branch policy",
@@ -122,6 +168,38 @@ const requirements = new Map<string, string[]>([
   [
     "public/commands/clone.md",
     ["`--repo-base <repository=branch>`", "coordinated target branch", "not the base branch"],
+  ],
+  [
+    "public/commands/status.md",
+    [
+      "current-upstream, configured-base, and detected remote-default relationships independently",
+      "human output combines the line while JSON preserves both roles",
+    ],
+  ],
+  [
+    "public/commands/pull.md",
+    [
+      "refreshed configured remote base into its current branch",
+      "no effective base is configured, pull preserves its current-upstream behavior",
+    ],
+  ],
+  [
+    "public/commands/push.md",
+    [
+      "publishability baseline only when the current branch has no upstream",
+      "Dry-run never updates remote branches, but it may fetch a configured base",
+    ],
+  ],
+  [
+    "public/commands/handoff.md",
+    [
+      "preserve upstream, configured-base, and remote-default relationships",
+      "JSON retains both role records",
+    ],
+  ],
+  [
+    "public/commands/doctor.md",
+    ["`REPOSITORY_CONFIGURED_BASE_BEHIND`", "`REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`"],
   ],
   [
     "public/workflows/standalone.md",
