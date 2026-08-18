@@ -351,12 +351,22 @@ function checkContradictions(
         );
       }
 
-      const legacyCloneAction = /\b(?:applies?|uses?|controls?|shared)\b/i.exec(clause);
+      const legacyCloneIndex = clause.search(/\bclone\b/i);
+      const legacyCloneActions = [
+        ...clause.matchAll(/\b(?:apply|applies|uses?|controls?|shared)\b/gi),
+      ];
+      const legacyCloneAction = legacyCloneActions
+        .filter((match) => match.index !== undefined)
+        .sort(
+          (left, right) =>
+            Math.abs(left.index! - legacyCloneIndex) -
+            Math.abs(right.index! - legacyCloneIndex),
+        )[0];
       if (
+        legacyCloneIndex >= 0 &&
         legacyCloneAction?.index !== undefined &&
         !actionIsNegated(clause, legacyCloneAction.index) &&
-        /defaults\.create\.baseBranch/i.test(statement) &&
-        /\bclone\b/i.test(clause)
+        /defaults\.create\.baseBranch/i.test(statement)
       ) {
         found.push(
           `${relativePath} must keep the legacy create key from affecting clone`,
@@ -775,6 +785,7 @@ function runContradictionSelfTest(): void {
     "Create-base failures do not include unaffected repositories.",
     "Create-base failures include affected repositories only and do not report unaffected selected repositories.",
     "All selected repository failures are preserved in selected-set order.",
+    "defaults.create.baseBranch applies to create and does not apply to clone.",
     "Clone ignores defaults.create.baseBranch until migration.",
     "Coordinated clone materializes the target branch, not the base branch.",
     "Repository CLI --repo-base overrides invocation-wide CLI --base.",
