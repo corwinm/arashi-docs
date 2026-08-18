@@ -91,6 +91,7 @@ const requirements = new Map<string, string[]>([
       "`resolvedRef`",
       "`resolvedOid`",
       "`targetAction` (`created` or `reused`)",
+      "legacy-omitted entries omit resolved ref/OID fields",
       "`data.base.repositories`",
       "`data.base`",
       "configured meta repository and selected children",
