@@ -442,7 +442,7 @@ function checkContradictions(
       invertedPrecedence?.index !== undefined &&
       invertedPrecedenceAction !== undefined &&
       invertedPrecedenceAction >= 0 &&
-      /\b(?:do|does|did)\s+not\s+let\b[^.!?]{0,64}$/i.test(
+      /\b(?:(?:(?:do|does|did|must|should|can|could|will|would)\s+not|never|cannot|can't)\s+let)\b[^.!?]{0,64}$/i.test(
         statement.slice(
           Math.max(
             0,
@@ -845,6 +845,7 @@ function runContradictionSelfTest(): void {
     "Standalone create supports --base and rejects --repo-base.",
     "Repository CLI --repo-base overrides invocation-wide CLI --base.",
     "Do not let invocation-wide CLI --base override repository CLI --repo-base.",
+    "Never let invocation-wide CLI --base override repository CLI --repo-base.",
     "Standalone create rejects --repo-base.",
   ].join("\n");
   const legitimateErrors: string[] = [];
