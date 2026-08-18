@@ -29,6 +29,8 @@ aw clone [options]
 ## Key Options
 
 - `--all` clone all missing configured repositories without selection prompts.
+- `--base <branch>` override the effective base for every selected missing child.
+- `--repo-base <repository=branch>` override one selected child; the option is repeatable.
 - `-j, --json` output machine-readable results for non-interactive clone runs.
 
 ## Examples
@@ -44,9 +46,23 @@ aw clone --all
 cd .arashi/worktrees/my-meta-feature-auth-refresh
 aw clone
 
+# Clone every missing repository from a release base
+aw clone --all --base release
+
+# Override one selected child's release base
+aw clone --all --base release --repo-base api=api/release
+
 # Clone every missing repository and emit JSON
 aw clone --all --json
 ```
+
+## Choosing bases for clone
+
+Configured clone shares root `baseBranch` and `repos.<name>.baseBranch` with configured create. For a one-off run, `--base <branch>` overrides every selected child and repeatable `--repo-base <repository=branch>` overrides named children. Exact precedence is repository CLI, invocation CLI, repository config, workspace config, then legacy omitted behavior. `@meta` is invalid for `clone` because clone selects missing children only.
+
+From the main configured workspace, a child with an effective base is cloned on that local branch tracking `origin/<base>`. With no effective policy, clone preserves the remote default branch behavior. Inside a coordinated worktree, the current coordinated target branch remains the checked-out branch. If that target is missing, the target is created from the effective base and materializes the child on the coordinated target branch, not the base branch; an existing target is reused without reset, rebase, or ancestry assertion. The same alignment applies when no canonical source child is available and materialization comes from the configured remote.
+
+Arashi validates malformed, duplicate, unknown, and unselected overrides plus every selected base before managed-ignore or filesystem mutation. A missing base reports every affected selected child and no selected repository is cloned or materialized. Human output identifies each requested branch and stable source. JSON success reports the ordered records at `data.base`, using `repository-cli`, `cli`, `repository-config`, `workspace-config`, or `legacy-omitted`.
 
 ## Notes
 
