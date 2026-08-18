@@ -363,10 +363,18 @@ function checkContradictions(
             Math.abs(left.index! - legacyCloneIndex) -
             Math.abs(right.index! - legacyCloneIndex),
         )[0];
+      const legacyCloneExcluded =
+        legacyCloneAction?.index !== undefined &&
+        (actionIsNegated(clause, legacyCloneAction.index) ||
+          legacyCloneIsExcludedByAction(
+            clause,
+            legacyCloneIndex,
+            legacyCloneAction,
+          ));
       if (
         legacyCloneIndex >= 0 &&
         legacyCloneAction?.index !== undefined &&
-        !actionIsNegated(clause, legacyCloneAction.index) &&
+        !legacyCloneExcluded &&
         /defaults\.create\.baseBranch/i.test(statement)
       ) {
         found.push(
@@ -559,6 +567,21 @@ function hasAffirmativeInclusion(statement: string, target: RegExp): boolean {
   }
 
   return false;
+}
+
+function legacyCloneIsExcludedByAction(
+  clause: string,
+  cloneIndex: number,
+  action: RegExpMatchArray,
+): boolean {
+  if (action.index === undefined || action.index >= cloneIndex) return false;
+  const actionToClone = clause.slice(
+    action.index + action[0].length,
+    cloneIndex,
+  );
+  return /^\s+only\s+to\s+create\s*,?\s*not\s+(?:to\s+)?$/i.test(
+    actionToClone,
+  );
 }
 
 function actionIsNegated(statement: string, actionIndex: number): boolean {
@@ -786,6 +809,10 @@ function runContradictionSelfTest(): void {
       "legacy create key from affecting clone",
     ],
     [
+      "defaults.create.baseBranch applies only to create, not clone, and also applies to clone during migration.",
+      "legacy create key from affecting clone",
+    ],
+    [
       "Coordinated clone checks out the effective base branch.",
       "coordinated clone checked out on its target branch",
     ],
@@ -840,6 +867,7 @@ function runContradictionSelfTest(): void {
     "Create-base failures include affected repositories only and do not report unaffected selected repositories.",
     "All selected repository failures are preserved in selected-set order.",
     "defaults.create.baseBranch applies to create and does not apply to clone.",
+    "defaults.create.baseBranch applies only to create, not clone.",
     "Clone ignores defaults.create.baseBranch until migration.",
     "Coordinated clone materializes the target branch, not the base branch.",
     "Coordinated clone checks out the target branch created from the effective base branch.",
