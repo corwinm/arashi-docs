@@ -88,6 +88,13 @@ if (!/outputStart \* demoCycle - typingDuration - completionHold/.test(homepage)
   failures.push("typing delays must be derived from output timing, content duration, and one completion hold");
 }
 
+if (!/const treeReplayAnimations = new Set\(\["tree-root-window", "tree-root-window-safari"\]\);/.test(homepage)) {
+  failures.push("typing replay must recognize both standard and Safari tree animation names");
+}
+if (!/treeReplayAnimations\.has\(event\.animationName\)/.test(homepage)) {
+  failures.push("typing replay must restart from either supported tree animation variant");
+}
+
 const outputKeyframes = [
   "reveal-step-1",
   "reveal-step-2",

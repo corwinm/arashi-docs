@@ -78,6 +78,7 @@ Arashi makes a polyrepo work like a monorepo during development, while every rep
   (() => {
     const typingCadence = 24;
     const completionHold = 0.18;
+    const treeReplayAnimations = new Set(["tree-root-window", "tree-root-window-safari"]);
 
     const initializeHomepageTyping = () => {
       for (const demo of document.querySelectorAll(".demo-sequence")) {
@@ -104,7 +105,7 @@ Arashi makes a polyrepo work like a monorepo during development, while every rep
         demo.classList.add("typing-ready");
 
         demo.querySelector(".tree-canvas")?.addEventListener("animationiteration", (event) => {
-          if (event.animationName !== "tree-root-window") return;
+          if (!treeReplayAnimations.has(event.animationName)) return;
 
           for (const typing of typingElements) typing.style.animationName = "none";
           void demo.offsetWidth;
