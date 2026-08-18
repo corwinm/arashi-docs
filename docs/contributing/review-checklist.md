@@ -32,5 +32,5 @@ Use this list when reviewing changes that affect navigation or first-time user e
 ## Manual Acceptance Outcomes (2026-02-11)
 
 - [x] Curl install flow: installer command executed and produced clear fallback guidance; blocked on `arashi-checksums.txt` not yet present in current latest release assets.
-- [x] npm install flow: `npm install -g arashi --prefix <temp-dir>` completed and `aw --version` returned `1.4.0`.
+- [x] npm install flow: `npm install -g arashi --prefix <temp-dir>` completed and `arashi --version` returned `1.4.0`.
 - [x] Landing hero discoverability: built docs output includes both install commands and hero actions linking to `/getting-started/#install-curl` and `/getting-started/#install-npm`.

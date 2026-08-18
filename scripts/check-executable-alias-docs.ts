@@ -15,11 +15,26 @@ const legacyInvocation = new RegExp(
 );
 const compatibilityNote = "`arashi` executable remains supported for existing scripts and workflows";
 
-function isIntentionalLegacyExample(line: string, start: number, end: number): boolean {
+function isIntentionalLegacyExample(
+  line: string,
+  start: number,
+  end: number,
+  inDatedManualAcceptanceOutcomes: boolean,
+): boolean {
   const before = line.slice(0, start);
   const after = line.slice(end);
   const clauseStart = Math.max(before.lastIndexOf(";"), before.lastIndexOf("."), before.lastIndexOf("!"), before.lastIndexOf("?")) + 1;
   const clausePrefix = before.slice(clauseStart);
+
+  if (
+    inDatedManualAcceptanceOutcomes &&
+    /^\s*-\s+\[[xX]\]\s+/.test(line) &&
+    /\bcompleted\b/i.test(clausePrefix) &&
+    /\barashi\s+--version\b/i.test(line.slice(start, end)) &&
+    /^`?\s+returned\s+`?v?\d+(?:\.\d+){1,3}(?:[-+][0-9A-Za-z.-]+)?`?(?=[\s.,;!?]|$)/i.test(after)
+  ) {
+    return true;
+  }
 
   if (/\bhistorical\s+(?:example|evidence|record|note)\s*:\s*[^;.!?]*$/i.test(clausePrefix)) {
     return true;
@@ -36,26 +51,35 @@ function isIntentionalLegacyExample(line: string, start: number, end: number): b
     /\bremains?\s+(?:supported|valid|available)\b|\bcontinues?\s+to\s+(?:work|be supported)\b/i.test(after);
 }
 
-function logicalShellLines(content: string): Array<{ line: string; lineNumber: number }> {
+function logicalShellLines(content: string): Array<{ line: string; lineNumber: number; inDatedManualAcceptanceOutcomes: boolean }> {
   const physicalLines = content.split(/\r?\n/);
-  const logicalLines: Array<{ line: string; lineNumber: number }> = [];
+  const logicalLines: Array<{ line: string; lineNumber: number; inDatedManualAcceptanceOutcomes: boolean }> = [];
+  let inDatedManualAcceptanceOutcomes = false;
   for (let index = 0; index < physicalLines.length; index += 1) {
     const lineNumber = index + 1;
     let line = physicalLines[index];
+    if (/^#{1,6}\s+/.test(line)) {
+      inDatedManualAcceptanceOutcomes = /^#{1,6}\s+Manual Acceptance Outcomes\s+\(\d{4}-\d{2}-\d{2}\)\s*$/.test(line);
+    }
     while (/\\[ \t]*$/.test(line) && index + 1 < physicalLines.length) {
       line = line.replace(/\\[ \t]*$/, " ") + physicalLines[index + 1].trimStart();
       index += 1;
     }
-    logicalLines.push({ line, lineNumber });
+    logicalLines.push({ line, lineNumber, inDatedManualAcceptanceOutcomes });
   }
   return logicalLines;
 }
 
 export function findPreferredArashiInvocations(content: string, source: string): string[] {
-  return logicalShellLines(content).flatMap(({ line, lineNumber }) => {
+  return logicalShellLines(content).flatMap(({ line, lineNumber, inDatedManualAcceptanceOutcomes }) => {
     legacyInvocation.lastIndex = 0;
     return [...line.matchAll(legacyInvocation)]
-      .filter((match) => !isIntentionalLegacyExample(line, match.index, match.index + match[0].length))
+      .filter((match) => !isIntentionalLegacyExample(
+        line,
+        match.index,
+        match.index + match[0].length,
+        inDatedManualAcceptanceOutcomes,
+      ))
       .map(() => `${source}:${lineNumber}: preferred examples must use aw: ${line.trim()}`);
   });
 }
@@ -286,6 +310,23 @@ function selfTest(): string[] {
   if (findPreferredArashiInvocations(valid, "positive.md").length !== 0) {
     failures.push("positive identifier/history/compatibility fixture was rejected");
   }
+  const recordedOutcome = [
+    "## Manual Acceptance Outcomes (2026-02-11)",
+    "- [x] npm install flow: `npm install -g arashi --prefix <temp-dir>` completed and `arashi --version` returned `1.4.0`.",
+  ].join("\n");
+  if (findPreferredArashiInvocations(recordedOutcome, "recorded-outcome.md").length !== 0) {
+    failures.push("completed dated manual acceptance outcome was rejected");
+  }
+  const historicalOutcomeControls = [
+    "## Manual Acceptance Outcomes (2026-02-11)\n- [ ] Run `arashi --version` and record the returned version after the test is completed.",
+    "## Release record\n- [x] 2026-02-11: `arashi --version` returned `1.4.0`.",
+    "## Manual Acceptance Outcomes (2026-02-11)\n- [x] Legacy smoke test: `arashi status` completed successfully.",
+  ];
+  historicalOutcomeControls.forEach((fixture, index) => {
+    if (findPreferredArashiInvocations(fixture, `historical-control-${index + 1}.md`).length !== 1) {
+      failures.push(`historical outcome control ${index + 1} was not rejected exactly once`);
+    }
+  });
   return failures;
 }
 
