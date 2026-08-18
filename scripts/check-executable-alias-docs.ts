@@ -55,14 +55,25 @@ function logicalShellLines(content: string): Array<{ line: string; lineNumber: n
   const physicalLines = content.split(/\r?\n/);
   const logicalLines: Array<{ line: string; lineNumber: number; inDatedManualAcceptanceOutcomes: boolean }> = [];
   let inDatedManualAcceptanceOutcomes = false;
+  let powerShellFence: "`" | "~" | null = null;
   for (let index = 0; index < physicalLines.length; index += 1) {
     const lineNumber = index + 1;
     let line = physicalLines[index];
     if (/^#{1,6}\s+/.test(line)) {
       inDatedManualAcceptanceOutcomes = /^#{1,6}\s+Manual Acceptance Outcomes\s+\(\d{4}-\d{2}-\d{2}\)\s*$/.test(line);
     }
-    while (/\\[ \t]*$/.test(line) && index + 1 < physicalLines.length) {
-      line = line.replace(/\\[ \t]*$/, " ") + physicalLines[index + 1].trimStart();
+    const fence = line.match(/^\s*(`{3,}|~{3,})\s*([A-Za-z0-9_-]*)\s*$/);
+    if (fence && powerShellFence === fence[1][0]) {
+      powerShellFence = null;
+    } else if (fence && powerShellFence === null && /^(?:powershell|pwsh)$/i.test(fence[2])) {
+      powerShellFence = fence[1][0] as "`" | "~";
+    }
+    while (
+      (/\\[ \t]*$/.test(line) || (powerShellFence !== null && /(?<!`)`$/.test(line))) &&
+      index + 1 < physicalLines.length
+    ) {
+      line = line.replace(powerShellFence !== null && /(?<!`)`$/.test(line) ? /`$/ : /\\[ \t]*$/, " ") +
+        physicalLines[index + 1].trimStart();
       index += 1;
     }
     logicalLines.push({ line, lineNumber, inDatedManualAcceptanceOutcomes });
@@ -290,13 +301,17 @@ function selfTest(): string[] {
       "  status",
       "arashi --json --verbose status",
       "```",
+      "```powershell",
+      "arashi --json `",
+      "  status",
+      "```",
       "Historical note aside, run `arashi status` now.",
       `${compatibilityNote}; new users should run \`arashi status\`.`,
     ].join("\n"),
     "negative.md",
   );
-  if (rejected.length !== 7 || !rejected.every((error) => error.startsWith("negative.md:"))) {
-    failures.push(`negative preferred-command fixtures produced ${rejected.length} diagnostics instead of 7`);
+  if (rejected.length !== 8 || !rejected.every((error) => error.startsWith("negative.md:"))) {
+    failures.push(`negative preferred-command fixtures produced ${rejected.length} diagnostics instead of 8`);
   }
   const valid = [
     "npm install -g arashi",
@@ -305,6 +320,8 @@ function selfTest(): string[] {
     "`arashi-windows-x64.exe`, `arashi.ps1`, and `arashi.binaryPath`",
     "Historical evidence: `arashi status` was shown in the 1.0 release.",
     "The `arashi` executable remains supported for existing scripts and workflows; `arashi status` remains valid there.",
+    "The incomplete identifier is `arashi --json`\nstatus is documented separately.",
+    "```powershell\narashi --json ``\nstatus\n```",
     "Run `aw status`.",
   ].join("\n");
   if (findPreferredArashiInvocations(valid, "positive.md").length !== 0) {
