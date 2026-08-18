@@ -101,7 +101,7 @@ aw create feature-auth-refresh --no-hook-input
 
 ## Choosing a base branch
 
-Use `--base <branch>` for an invocation-wide override and repeat `--repo-base <repository=branch>` for repository-specific overrides. The reserved `@meta` selector identifies the configured meta repository. Shared precedence is **repository CLI > invocation CLI > repository config > workspace config**; configured create then considers deprecated `defaults.create.baseBranch` before legacy behavior. Repository config means `meta.baseBranch` or `repos.<name>.baseBranch`, and workspace config means root `baseBranch`.
+Use `--base <branch>` for an invocation-wide override and repeat `--repo-base <repository=branch>` for repository-specific overrides. The reserved `@meta` selector identifies the configured meta repository. Shared precedence is **repository CLI > invocation CLI > repository config > workspace config**. Repository config means `meta.baseBranch` or `repos.<name>.baseBranch`, and workspace config means root `baseBranch`. The removed `defaults.create.baseBranch` property is rejected with guidance to use the canonical root or repository-specific policy before hooks or mutation.
 
 Arashi rejects malformed or duplicate overrides, unknown or unselected selectors, invalid branches, and `--repo-base` in implicit standalone mode. It validates the complete selected repository set chosen by `--only`, `--group`, their intersection, or interactive selection before hooks or any workspace mutation. Each effective base resolves from the local branch first, then `origin/<branch>`; Arashi aggregates all repository resolution errors as `CREATE_BASE_RESOLUTION_FAILED` and never falls back to another branch.
 

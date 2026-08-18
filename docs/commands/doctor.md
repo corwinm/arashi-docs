@@ -20,7 +20,7 @@ Run a safe, read-only health check when an Arashi workspace looks wrong or befor
 - missing, unreadable, malformed, or invalid Arashi workspace configuration
 - configured repositories that are missing from disk
 - dirty repositories with staged, unstaged, or untracked changes
-- detached heads, missing upstreams, upstream divergence, missing remote refs, or default-branch drift
+- detached heads, missing upstreams, upstream divergence, missing remote refs, configured-base drift/unavailability, or default-branch drift
 - repository status checks that fail
 - stale Git worktree metadata that `aw prune --dry-run` can review
 - configured lifecycle hook files that are missing, not executable, unsafe, or unsupported
@@ -75,6 +75,8 @@ Human output groups findings by severity or diagnostic category and shows the fi
 The command exits with status code `0` when it completes required checks and finds no blocking `error` findings. It exits non-zero when one or more `error` findings are present or when a required diagnostic phase cannot complete.
 
 Warnings and informational findings do not make the command fail by themselves.
+
+Configured-base findings use stable warning codes `REPOSITORY_CONFIGURED_BASE_BEHIND` and `REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`. Structured details retain the configured source, logical branch, selected remote/ref when known, and divergence or failure information. When base and remote default resolve to the same target, doctor emits the configured-base finding once instead of duplicating a default-branch diagnostic. Standalone doctor remains unchanged.
 
 ## JSON Mode
 

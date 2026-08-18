@@ -16,6 +16,7 @@ Publish the current coordinated branch before opening related PRs across the par
 - Pushes repositories with publishable local branch commits.
 - Skips untouched, already up-to-date, detached, or unconfigured repositories with clear reasons.
 - Avoids creating remote branches for child repositories that were intentionally untouched.
+- Uses the refreshed configured base as the publishability baseline only when the current branch has no upstream.
 
 ## Usage
 
@@ -57,7 +58,8 @@ aw push --set-upstream --json
 
 - `push` does not open pull requests; it only publishes branches.
 - Repositories without upstream tracking are skipped unless `--set-upstream` is supplied.
-- Dry-run is a local preview and does not contact or mutate remotes.
+- Existing upstream branches continue to compare with and push to their upstream. A no-upstream branch uses root or repository-specific `baseBranch` when configured, but the destination remains the current branch on the selected remote. An unavailable configured base fails planning rather than silently falling back to the remote default.
+- Dry-run never updates remote branches, but it may fetch a configured base into a local remote-tracking ref to produce an accurate plan.
 - `--group` narrows publishing to configured semantic sets; when combined with `--only`, both filters must match.
 - JSON mode keeps stdout parseable as one envelope and reports skipped repositories as structured warnings.
 
