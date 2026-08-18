@@ -9,8 +9,9 @@ const commands = [
 ];
 const commandPattern = commands.join("|");
 const optionPattern = String.raw`-{1,2}[\w-]+(?:=[^\s\x60]+)?`;
+const quotedLegacyExecutable = String.raw`(?<![\w./@-])(?:&\s+)?(?:"arashi"|'arashi')`;
 const legacyInvocation = new RegExp(
-  String.raw`(?:\bcommand\s+)?(?<![./@-])\barashi\s+(?:--(?:help|version)\b|<command>(?=\s|\x60|$)|(?:(?:${optionPattern})(?:\s+(?!(?:${commandPattern})\b|${optionPattern})[^\s\x60]+)?\s+)*(?:${commandPattern})\b)`,
+  String.raw`(?:(?:\bcommand\s+)?(?<![./@-])\barashi|${quotedLegacyExecutable})\s+(?:--(?:help|version)\b|<command>(?=\s|\x60|$)|(?:(?:${optionPattern})(?:\s+(?!(?:${commandPattern})\b|${optionPattern})[^\s\x60]+)?\s+)*(?:${commandPattern})\b)`,
   "g",
 );
 const compatibilityNote = "`arashi` executable remains supported for existing scripts and workflows";
@@ -30,7 +31,7 @@ function isIntentionalLegacyExample(
     inDatedManualAcceptanceOutcomes &&
     /^\s*-\s+\[[xX]\]\s+/.test(line) &&
     /\bcompleted\b/i.test(clausePrefix) &&
-    /\barashi\s+--version\b/i.test(line.slice(start, end)) &&
+    /\barashi\b["']?\s+--version\b/i.test(line.slice(start, end)) &&
     /^`?\s+returned\s+`?v?\d+(?:\.\d+){1,3}(?:[-+][0-9A-Za-z.-]+)?`?(?=[\s.,;!?]|$)/i.test(after)
   ) {
     return true;
@@ -307,33 +308,55 @@ function selfTest(): string[] {
       "```",
       "Historical note aside, run `arashi status` now.",
       `${compatibilityNote}; new users should run \`arashi status\`.`,
+      "Run `\"arashi\" status`.",
+      "Run `'arashi' --help`.",
+      "```bash",
+      "\"arashi\" --json \\",
+      "  status",
+      "```",
+      "```powershell",
+      "& \"arashi\" --json status",
+      "& 'arashi' create topic",
+      "& \"arashi\" --json `",
+      "  status",
+      "```",
     ].join("\n"),
     "negative.md",
   );
-  if (rejected.length !== 8 || !rejected.every((error) => error.startsWith("negative.md:"))) {
-    failures.push(`negative preferred-command fixtures produced ${rejected.length} diagnostics instead of 8`);
+  if (rejected.length !== 14 || !rejected.every((error) => error.startsWith("negative.md:"))) {
+    failures.push(`negative preferred-command fixtures produced ${rejected.length} diagnostics instead of 14`);
   }
   const valid = [
     "npm install -g arashi",
+    "npm install -g \"arashi\"",
+    "npm install -g 'arashi'",
+    "The package identifier is \"arashi\".",
+    "Use the paths \"/opt/arashi\" and './vendor/arashi'.",
+    "See \"https://github.com/corwinm/arashi\".",
     "https://github.com/corwinm/arashi",
     "`.arashi/config.json` and `ARASHI_CONFIG_PATH`",
     "`arashi-windows-x64.exe`, `arashi.ps1`, and `arashi.binaryPath`",
     "Historical evidence: `arashi status` was shown in the 1.0 release.",
+    "Historical evidence: `\"arashi\" status` was shown in the 1.0 release.",
     "The `arashi` executable remains supported for existing scripts and workflows; `arashi status` remains valid there.",
+    "The `arashi` executable remains supported for existing scripts and workflows; `\"arashi\" status` remains valid there.",
     "The incomplete identifier is `arashi --json`\nstatus is documented separately.",
+    "The quoted identifier is `\"arashi\" --json`\nstatus is documented separately.",
     "```powershell\narashi --json ``\nstatus\n```",
     "Run `aw status`.",
   ].join("\n");
   if (findPreferredArashiInvocations(valid, "positive.md").length !== 0) {
     failures.push("positive identifier/history/compatibility fixture was rejected");
   }
-  const recordedOutcome = [
-    "## Manual Acceptance Outcomes (2026-02-11)",
-    "- [x] npm install flow: `npm install -g arashi --prefix <temp-dir>` completed and `arashi --version` returned `1.4.0`.",
-  ].join("\n");
-  if (findPreferredArashiInvocations(recordedOutcome, "recorded-outcome.md").length !== 0) {
-    failures.push("completed dated manual acceptance outcome was rejected");
-  }
+  const recordedOutcomes = [
+    "## Manual Acceptance Outcomes (2026-02-11)\n- [x] npm install flow: `npm install -g arashi --prefix <temp-dir>` completed and `arashi --version` returned `1.4.0`.",
+    "## Manual Acceptance Outcomes (2026-02-11)\n- [x] PowerShell smoke test completed and `& \"arashi\" --version` returned `1.4.0`.",
+  ];
+  recordedOutcomes.forEach((fixture, index) => {
+    if (findPreferredArashiInvocations(fixture, `recorded-outcome-${index + 1}.md`).length !== 0) {
+      failures.push(`completed dated manual acceptance outcome ${index + 1} was rejected`);
+    }
+  });
   const historicalOutcomeControls = [
     "## Manual Acceptance Outcomes (2026-02-11)\n- [ ] Run `arashi --version` and record the returned version after the test is completed.",
     "## Release record\n- [x] 2026-02-11: `arashi --version` returned `1.4.0`.",
