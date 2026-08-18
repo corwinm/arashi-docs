@@ -23,6 +23,28 @@ If you are an agent entering an Arashi-managed workspace:
 8. Generate an `aw handoff` report when pausing, switching agents, or leaving dirty work.
 9. Use focused PRs and cross-link related PRs when work spans repositories.
 
+## Install The Arashi Skill
+
+For reusable Arashi guidance inside a supported coding agent, install the
+optional Arashi skill:
+
+```bash
+npx skills add https://github.com/corwinm/arashi-skills --skill arashi
+```
+
+The skill provides task routing, safety rules, troubleshooting, and focused
+references for common Arashi workflows. This page and [`/llms.txt`](/llms.txt)
+remain useful as bootstrap context; installing the skill makes that guidance
+available to the agent when relevant tasks are detected.
+
+You can also [view the skill on skills.sh](https://www.skills.sh/corwinm/arashi-skills/arashi)
+or [browse its source on GitHub](https://github.com/corwinm/arashi-skills).
+The Skills CLI can discover it by searching for `arashi`:
+
+```bash
+npx skills find arashi
+```
+
 ## Core Idea
 
 Arashi works best with agents when the workspace has a clear split:
