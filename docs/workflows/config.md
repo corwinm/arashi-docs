@@ -56,11 +56,21 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 
 ```json
 {
+  "baseBranch": "main",
+  "meta": {
+    "baseBranch": "meta/integration"
+  },
+  "repos": {
+    "api": {
+      "path": "repos/api",
+      "gitUrl": "git@github.com:example/api.git",
+      "baseBranch": "api/integration"
+    }
+  },
   "defaults": {
     "create": {
       "switch": true,
-      "launch": "herdr",
-      "baseBranch": "feature/FEAT-1234"
+      "launch": "herdr"
     },
     "switch": {
       "mode": "herdr"
@@ -69,10 +79,13 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 }
 ```
 
+Root `baseBranch` is the shared fallback for configured `create` and `clone`. `meta.baseBranch` overrides it only for the meta repository, while `repos.<name>.baseBranch` overrides it only for that child. In the example, the meta repository uses `meta/integration`, `api` uses `api/integration`, and other children use `main`. Keep branch ancestry here instead of duplicating create and clone settings.
+
+For one invocation, `--base <branch>` overrides every selected repository and repeatable `--repo-base <repository=branch>` overrides individual repositories. Use the reserved `@meta` selector only with configured create; child selectors must exactly match configured repository names. Shared precedence is **repository CLI > invocation CLI > repository config > workspace config**. Configured create then considers deprecated `defaults.create.baseBranch` before legacy behavior; clone skips the create-only key.
+
+Arashi validates malformed, duplicate, unknown, unselected, and invalid-branch repository overrides across the complete selected set before hooks, managed-ignore reconciliation, branch, worktree, clone, or filesystem mutation. Requested branches resolve local-first and then from `origin` within each repository; an effective base never falls back to another branch.
+
 - `defaults.create.launch` is one post-create choice: `none | auto | sesh | herdr`.
-- `defaults.create.baseBranch` is the workspace-generic branch used to start newly created targets in configured mode. An explicit `create --base <branch>` overrides it: **CLI > configuration > legacy behavior**.
-- When both are absent, legacy behavior remains unchanged: the parent uses the current parent branch and each child uses its detected default branch. The configured value is resolved local-first and then from `origin` independently in every selected repository; a missing base fails the whole preflight without fallback.
-- The base default remains workspace-generic even in an editor-hosted create; editor launch/switch scopes do not override it. It does not apply to standalone mode.
 - `defaults.create.switch` remains an independent boolean. A launch choice other than `none` still selects the newly created primary worktree, so launch implies switch even when `switch` is `false`. Setting `launch` to `none` does not disable an independently enabled switch.
 - An absent `defaults.create.launch` preserves built-in no-launch behavior.
 - `defaults.switch.mode` is the single switch default. Its complete vocabulary is `auto | cd | launch | sesh | herdr`.
@@ -149,6 +162,18 @@ All lifecycle scopes use a default timeout of `300000` milliseconds. Set `hooks.
 ```
 
 The configured override applies consistently to workspace, repository, global-targeted, and global-shared lifecycle hooks. Zero, negative, fractional, non-numeric, and out-of-range values fail validation before hook discovery or lifecycle mutation. See the [Hooks workflow](/workflows/hooks/) for timing and failure behavior.
+
+## Legacy base-branch migration
+
+`defaults.create.baseBranch` remains a deprecated create-only compatibility input. Move its value to root `baseBranch` to opt into the shared configured create/clone policy:
+
+```json
+{
+  "baseBranch": "integration"
+}
+```
+
+Until migration, configured create can use the legacy value and emits one actionable deprecation diagnostic, while clone keeps remote-default behavior. If root `baseBranch` and `defaults.create.baseBranch` have different values, validation fails and names both paths rather than silently choosing. If they match, the canonical root value applies to create and clone and Arashi still emits the migration diagnostic. The configuration file is not rewritten automatically.
 
 ## Legacy create launch migration
 

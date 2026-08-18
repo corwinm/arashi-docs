@@ -11,7 +11,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 
 ## Choose a Workflow
 
-- [Config](/workflows/config/) for managed path ignore scope, command defaults, and post-init switch behavior.
+- [Config](/workflows/config/) for managed path ignore scope, command defaults, and the shared base-branch policy used by configured create and clone, including repository-specific overrides.
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
@@ -26,7 +26,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 ## Recommended Path After `arashi init`
 
 1. Confirm the repository-local managed ignore default or deliberately select `tracked` or `none` for this clone.
-2. Configure `defaults.create` and `defaults.switch` so worktree creation and switching match your preferred launch behavior.
+2. Configure root and repository base branches when create and clone need stable integration ancestry, then set `defaults.create` and `defaults.switch` for launch behavior.
 3. Add lifecycle hooks if you need setup or cleanup automation around `create` and `remove`.
 4. Choose how you want to open worktrees: VS Code, Herdr workspace reuse, automatic cmux or Kitty contexts, terminal-native tmux flows, or `sesh`-driven session switching.
 5. If you work with agents, keep code changes in the affected project repo and shared context in the meta-repo.

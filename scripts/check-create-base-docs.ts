@@ -7,36 +7,65 @@ const requirements = new Map<string, string[]>([
     "docs/commands/create.md",
     [
       "`--base <branch>`",
-      "feature/FEAT-1234",
-      "CLI > configuration > legacy behavior",
-      "current parent branch",
-      "detected default branch",
+      "`--repo-base <repository=branch>`",
+      "`@meta`",
+      "repository CLI > invocation CLI > repository config > workspace config",
       "local branch first, then `origin/<branch>`",
-      "every effective selected repository",
-      "including repositories whose target branch will be reused",
+      "selected repository set",
       "before hooks or any workspace mutation",
       "all repository resolution errors",
       "captured commit OID",
-      "moves after preflight",
       "`REUSE_EXISTING`",
       "does not reset, rebase, recreate, or otherwise change its ancestry",
       "Human `--dry-run` output",
+      "legacy-omitted entries omit resolved ref/OID fields",
       "`CREATE_BASE_RESOLUTION_FAILED`",
-      "`ARASHI_BASE_BRANCH`",
-      "pre-create the target branch",
-      "managed children, not the parent",
+      "`repository-cli`",
+      "`workspace-config`",
     ],
   ],
   [
     "docs/workflows/config.md",
     [
+      '"baseBranch": "main"',
+      '"meta": {',
+      '"baseBranch": "meta/integration"',
+      '"baseBranch": "api/integration"',
+      "root `baseBranch`",
+      "`meta.baseBranch`",
+      "`repos.<name>.baseBranch`",
+      "configured `create` and `clone`",
+      "repository CLI > invocation CLI > repository config > workspace config",
       "`defaults.create.baseBranch`",
-      '"baseBranch": "feature/FEAT-1234"',
-      "workspace-generic",
-      "CLI > configuration > legacy behavior",
-      "current parent branch",
-      "detected default branch",
-      "does not apply to standalone mode",
+      "deprecated create-only compatibility input",
+      "different values",
+      "clone keeps remote-default behavior",
+    ],
+  ],
+  [
+    "docs/commands/clone.md",
+    [
+      "`--base <branch>`",
+      "`--repo-base <repository=branch>`",
+      "repeatable",
+      "`@meta` is invalid for `clone`",
+      "remote default branch",
+      "tracking `origin/<base>`",
+      "coordinated target branch",
+      "created from the effective base",
+      "not the base branch",
+      "before managed-ignore or filesystem mutation",
+      "every affected selected child",
+      "`repository-cli`",
+      "`legacy-omitted`",
+    ],
+  ],
+  [
+    "docs/workflows/index.md",
+    [
+      "shared base-branch policy",
+      "configured create and clone",
+      "repository-specific overrides",
     ],
   ],
   [
@@ -44,7 +73,8 @@ const requirements = new Map<string, string[]>([
     [
       "arashi create feature/FEAT-1234/docs --base feature/FEAT-1234",
       "invocation-only",
-      "does not read or persist `defaults.create.baseBranch`",
+      "does not load root or repository base configuration",
+      "rejects `--repo-base`",
       "current `HEAD`",
       "local branch first and then `origin/<branch>`",
     ],
@@ -52,9 +82,9 @@ const requirements = new Map<string, string[]>([
   [
     "docs/workflows/json-automation.md",
     [
-      "optional `base` object",
+      "per-repository base-policy records",
       "`requestedBranch` removes at most one leading `origin/`",
-      "`source` is `cli` or `config`",
+      "`repository-cli`, `cli`, `repository-config`, `workspace-config`, or `legacy-omitted`",
       "`repositoryName`",
       "`repositoryPath`",
       "canonical absolute path",
@@ -62,7 +92,9 @@ const requirements = new Map<string, string[]>([
       "`resolvedOid`",
       "`targetAction` (`created` or `reused`)",
       "`data.base.repositories`",
-      "complete effective selected set in selected-set order",
+      "`data.base`",
+      "configured meta repository and selected children",
+      "complete effective selected set",
       "`CREATE_BASE_RESOLUTION_FAILED`",
       "`error.details.repositories`",
       "affected repositories only, preserving selected-set order",
@@ -70,59 +102,59 @@ const requirements = new Map<string, string[]>([
       "`attemptedRefs` is exactly the ordered pair",
       "`refs/heads/<normalized>`",
       "`refs/remotes/origin/<normalized>`",
+      "Create resolution failures include `attemptedRefs` but no resolved ref/OID",
+      "Clone preflight failures include `gitUrl` and `reason` but no resolved ref/OID or attempted refs",
+      "exactly one JSON document",
     ],
   ],
   [
     "public/commands/create.md",
     [
-      "`--base <branch>`",
-      "CLI > configuration > legacy behavior",
+      "`--repo-base <repository=branch>`",
+      "repository CLI > invocation CLI > repository config > workspace config",
       "`CREATE_BASE_RESOLUTION_FAILED`",
     ],
   ],
   [
     "public/workflows/config.md",
-    ["`defaults.create.baseBranch`", '"baseBranch": "feature/FEAT-1234"'],
+    ["root `baseBranch`", "`meta.baseBranch`", "`repos.<name>.baseBranch`"],
+  ],
+  [
+    "public/commands/clone.md",
+    ["`--repo-base <repository=branch>`", "coordinated target branch", "not the base branch"],
   ],
   [
     "public/workflows/standalone.md",
-    ["--base feature/FEAT-1234", "invocation-only", "current `HEAD`"],
+    ["--base feature/FEAT-1234", "invocation-only", "rejects `--repo-base`"],
   ],
   [
     "public/workflows/json-automation.md",
     [
-      "optional `base` object",
-      "`requestedBranch` removes at most one leading `origin/`",
-      "`repositoryName`",
-      "`repositoryPath`",
-      "canonical absolute path",
-      "`resolvedOid`",
-      "`targetAction` (`created` or `reused`)",
+      "per-repository base-policy records",
+      "`repository-cli`, `cli`, `repository-config`, `workspace-config`, or `legacy-omitted`",
       "`data.base.repositories`",
-      "complete effective selected set in selected-set order",
+      "`data.base`",
       "`error.details.repositories`",
-      "affected repositories only, preserving selected-set order",
-      "Every failure includes `repositoryName` and `repositoryPath`",
-      "`attemptedRefs` is exactly the ordered pair",
-      "`refs/heads/<normalized>`",
-      "`refs/remotes/origin/<normalized>`",
+      "Clone preflight failures include `gitUrl` and `reason`",
     ],
   ],
   [
     "public/llms.txt",
     [
-      "Create base branches",
-      "`defaults.create.baseBranch`",
-      "`arashi create <target> --base <branch>`",
-      "CLI > configuration > legacy behavior",
+      "shared configured create/clone base policy",
+      "root `baseBranch`",
+      "`meta.baseBranch`",
+      "`repos.<name>.baseBranch`",
+      "repeatable `--repo-base <repository=branch>`",
+      "`@meta` selects the configured meta repository rather than a child",
+      "repository CLI > invocation CLI > repository config > workspace config",
+      "coordinated target branch",
       "Standalone create base selection is CLI-only and invocation-only",
-      "does not read or persist `defaults.create.baseBranch`",
-      "Dry-run reports the selected repositories' resolved bases and planned actions without mutation",
-      "JSON includes the optional structured `base` object only when a base is requested",
-      "success entries are at `data.base.repositories`",
-      "resolution failures are at `error.details.repositories`",
-      "For older Arashi releases, pre-create the target branch from the desired base",
-      "managed children and the parent separately",
+      "rejects `--repo-base`",
+      "Dry-run reports every selected repository and adds resolved bases/actions only when a base applies",
+      "Create JSON success entries are at `data.base.repositories`",
+      "clone policy records are at `data.base`",
+      "Create resolution failures include attempted refs; clone preflight failures include `gitUrl` and reason",
       "`REUSE_EXISTING` does not repair or validate ancestry",
       "Create command Markdown",
     ],
@@ -130,14 +162,19 @@ const requirements = new Map<string, string[]>([
   [
     "scripts/generate-agent-exports.ts",
     [
+      "shared configured create/clone base policy",
+      "root \\`baseBranch\\`",
+      "\\`meta.baseBranch\\`",
+      "\\`repos.<name>.baseBranch\\`",
+      "repeatable \\`--repo-base <repository=branch>\\`",
+      "\\`@meta\\` selects the configured meta repository rather than a child",
+      "repository CLI > invocation CLI > repository config > workspace config",
+      "coordinated target branch",
       "Standalone create base selection is CLI-only and invocation-only",
-      "does not read or persist \\`defaults.create.baseBranch\\`",
-      "Dry-run reports the selected repositories' resolved bases and planned actions without mutation",
-      "JSON includes the optional structured \\`base\\` object only when a base is requested",
+      "rejects \\`--repo-base\\`",
+      "Dry-run reports every selected repository and adds resolved bases/actions only when a base applies",
       "success entries are at \\`data.base.repositories\\`",
-      "resolution failures are at \\`error.details.repositories\\`",
-      "For older Arashi releases, pre-create the target branch from the desired base",
-      "managed children and the parent separately",
+      "Create resolution failures include attempted refs; clone preflight failures include \\`gitUrl\\` and reason",
       "\\`REUSE_EXISTING\\` does not repair or validate ancestry",
     ],
   ],
@@ -145,17 +182,22 @@ const requirements = new Map<string, string[]>([
     "public/llms-full.txt",
     [
       "Source: https://arashi.haphazard.dev/commands/create/",
+      "Source: https://arashi.haphazard.dev/commands/clone/",
       "Source: https://arashi.haphazard.dev/workflows/config/",
       "Source: https://arashi.haphazard.dev/workflows/standalone/",
       "Source: https://arashi.haphazard.dev/workflows/json-automation/",
-      "`defaults.create.baseBranch`",
+      "`meta.baseBranch`",
+      "`repos.<name>.baseBranch`",
+      "`--repo-base <repository=branch>`",
+      "coordinated target branch",
       "`CREATE_BASE_RESOLUTION_FAILED`",
-      "`ARASHI_BASE_BRANCH`",
       "`requestedBranch` removes at most one leading `origin/`",
       "`repositoryName`",
       "`repositoryPath`",
       "`data.base.repositories`",
-      "complete effective selected set in selected-set order",
+      "`data.base`",
+      "configured meta repository and selected children",
+      "complete effective selected set",
       "`error.details.repositories`",
       "affected repositories only, preserving selected-set order",
       "`attemptedRefs` is exactly the ordered pair",
@@ -202,7 +244,7 @@ function checkContradictions(
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
     const clauses = statement.split(
-      /\s*(?:;|\bbut\b|\bhowever\b|\bwhile\b)\s*/i,
+      /\s*(?:;|\bbut\b|\bhowever\b|\bwhile\b|\byet\b|\balthough\b|\bthough\b|\bwhereas\b|\bnevertheless\b|\bnonetheless\b)\s*/i,
     );
     for (const clause of clauses) {
       const fallbackAction = /\b(?:falls?\s+back|fallback|uses?|tries?|checks?|resolves?\s+from)\b/i.exec(
@@ -309,6 +351,56 @@ function checkContradictions(
         );
       }
 
+      const legacyCloneAction = /\b(?:applies?|uses?|controls?|shared)\b/i.exec(clause);
+      if (
+        legacyCloneAction?.index !== undefined &&
+        !actionIsNegated(clause, legacyCloneAction.index) &&
+        /defaults\.create\.baseBranch/i.test(statement) &&
+        /\bclone\b/i.test(clause)
+      ) {
+        found.push(
+          `${relativePath} must keep the legacy create key from affecting clone`,
+        );
+      }
+
+      const standaloneRepositoryOverrideAction =
+        /\b(?:accepts?|supports?|allows?|uses?)\b/i.exec(clause);
+      if (
+        standaloneRepositoryOverrideAction?.index !== undefined &&
+        !actionIsNegated(clause, standaloneRepositoryOverrideAction.index) &&
+        clauseHasScope(statement, clause, /\bstandalone\b/i) &&
+        /--repo-base/i.test(clause)
+      ) {
+        found.push(
+          `${relativePath} must reject repository-specific overrides in standalone mode`,
+        );
+      }
+
+      const coordinatedCloneAction =
+        /\b(?:checks? out|leaves?|materializes?)\b/i.exec(clause);
+      if (
+        coordinatedCloneAction?.index !== undefined &&
+        !actionIsNegated(clause, coordinatedCloneAction.index) &&
+        clauseHasScope(statement, clause, /\bcoordinated\b/i) &&
+        /\bclone\b/i.test(statement) &&
+        /\b(?:effective )?base branch\b/i.test(clause) &&
+        !/\bnot\s+(?:the\s+)?(?:effective\s+)?base branch\b/i.test(clause)
+      ) {
+        found.push(
+          `${relativePath} must keep coordinated clone checked out on its target branch`,
+        );
+      }
+
+    }
+
+    if (
+      /(?:--base|invocation(?:-wide)? CLI)\s+\b(?:overrides?|beats?|wins? over|takes? precedence over)\b\s+(?:the\s+)?(?:--repo-base|repository CLI)/i.test(
+        statement,
+      )
+    ) {
+      found.push(
+        `${relativePath} must give repository CLI precedence over invocation CLI`,
+      );
     }
 
     if (
@@ -474,6 +566,14 @@ function runContradictionSelfTest(): void {
       "configuration precedence over CLI",
     ],
     [
+      "Configuration does not override CLI --base, yet configuration overrides CLI --base.",
+      "configuration precedence over CLI",
+    ],
+    [
+      "Standalone does not load defaults.create.baseBranch, although it loads defaults.create.baseBranch.",
+      "standalone base configuration loading or persistence",
+    ],
+    [
       "Configuration is preferred over CLI --base.",
       "configuration precedence over CLI",
     ],
@@ -613,15 +713,47 @@ function runContradictionSelfTest(): void {
       "Create-base failures report every selected repository, even when its base resolved.",
       "failures to affected repositories",
     ],
+    [
+      "defaults.create.baseBranch is shared by configured create and clone.",
+      "legacy create key from affecting clone",
+    ],
+    [
+      "defaults.create.baseBranch does not apply to clone by default, but defaults.create.baseBranch is shared by configured create and clone.",
+      "legacy create key from affecting clone",
+    ],
+    [
+      "Coordinated clone checks out the effective base branch.",
+      "coordinated clone checked out on its target branch",
+    ],
+    [
+      "Coordinated clone does not reset existing targets, but it checks out the effective base branch.",
+      "coordinated clone checked out on its target branch",
+    ],
+    [
+      "Invocation-wide CLI --base overrides repository CLI --repo-base.",
+      "repository CLI precedence over invocation CLI",
+    ],
+    [
+      "Standalone create accepts --repo-base api=main.",
+      "reject repository-specific overrides in standalone mode",
+    ],
+    [
+      "Standalone create does not load repository base configuration, but it accepts --repo-base api=main.",
+      "reject repository-specific overrides in standalone mode",
+    ],
   ];
+  const missedContradictions: string[] = [];
   for (const [content, expected] of cases) {
     const found: string[] = [];
     checkContradictions("self-test.md", content, found);
     if (!found.some((error) => error.includes(expected))) {
-      throw new Error(
-        `Create-base checker self-test did not reject contradiction: ${content}`,
-      );
+      missedContradictions.push(content);
     }
+  }
+  if (missedContradictions.length > 0) {
+    throw new Error(
+      `Create-base checker self-test did not reject contradictions: ${missedContradictions.join(" | ")}`,
+    );
   }
 
   const legitimate = [
@@ -643,6 +775,10 @@ function runContradictionSelfTest(): void {
     "Create-base failures do not include unaffected repositories.",
     "Create-base failures include affected repositories only and do not report unaffected selected repositories.",
     "All selected repository failures are preserved in selected-set order.",
+    "Clone ignores defaults.create.baseBranch until migration.",
+    "Coordinated clone materializes the target branch, not the base branch.",
+    "Repository CLI --repo-base overrides invocation-wide CLI --base.",
+    "Standalone create rejects --repo-base.",
   ].join("\n");
   const legitimateErrors: string[] = [];
   checkContradictions("self-test.md", legitimate, legitimateErrors);

@@ -38,7 +38,8 @@ arashi create <branch> [options]
 - `--sesh` force sesh launch mode (implies launch behavior).
 - `--herdr` open or focus the primary created worktree in Herdr (implies launch behavior).
 - `--conflict <strategy>` preselect conflict handling (`ABORT`, `REUSE_EXISTING`).
-- `--base <branch>` start newly created target branches from this branch in each selected repository.
+- `--base <branch>` override the effective base for every selected repository.
+- `--repo-base <repository=branch>` override one repository; repeat it for more repositories and use `@meta` for the meta repository.
 - `--no-hook-input` execute hooks with immediate EOF on stdin for this invocation only.
 - `--no-hooks` disable hook execution.
 - `--no-progress` hide progress indicators.
@@ -82,6 +83,9 @@ arashi create feature-auth-refresh --dry-run
 # Create a task branch from a long-running feature branch
 arashi create feature/FEAT-1234/docs --base feature/FEAT-1234
 
+# Override the meta and API bases while other selected repositories use release
+arashi create release/docs --base release --repo-base @meta=meta/release --repo-base api=api/release
+
 # Preview the same selected repositories and resolved bases
 arashi create feature/FEAT-1234/docs --base feature/FEAT-1234 --group docs --dry-run
 
@@ -97,13 +101,13 @@ arashi create feature-auth-refresh --no-hook-input
 
 ## Choosing a base branch
 
-Use `--base <branch>` when a task branch must descend from a long-running branch such as `feature/FEAT-1234`. The precedence is **CLI > configuration > legacy behavior**: `--base` overrides `defaults.create.baseBranch`; with neither, the parent starts from the current parent branch and each child starts from its detected default branch.
+Use `--base <branch>` for an invocation-wide override and repeat `--repo-base <repository=branch>` for repository-specific overrides. The reserved `@meta` selector identifies the configured meta repository. Shared precedence is **repository CLI > invocation CLI > repository config > workspace config**; configured create then considers deprecated `defaults.create.baseBranch` before legacy behavior. Repository config means `meta.baseBranch` or `repos.<name>.baseBranch`, and workspace config means root `baseBranch`.
 
-Arashi resolves an effective base independently in every effective selected repository, including repositories whose target branch will be reused. Selection by `--only`, `--group`, their intersection, or the interactive picker constrains that set. Resolution prefers the local branch first, then `origin/<branch>`. If any selected repository cannot resolve the base, Arashi aggregates all repository resolution errors and fails with `CREATE_BASE_RESOLUTION_FAILED` before hooks or any workspace mutation. It never falls back to another branch.
+Arashi rejects malformed or duplicate overrides, unknown or unselected selectors, invalid branches, and `--repo-base` in implicit standalone mode. It validates the complete selected repository set chosen by `--only`, `--group`, their intersection, or interactive selection before hooks or any workspace mutation. Each effective base resolves from the local branch first, then `origin/<branch>`; Arashi aggregates all repository resolution errors as `CREATE_BASE_RESOLUTION_FAILED` and never falls back to another branch.
 
 Preflight records both the reporting ref and its captured commit OID. New targets use that OID even if the local or remote base ref moves after preflight. A target accepted with `--conflict REUSE_EXISTING` is only materialized: the requested base is still validated, but Arashi does not reset, rebase, recreate, or otherwise change its ancestry.
 
-Human `--dry-run` output names the requested base and each repository's resolved ref/OID and planned create-or-reuse action. With `--json`, the same optional high-level base data is structured for automation; resolution failures use `CREATE_BASE_RESOLUTION_FAILED`. Arashi keeps `ARASHI_BRANCH_NAME` target-oriented and deliberately does not provide an `ARASHI_BASE_BRANCH` hook or environment variable.
+Human `--dry-run` output names every selected repository and its policy source. Entries with an effective requested base include the normalized branch, resolved ref/OID, and planned create-or-reuse action; legacy-omitted entries omit resolved ref/OID fields rather than claiming a resolution that did not occur. JSON uses stable policy sources `repository-cli`, `cli`, `repository-config`, `workspace-config`, and `legacy-omitted`; resolution failures use `CREATE_BASE_RESOLUTION_FAILED`. Arashi keeps `ARASHI_BRANCH_NAME` target-oriented and deliberately does not provide an `ARASHI_BASE_BRANCH` hook or environment variable.
 
 ### Workaround for older Arashi versions
 
