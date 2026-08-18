@@ -10,7 +10,7 @@ const sourceRequirements: Requirement[] = [
   {
     path: "docs/commands/switch.md",
     text: [
-      "arashi switch --tmux feature-auth",
+      "aw switch --tmux feature-auth",
       "plain tmux window",
       "non-empty `TMUX`",
       "per-invocation-only",
@@ -28,7 +28,7 @@ const sourceRequirements: Requirement[] = [
   {
     path: "docs/commands/create.md",
     text: [
-      "arashi create feature-auth-refresh --tmux",
+      "aw create feature-auth-refresh --tmux",
       "plain tmux window",
       "non-empty `TMUX`",
       "per-invocation-only",
@@ -48,8 +48,8 @@ const sourceRequirements: Requirement[] = [
   {
     path: "docs/workflows/tmux-and-sesh.md",
     text: [
-      "arashi switch --tmux feature-auth",
-      "arashi create feature-auth --tmux",
+      "aw switch --tmux feature-auth",
+      "aw create feature-auth --tmux",
       "plain tmux window",
       "requires the `sesh` binary",
       "non-empty `TMUX`",
@@ -70,8 +70,8 @@ const generatedRequirements: Requirement[] = [
   {
     path: "public/llms.txt",
     text: [
-      "`arashi switch --tmux`",
-      "`arashi create --tmux`",
+      "`aw switch --tmux`",
+      "`aw create --tmux`",
       "per-invocation",
       "configured `auto`",
       "Explicit `--tmux`, `--sesh`, or `--herdr` wins",
@@ -81,8 +81,8 @@ const generatedRequirements: Requirement[] = [
   {
     path: "public/llms-full.txt",
     text: [
-      "arashi switch --tmux feature-auth",
-      "arashi create feature-auth-refresh --tmux",
+      "aw switch --tmux feature-auth",
+      "aw create feature-auth-refresh --tmux",
       "requires the `sesh` binary",
       "`interactive-or-launch` mode label"
     ]

@@ -20,7 +20,7 @@ Understand branch and repository state before pulling, syncing, or removing work
 ## Usage
 
 ```bash
-arashi status [options]
+aw status [options]
 ```
 
 ## Key Options
@@ -35,22 +35,22 @@ arashi status [options]
 
 ```bash
 # Default colorized status view
-arashi status
+aw status
 
 # Full details per repository
-arashi status --verbose
+aw status --verbose
 
 # Compact one-line summary
-arashi status --short
+aw status --short
 
 # Inspect documentation repositories only
-arashi status --group docs
+aw status --group docs
 
 # Inspect one configured child and emit one JSON envelope
-arashi status -o arashi-docs -j
+aw status -o arashi-docs -j
 
 # Emit structured status for automation
-arashi status --json
+aw status --json
 ```
 
 ## Notes
@@ -68,9 +68,9 @@ arashi status --json
 
 ## Agent Notes
 
-- Run `arashi status` before creating, pulling, syncing, removing, or handing off work.
-- Prefer `arashi status --json` when an agent needs to branch on clean, dirty, ahead, or behind state.
-- Prefer `arashi status --json` or `arashi status --verbose` before deciding whether to complete a partial workspace with [`arashi clone`](/commands/clone/).
+- Run `aw status` before creating, pulling, syncing, removing, or handing off work.
+- Prefer `aw status --json` when an agent needs to branch on clean, dirty, ahead, or behind state.
+- Prefer `aw status --json` or `aw status --verbose` before deciding whether to complete a partial workspace with [`aw clone`](/commands/clone/).
 - Do not assume a workspace is safe to edit or merge until status confirms the affected repositories are in the expected state.
 
 ## Related Commands

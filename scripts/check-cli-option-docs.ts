@@ -25,7 +25,7 @@ const aliasRequirements = new Map<string, string[]>([
   ["docs/commands/switch.md", ["`-j, --json`"]],
   ["docs/commands/sync.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
   ["docs/commands/update.md", ["`-j, --json`", "`-n, --dry-run`"]],
-  ["docs/getting-started/index.md", ["`arashi install -j`", "`arashi install --json`"]]
+  ["docs/getting-started/index.md", ["`aw install -j`", "`aw install --json`"]]
 ]);
 
 const semanticRequirements = new Map<string, string[]>([
@@ -177,7 +177,7 @@ function checkGeneratedParity(): void {
   const curated = read("public/llms.txt");
   if (curated !== null) {
     for (const text of [
-      "`arashi switch --launch --ignore-configured-launcher`",
+      "`aw switch --launch --ignore-configured-launcher`",
       "`-v/-f/-j/-o/-g/-n`",
       "repeated and comma-separated `--only`/`--group`",
       "`status --only`",
@@ -257,11 +257,11 @@ function checkDeprecatedGuidance(): void {
     "## Deprecated compatibility spellings",
     "The old spelling is deprecated compatibility metadata.",
     "## Preferred workflow",
-    "Run `arashi switch --no-cd` for normal use."
+    "Run `aw switch --no-cd` for normal use."
   ].join("\n");
   const sameLineMismatch = [
     "## Deprecated compatibility spellings",
-    "For deprecated compatibility, run `arashi switch --no-cd`."
+    "For deprecated compatibility, run `aw switch --no-cd`."
   ].join("\n");
   const recommendationMismatch = [
     "## Deprecated compatibility spellings",

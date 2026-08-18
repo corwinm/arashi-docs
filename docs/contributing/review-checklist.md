@@ -25,7 +25,7 @@ Use this list when reviewing changes that affect navigation or first-time user e
 
 - [ ] README, Getting Started, and landing hero use the same curl command text.
 - [ ] README, Getting Started, and landing hero use the same npm command text.
-- [ ] README, Getting Started, and landing hero all include `arashi --version` verification.
+- [ ] README, Getting Started, and landing hero all include `aw --version` verification.
 - [ ] Getting Started includes prerequisites, troubleshooting, and a clear next step for both install methods.
 - [ ] Manual acceptance results are recorded for curl install, npm install, and landing hero discoverability.
 

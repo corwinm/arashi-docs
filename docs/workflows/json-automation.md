@@ -153,7 +153,7 @@ Configured inline hooks preserve the same one-document automation contract. Remo
 | Command | JSON support | Notes |
 | --- | --- | --- |
 | `add` | Supported | Adds repository configuration and returns a structured result. |
-| `clone` | Supported with `--all` | `arashi clone --json` requires `--all`; interactive selection is not JSON-compatible. |
+| `clone` | Supported with `--all` | `aw clone --json` requires `--all`; interactive selection is not JSON-compatible. |
 | `create` | Supported for non-interactive create operations | Use explicit flags such as `--only`, `--group`, `--no-launch`, and `--no-switch`. Interactive selection, launch, or shell switching modes are not JSON-compatible. |
 | `doctor` | Supported | Best first diagnostic for agents because it is non-mutating and returns stable findings. |
 | `exec` | Supported | Runs the child command after `--` and returns per-repository stdout, stderr, exit status, and summary data. |
@@ -190,18 +190,18 @@ Tab disposition keeps the existing command-specific launch guards: `switch --jso
 Agents should prefer this sequence:
 
 ```bash
-arashi doctor --json
-arashi status --json
-arashi list --json
+aw doctor --json
+aw status --json
+aw list --json
 ```
 
 Then choose targeted commands based on the task:
 
 ```bash
-arashi exec --only arashi-docs --json -- pnpm validate
-arashi pull --group docs --json
-arashi create docs/update-reference --no-launch --no-switch --json
-arashi remove docs/update-reference --dry-run --json
+aw exec --only arashi-docs --json -- pnpm validate
+aw pull --group docs --json
+aw create docs/update-reference --no-launch --no-switch --json
+aw remove docs/update-reference --dry-run --json
 ```
 
 For mutating, expensive, or network-heavy commands, use `--only` or `--group` unless the user explicitly asked for every managed repository.

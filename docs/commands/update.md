@@ -6,12 +6,12 @@ sidebar:
   hidden: false
 ---
 
-Use `arashi update` when you want Arashi to check whether a newer CLI release is available.
+Use `aw update` when you want Arashi to check whether a newer CLI release is available.
 
 ## Usage
 
 ```bash
-arashi update [--check] [--dry-run] [--yes]
+aw update [--check] [--dry-run] [--yes]
 ```
 
 ## Options
@@ -25,7 +25,7 @@ arashi update [--check] [--dry-run] [--yes]
 
 Arashi first detects how the current CLI is installed.
 
-For supported npm-managed and direct-installer installations, an update updates both `arashi` and `aw`; `arashi` remains canonical and both names continue to use the same release.
+For supported npm-managed and direct-installer installations, an update refreshes both `arashi` and `aw`; both names continue to use the same release.
 
 - npm-managed installs can update the package and then refresh the matching platform binary when the package manager can be confidently detected.
 - Package-manager detection supports npm, pnpm, Yarn, Bun, and Vite+ managed globals.
@@ -42,24 +42,24 @@ For supported npm-managed and direct-installer installations, an update updates 
 
 ```bash
 # only check whether an update exists
-arashi update --check
+aw update --check
 
 # show the command or release guidance without changing files
-arashi update --dry-run
+aw update --dry-run
 
 # inspect the Vite+ managed-global update plan
-arashi update --dry-run
+aw update --dry-run
 # Selected update command: vp update -g arashi
 
 # run a supported npm-managed update without prompting
-arashi update --yes
+aw update --yes
 
 # check for updates and emit JSON
-arashi update --check --json
+aw update --check --json
 ```
 
 ## Notes
 
 - If release or package metadata cannot be fetched, the command exits non-zero and leaves the existing binary in place.
-- If the package update succeeds but binary refresh fails, run `arashi install` to retry the binary installation or download the release asset manually.
+- If the package update succeeds but binary refresh fails, run `aw install` to retry the binary installation or download the release asset manually.
 - JSON mode is supported for inspection. Use `--check --json`, `--dry-run --json`, or bare `--json`; applying an update requires human output or `--yes` without JSON.

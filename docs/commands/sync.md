@@ -19,7 +19,7 @@ Reconcile workspace state when repositories drift or after branch lifecycle chan
 ## Usage
 
 ```bash
-arashi sync [options]
+aw sync [options]
 ```
 
 ## Key Options
@@ -33,19 +33,19 @@ arashi sync [options]
 
 ```bash
 # Sync all managed repositories
-arashi sync
+aw sync
 
 # Sync selected repositories
-arashi sync --only api,web
+aw sync --only api,web
 
 # Sync agent-support repositories
-arashi sync --group agents
+aw sync --group agents
 
 # Sync with per-repo details
-arashi sync --verbose
+aw sync --verbose
 
 # Sync selected repositories and emit JSON
-arashi sync --only api,web --json
+aw sync --only api,web --json
 ```
 
 ## Notes
@@ -57,14 +57,14 @@ arashi sync --only api,web --json
 
 ## Agent Notes
 
-- Use `arashi sync` when branch/worktree state has drifted and you need the child repos aligned to the current parent branch.
+- Use `aw sync` when branch/worktree state has drifted and you need the child repos aligned to the current parent branch.
 - Prefer `--group <group>` when only a known semantic set should be synchronized.
-- Inspect `arashi status` before and after sync so any remaining mismatches are visible before implementation or handoff.
+- Inspect `aw status` before and after sync so any remaining mismatches are visible before implementation or handoff.
 - Avoid using sync as a substitute for understanding dirty worktrees; resolve or preserve local changes deliberately.
 
 ## Related Commands
 
-`sync` requires configured mode and a persisted repository map. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`sync` requires configured mode and a persisted repository map. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
 
 - [pull](/commands/pull/)
 - [push](/commands/push/)

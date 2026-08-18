@@ -14,7 +14,7 @@ Arashi works best with configuration whenever a project can adopt it—even for 
 Run the explicit bootstrap from anywhere inside the repository:
 
 ```bash
-arashi init --zero-config
+aw init --zero-config
 ```
 
 This creates `.worktrees/` at the main worktree root and, when needed, appends the literal `.worktrees/` rule to the repository-local exclude file resolved by Git. It does not edit tracked `.gitignore`, a global excludes file, global Git configuration, or `.arashi/`.
@@ -22,9 +22,9 @@ This creates `.worktrees/` at the main worktree root and, when needed, appends t
 Preview or automate the same operation with supported output options:
 
 ```bash
-arashi init --zero-config --dry-run
-arashi init --zero-config --verbose
-arashi init --zero-config --json
+aw init --zero-config --dry-run
+aw init --zero-config --verbose
+aw init --zero-config --json
 ```
 
 `--dry-run` reports planned directory and local-exclude actions without writing. Human output identifies standalone mode and the main repository paths. `--json` emits one structured result on stdout and suppresses verbose human stdout. Config-producing options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` cannot be combined with `--zero-config`.
@@ -34,10 +34,10 @@ arashi init --zero-config --json
 Create a branch worktree, then inspect and enter it:
 
 ```bash
-arashi create feat/standalone-docs
-arashi list
-arashi status
-arashi switch feat/standalone-docs
+aw create feat/standalone-docs
+aw list
+aw status
+aw switch feat/standalone-docs
 ```
 
 The branch keeps its natural path beneath the main root:
@@ -58,22 +58,22 @@ The layout never adds a repository-name prefix. Commands invoked from the main w
 Standalone mode accepts an explicit base for the current invocation:
 
 ```bash
-arashi create feature/FEAT-1234/docs --base feature/FEAT-1234
+aw create feature/FEAT-1234/docs --base feature/FEAT-1234
 ```
 
 This is CLI-only and invocation-only: standalone create does not load root or repository base configuration, rejects `--repo-base`, and never creates `.arashi` state. The explicit branch resolves from a local branch first and then `origin/<branch>` before hooks or mutation. Without `--base`, standalone compatibility is unchanged and a new target starts from the invocation repository's current `HEAD`; existing local or remote targets keep their normal reuse behavior.
 
-Before `create` or `create --dry-run` mutates a branch, directory, worktree, hook, or config, Arashi asks Git whether the exact normalized destination (for example `.worktrees/feat/standalone-docs`) is effectively ignored. A negation or selective rule that exposes that destination blocks creation even if another `.worktrees/` descendant is ignored. Run `arashi init --zero-config`, then retry; Arashi does not rewrite ignore state during passive discovery.
+Before `create` or `create --dry-run` mutates a branch, directory, worktree, hook, or config, Arashi asks Git whether the exact normalized destination (for example `.worktrees/feat/standalone-docs`) is effectively ignored. A negation or selective rule that exposes that destination blocks creation even if another `.worktrees/` descendant is ignored. Run `aw init --zero-config`, then retry; Arashi does not rewrite ignore state during passive discovery.
 
 ## Supported Lifecycle
 
 Standalone mode supports the single-repository lifecycle commands `create`, `list`, `status`, `switch`, `remove`, `prune`, `doctor`, `move`, and `handoff`:
 
 ```bash
-arashi status --json
-arashi remove feat/standalone-docs
-arashi prune --dry-run
-arashi doctor
+aw status --json
+aw remove feat/standalone-docs
+aw prune --dry-run
+aw doctor
 ```
 
 Where a command supports JSON, it reports standalone mode and exact repository/worktree paths without mixing human output into stdout. Commands that do not support JSON keep their documented output contract. Read-only and cleanup commands still discover the workspace if `.worktrees/` is currently unignored; only creation requires the exact destination ignore gate.
@@ -86,10 +86,10 @@ The same input matrix applies in standalone mode: a human terminal provides `ARA
 
 ## Upgrade to Configured Mode
 
-Use ordinary `arashi init` when you need persisted child repositories, groups, defaults, custom paths, configured hooks, setup, pull/push, or cross-repository execution:
+Use ordinary `aw init` when you need persisted child repositories, groups, defaults, custom paths, configured hooks, setup, pull/push, or cross-repository execution:
 
 ```bash
-arashi init
+aw init
 ```
 
 Configured-only commands include `add`, `clone`, `sync`, `pull`, `push`, `exec`, and `setup`. They reject implicit standalone mode with upgrade guidance instead of succeeding against an empty repository map. Ordinary initialization creates `.arashi/config.json`; review the proposed configured paths rather than assuming the standalone `.worktrees/<branch>` layout will remain the configured worktree location.

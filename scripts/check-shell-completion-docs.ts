@@ -5,7 +5,7 @@ const sourceRequirements = new Map<string, string[]>([
   [
     "docs/commands/completion.md",
     [
-      "arashi completion <bash|zsh|fish>",
+      "aw completion <bash|zsh|fish>",
       "Static command and option completion works outside an Arashi workspace",
       "repositories, configured groups, worktrees, branches, supported shells, and constrained option values",
       "`switch [filter]` and `remove [target]`",
@@ -19,7 +19,7 @@ const sourceRequirements = new Map<string, string[]>([
       "does not prompt",
       "does not start child operations",
       "200 ms whole-query budget",
-      "command arashi",
+      "command aw",
       "Bash retains the canonical descriptions",
       "does not natively display per-candidate descriptions",
       "Zsh and Fish"
@@ -28,11 +28,11 @@ const sourceRequirements = new Map<string, string[]>([
   [
     "docs/commands/shell.md",
     [
-      "`arashi shell init <shell>` remains wrapper-only",
-      "source <(command arashi completion bash)",
-      "source <(command arashi completion zsh)",
-      "command arashi completion fish | source",
-      "`arashi shell install` owns both activation lines",
+      "`aw shell init <shell>` remains wrapper-only",
+      "source <(command aw completion bash)",
+      "source <(command aw completion zsh)",
+      "command aw completion fish | source",
+      "`aw shell install` owns both activation lines",
       "managed block"
     ]
   ],
@@ -46,7 +46,7 @@ const generatedRequirements = new Map<string, string[]>([
   [
     "public/llms.txt",
     [
-      "`arashi completion bash|zsh|fish`",
+      "`aw completion bash|zsh|fish`",
       "static completion works outside workspaces",
       "local and read-only",
       "200 ms",
@@ -57,8 +57,8 @@ const generatedRequirements = new Map<string, string[]>([
     "public/llms-full.txt",
     [
       "Source: https://arashi.haphazard.dev/commands/completion/",
-      "arashi completion <bash|zsh|fish>",
-      "`arashi shell init <shell>` remains wrapper-only",
+      "aw completion <bash|zsh|fish>",
+      "`aw shell init <shell>` remains wrapper-only",
       "silently returns no dynamic candidates",
       "does not perform network requests or mutate workspace state"
     ]

@@ -10,12 +10,12 @@ sidebar:
 
 Generate a non-mutating handoff report when coordinated Arashi work needs to pause, move to another agent, request review, or leave a dirty workspace with clear next steps.
 
-`arashi handoff` combines Arashi's current per-repository status with context you provide: related links, validation evidence, remaining work, risks, blockers, and suggested next commands.
+`aw handoff` combines Arashi's current per-repository status with context you provide: related links, validation evidence, remaining work, risks, blockers, and suggested next commands.
 
 ## Usage
 
 ```bash
-arashi handoff [options]
+aw handoff [options]
 ```
 
 Markdown is the default human output. Use `--json` when an agent, script, or editor integration needs a structured report.
@@ -33,10 +33,10 @@ Markdown is the default human output. Use `--json` when an agent, script, or edi
 
 ```bash
 # create a quick Markdown report for chat or a PR comment
-arashi handoff --link https://github.com/corwinm/arashi-arashi/issues/186
+aw handoff --link https://github.com/corwinm/arashi-arashi/issues/186
 
 # include validation evidence and remaining work
-arashi handoff \
+aw handoff \
   --link https://github.com/corwinm/arashi/pull/123 \
   --validation "pnpm test — passed" \
   --validation "pnpm build — passed" \
@@ -45,7 +45,7 @@ arashi handoff \
   --next-command "gh pr checks 123 --repo corwinm/arashi"
 
 # produce a structured handoff report for automation
-arashi handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
+aw handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
 ```
 
 ## Output And Exit Behavior
@@ -58,7 +58,7 @@ The Markdown report includes:
 - repositories needing attention, including dirty repositories and repository errors
 - supplied related links, validation evidence, remaining work, risks or blockers, and suggested next commands
 
-`arashi handoff` is read-only. It does not stage files, commit, push, delete worktrees, write report files by default, or run validation commands for you. Validation entries are evidence that you supply; they are not proof that Arashi re-ran those commands.
+`aw handoff` is read-only. It does not stage files, commit, push, delete worktrees, write report files by default, or run validation commands for you. Validation entries are evidence that you supply; they are not proof that Arashi re-ran those commands.
 
 The command exits non-zero when workspace resolution fails or repository status collection reports repository errors. Dirty repositories are reported in the handoff but do not make the command fail by themselves.
 
@@ -73,7 +73,7 @@ On success, `data` includes:
 - `repositories`: per-repository branch, file status, warning, and clean/dirty/error state
 - `summary`: clean, dirty/error, total, and touched counts
 - `context`: supplied links, validations, todos, risks, and next commands
-- `generatedNextCommands`: conservative follow-up commands such as `arashi status`
+- `generatedNextCommands`: conservative follow-up commands such as `aw status`
 
 If the command runs outside a workspace, JSON mode returns `ok: false` with `error.code: "NOT_IN_WORKSPACE"`.
 

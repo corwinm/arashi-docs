@@ -12,7 +12,7 @@ const kittyWorkflowRequirements = [
   "focuses and validates",
   "live only",
   "`.kitty-session`",
-  "`arashi remove` does not close Kitty windows or sessions",
+  "`aw remove` does not close Kitty windows or sessions",
   "Close stale Kitty windows manually",
   "no `--kitty` flag",
   "does not add Kitty to persistent Arashi launch configuration",
@@ -41,7 +41,7 @@ const requirements = new Map<string, string[]>([
   [
     "docs/commands/create.md",
     [
-      "same managed Kitty reuse-or-launch flow as `arashi switch`",
+      "same managed Kitty reuse-or-launch flow as `aw switch`",
       "created worktrees remain available",
       "[Kitty workflow guide](/workflows/kitty/)"
     ]
@@ -71,7 +71,7 @@ const requirements = new Map<string, string[]>([
       "reuses and focuses the exact live worktree window"
     ]
   ],
-  ["public/commands/create.md", ["same managed Kitty reuse-or-launch flow as `arashi switch`"]],
+  ["public/commands/create.md", ["same managed Kitty reuse-or-launch flow as `aw switch`"]],
   [
     "public/llms.txt",
     [
@@ -88,7 +88,7 @@ const requirements = new Map<string, string[]>([
     [
       "Source: https://arashi.haphazard.dev/workflows/kitty/",
       ...kittyWorkflowRequirements,
-      "same managed Kitty reuse-or-launch flow as `arashi switch`"
+      "same managed Kitty reuse-or-launch flow as `aw switch`"
     ]
   ]
 ]);

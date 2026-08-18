@@ -34,14 +34,14 @@ Use this section when you want command-level guidance.
 ## Typical Flow
 
 ```bash
-arashi init
-arashi add git@github.com:your-org/frontend.git
-arashi create feature-branch-name
-arashi doctor
-arashi status
-arashi exec -- git status --short
-arashi handoff --link https://github.com/your-org/project/issues/123
-arashi switch
+aw init
+aw add git@github.com:your-org/frontend.git
+aw create feature-branch-name
+aw doctor
+aw status
+aw exec -- git status --short
+aw handoff --link https://github.com/your-org/project/issues/123
+aw switch
 ```
 
 ## Related

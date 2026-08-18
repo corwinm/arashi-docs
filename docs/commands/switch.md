@@ -19,7 +19,7 @@ Move into the right worktree quickly without manually changing directories.
 ## Usage
 
 ```bash
-arashi switch [filter] [options]
+aw switch [filter] [options]
 ```
 
 ## Key Options
@@ -41,43 +41,43 @@ arashi switch [filter] [options]
 
 ```bash
 # Pick from parent workspace worktrees
-arashi switch
+aw switch
 
 # Match child repos by repository name first
-arashi switch --repos docs
+aw switch --repos docs
 
 # Include parent workspaces plus child repo worktrees
-arashi switch --all
+aw switch --all
 
 # Select one exact worktree by full path
-arashi switch --path /path/to/worktree
+aw switch --path /path/to/worktree
 
 # Force the selected worktree to open in Cursor
-arashi switch --cursor feature-auth
+aw switch --cursor feature-auth
 
 # Change the current shell directory when shell integration is active
-arashi switch --cd feature-auth
+aw switch --cd feature-auth
 
 # Use sesh/tmux switching mode
-arashi switch --sesh
+aw switch --sesh
 
 # Force a new plain tmux window instead of another configured or detected launcher
-arashi switch --tmux feature-auth
+aw switch --tmux feature-auth
 
 # Request a tab in the current supported terminal or managed context
-arashi switch --tab feature-auth
+aw switch --tab feature-auth
 
 # Open or focus the selected worktree in Herdr
-arashi switch --herdr feature-auth
+aw switch --herdr feature-auth
 
 # Force launch behavior while preserving a configured named launcher
-arashi switch --launch
+aw switch --launch
 
 # Request generic automatic launch, ignoring a configured named launcher
-arashi switch --launch --ignore-configured-launcher
+aw switch --launch --ignore-configured-launcher
 
 # Ask for a structured result instead of human-oriented output
-arashi switch feature-auth --json
+aw switch feature-auth --json
 ```
 
 ## Notes
@@ -110,7 +110,7 @@ arashi switch feature-auth --json
 - cmux launch requires cmux v0.64.18 or newer and local CLI socket access. If the CLI/socket is unavailable or its structured response cannot be validated, Arashi reports `LAUNCH_FAILED` instead of opening standalone Ghostty.
 - An active tmux session inside cmux or Herdr keeps tmux precedence during automatic launch. Explicit `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro` behavior remains authoritative.
 - In Kitty 0.43+ with permitted remote control, automatic launch reuses and focuses the exact live worktree window or creates one managed session-backed tab. Once Kitty is selected, prerequisite, inspection, focus, launch, or validation failure reports `LAUNCH_FAILED` and does not fall back. See the [Kitty workflow guide](/workflows/kitty/) for safe setup, live-only ownership, and troubleshooting.
-- Install shell integration with `arashi shell install` or print manual wrapper code with `arashi shell init <bash|zsh|fish>`.
+- Install shell integration with `aw shell install` or print manual wrapper code with `aw shell init <bash|zsh|fish>`.
 - If `--cd` cannot act on the parent shell because the wrapper is inactive, Arashi warns and skips launch fallback for that invocation.
 - When automatic launch reaches an integrated IDE and its optional CLI is unavailable, Arashi continues to terminal/platform fallback without returning to `cd`. A selected tmux, Herdr, or cmux failure—or an available IDE CLI that fails—remains an actionable launch failure and does not try another launcher or `cd`.
 - The VS Code extension passes the matching IDE flag automatically and uses exact-path switching for selected worktrees so duplicate branch names do not cause ambiguous matches.

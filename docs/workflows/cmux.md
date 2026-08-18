@@ -20,7 +20,7 @@ cmux-managed terminals set `CMUX_WORKSPACE_ID` and `CMUX_SURFACE_ID`. Arashi use
 ## Switch to an Existing Worktree
 
 ```bash
-arashi switch feature-auth
+aw switch feature-auth
 ```
 
 From a cmux-managed terminal, Arashi runs the structured equivalent of:
@@ -34,7 +34,7 @@ The worktree path is passed as a distinct process argument, so paths containing 
 ## Launch After Create
 
 ```bash
-arashi create feature-auth --launch
+aw create feature-auth --launch
 ```
 
 The same cmux-aware launcher is used for post-create launch defaults. If coordinated worktree creation succeeds but cmux launch fails, the worktrees remain created and the command reports the launch failure separately.

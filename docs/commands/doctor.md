@@ -8,13 +8,13 @@ sidebar:
 
 ## What It's For
 
-Run a safe, read-only health check when an Arashi workspace looks wrong or before an agent starts troubleshooting. `arashi doctor` gathers workspace, repository, worktree metadata, hook, shell integration, and install/update hints into one actionable report.
+Run a safe, read-only health check when an Arashi workspace looks wrong or before an agent starts troubleshooting. `aw doctor` gathers workspace, repository, worktree metadata, hook, shell integration, and install/update hints into one actionable report.
 
-`doctor` does not repair problems. It recommends follow-up commands such as `arashi status`, `arashi clone`, `arashi prune --dry-run`, `arashi shell install`, or `arashi update --dry-run` when those commands are relevant.
+`doctor` does not repair problems. It recommends follow-up commands such as `aw status`, `aw clone`, `aw prune --dry-run`, `aw shell install`, or `aw update --dry-run` when those commands are relevant.
 
 ## What It Checks
 
-`arashi doctor` reports diagnostic findings for conditions such as:
+`aw doctor` reports diagnostic findings for conditions such as:
 
 - running outside an Arashi workspace, with suggestions to initialize one or switch into one
 - missing, unreadable, malformed, or invalid Arashi workspace configuration
@@ -22,7 +22,7 @@ Run a safe, read-only health check when an Arashi workspace looks wrong or befor
 - dirty repositories with staged, unstaged, or untracked changes
 - detached heads, missing upstreams, upstream divergence, missing remote refs, or default-branch drift
 - repository status checks that fail
-- stale Git worktree metadata that `arashi prune --dry-run` can review
+- stale Git worktree metadata that `aw prune --dry-run` can review
 - configured lifecycle hook files that are missing, not executable, unsafe, or unsupported
 - safe managed repository or worktree paths that have no effective ignore rule
 - stale entries in Arashi-owned ignore blocks, invalid clone-local ignore scope, and paths unsafe for automatic rules
@@ -30,12 +30,12 @@ Run a safe, read-only health check when an Arashi workspace looks wrong or befor
 
 Environment checks are conservative. If shell integration or install state cannot be determined safely, `doctor` avoids treating the unknown state as a blocking failure.
 
-The managed ignore checks use Git's effective tracked, repository-local, and global sources. Findings identify the managed path, effective scope or stored preference when available, and suggested repair such as rerunning a lifecycle command or selecting `arashi init --ignore-scope local|tracked|none`. An unsafe-path finding is distinct from a missing safe rule. `doctor` does not repair ignore files, remove stale owned entries, replace an invalid `arashi.ignoreScope`, or write global Git configuration.
+The managed ignore checks use Git's effective tracked, repository-local, and global sources. Findings identify the managed path, effective scope or stored preference when available, and suggested repair such as rerunning a lifecycle command or selecting `aw init --ignore-scope local|tracked|none`. An unsafe-path finding is distinct from a missing safe rule. `doctor` does not repair ignore files, remove stale owned entries, replace an invalid `arashi.ignoreScope`, or write global Git configuration.
 
 ## Usage
 
 ```bash
-arashi doctor [options]
+aw doctor [options]
 ```
 
 ## Options
@@ -46,23 +46,23 @@ arashi doctor [options]
 
 ```bash
 # Run the default human-readable workspace health check
-arashi doctor
+aw doctor
 
 # Produce structured findings for an agent or script
-arashi doctor --json
+aw doctor --json
 
 # Review detailed repository state after doctor reports repository findings
-arashi status --verbose
+aw status --verbose
 
 # Preview stale worktree cleanup after doctor reports stale metadata
-arashi prune --dry-run
+aw prune --dry-run
 ```
 
 ## Finding Severities
 
 Every finding has a severity:
 
-- `error` means a blocking health problem or required diagnostic failure. `arashi doctor` exits non-zero when any `error` finding is present.
+- `error` means a blocking health problem or required diagnostic failure. `aw doctor` exits non-zero when any `error` finding is present.
 - `warning` means a non-blocking condition that likely needs attention, such as local changes or branch state that may affect coordination.
 - `info` means an advisory hint or an unknown-but-safe state, such as shell integration status that cannot be determined reliably.
 
@@ -70,7 +70,7 @@ Human output groups findings by severity or diagnostic category and shows the fi
 
 ## Exit Behavior
 
-`arashi doctor` is non-mutating: it does not change configuration, repositories, worktrees, hooks, shell startup files, install state, or update state.
+`aw doctor` is non-mutating: it does not change configuration, repositories, worktrees, hooks, shell startup files, install state, or update state.
 
 The command exits with status code `0` when it completes required checks and finds no blocking `error` findings. It exits non-zero when one or more `error` findings are present or when a required diagnostic phase cannot complete.
 
@@ -117,7 +117,7 @@ The data shape includes:
           }
         },
         "suggestedCommands": [
-          "arashi status --verbose",
+          "aw status --verbose",
           "git -C /path/to/workspace/repos/arashi-docs status"
         ]
       }
@@ -137,11 +137,11 @@ When `ok` is `false`, findings and summary counts are included in the structured
 
 ## Agent Notes
 
-- Prefer `arashi doctor --json` as the first workspace-health diagnostic command for agents.
+- Prefer `aw doctor --json` as the first workspace-health diagnostic command for agents.
 - Treat `error` findings as blockers before mutating recovery commands.
 - Use suggested commands from findings as follow-up checks, and keep mutating commands explicit and scoped.
 - For managed ignore findings, preserve user-authored and global rules. Use the suggested lifecycle or `init --ignore-scope` repair instead of editing an effective source blindly.
-- Use [`arashi exec`](/commands/exec/) for additional repeated inspection only when `doctor` and built-in commands do not cover the question.
+- Use [`aw exec`](/commands/exec/) for additional repeated inspection only when `doctor` and built-in commands do not cover the question.
 
 ## Related Commands
 

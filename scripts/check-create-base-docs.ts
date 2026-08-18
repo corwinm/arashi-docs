@@ -71,7 +71,7 @@ const requirements = new Map<string, string[]>([
   [
     "docs/workflows/standalone.md",
     [
-      "arashi create feature/FEAT-1234/docs --base feature/FEAT-1234",
+      "aw create feature/FEAT-1234/docs --base feature/FEAT-1234",
       "invocation-only",
       "does not load root or repository base configuration",
       "rejects `--repo-base`",
@@ -149,6 +149,7 @@ const requirements = new Map<string, string[]>([
       "`@meta` selects the configured meta repository rather than a child",
       "repository CLI > invocation CLI > repository config > workspace config",
       "coordinated target branch",
+      "`aw create <target> --base <branch>`",
       "Standalone create base selection is CLI-only and invocation-only",
       "rejects `--repo-base`",
       "Dry-run reports every selected repository and adds resolved bases/actions only when a base applies",

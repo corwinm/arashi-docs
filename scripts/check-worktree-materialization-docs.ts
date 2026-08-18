@@ -23,7 +23,7 @@ const configurationContract: Requirement[] = [
   ["unsupported remapping", /remapping[^.\n]{0,80}(?:not supported|unsupported)/i],
   ["unsupported standalone mode", /standalone(?: mode)?[^.\n]{0,100}(?:not supported|unsupported)/i],
   ["hooks escape hatch for external sources and interpolation", /lifecycle hooks?[^.\n]{0,180}external sources[^.\n]{0,140}interpolation/i],
-  ["non-mutating doctor discovery", /arashi doctor(?=[^.\n]{0,320}(?:inspect|diagnos))(?=[^.\n]{0,320}(?:non-mutat|without[^.\n]{0,80}(?:repair|mutation)))(?=[^.\n]{0,320}(?:materialization|source|destination))/i],
+  ["non-mutating doctor discovery", /aw doctor(?=[^.\n]{0,320}(?:inspect|diagnos))(?=[^.\n]{0,320}(?:non-mutat|without[^.\n]{0,80}(?:repair|mutation)))(?=[^.\n]{0,320}(?:materialization|source|destination))/i],
 ];
 
 const createContract: Requirement[] = [
@@ -324,7 +324,7 @@ function runControlledGuidanceSelfTest(): void {
     "Materialization does not fall back to another source checkout or repository.",
     "A native symlink fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback.",
     "Use lifecycle hooks for external sources and interpolation. Lifecycle hooks support globs and remapping.",
-    "arashi doctor diagnoses materialization sources and destinations non-mutatively without repair.",
+    "aw doctor diagnoses materialization sources and destinations non-mutatively without repair.",
     "--dry-run previews the ordered materialization plan before any mutation.",
   ].join(" ");
   const validErrors: string[] = [];

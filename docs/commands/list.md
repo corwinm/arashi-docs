@@ -19,7 +19,7 @@ Find and jump to worktrees quickly.
 ## Usage
 
 ```bash
-arashi list [options]
+aw list [options]
 ```
 
 ## Key Options
@@ -33,16 +33,16 @@ arashi list [options]
 
 ```bash
 # Pipe-friendly path list
-arashi list
+aw list
 
 # Table output
-arashi list --table
+aw list --table
 
 # Interactive navigation
-cd "$(arashi list | fzf)"
+cd "$(aw list | fzf)"
 
 # Emit structured worktree data
-arashi list --json
+aw list --json
 ```
 
 ## Notes

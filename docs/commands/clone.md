@@ -23,7 +23,7 @@ Recover missing local repositories without re-adding them to workspace configura
 ## Usage
 
 ```bash
-arashi clone [options]
+aw clone [options]
 ```
 
 ## Key Options
@@ -37,23 +37,23 @@ arashi clone [options]
 
 ```bash
 # Pick from missing repositories interactively
-arashi clone
+aw clone
 
 # Clone every missing configured repository
-arashi clone --all
+aw clone --all
 
 # Complete a partial coordinated worktree from inside it
 cd .arashi/worktrees/my-meta-feature-auth-refresh
-arashi clone
+aw clone
 
 # Clone every missing repository from a release base
-arashi clone --all --base release
+aw clone --all --base release
 
 # Override one selected child's release base
-arashi clone --all --base release --repo-base api=api/release
+aw clone --all --base release --repo-base api=api/release
 
 # Clone every missing repository and emit JSON
-arashi clone --all --json
+aw clone --all --json
 ```
 
 ## Choosing bases for clone
@@ -85,13 +85,13 @@ In a multi-repository clone, a failed alias is reported for that repository and 
 
 ## Agent Notes
 
-- Use `arashi status --json` or `arashi status --verbose` to discover missing configured repositories before completing a partial workspace.
-- Prefer `arashi clone --all --json` when automation should complete every missing child repository without prompts.
+- Use `aw status --json` or `aw status --verbose` to discover missing configured repositories before completing a partial workspace.
+- Prefer `aw clone --all --json` when automation should complete every missing child repository without prompts.
 - Inspect managed ignore warnings and final changed/restored state in JSON results instead of editing Git ignore files directly.
 
 ## Related Commands
 
-`clone` requires configured mode and persisted child repositories. From standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`clone` requires configured mode and persisted child repositories. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
 
 - [add](/commands/add/)
 - [status](/commands/status/)
