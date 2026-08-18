@@ -7,7 +7,7 @@ sidebar:
   order: 3
 ---
 
-Use lifecycle hooks for trusted setup and cleanup around `arashi create` and `arashi remove`. Use short reviewable inline commands; put substantial or reusable logic in native files. Standalone hooks remain native files only, as do user-global hooks.
+Use lifecycle hooks for trusted setup and cleanup around `aw create` and `aw remove`. Use short reviewable inline commands; put substantial or reusable logic in native files. Standalone hooks remain native files only, as do user-global hooks.
 
 ## Inline configured hooks
 
@@ -128,7 +128,7 @@ On POSIX, `<ext>` is `.sh`. On Windows, extension matching is case-insensitive a
 
 ## Activate exactly one example
 
-Examples created by `arashi init` are inert. Activate only the lifecycle and scope you intend.
+Examples created by `aw init` are inert. Activate only the lifecycle and scope you intend.
 
 On POSIX, create the active script and its executable mode in one step:
 
@@ -152,7 +152,7 @@ Setup is a separate command contract, not a lifecycle hook. On POSIX, activate t
 install -m 755 .arashi/setup.sh.example .arashi/setup.sh
 ```
 
-`arashi setup` runs the script from its documented setup cwd; do not rely on lifecycle-hook variables there. This change does not introduce a native Windows setup example, and lifecycle setup never requires changing Git `core.hooksPath`.
+`aw setup` runs the script from its documented setup cwd; do not rely on lifecycle-hook variables there. This change does not introduce a native Windows setup example, and lifecycle setup never requires changing Git `core.hooksPath`.
 
 ## Environment contract
 
@@ -275,7 +275,7 @@ python -m pip install -r requirements.txt
 4. Keep scripts fail-fast and idempotent; workspace and shared remove hooks can run repeatedly across targets.
 5. Run with `--dry-run` where supported, then inspect human or JSON hook outcomes.
 
-Herdr workspaces can contain agents or unsaved terminal state, so `arashi remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove).
+Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove).
 
 ## Related references
 

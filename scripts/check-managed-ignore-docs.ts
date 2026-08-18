@@ -37,7 +37,7 @@ const sourceRequirements = new Map<string, string[]>([
       "`none` reports classifications without ignore-file changes"
     ]
   ],
-  ["docs/commands/pull.md", ["reloads", "original filters", "arashi clone", "managed ignore"]],
+  ["docs/commands/pull.md", ["reloads", "original filters", "aw clone", "managed ignore"]],
   [
     "docs/commands/clone.md",
     ["before materializing", "repository-local default", "partial result"]

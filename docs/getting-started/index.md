@@ -12,7 +12,7 @@ Use this section when you are new to Arashi and need a quick setup and first wor
 
 Choose the install method for your platform and environment.
 
-`aw` is a shorter alias for `arashi`.
+Use `aw` for the workflows in this guide. The `arashi` executable remains supported for existing scripts and workflows.
 
 ### Prerequisites
 
@@ -36,11 +36,11 @@ curl -fsSL https://arashi.haphazard.dev/install | ARASHI_VERSION=1.16.0 bash
 Verify install:
 
 ```bash
-arashi --version
+aw --version
 ```
 
-The installer defaults to `~/.arashi/bin`, updates your shell profile so `arashi` is available on `PATH` in new shells, and in interactive installs can offer shell integration for `arashi switch --cd`.
-It also runs a quick `arashi --version` smoke test before declaring success.
+The installer defaults to `~/.arashi/bin`, updates your shell profile so the installed executables are available on `PATH` in new shells, and in interactive installs can offer shell integration for `aw switch --cd`.
+It also runs a quick `aw --version` smoke test before declaring success.
 The macOS/Linux installer provides both `arashi` and `aw` and routes them to the same Arashi release.
 
 For unattended installs, set `ARASHI_SHELL_INTEGRATION=yes` to enable that automatically or `ARASHI_SHELL_INTEGRATION=no` to skip it.
@@ -63,7 +63,7 @@ Pin a specific version when invoking a downloaded script:
 .\install.ps1 -Version 1.16.0
 ```
 
-The PowerShell script is the canonical Windows installer. The PowerShell installer provides both `arashi` and `aw` for Git Bash, PowerShell, and Command Prompt. By default, it installs `arashi.bin.exe`, the extensionless `arashi` command for Git Bash, `arashi.ps1`, `arashi.bat`, the extensionless `aw` command for Git Bash, `aw.ps1`, and `aw.bat` in `%USERPROFILE%\.arashi\bin`, adds that directory to the persistent user PATH, and tells you to open a new terminal. Both names execute the same native binary. Open a new Git Bash window before running `arashi --version` so it inherits the PATH change.
+The PowerShell script is the canonical Windows installer. The PowerShell installer provides both `arashi` and `aw` for Git Bash, PowerShell, and Command Prompt. By default, it installs `arashi.bin.exe`, the extensionless `arashi` command for Git Bash, `arashi.ps1`, `arashi.bat`, the extensionless `aw` command for Git Bash, `aw.ps1`, and `aw.bat` in `%USERPROFILE%\.arashi\bin`, adds that directory to the persistent user PATH, and tells you to open a new terminal. Both names execute the same native binary. Open a new Git Bash window before running `aw --version` so it inherits the PATH change.
 Use `-InstallDir` or `ARASHI_INSTALL_DIR` for a custom user-writable directory. Use `-NoModifyPath` or `ARASHI_NO_MODIFY_PATH=1` to leave PATH unchanged and add the install directory to PATH yourself. The installer does not edit Git Bash profile files.
 
 ### Method 3: npm global install
@@ -75,20 +75,20 @@ npm install -g arashi
 Arashi downloads the matching platform binary on first use. To preinstall it explicitly:
 
 ```bash
-arashi install
+aw install
 ```
 
 npm installs provide both `arashi` and `aw`; both names use the same package and platform binary.
 
-For npm-managed bootstrap automation, `arashi install -j` and `arashi install --json` are equivalent and emit the same machine-readable result exactly once.
+For npm-managed bootstrap automation, `aw install -j` and `aw install --json` are equivalent and emit the same machine-readable result exactly once.
 
 Verify install:
 
 ```bash
-arashi --version
+aw --version
 ```
 
-Canonical examples continue to use `arashi`. For representative shorthand after installation:
+Inspect the workspace after installation:
 
 ```bash
 aw status
@@ -107,15 +107,15 @@ If you do not want to pipe a remote script into PowerShell, download these asset
 - `aw.bat`
 - `arashi-checksums.txt`
 
-Download and verify the complete set from one GitHub release. Verify all seven payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, `arashi.bat`, `aw`, `aw.ps1`, and `aw.bat` together in one directory on PATH. Open a new shell before running `arashi --version` and `aw --version` there. Manually placed alias wrappers have no direct-installer ownership ledger. Before migrating to the official installer, deliberately move or remove `aw`, `aw.ps1`, and `aw.bat`; do the same for any other manually placed file that reports a collision.
+Download and verify the complete set from one GitHub release. Verify all seven payload assets against `arashi-checksums.txt` with `Get-FileHash -Algorithm SHA256`, rename the source binary `arashi-windows-x64.exe` to `arashi.bin.exe`, and put `arashi.bin.exe`, `arashi`, `arashi.ps1`, `arashi.bat`, `aw`, `aw.ps1`, and `aw.bat` together in one directory on PATH. Open a new shell and confirm that both installed executable entrypoints report the same version. Manually placed wrappers have no direct-installer ownership ledger. Before migrating to the official installer, deliberately move or remove the complete manual payload if any file reports a collision.
 
 ### Troubleshooting and fallback
 
 - `command not found`: install missing prerequisite (`curl`, `bash`, `npm`, `node`, or PowerShell) and rerun.
 - Permission errors writing to global paths: rerun the direct installer with a user-writable install directory or use a user-level npm prefix.
-- Network/download failures: retry once; for npm installs you can rerun `arashi install`, then switch to another install method if needed.
+- Network/download failures: retry once; for npm installs you can rerun `aw install`, then switch to another install method if needed.
 - Checksum mismatch on direct installer paths: stop and use npm/manual fallback, then report the failure.
-- If `arashi --version` exits immediately or returns code `137`, rerun the direct installer with `ARASHI_VERSION=<version>` or `-Version <version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
+- If `aw --version` exits immediately or returns code `137`, rerun the direct installer with `ARASHI_VERSION=<version>` or `-Version <version>` to pin a known-good release, or use npm/manual install while reporting the bad release artifact.
 - PATH changes may require a new terminal on Windows and POSIX shells.
 - If Git Bash reports `arashi: command not found` after a PowerShell install, confirm `%USERPROFILE%\.arashi\bin` is on the persistent user PATH, then open a new Git Bash window. An already-open shell does not inherit the update.
 - With `-NoModifyPath`, add the install directory to PATH yourself. Do not add an installer-managed entry to `.bashrc`, `.bash_profile`, or `.profile`; the installer does not edit Git Bash profile files.
@@ -134,7 +134,7 @@ Use this flow when you are starting fresh and want Arashi to initialize the work
 ```bash
 mkdir my-meta-repo
 cd my-meta-repo
-arashi init
+aw init
 ```
 
 When prompted for the repository target, enter `.` to initialize the current directory.
@@ -147,10 +147,10 @@ Use this flow when you already have a repository that should become your Arashi 
 
 ```bash
 cd path/to/existing-meta-repo
-arashi init
+aw init
 ```
 
-Run `arashi init` from the repository root you want Arashi to manage.
+Run `aw init` from the repository root you want Arashi to manage.
 
 Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository. See the [init command reference](/commands/init/) for exact directory selection, custom-path, persistence, and compatibility behavior.
 
@@ -160,30 +160,30 @@ Choose a different policy only when you intend it:
 
 ```bash
 # Commit Arashi-managed rules to the workspace-root .gitignore for the team
-arashi init --ignore-scope tracked
+aw init --ignore-scope tracked
 
 # Do not let Arashi write ignore files; unignored managed paths produce warnings
-arashi init --ignore-scope none
+aw init --ignore-scope none
 
 # Restore the repository-local default later
-arashi init --ignore-scope local
+aw init --ignore-scope local
 ```
 
 Explicit `tracked` and `none` preferences are stored in clone-local Git configuration, not `.arashi/config.json`. They therefore apply to later `pull`, `clone`, `add`, and `create` operations in this clone without becoming a shared team setting. Choosing `local` removes that non-default preference.
 
-Once `arashi init` completes, continue with the core workflow:
+Once `aw init` completes, continue with the core workflow:
 
 ```bash
-arashi add git@github.com:your-org/frontend.git
-arashi create feature-docs-bootstrap
-arashi switch feature-docs-bootstrap
-arashi status
+aw add git@github.com:your-org/frontend.git
+aw create feature-docs-bootstrap
+aw switch feature-docs-bootstrap
+aw status
 ```
 
 New managed worktrees are created under the persisted `worktreesDir`: `.arashi/worktrees` for the non-bare omitted default or the parent of a bare repository for its `..` omitted default.
-Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `arashi shell install` if you want `arashi switch` to support parent-shell `cd` behavior.
+Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `aw shell install` if you want `aw switch` to support parent-shell `cd` behavior.
 
-The next configured lifecycle command reconciles missing safe ignore rules before it materializes repositories or worktrees. Run `arashi doctor` for a non-mutating check of missing, stale, invalid, or unsafe managed ignore state.
+The next configured lifecycle command reconciles missing safe ignore rules before it materializes repositories or worktrees. Run `aw doctor` for a non-mutating check of missing, stale, invalid, or unsafe managed ignore state.
 
 This configured workflow uses `.arashi/config.json` to coordinate repositories, groups, hooks, defaults, and managed paths.
 
@@ -192,14 +192,14 @@ This configured workflow uses `.arashi/config.json` to coordinate repositories, 
 Configured mode remains the better choice whenever the project can adopt Arashi, even for one repository, because it enables repository and workspace hooks, persisted defaults, and custom paths. When you need Arashi in a project that has not adopted it, initialize standalone mode explicitly:
 
 ```bash
-arashi init --zero-config
-arashi create feature-docs-bootstrap
-arashi status
+aw init --zero-config
+aw create feature-docs-bootstrap
+aw status
 ```
 
 This keeps worktrees under `.worktrees/<branch>` without creating `.arashi/config.json`, letting you use Arashi ad hoc in any non-bare Git project. It does not provide meta-repository coordination, repository/workspace hooks, or persisted defaults. See the [Standalone Repository workflow](/workflows/standalone/) for its narrower command scope, ignore safety, and upgrade path to configured mode.
 
-If you install Arashi with the official POSIX installer, it can offer shell integration during install so `arashi switch --cd` works without an extra setup step.
+If you install Arashi with the official POSIX installer, it can offer shell integration during install so `aw switch --cd` works without an extra setup step.
 
 When the workspace is initialized, choose the workflow guide that matches what you need next:
 

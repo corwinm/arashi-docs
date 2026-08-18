@@ -20,7 +20,7 @@ Bring another repository under workspace management.
 ## Usage
 
 ```bash
-arashi add <git-url> [options]
+aw add <git-url> [options]
 ```
 
 ## Key Options
@@ -34,19 +34,19 @@ arashi add <git-url> [options]
 
 ```bash
 # Explicit-user SCP syntax
-arashi add git@work-github:acme/api.git
+aw add git@work-github:acme/api.git
 
 # Omitted-user SCP syntax
-arashi add work-github:acme/api.git
+aw add work-github:acme/api.git
 
 # ssh:// syntax
-arashi add ssh://git@work-github/acme/api.git
+aw add ssh://git@work-github/acme/api.git
 
 # Add with a custom workspace name
-arashi add https://github.com/your-org/web.git --name frontend
+aw add https://github.com/your-org/web.git --name frontend
 
 # Emit JSON output for scripts
-arashi add git@github.com:your-org/data.git --json
+aw add git@github.com:your-org/data.git --json
 ```
 
 ## SSH Remote Forms
@@ -57,7 +57,7 @@ For the command argument, Arashi normalizes outer whitespace once, passes that e
 
 ## Adding From a Linked Parent Worktree
 
-When run from a linked parent worktree, `arashi add` keeps the child's default-branch canonical clone under the primary parent and creates an active child worktree on the linked parent's branch. Only the linked checkout's `.arashi/config.json` is updated; adding from the primary checkout remains a single-clone workflow.
+When run from a linked parent worktree, `aw add` keeps the child's default-branch canonical clone under the primary parent and creates an active child worktree on the linked parent's branch. Only the linked checkout's `.arashi/config.json` is updated; adding from the primary checkout remains a single-clone workflow.
 
 Arashi uses a matching remote child branch when one exists, otherwise it creates the branch from the child's default branch. It verifies that both destinations follow the configured ignore policy and rolls back state it created if the add fails.
 
@@ -67,8 +67,8 @@ Do not clone the child twice manually—the active child is a worktree backed by
 
 ## Notes
 
-- `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `arashi init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/) for the mode boundary.
-- Run `arashi init` first so workspace config exists.
+- `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/) for the mode boundary.
+- Run `aw init` first so workspace config exists.
 - Setup-script detection uses the default-branch canonical clone and reports the setup path separately from the active worktree path.
 - Arashi changes only its owned ignore block and never writes global Git configuration.
 - Git and OpenSSH own SSH host resolution and authentication. Arashi does not inspect or configure SSH aliases, keys, or identity files.

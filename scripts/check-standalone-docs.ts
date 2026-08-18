@@ -12,23 +12,23 @@ const sourceRequirements = new Map<string, string[]>([
   [
     "docs/workflows/standalone.md",
     [
-      "arashi init --zero-config",
+      "aw init --zero-config",
       "works best with configuration",
       "use Arashi ad hoc",
       ".worktrees/<branch>",
-      "arashi create",
-      "arashi list",
-      "arashi status",
-      "arashi switch",
-      "arashi remove",
-      "arashi init",
+      "aw create",
+      "aw list",
+      "aw status",
+      "aw switch",
+      "aw remove",
+      "aw init",
       "user-global",
       "--json"
     ]
   ],
   [
     "docs/getting-started/index.md",
-    [standaloneLink, "arashi init --zero-config", "Configured mode remains the better choice"]
+    [standaloneLink, "aw init --zero-config", "Configured mode remains the better choice"]
   ],
   ["docs/workflows/index.md", [standaloneLink, "Standalone"]],
   ["docs/commands/index.md", [standaloneLink, "standalone"]],
@@ -56,20 +56,20 @@ const sourceRequirements = new Map<string, string[]>([
   ...["add", "clone", "sync", "pull", "push", "exec", "setup"].map(
     (command): [string, string[]] => [
       `docs/commands/${command}.md`,
-      [standaloneLink, "configured mode", "arashi init"]
+      [standaloneLink, "configured mode", "aw init"]
     ]
   )
 ]);
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/index.md", [standaloneLink, "configured meta-repositories", "run ad hoc"]],
-  ["public/workflows/standalone.md", ["arashi init --zero-config", ".worktrees/<branch>"]],
-  ["public/getting-started.md", [standaloneLink, "arashi init --zero-config"]],
+  ["public/workflows/standalone.md", ["aw init --zero-config", ".worktrees/<branch>"]],
+  ["public/getting-started.md", [standaloneLink, "aw init --zero-config"]],
   ["public/commands.md", [standaloneLink, "standalone"]],
   ["public/llms.txt", ["Standalone workflow", "/workflows/standalone.md"]],
   [
     "public/llms-full.txt",
-    ["# Standalone Repository Workflow", "arashi init --zero-config", ".worktrees/<branch>"]
+    ["# Standalone Repository Workflow", "aw init --zero-config", ".worktrees/<branch>"]
   ],
   ...[
     "create",
@@ -94,7 +94,7 @@ const generatedRequirements = new Map<string, string[]>([
   ...["add", "clone", "sync", "pull", "push", "exec", "setup"].map(
     (command): [string, string[]] => [
       `public/commands/${command}.md`,
-      [standaloneLink, "configured mode", "arashi init"]
+      [standaloneLink, "configured mode", "aw init"]
     ]
   )
 ]);

@@ -22,7 +22,7 @@ Use `prune` for stale metadata. Use [`remove`](/commands/remove/) when you want 
 ## Usage
 
 ```bash
-arashi prune [options]
+aw prune [options]
 ```
 
 ## Key Options
@@ -35,13 +35,13 @@ arashi prune [options]
 
 ```bash
 # Preview stale worktree metadata
-arashi prune --dry-run
+aw prune --dry-run
 
 # Clean stale worktree metadata now
-arashi prune
+aw prune
 
 # Automation-safe cleanup report
-arashi prune --json
+aw prune --json
 ```
 
 ## Notes
@@ -53,9 +53,9 @@ arashi prune --json
 
 ## Agent Notes
 
-- Prefer `arashi prune --dry-run --json` before mutating cleanup when diagnosing out-of-sync worktree records.
-- Use `arashi prune --json` for non-interactive cleanup after confirming entries are stale metadata, not active worktrees.
-- Do not use `arashi remove` to clean prunable entries; `remove` is for real coordinated worktrees and branches.
+- Prefer `aw prune --dry-run --json` before mutating cleanup when diagnosing out-of-sync worktree records.
+- Use `aw prune --json` for non-interactive cleanup after confirming entries are stale metadata, not active worktrees.
+- Do not use `aw remove` to clean prunable entries; `remove` is for real coordinated worktrees and branches.
 
 ## Related Commands
 

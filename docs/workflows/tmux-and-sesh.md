@@ -15,10 +15,10 @@ Use `--tmux` when this invocation must open the selected or newly created worktr
 
 ```bash
 # Open an existing worktree in a new plain tmux window
-arashi switch --tmux feature-auth
+aw switch --tmux feature-auth
 
 # Create worktrees, then open the primary worktree in a new plain tmux window
-arashi create feature-auth --tmux
+aw create feature-auth --tmux
 ```
 
 - Explicit tmux requires an active tmux client or session: Arashi requires a non-empty `TMUX` environment value after trimming.
@@ -38,8 +38,8 @@ For `create`, `--tmux` conflicts with `--sesh` and `--herdr`. It implies launch 
 Use automatic launch when tmux should win only because the current environment is inside tmux:
 
 ```bash
-arashi switch feature-auth
-arashi create feature-auth --launch
+aw switch feature-auth
+aw create feature-auth --launch
 ```
 
 Configured `auto` preserves Arashi's managed-context order: tmux, Herdr, cmux, integrated IDE, parent-shell `cd`, then terminal/platform fallback. Set `defaults.switch.mode: "auto"` for this persistent contextual behavior. Without `--tmux`, named configured launchers and existing opt-outs retain their normal behavior.
@@ -59,14 +59,14 @@ Configured `auto` preserves Arashi's managed-context order: tmux, Herdr, cmux, i
 Use `--sesh` when you want sesh's tmux session integration rather than a plain window. Unlike plain `--tmux`, this mode requires the `sesh` binary as well as an active tmux environment.
 
 ```bash
-arashi switch --sesh feature-auth
-arashi create feature-auth --sesh
+aw switch --sesh feature-auth
+aw create feature-auth --sesh
 ```
 
 - `--tmux` opens a plain tmux window with `tmux new-window`; `--sesh` delegates to sesh's session-aware workflow.
 - Good for teams that treat each worktree as a session-oriented workspace.
 - Set `defaults.create.launch: "sesh"` for explicit post-create sesh launch. This bypasses automatic context detection; if sesh validation or execution fails, Arashi preserves created worktrees and does not fall back to another launcher. For switching, set the unified `defaults.switch.mode: "sesh"`.
-- Pair with shortcut flows such as `sesh connect "$(arashi list | fzf)"` when you want faster session selection.
+- Pair with shortcut flows such as `sesh connect "$(aw list | fzf)"` when you want faster session selection.
 
 ## Standalone Repositories
 
@@ -74,8 +74,8 @@ Explicit tmux has parity in a zero-config standalone repository. You do not need
 
 ```bash
 # From a standalone main or linked worktree inside tmux
-arashi switch --tmux feature-auth
-arashi create feature-auth --tmux
+aw switch --tmux feature-auth
+aw create feature-auth --tmux
 ```
 
 Arashi uses standalone discovery and safety rules and does not synthesize or persist `.arashi` configuration. Configured-only multi-repository options remain unavailable.
