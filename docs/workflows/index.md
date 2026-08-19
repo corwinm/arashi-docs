@@ -11,7 +11,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 
 ## Choose a Workflow
 
-- [Config](/workflows/config/) for managed path ignore scope, command defaults, and the shared base-branch policy used by configured create and clone, including repository-specific overrides.
+- [Config](/workflows/config/) for managed path ignore scope, command defaults, and the shared base-branch policy used by configured create, clone, status, pull, push fallback, handoff, and doctor.
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
 - [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
