@@ -464,6 +464,29 @@ function checkContradictions(
         );
       }
 
+      const legacyCreateAction =
+        /\b(?:appl(?:y|ies)|controls?|configures?|uses?|accepts?|supports?|reads?|honors?|ignores?|skips?|bypasses?)\b/gi;
+      const legacyCreateKeyIndex = clause.search(/defaults\.create\.baseBranch/i);
+      const governingLegacyCreateAction = [...clause.matchAll(legacyCreateAction)]
+        .filter((match) => match.index !== undefined)
+        .sort(
+          (left, right) =>
+            Math.abs(left.index! - legacyCreateKeyIndex) -
+            Math.abs(right.index! - legacyCreateKeyIndex),
+        )[0];
+      if (
+        legacyCreateKeyIndex >= 0 &&
+        governingLegacyCreateAction?.index !== undefined &&
+        !actionIsNegated(clause, governingLegacyCreateAction.index) &&
+        /(?<!\.)\b(?:create|clone|status|pull|push|handoff|doctor|configured commands?)\b/i.test(
+          clause,
+        )
+      ) {
+        found.push(
+          `${relativePath} must not advertise the removed legacy key as active create configuration`,
+        );
+      }
+
       const repositoryOverrideIndex = clause.search(/--repo-base/i);
       const repositoryOverrideActions = [
         ...clause.matchAll(
@@ -895,6 +918,22 @@ function runContradictionSelfTest(): void {
       "legacy create key from affecting clone",
     ],
     [
+      "Configured create still uses defaults.create.baseBranch.",
+      "removed legacy key as active create configuration",
+    ],
+    [
+      "defaults.create.baseBranch continues to control configured create.",
+      "removed legacy key as active create configuration",
+    ],
+    [
+      "Clone ignores defaults.create.baseBranch until migration.",
+      "removed legacy key as active create configuration",
+    ],
+    [
+      "Configured commands skip defaults.create.baseBranch until migration.",
+      "removed legacy key as active create configuration",
+    ],
+    [
       "Coordinated clone checks out the effective base branch.",
       "coordinated clone checked out on its target branch",
     ],
@@ -935,7 +974,7 @@ function runContradictionSelfTest(): void {
     "Standalone does not read or persist defaults.create.baseBranch.",
     "REUSE_EXISTING does not reset, rebase, or change target ancestry.",
     "REUSE_EXISTING does not rebase the target; another mode rebases the target branch.",
-    "Standalone does not load baseBranch; configured mode loads defaults.create.baseBranch.",
+    "Standalone does not load baseBranch; configured mode rejects defaults.create.baseBranch.",
     "Base resolution never falls back; deployment fallback uses the current upstream.",
     "For older versions, pre-create the target from the base and reuse it; this workaround does not repair ancestry.",
     "Arashi does not provide ARASHI_BASE_BRANCH.",
@@ -948,9 +987,10 @@ function runContradictionSelfTest(): void {
     "Create-base failures do not include unaffected repositories.",
     "Create-base failures include affected repositories only and do not report unaffected selected repositories.",
     "All selected repository failures are preserved in selected-set order.",
-    "defaults.create.baseBranch applies to create and does not apply to clone.",
-    "defaults.create.baseBranch applies only to create, not clone.",
-    "Clone ignores defaults.create.baseBranch until migration.",
+    "defaults.create.baseBranch is unsupported for create and clone.",
+    "Move defaults.create.baseBranch to root baseBranch before running create.",
+    "Configured create uses root baseBranch and does not support defaults.create.baseBranch.",
+    "Clone rejects defaults.create.baseBranch before repository discovery.",
     "Coordinated clone materializes the target branch, not the base branch.",
     "Coordinated clone checks out the target branch created from the effective base branch.",
     "Standalone create supports --base and rejects --repo-base.",

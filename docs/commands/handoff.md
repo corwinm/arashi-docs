@@ -54,8 +54,8 @@ The Markdown report includes:
 
 - workspace path and branch
 - current repository context when run from a child repo
-- per-repository status derived from Arashi workspace inspection
-- repositories needing attention, including dirty repositories, configured-base lag/unavailability, and repository errors
+- per-repository status derived from Arashi workspace inspection, including configured-base lag/unavailability
+- repositories needing attention, including dirty repositories and repository errors
 - supplied related links, validation evidence, remaining work, risks or blockers, and suggested next commands
 
 `aw handoff` is read-only. It does not stage files, commit, push, delete worktrees, write report files by default, or run validation commands for you. Validation entries are evidence that you supply; they are not proof that Arashi re-ran those commands.
