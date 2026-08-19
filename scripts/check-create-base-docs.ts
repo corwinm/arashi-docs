@@ -34,12 +34,12 @@ const requirements = new Map<string, string[]>([
       "root `baseBranch`",
       "`meta.baseBranch`",
       "`repos.<name>.baseBranch`",
-      "configured `create` and `clone`",
+      "configured `create`, `clone`, `status`, `pull`",
       "repository CLI > invocation CLI > repository config > workspace config",
       "`defaults.create.baseBranch`",
-      "deprecated create-only compatibility input",
-      "different values",
-      "clone keeps remote-default behavior",
+      "is unsupported",
+      "before repository discovery",
+      "Other `defaults.create` launch and switch properties remain supported",
     ],
   ],
   [
@@ -61,11 +61,56 @@ const requirements = new Map<string, string[]>([
     ],
   ],
   [
+    "docs/commands/status.md",
+    [
+      "current-upstream, configured-base, and detected remote-default relationships independently",
+      "root `baseBranch` applies as the fallback",
+      "human output combines the line while JSON preserves both roles",
+      "Standalone status has no persisted configured-base policy and remains unchanged",
+    ],
+  ],
+  [
+    "docs/commands/pull.md",
+    [
+      "refreshed configured remote base into its current branch",
+      "does not silently substitute the current upstream or remote default",
+      "no effective base is configured, pull preserves its current-upstream behavior",
+      "reloads configuration before later child base resolution",
+    ],
+  ],
+  [
+    "docs/commands/push.md",
+    [
+      "refreshed configured base as the publishability baseline only when the current branch has no upstream",
+      "destination remains the current branch on the selected remote",
+      "fails planning rather than silently falling back to the remote default",
+      "Dry-run never updates remote branches, but it may fetch a configured base",
+    ],
+  ],
+  [
+    "docs/commands/handoff.md",
+    [
+      "configured-base lag/unavailability",
+      "preserve upstream, configured-base, and remote-default relationships",
+      "Markdown uses one combined diagnostic while JSON retains both role records",
+      "Standalone handoff remains unchanged",
+    ],
+  ],
+  [
+    "docs/commands/doctor.md",
+    [
+      "`REPOSITORY_CONFIGURED_BASE_BEHIND`",
+      "`REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`",
+      "Structured details retain the configured source, logical branch, selected remote/ref",
+      "instead of duplicating a default-branch diagnostic",
+      "Standalone doctor remains unchanged",
+    ],
+  ],
+  [
     "docs/workflows/index.md",
     [
       "shared base-branch policy",
-      "configured create and clone",
-      "repository-specific overrides",
+      "configured create, clone, status, pull, push fallback, handoff, and doctor",
     ],
   ],
   [
@@ -125,6 +170,38 @@ const requirements = new Map<string, string[]>([
     ["`--repo-base <repository=branch>`", "coordinated target branch", "not the base branch"],
   ],
   [
+    "public/commands/status.md",
+    [
+      "current-upstream, configured-base, and detected remote-default relationships independently",
+      "human output combines the line while JSON preserves both roles",
+    ],
+  ],
+  [
+    "public/commands/pull.md",
+    [
+      "refreshed configured remote base into its current branch",
+      "no effective base is configured, pull preserves its current-upstream behavior",
+    ],
+  ],
+  [
+    "public/commands/push.md",
+    [
+      "publishability baseline only when the current branch has no upstream",
+      "Dry-run never updates remote branches, but it may fetch a configured base",
+    ],
+  ],
+  [
+    "public/commands/handoff.md",
+    [
+      "preserve upstream, configured-base, and remote-default relationships",
+      "JSON retains both role records",
+    ],
+  ],
+  [
+    "public/commands/doctor.md",
+    ["`REPOSITORY_CONFIGURED_BASE_BEHIND`", "`REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`"],
+  ],
+  [
     "public/workflows/standalone.md",
     ["--base feature/FEAT-1234", "invocation-only", "rejects `--repo-base`"],
   ],
@@ -142,13 +219,15 @@ const requirements = new Map<string, string[]>([
   [
     "public/llms.txt",
     [
-      "shared configured create/clone base policy",
+      "shared configured base policy",
       "root `baseBranch`",
       "`meta.baseBranch`",
       "`repos.<name>.baseBranch`",
       "repeatable `--repo-base <repository=branch>`",
       "`@meta` selects the configured meta repository rather than a child",
       "repository CLI > invocation CLI > repository config > workspace config",
+      "removed `defaults.create.baseBranch` property fails validation",
+      "Status preserves upstream and remote-default roles",
       "coordinated target branch",
       "`aw create <target> --base <branch>`",
       "Standalone create base selection is CLI-only and invocation-only",
@@ -164,13 +243,15 @@ const requirements = new Map<string, string[]>([
   [
     "scripts/generate-agent-exports.ts",
     [
-      "shared configured create/clone base policy",
+      "shared configured base policy",
       "root \\`baseBranch\\`",
       "\\`meta.baseBranch\\`",
       "\\`repos.<name>.baseBranch\\`",
       "repeatable \\`--repo-base <repository=branch>\\`",
       "\\`@meta\\` selects the configured meta repository rather than a child",
       "repository CLI > invocation CLI > repository config > workspace config",
+      "removed \\`defaults.create.baseBranch\\` property fails validation",
+      "Status preserves upstream and remote-default roles",
       "coordinated target branch",
       "Standalone create base selection is CLI-only and invocation-only",
       "rejects \\`--repo-base\\`",
@@ -380,6 +461,29 @@ function checkContradictions(
       ) {
         found.push(
           `${relativePath} must keep the legacy create key from affecting clone`,
+        );
+      }
+
+      const legacyCreateAction =
+        /\b(?:appl(?:y|ies)|controls?|configures?|uses?|accepts?|supports?|reads?|honors?|ignores?|skips?|bypasses?)\b/gi;
+      const legacyCreateKeyIndex = clause.search(/defaults\.create\.baseBranch/i);
+      const governingLegacyCreateAction = [...clause.matchAll(legacyCreateAction)]
+        .filter((match) => match.index !== undefined)
+        .sort(
+          (left, right) =>
+            Math.abs(left.index! - legacyCreateKeyIndex) -
+            Math.abs(right.index! - legacyCreateKeyIndex),
+        )[0];
+      if (
+        legacyCreateKeyIndex >= 0 &&
+        governingLegacyCreateAction?.index !== undefined &&
+        !actionIsNegated(clause, governingLegacyCreateAction.index) &&
+        /(?<!\.)\b(?:create|clone|status|pull|push|handoff|doctor|configured commands?)\b/i.test(
+          clause,
+        )
+      ) {
+        found.push(
+          `${relativePath} must not advertise the removed legacy key as active create configuration`,
         );
       }
 
@@ -814,6 +918,22 @@ function runContradictionSelfTest(): void {
       "legacy create key from affecting clone",
     ],
     [
+      "Configured create still uses defaults.create.baseBranch.",
+      "removed legacy key as active create configuration",
+    ],
+    [
+      "defaults.create.baseBranch continues to control configured create.",
+      "removed legacy key as active create configuration",
+    ],
+    [
+      "Clone ignores defaults.create.baseBranch until migration.",
+      "removed legacy key as active create configuration",
+    ],
+    [
+      "Configured commands skip defaults.create.baseBranch until migration.",
+      "removed legacy key as active create configuration",
+    ],
+    [
       "Coordinated clone checks out the effective base branch.",
       "coordinated clone checked out on its target branch",
     ],
@@ -854,7 +974,7 @@ function runContradictionSelfTest(): void {
     "Standalone does not read or persist defaults.create.baseBranch.",
     "REUSE_EXISTING does not reset, rebase, or change target ancestry.",
     "REUSE_EXISTING does not rebase the target; another mode rebases the target branch.",
-    "Standalone does not load baseBranch; configured mode loads defaults.create.baseBranch.",
+    "Standalone does not load baseBranch; configured mode rejects defaults.create.baseBranch.",
     "Base resolution never falls back; deployment fallback uses the current upstream.",
     "For older versions, pre-create the target from the base and reuse it; this workaround does not repair ancestry.",
     "Arashi does not provide ARASHI_BASE_BRANCH.",
@@ -867,9 +987,10 @@ function runContradictionSelfTest(): void {
     "Create-base failures do not include unaffected repositories.",
     "Create-base failures include affected repositories only and do not report unaffected selected repositories.",
     "All selected repository failures are preserved in selected-set order.",
-    "defaults.create.baseBranch applies to create and does not apply to clone.",
-    "defaults.create.baseBranch applies only to create, not clone.",
-    "Clone ignores defaults.create.baseBranch until migration.",
+    "defaults.create.baseBranch is unsupported for create and clone.",
+    "Move defaults.create.baseBranch to root baseBranch before running create.",
+    "Configured create uses root baseBranch and does not support defaults.create.baseBranch.",
+    "Clone rejects defaults.create.baseBranch before repository discovery.",
     "Coordinated clone materializes the target branch, not the base branch.",
     "Coordinated clone checks out the target branch created from the effective base branch.",
     "Standalone create supports --base and rejects --repo-base.",

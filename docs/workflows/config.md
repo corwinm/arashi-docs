@@ -79,9 +79,11 @@ Set defaults in `.arashi/config.json` when you want consistent behavior without 
 }
 ```
 
-Root `baseBranch` is the shared fallback for configured `create` and `clone`. `meta.baseBranch` overrides it only for the meta repository, while `repos.<name>.baseBranch` overrides it only for that child. In the example, the meta repository uses `meta/integration`, `api` uses `api/integration`, and other children use `main`. Keep branch ancestry here instead of duplicating create and clone settings.
+Root `baseBranch` is the shared fallback for configured `create`, `clone`, `status`, `pull`, no-upstream `push` comparison, `handoff`, and `doctor`. `meta.baseBranch` overrides it only for the meta repository, while `repos.<name>.baseBranch` overrides it only for that child. In the example, the meta repository uses `meta/integration`, `api` uses `api/integration`, and other children use `main`.
 
-For one invocation, `--base <branch>` overrides every selected repository and repeatable `--repo-base <repository=branch>` overrides individual repositories. Use the reserved `@meta` selector only with configured create; child selectors must exactly match configured repository names. Shared precedence is **repository CLI > invocation CLI > repository config > workspace config**. Configured create then considers deprecated `defaults.create.baseBranch` before legacy behavior; clone skips the create-only key.
+For create and clone, `--base <branch>` overrides every selected repository and repeatable `--repo-base <repository=branch>` overrides individual repositories. Use the reserved `@meta` selector only with configured create; child selectors must exactly match configured repository names. Their full precedence is **repository CLI > invocation CLI > repository config > workspace config**. Status, pull, push fallback, handoff, and doctor apply persisted repository configuration first, then root policy.
+
+Status adds configured-base drift without replacing upstream or remote-default state and de-duplicates a shared base/default target. Pull merges the refreshed configured remote base. Without persisted base policy, pull preserves its existing current-upstream behavior. Push uses configured base only to assess no-upstream publishability and never changes its destination. Handoff and doctor expose lag or unavailable-base states. Standalone behavior remains unchanged.
 
 Arashi validates malformed, duplicate, unknown, unselected, and invalid-branch repository overrides across the complete selected set before hooks, managed-ignore reconciliation, branch, worktree, clone, or filesystem mutation. Requested branches resolve local-first and then from `origin` within each repository; an effective base never falls back to another branch.
 
@@ -163,9 +165,9 @@ All lifecycle scopes use a default timeout of `300000` milliseconds. Set `hooks.
 
 The configured override applies consistently to workspace, repository, global-targeted, and global-shared lifecycle hooks. Zero, negative, fractional, non-numeric, and out-of-range values fail validation before hook discovery or lifecycle mutation. See the [Hooks workflow](/workflows/hooks/) for timing and failure behavior.
 
-## Legacy base-branch migration
+## Removed create-only base migration
 
-`defaults.create.baseBranch` remains a deprecated create-only compatibility input. Move its value to root `baseBranch` to opt into the shared configured create/clone policy:
+`defaults.create.baseBranch` is unsupported. Move a workspace-wide value to root `baseBranch`, or use `meta.baseBranch` / `repos.<name>.baseBranch` for a repository-specific value:
 
 ```json
 {
@@ -173,7 +175,7 @@ The configured override applies consistently to workspace, repository, global-ta
 }
 ```
 
-Until migration, configured create can use the legacy value and emits one actionable deprecation diagnostic, while clone keeps remote-default behavior. If root `baseBranch` and `defaults.create.baseBranch` have different values, validation fails and names both paths rather than silently choosing. If they match, the canonical root value applies to create and clone and Arashi still emits the migration diagnostic. The configuration file is not rewritten automatically.
+Arashi rejects the removed property even when a canonical value is also present. Validation identifies the exact path and migration targets before repository discovery, hook discovery or execution, network access, managed-ignore reconciliation, or Git/filesystem mutation. Other `defaults.create` launch and switch properties remain supported.
 
 ## Legacy create launch migration
 

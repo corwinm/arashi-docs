@@ -16,6 +16,7 @@ Understand branch and repository state before pulling, syncing, or removing work
 - Highlights mismatches and potential issues.
 - Keeps intentionally omitted child repositories out of the default and short human views for partial coordinated worktrees.
 - Provides a quick health check for current feature work.
+- Reports current-upstream, configured-base, and detected remote-default relationships independently.
 
 ## Usage
 
@@ -65,6 +66,8 @@ aw status --json
 - Use `--verbose` or `--json` when you need to see every configured repository, including omitted or missing child repositories.
 - Non-zero exit codes are returned if repository status checks fail.
 - JSON mode is useful for agents and scripts that need to decide whether repositories are clean, dirty, behind, or ahead without scraping text.
+- In configured mode, root `baseBranch` applies as the fallback and meta/child overrides apply only to their repositories. Status retains upstream and remote-default reporting while adding configured-base drift or unavailability. When base and default resolve to the same remote ref, human output combines the line while JSON preserves both roles without duplicate refresh/comparison work.
+- Standalone status has no persisted configured-base policy and remains unchanged.
 
 ## Agent Notes
 

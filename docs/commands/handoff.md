@@ -54,7 +54,7 @@ The Markdown report includes:
 
 - workspace path and branch
 - current repository context when run from a child repo
-- per-repository status derived from Arashi workspace inspection
+- per-repository status derived from Arashi workspace inspection, including configured-base lag/unavailability
 - repositories needing attention, including dirty repositories and repository errors
 - supplied related links, validation evidence, remaining work, risks or blockers, and suggested next commands
 
@@ -70,12 +70,14 @@ On success, `data` includes:
 
 - `workspace`: workspace path and branch
 - `currentRepository`: the managed repository containing the current directory, when detected
-- `repositories`: per-repository branch, file status, warning, and clean/dirty/error state
+- `repositories`: per-repository upstream, configured-base, remote-default, file status, warning, and clean/dirty/error state
 - `summary`: clean, dirty/error, total, and touched counts
 - `context`: supplied links, validations, todos, risks, and next commands
 - `generatedNextCommands`: conservative follow-up commands such as `aw status`
 
 If the command runs outside a workspace, JSON mode returns `ok: false` with `error.code: "NOT_IN_WORKSPACE"`.
+
+Configured handoffs preserve upstream, configured-base, and remote-default relationships. When base and default identify the same target, Markdown uses one combined diagnostic while JSON retains both role records. Standalone handoff remains unchanged.
 
 ## Deprecated compatibility
 

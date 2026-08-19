@@ -17,6 +17,7 @@ Update repositories in your workspace without entering each one manually.
 - Reloads workspace configuration after a selected parent repository is updated.
 - Reconciles managed ignore rules for the active configured paths before continuing child operations.
 - Reports which repositories succeeded or failed.
+- Pulls each repository's refreshed configured remote base into its current branch when base policy exists.
 
 ## Usage
 
@@ -53,6 +54,8 @@ aw pull --only api --json
 ## Notes
 
 - Repositories with no remote changes are skipped.
+- Root `baseBranch` is the configured fallback; `meta.baseBranch` and `repos.<name>.baseBranch` override it for their owning repositories. Pull resolves and fetches that branch on the selected remote, compares it with `HEAD`, and uses the existing rollback-protected merge pull. It does not silently substitute the current upstream or remote default when a configured base is unavailable.
+- When no effective base is configured, pull preserves its current-upstream behavior. A selected parent update reloads configuration before later child base resolution, so children use the active post-pull policy.
 - `--group` targets configured semantic sets; with `--only`, it narrows the explicit repository selection by intersection.
 - The parent repository follows the original `--only` and `--group` filters. It runs first only when those filters select it; `pull` does not pull the parent solely to refresh configuration.
 - After a selected parent pull succeeds, Arashi reloads `.arashi/config.json`, reapplies the original filters to the post-pull repositories and groups, reconciles the resulting `reposDir` and `worktreesDir`, and then pulls the selected children. An unfiltered run uses all children in the reloaded config.
