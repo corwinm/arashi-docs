@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Dedicated documentation site for Arashi",
-  "packageManager": "pnpm@11.20.0",
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "sync:content": "node scripts/sync-docs-content.ts && node scripts/generate-agent-exports.ts",
     "dev": "pnpm sync:content && astro dev",

@@ -8,7 +8,7 @@ Dedicated documentation site repository for Arashi.
 
 ## Local setup
 
-This project pins Node.js 24.18.0, which satisfies pnpm 11's Node.js 22.13 minimum, and pnpm 11.20.0. With nvm, select the pinned development runtime first:
+This project pins Node.js 24.18.0, which satisfies pnpm 11's Node.js 22.13 minimum, and pnpm 11.22.0. With nvm, select the pinned development runtime first:
 
 ```bash
 nvm use
