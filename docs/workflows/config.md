@@ -31,6 +31,12 @@ Run `aw doctor` to inspect missing rules, stale Arashi-owned entries, unsafe pat
 
 From a linked parent worktree, `aw add` keeps the canonical clone under the primary parent and creates the active child worktree on the matching branch. See the [add command reference](/commands/add/).
 
+## New-repository onboarding scope
+
+Eligible human `aw add` runs can configure repository-owned `copy`, `symlink`, and four repository lifecycle hooks only: `pre-create`, `post-create`, `pre-remove`, and `post-remove`. Required `path` and `gitUrl` stay owned by add, and workspace, meta, defaults, groups, timeouts, and unrelated schema fields are not onboarding choices. Use the [optional repository setup guide](/commands/add/#optional-repository-setup) for prompts and transaction behavior, [Worktree file materialization](#worktree-file-materialization) for canonical path semantics, and [Hooks](/workflows/hooks/#add-onboarding-active-scripts) for active source paths.
+
+This flow configures only the repository being added. Editing an existing registered repository or other workspace settings remains follow-up [issue #316](https://github.com/corwinm/arashi-arashi/issues/316); until then, edit `.arashi/config.json` directly and validate it with the owning command guidance.
+
 ## SSH Alias Portability
 
 SSH aliases are machine-local. A `gitUrl` such as `git@work-github:acme/api.git` works only on machines that define the same alias with compatible OpenSSH routing. Arashi stores and passes the remote exactly; it does not synchronize aliases, keys, identity files, or SSH settings.

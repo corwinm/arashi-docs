@@ -5,6 +5,7 @@
   "check-executable-alias-docs.ts",
   "check-homepage-demo-docs.ts",
   "check-inline-lifecycle-hook-docs.ts",
+  "check-interactive-add-onboarding-docs.ts",
   "check-kitty-session-docs.ts",
   "check-lifecycle-hook-docs.ts",
   "check-managed-ignore-docs.ts",

@@ -43,6 +43,14 @@ Inline snippets are non-portable unless compatible interpreter variants are supp
 
 Keep inline commands fail-fast so a later success does not mask an earlier failure. Inline snippets must not contain secrets, tokens, or passwords: configuration is shared and outcomes, previews, diagnostics, and logs do not reveal snippet or command text.
 
+## Add-onboarding active scripts
+
+Optional `aw add` onboarding offers exactly one source per selected repository lifecycle: a user-supplied inline command or an editable active native script. Create scripts belong to the active configuration root at `.arashi/hooks/<lifecycle>.<repo><ext>`. Remove scripts belong to the runtime-resolved configured target repository at `.arashi/hooks/<lifecycle><ext>`; linked remove uses the active child worktree, not the canonical clone.
+
+Generated scaffolds are safe silent no-ops. POSIX creates one executable `.sh` with mode `0755`; Windows creates one `.ps1` that is runtime-ready under the normal executor. These are active canonical files, not `.example` files: no rename/chmod activation is required, and Arashi never overwrites an existing active script. Edit an installed script in place to add behavior.
+
+The final sanitized summary never includes inline bodies, generated contents, or partial command text. It reports only lifecycle/interpreter presence for inline choices and lifecycle/path/executable state for file choices. The [add command](/commands/add/#optional-repository-setup) owns prompt eligibility, confirmation, and rollback; the discovery matrix below owns runtime lookup.
+
 ## Lifecycle matrix
 
 | Mode and lifecycle | Discovery and multiplicity | Timing | Working directory | Failure behavior |
