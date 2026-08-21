@@ -180,7 +180,7 @@ aw switch feature-docs-bootstrap
 aw status
 ```
 
-On an eligible human terminal, `aw add` offers repository-owned setup only when stdin and stdout are TTYs. The top-level setup prompt defaults to no, and declining preserves the minimal `path` and `gitUrl` add. `--json`, `--force`, and non-TTY runs preserve minimal add without onboarding. The optional fields are only `copy`, `symlink`, and four repository lifecycle hooks: `pre-create`, `post-create`, `pre-remove`, and `post-remove`. See the [add command](/commands/add/#optional-repository-setup) for the concise flow; editing an existing registered repository remains follow-up [issue #316](https://github.com/corwinm/arashi-arashi/issues/316).
+When run interactively, `aw add` walks you through repository configuration and hook initialization.
 
 New managed worktrees are created under the persisted `worktreesDir`: `.arashi/worktrees` for the non-bare omitted default or the parent of a bare repository for its `..` omitted default.
 Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `aw shell install` if you want `aw switch` to support parent-shell `cd` behavior.

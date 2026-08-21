@@ -49,19 +49,9 @@ aw add https://github.com/your-org/web.git --name frontend
 aw add git@github.com:your-org/data.git --json
 ```
 
-## Optional repository setup
+## Repository setup
 
-After cloning and inspecting the new repository, `aw add` can offer repository-owned setup when both stdin and stdout are TTYs. The top-level setup prompt defaults to no. Declining preserves the minimal `path` and `gitUrl` add; `--json`, `--force`, and non-TTY runs preserve minimal add without discovery or onboarding prompts.
-
-Onboarding is limited to `copy`, `symlink`, and four repository lifecycle hooks: `pre-create`, `post-create`, `pre-remove`, and `post-remove`. Suggestions remain unselected; a bounded root-only scan provides suggestions, and Arashi never reads or displays candidate contents. Manual entries receive canonical path validation. A manual dependency-directory choice is retained only after a warning; review the [configuration materialization guidance](/workflows/config/#worktree-file-materialization) before sharing dependencies. Setup-script context never prefills or infers a hook command.
-
-For each selected lifecycle, choose exactly one source: a user-supplied inline command or an editable active native script. Create scripts use the active configuration root at `.arashi/hooks/<lifecycle>.<repo><ext>`. Remove scripts use the runtime-resolved target repository at `.arashi/hooks/<lifecycle><ext>`; in linked mode, remove resolves to the active child rather than the canonical clone. See the [Hooks workflow](/workflows/hooks/#add-onboarding-active-scripts) for source ownership and runtime discovery details.
-
-A generated file is a safe silent no-op that is ready immediately: POSIX uses one executable `.sh` with mode `0755`, and Windows creates one `.ps1` that is runtime-ready. Arashi never overwrites an existing active file. There is no rename/chmod activation step; edit the installed file in place when ready. The sanitized summary never includes inline bodies or generated contents.
-
-The pure Node/Bun installation boundary uses private complete-file preparation and atomic no-replace publication; it does not require Rust or a native helper. It rejects observable symlink traversal and performs pre/post ancestor-identity validation around publication. These checks provide practical safety, but a narrow residual race remains where another local process with workspace write access substitutes an ancestor between validation and publication.
-
-Onboarding performs no prompt-time writes. One final sanitized confirmation authorizes one config save plus transaction-owned scripts. Declining that final confirmation or pressing Ctrl+C after opting in is cancellation, so `add` uses its rollback boundary instead of preserving a partial setup. Top-level decline is different: it completes the minimal add. Editing an existing registered repository remains follow-up [issue #316](https://github.com/corwinm/arashi-arashi/issues/316), not an `aw add` workflow.
+When run interactively, `aw add` walks you through repository configuration and hook initialization.
 
 ## SSH Remote Forms
 
