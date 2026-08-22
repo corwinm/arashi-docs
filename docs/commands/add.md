@@ -51,7 +51,7 @@ aw add git@github.com:your-org/data.git --json
 
 ## Repository setup
 
-When run interactively, `aw add` walks you through repository configuration and hook initialization.
+On an eligible human terminal, `aw add` offers optional repository configuration and hook initialization after it inspects the cloned repository and setup state. The offer defaults to **No**. `--force`, `--json`, or a run without both terminal stdin and stdout suppresses the offer and persists only the minimal repository entry.
 
 ## SSH Remote Forms
 
