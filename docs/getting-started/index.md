@@ -180,6 +180,8 @@ aw switch feature-docs-bootstrap
 aw status
 ```
 
+An eligible interactive `aw add` can offer optional repository setup before it completes. See [Repository setup in the add command reference](/commands/add/#repository-setup) for eligibility, suppression behavior, and what the opt-in configures.
+
 New managed worktrees are created under the persisted `worktreesDir`: `.arashi/worktrees` for the non-bare omitted default or the parent of a bare repository for its `..` omitted default.
 Set command defaults in `.arashi/config.json` (`defaults.create`, `defaults.switch`) to define preferred switch and launch behavior, and use `aw shell install` if you want `aw switch` to support parent-shell `cd` behavior.
 
