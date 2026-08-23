@@ -45,6 +45,7 @@ const coreOrder = [
   "commands/init.md",
   "commands/clone.md",
   "commands/add.md",
+  "commands/configure.md",
   "commands/update.md",
   "contributing/index.md"
 ];
@@ -64,6 +65,7 @@ const requiredRoutes = [
   "commands.md",
   "commands/exec.md",
   "commands/status.md",
+  "commands/configure.md",
   "commands/completion.md",
   "contributing.md"
 ];

@@ -13,7 +13,7 @@ Use this section when you want command-level guidance.
 - [init](/commands/init/) - initialize a workspace.
 - [add](/commands/add/) - add a repository to management.
 - [clone](/commands/clone/) - clone missing configured repositories.
-- [`configure`](/workflows/config/#inspect-and-change-supported-settings) - inspect supported configuration or make a confirmed TTY edit.
+- [`configure`](/commands/configure/) - inspect supported configuration or make a confirmed TTY edit.
 - [create](/commands/create/) - create a coordinated or standalone worktree.
 - [move](/commands/move/) - move uncommitted changes between worktrees.
 - [doctor](/commands/doctor/) - diagnose workspace health without making changes.

@@ -141,9 +141,11 @@ const owningSurfaces = [
   "public/llms-full.txt",
 ] as const;
 const discoveryRequirements = new Map<string, RegExp[]>([
-  ["docs/commands/index.md", [/`configure`/i, /\/workflows\/config\//i]],
+  ["docs/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
+  ["docs/commands/configure.md", [/aw configure/i, /--json/i, /\/workflows\/config\//i]],
   ["docs/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/workflows\/config\//i]],
-  ["public/commands/index.md", [/`configure`/i, /\/workflows\/config\//i]],
+  ["public/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
+  ["public/commands/configure.md", [/aw configure/i, /--json/i, /\/workflows\/config\//i]],
   ["public/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/workflows\/config\//i]],
 ]);
 
