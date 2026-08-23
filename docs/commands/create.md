@@ -99,6 +99,12 @@ aw create feature-auth-refresh --move-changes
 aw create feature-auth-refresh --no-hook-input
 ```
 
+## Worktree locations
+
+Configured non-bare workspaces place the parent worktree at `<worktreesDir>/<branch>`. Configured bare workspaces use a repository namespace because their default `worktreesDir` is the shared parent directory: a bare source at `/projects/example.git` creates branch `feature/auth` at `/projects/example/feature/auth`. A conventional terminal `.git` suffix is omitted from the fallback namespace.
+
+Standalone mode remains `<repository>/.worktrees/<branch>`. Coordinated child repositories are nested beneath the exact parent destination using their configured paths.
+
 ## Choosing a base branch
 
 Use `--base <branch>` for an invocation-wide override and repeat `--repo-base <repository=branch>` for repository-specific overrides. The reserved `@meta` selector identifies the configured meta repository. Shared precedence is **repository CLI > invocation CLI > repository config > workspace config**. Repository config means `meta.baseBranch` or `repos.<name>.baseBranch`, and workspace config means root `baseBranch`. The removed `defaults.create.baseBranch` property is rejected with guidance to use the canonical root or repository-specific policy before hooks or mutation.
