@@ -9,6 +9,33 @@ sidebar:
 
 Use this guide after `aw init` when you want Arashi to create and switch worktrees in a repeatable way without repeating flags on every command.
 
+## Inspect And Change Supported Settings
+
+Run `aw configure` in a configured workspace to inspect supported settings or make a human-confirmed change. Interactive editing requires both stdin and stdout to be a TTY.
+
+The finite product-owned descriptor path set is exact and is never generated from the schema:
+
+- Workspace settings: `reposDir`, `worktreesDir`, `baseBranch`, and `sync.timeoutSeconds`.
+- Workspace lifecycle hooks: `hooks.timeout`, `hooks.scripts.pre-create`, `hooks.scripts.post-create`, `hooks.scripts.pre-remove`, and `hooks.scripts.post-remove`.
+- Command defaults: `defaults.create.switch`, `defaults.create.launch`, and `defaults.switch.mode`.
+- Editor defaults: `defaults.editors.vscode.create.switch`, `defaults.editors.vscode.create.launch`, `defaults.editors.cursor.create.switch`, `defaults.editors.cursor.create.launch`, `defaults.editors.kiro.create.switch`, and `defaults.editors.kiro.create.launch`.
+- Meta-repository policy: `meta.baseBranch`.
+- Existing repository settings: `repos.<name>.groups`, `repos.<name>.baseBranch`, `repos.<name>.copy`, `repos.<name>.symlink`, `repos.<name>.hooks.pre-create`, `repos.<name>.hooks.post-create`, `repos.<name>.hooks.pre-remove`, and `repos.<name>.hooks.post-remove`. `repos.<name>.path` and `repos.<name>.gitUrl` identify the repository and are not editable.
+
+Command and editor defaults remain separate scopes even when they control similar behavior. **Configured** means a persisted field is present; **Not configured** means the field is absent or not persisted. **Effective** is shown separately for inherited or built-in values and never persists a value implicitly. These state labels are not runtime health; use `aw doctor` for diagnostics.
+
+After selecting a setting, choose **Keep**, **Edit**, or **Clear**. Keep preserves the persisted field; Edit validates and replaces it; Clear removes an optional persisted field. Required `reposDir` cannot be cleared, and empty input is not clear.
+
+Existing active native files are external state: configure never clears, deletes, or overwrites them and offers **Keep/skip**. This boundary applies even when another setting is saved; the retained file stays byte-identical.
+
+Visible plaintext command entry and the exact final preview are the only views that include inline command bodies. Selection screens, setting lists, ordinary views, diagnostics, cancellation, JSON, and the generated active-file plan remain body-free without inline command bodies. At final confirmation, the exact serialized candidate JSON contains the same bytes that save will persist, including plaintext persisted inline commands. A separate active-file plan lists lifecycle, exact path, safe-no-op state, and runtime readiness, and does not show contents. Generated-file state and contents are not inserted into the JSON preview. Declining or interrupting the confirmation writes neither configuration nor active files.
+
+When serialized bytes are unchanged and there is no active-file plan, configure exits before final confirmation or save. Keep and skip therefore remain true no-op actions rather than rewrites.
+
+Human and JSON modes both require a configured valid workspace. Missing configuration, standalone context, and invalid configuration fail before prompt or inspection; configure does not initialize or repair configuration. Human editing requires stdin and stdout to be TTYs; `aw configure --json` never prompts and never mutates, and provides one stable sanitized inspection document. Non-TTY `aw configure` without `--json` fails instead of editing, and the command does not provide broad non-interactive mutation flags such as `--set` or `--unset`.
+
+`aw configure` is not a schema editor. It preserves compatible fields outside the supported list but does not offer controls for them. To change an unsupported canonical field, directly edit `.arashi/config.json`, then use Arashi's normal validation and diagnostics before relying on the change.
+
 ## Managed Paths And Ignore Scope
 
 The shared `.arashi/config.json` defines `reposDir` and `worktreesDir`. For safe repository-relative subdirectories, Arashi reconciles those managed paths with Git during `init`, `pull`, `clone`, `add`, and `create` before creating repositories or worktrees.
