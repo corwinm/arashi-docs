@@ -40,7 +40,12 @@ const sourceRequirements = new Map<string, string[]>([
   ["docs/commands/pull.md", ["reloads", "original filters", "aw clone", "managed ignore"]],
   [
     "docs/commands/clone.md",
-    ["before materializing", "repository-local default", "partial result"]
+    [
+      "before materializing",
+      "repository-local default",
+      "partial result",
+      ".arashi/worktrees/feature/auth-refresh"
+    ]
   ],
   [
     "docs/commands/add.md",
@@ -88,7 +93,10 @@ const generatedRequirements = new Map<string, string[]>([
     ]
   ],
   ["public/commands/pull.md", ["original filters", "managed ignore"]],
-  ["public/commands/clone.md", ["repository-local default", "partial result"]],
+  [
+    "public/commands/clone.md",
+    ["repository-local default", "partial result", ".arashi/worktrees/feature/auth-refresh"]
+  ],
   [
     "public/commands/add.md",
     ["global Git", "linked parent worktree", "canonical clone", "active child worktree", "single active-workspace clone", "Do not clone the child twice manually"]
@@ -119,7 +127,8 @@ const generatedRequirements = new Map<string, string[]>([
       "canonical clone",
       "active child worktree",
       "single active-workspace clone",
-      "Do not clone the child twice manually"
+      "Do not clone the child twice manually",
+      ".arashi/worktrees/feature/auth-refresh"
     ]
   ]
 ]);
