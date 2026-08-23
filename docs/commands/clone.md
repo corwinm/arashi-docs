@@ -43,7 +43,7 @@ aw clone
 aw clone --all
 
 # Complete a partial coordinated worktree from inside it
-cd .arashi/worktrees/my-meta-feature-auth-refresh
+cd .arashi/worktrees/feature/auth-refresh
 aw clone
 
 # Clone every missing repository from a release base
