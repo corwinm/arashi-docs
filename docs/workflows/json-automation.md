@@ -154,6 +154,7 @@ Configured inline hooks preserve the same one-document automation contract. Remo
 | --- | --- | --- |
 | `add` | Supported | Adds repository configuration and returns a structured result. |
 | `clone` | Supported with `--all` | `aw clone --json` requires `--all`; interactive selection is not JSON-compatible. |
+| `configure` | Inspection only | Returns a sanitized supported-field view without prompting or mutation. See the [configuration workflow](/workflows/config/#inspect-and-change-supported-settings). |
 | `create` | Supported for non-interactive create operations | Use explicit flags such as `--only`, `--group`, `--no-launch`, and `--no-switch`. Interactive selection, launch, or shell switching modes are not JSON-compatible. |
 | `doctor` | Supported | Best first diagnostic for agents because it is non-mutating and returns stable findings. |
 | `exec` | Supported | Runs the child command after `--` and returns per-repository stdout, stderr, exit status, and summary data. |
