@@ -130,6 +130,20 @@ For batch commands such as `pull`, `sync`, `setup`, and `exec`, inspect both the
 
 Prefer branching on `error.code` instead of parsing `message`. Messages are written for humans; codes and details are the stable automation surface.
 
+## Delete Plans, Results, And Retries
+
+`aw delete <repository>` targets one exact configured repository key. Human discovery is intentionally different: with `aw delete` omitted, a human TTY opens a checkbox to select one or more keys. Non-TTY and JSON use with the target omitted fails selection-required and requires an explicit key; neither `--force` nor `--dry-run` chooses one.
+
+Preview an explicit dependency with `aw delete <repository> --dry-run --json`. The one stdout document places the accepted plan at `data.plan` and sets `data.result: null`. Mutation uses `aw delete <repository> --force --json`, which never prompts.
+
+On partial failure, inspect `error.details.plan` and `error.details.result` as the accepted scope and phase ledger. An explicit-key JSON partial failure keeps its item ledger and phase ledger within one selected repository; it never describes batch repositories as earlier, failing, or later. Inspect the ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback. Branch on structured fields and the process exit status instead of parsing stderr or human summaries.
+
+Items are deterministic and ordered by phase. Linked worktrees are deepest physical descendant first with normalized-path bytewise ties; refs, hooks, receipt records, and configuration records use canonical bytewise identity order within their phase. The plan and result retain the same item IDs and order. Item states are exactly `planned`, `completed`, `preserved`, `blocked`, `failed`, and `not-started`.
+
+Phases use this exact closed order: `provenance`, `worktrees`, `metadata`, `canonical-clone`, `workspace-hooks`, `configuration`, `verification`. Phase states are exactly `not-started`, `started`, `completed`, and `failed`.
+
+Hook logical identity, path, or status may appear without file contents or inline command bodies. This secrecy boundary applies to plans, successful results, warnings, and error details.
+
 ## Stdout And Stderr Guarantees
 
 In JSON mode:
@@ -156,6 +170,7 @@ Configured inline hooks preserve the same one-document automation contract. Remo
 | `clone` | Supported with `--all` | `aw clone --json` requires `--all`; interactive selection is not JSON-compatible. |
 | `configure` | Inspection only | Returns a sanitized supported-field view without prompting or mutation. See the [configuration workflow](/workflows/config/#inspect-and-change-supported-settings). |
 | `create` | Supported for non-interactive create operations | Use explicit flags such as `--only`, `--group`, `--no-launch`, and `--no-switch`. Interactive selection, launch, or shell switching modes are not JSON-compatible. |
+| `delete` | Supported with an explicit configured key | Use `--dry-run --json` to inspect `data.plan`; mutation also requires `--force` and never prompts. |
 | `doctor` | Supported | Best first diagnostic for agents because it is non-mutating and returns stable findings. |
 | `exec` | Supported | Runs the child command after `--` and returns per-repository stdout, stderr, exit status, and summary data. |
 | `init` | Supported | Use `--dry-run --json` to preview initialization without writing files. |
@@ -215,6 +230,7 @@ For lifecycle commands, inspect `managedIgnore` warnings and final state. Never 
 - [status](/commands/status/) for repository state envelopes
 - [exec](/commands/exec/) for per-repository child command results
 - [create](/commands/create/) for non-interactive coordinated worktree creation
+- [delete](/commands/delete/) for configured dependency plans, preservation boundaries, and exact safe retries
 - [remove](/commands/remove/) for dry-run cleanup previews and explicit target removal
 - [pull](/commands/pull/) and [sync](/commands/sync/) for coordinated repository updates
 - [update](/commands/update/) for check and dry-run installer flows

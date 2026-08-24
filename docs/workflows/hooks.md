@@ -111,6 +111,10 @@ if /I not "%answer%"=="y" exit /b 1
 
 Lifecycle hooks are trusted executable programs, but prompt answers are not a secret-storage channel. Do not enter passwords, tokens, or other secrets into hook prompts, and do not write hooks that persist answers as credentials.
 
+## Configured Repository Deletion
+
+`aw delete` does not execute create/remove lifecycle hooks as cleanup actions; it may remove only the canonical repository-targeted `pre-create.<repository>` and `post-create.<repository>` hook files and their concrete templates when ownership is unambiguous. Shared hooks and user-global hooks are preserved, as are workspace-wide hook files and unrelated repository-targeted hooks. Plans and results may name logical identity, path, and status, but never include hook file contents or inline command bodies. See the [delete command](/commands/delete/) for the complete safety and retry workflow.
+
 ## Discovery by mode and platform
 
 Configured create discovers either inline configuration or native files as alternatives at the workspace and repository-specific logical locations shown above. It does not activate similarly named repository-local or user-global create scripts.
