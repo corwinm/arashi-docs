@@ -123,44 +123,6 @@ Download and verify the complete set from one GitHub release. Verify all seven p
 - If installation reports an unrelated existing `aw` command on PATH or at the destination, inspect it and deliberately move or remove it before retrying. Arashi does not overwrite or shadow unrelated commands.
 - A user-created shell alias for `aw` is an unsupported interim workaround for older releases, not equivalent to the supported executable. Upgrade to a release that provides both names, then remove the workaround so shell integration and completion can manage `aw` safely.
 
-## Remove Arashi
-
-Start with [Uninstall Arashi](/commands/uninstall/) and inspect the plan with `aw uninstall --dry-run`. Proven package-manager installs delegate to their one detected owner. A current official direct install removes only files and PATH state proven by its schema-v2 manifest. Schema-v1 or unmanifested legacy direct installs must be refreshed with the current official installer over the same install directory before retrying. Manual, modified, malformed, or ambiguous installations are preserved and refused rather than guessed at.
-
-Use `aw uninstall` for the product, or [remove shell integration only](/commands/shell-uninstall/) with `aw shell uninstall`. Both interactive commands default to no; use `--yes` only after inspection. Neither removal command supports JSON or force behavior.
-
-Uninstall preserves workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, Git metadata, unrelated profile content, unrelated install-directory files, and unrelated user state. It does not recursively delete an Arashi directory and does not guarantee rollback.
-
-### Recover when the CLI cannot run
-
-Current direct-install releases include standalone POSIX and PowerShell helpers. Download the matching helper to a unique temporary file, inspect it, and run dry-run before explicit consent. The helper validates the local manifest itself; downloading it does not prove that an installation is owned.
-
-On POSIX, the deterministic default install directory is `$HOME/.arashi/bin`. Supply `--install-dir` when the original install used an exact non-default install directory:
-
-```bash
-helper="$(mktemp "${TMPDIR:-/tmp}/arashi-uninstall.XXXXXX")"
-curl -fsSL https://arashi.haphazard.dev/uninstall -o "$helper"
-less "$helper"
-sh "$helper" --install-dir /absolute/path/to/arashi-bin --dry-run
-sh "$helper" --install-dir /absolute/path/to/arashi-bin --yes
-rm -f "$helper"
-```
-
-In PowerShell, the deterministic default is `$HOME\.arashi\bin`. Use the exact non-default install directory with `-InstallDir`, then `-DryRun` before `-Yes`:
-
-```powershell
-$helper = Join-Path ([System.IO.Path]::GetTempPath()) ("arashi-uninstall-" + [guid]::NewGuid() + ".ps1")
-Invoke-WebRequest https://arashi.haphazard.dev/uninstall.ps1 -OutFile $helper
-Get-Content -LiteralPath $helper
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File $helper -InstallDir "D:\Tools\Arashi\bin" -DryRun
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File $helper -InstallDir "D:\Tools\Arashi\bin" -Yes
-Remove-Item -LiteralPath $helper -ErrorAction SilentlyContinue
-```
-
-`-ExecutionPolicy Bypass` applies only to the recovery subprocess; it does not change the machine or user execution-policy configuration.
-
-Omit the install-directory option only for the deterministic platform default. Never infer a custom directory from PATH or search the filesystem for one. If manifest validation refuses, preserve the installation and use the bounded remediation printed by the helper.
-
 ## First Workflow
 
 Arashi is designed to coordinate branches and worktrees across the repositories in a configured meta-repo. Start with the path that matches your workspace.

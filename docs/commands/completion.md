@@ -35,7 +35,11 @@ command aw completion fish | source
 aw completion powershell | Out-String | Invoke-Expression
 ```
 
-Use `command aw` in activation code so completion generation bypasses any installed `arashi` wrapper function.
+In Bash, Zsh, and Fish, use `command aw` in activation code so completion generation bypasses any installed shell wrapper function. Managed shell integration is not installed in PowerShell, so the normal PowerShell example invokes `aw` directly. If a user-defined PowerShell alias or function shadows the executable, bypass it explicitly:
+
+```powershell
+& (Get-Command aw -CommandType Application).Source completion powershell | Out-String | Invoke-Expression
+```
 
 ## Candidate Behavior
 
@@ -49,10 +53,10 @@ The canonical completion model retains candidate descriptions for every supporte
 
 ## Troubleshooting
 
-- If static suggestions are missing, confirm `command aw completion <shell>` prints a script, source it again, and restart the shell if needed.
+- If static suggestions are missing in Bash, Zsh, or Fish, confirm `command aw completion <shell>` prints a script, source it again, and restart the shell if needed. In PowerShell, run the PowerShell activation example again.
 - Outside a workspace, when local discovery fails, or when the 200 ms whole-query budget expires, completion silently returns no dynamic candidates while static command and option completion keeps working.
 - Empty dynamic results do not trigger a network fallback: completion does not perform network requests or mutate workspace state.
-- If an installed shell wrapper behaves differently from direct invocation, keep `command aw` in the completion activation line so generation bypasses the wrapper.
+- In Bash, Zsh, or Fish, if an installed shell wrapper behaves differently from direct invocation, keep `command aw` in the completion activation line so generation bypasses the wrapper.
 
 ## Related
 

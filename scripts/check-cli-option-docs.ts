@@ -20,12 +20,11 @@ const aliasRequirements = new Map<string, string[]>([
   ["docs/commands/push.md", ["`-g, --group", "`-j, --json`", "`-n, --dry-run`", "`-o, --only"]],
   ["docs/commands/remove.md", ["`-f, --force`", "`-j, --json`", "`-n, --dry-run`"]],
   ["docs/commands/setup.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
-  ["docs/commands/shell.md", ["`-j, --json`"]],
+  ["docs/commands/shell.md", ["`-j, --json`", "`-n, --dry-run`", "`-y, --yes`"]],
   ["docs/commands/status.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
   ["docs/commands/switch.md", ["`-j, --json`"]],
   ["docs/commands/sync.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
   ["docs/commands/uninstall.md", ["`-n, --dry-run`", "`-y, --yes`"]],
-  ["docs/commands/shell-uninstall.md", ["`-n, --dry-run`", "`-y, --yes`"]],
   ["docs/commands/update.md", ["`-j, --json`", "`-n, --dry-run`"]],
   ["docs/getting-started/index.md", ["`aw install -j`", "`aw install --json`"]]
 ]);
@@ -107,24 +106,7 @@ const semanticRequirements = new Map<string, string[]>([
       "does not promise rollback",
       "never recursively deletes the install directory",
       "workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, Git metadata",
-      "unrelated profile bytes and unrelated install-directory files"
-    ]
-  ],
-  [
-    "docs/commands/shell-uninstall.md",
-    [
-      "exactly one complete managed shell block",
-      "preserves every byte outside",
-      "missing managed markers are a no-op",
-      "malformed or ambiguous markers",
-      "executable files, PATH, manifests, workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, and Git metadata"
-    ]
-  ],
-  [
-    "docs/getting-started/index.md",
-    [
-      "[Uninstall Arashi](/commands/uninstall/)",
-      "[remove shell integration only](/commands/shell-uninstall/)",
+      "unrelated profile bytes and unrelated install-directory files",
       "https://arashi.haphazard.dev/uninstall",
       "https://arashi.haphazard.dev/uninstall.ps1",
       "unique temporary file",
@@ -135,6 +117,16 @@ const semanticRequirements = new Map<string, string[]>([
       "`-Yes`",
       "-ExecutionPolicy Bypass",
       "does not change the machine or user execution-policy configuration"
+    ]
+  ],
+  [
+    "docs/commands/shell.md",
+    [
+      "exactly one complete managed shell block",
+      "preserves every byte outside",
+      "missing managed markers are a no-op",
+      "malformed or ambiguous markers",
+      "executable files, PATH, manifests, workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, and Git metadata"
     ]
   ],
   [
@@ -191,9 +183,9 @@ if (errors.length > 0) {
 function checkUninstallPolicy(): void {
   for (const relativePath of [
     "docs/commands/uninstall.md",
-    "docs/commands/shell-uninstall.md",
+    "docs/commands/shell.md",
     "public/commands/uninstall.md",
-    "public/commands/shell-uninstall.md",
+    "public/commands/shell.md",
   ]) {
     const content = read(relativePath);
     if (content === null) continue;

@@ -48,7 +48,6 @@ const coreOrder = [
   "commands/configure.md",
   "commands/update.md",
   "commands/uninstall.md",
-  "commands/shell-uninstall.md",
   "contributing/index.md"
 ];
 
@@ -70,7 +69,6 @@ const requiredRoutes = [
   "commands/configure.md",
   "commands/completion.md",
   "commands/uninstall.md",
-  "commands/shell-uninstall.md",
   "contributing.md"
 ];
 

@@ -39,6 +39,34 @@ It strictly preserves workspaces, repositories, worktrees, project files, config
 
 The command does not support `--json` or `--force`, does not automatically migrate schema-v1 state, and does not promise rollback. Its recovery boundary is complete preflight, manifest-last cleanup, and safe reruns for exact manifest-listed files already absent after an interruption.
 
-If the CLI cannot run, follow the [bundled helper recovery steps](/getting-started/#recover-when-the-cli-cannot-run). The downloaded helper still validates the local schema-v2 manifest; the route itself is not ownership proof.
+## Recover When the CLI Cannot Run
 
-To remove only managed shell integration, use [`aw shell uninstall`](/commands/shell-uninstall/).
+Current direct-install releases include standalone POSIX and PowerShell helpers. Download the matching helper to a unique temporary file, inspect it, and run dry-run before explicit consent. The helper validates the local manifest itself; downloading it does not prove that an installation is owned.
+
+On POSIX, the deterministic default install directory is `$HOME/.arashi/bin`. Supply `--install-dir` when the original install used an exact non-default install directory:
+
+```bash
+helper="$(mktemp "${TMPDIR:-/tmp}/arashi-uninstall.XXXXXX")"
+curl -fsSL https://arashi.haphazard.dev/uninstall -o "$helper"
+less "$helper"
+bash "$helper" --install-dir /absolute/path/to/arashi-bin --dry-run
+bash "$helper" --install-dir /absolute/path/to/arashi-bin --yes
+rm -f "$helper"
+```
+
+In PowerShell, the deterministic default is `$HOME\.arashi\bin`. Use the exact non-default install directory with `-InstallDir`, then `-DryRun` before `-Yes`:
+
+```powershell
+$helper = Join-Path ([System.IO.Path]::GetTempPath()) ("arashi-uninstall-" + [guid]::NewGuid() + ".ps1")
+Invoke-WebRequest https://arashi.haphazard.dev/uninstall.ps1 -OutFile $helper
+Get-Content -LiteralPath $helper
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $helper -InstallDir "D:\Tools\Arashi\bin" -DryRun
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $helper -InstallDir "D:\Tools\Arashi\bin" -Yes
+Remove-Item -LiteralPath $helper -ErrorAction SilentlyContinue
+```
+
+`-ExecutionPolicy Bypass` applies only to the recovery subprocess; it does not change the machine or user execution-policy configuration.
+
+Omit the install-directory option only for the deterministic platform default. Never infer a custom directory from PATH or search the filesystem for one. If manifest validation refuses, preserve the installation and use the bounded remediation printed by the helper.
+
+To remove only managed shell integration, use [`aw shell uninstall`](/commands/shell/#uninstall-shell-integration).
