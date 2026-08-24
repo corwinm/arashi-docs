@@ -20,6 +20,7 @@ aw shell <subcommand>
 
 - `init <bash|zsh|fish>` print shell wrapper code for manual setup.
 - `install` detect the active shell and update the matching startup file.
+- [`uninstall`](/commands/shell-uninstall/) inspect and remove an exact managed shell block.
 - `-j, --json` request a structured result when the selected shell action supports JSON mode.
 
 ## Managed Installation
@@ -63,7 +64,7 @@ Use `command aw` in startup files to bypass the wrapper while generating wrapper
 
 ## Notes
 
-- Arashi supports Bash, Zsh, and Fish shell integration and completion.
+- Arashi supports Bash, Zsh, and Fish shell integration. Completion additionally supports PowerShell.
 - If install cannot determine a writable startup file, Arashi tells you to use manual setup instead.
 - Shell integration enables explicit `aw switch --cd`, configured `mode: "cd"`, and the parent-shell `cd` fallback for configured `mode: "auto"`. Auto considers this fallback only after no managed context is strictly detected.
 - `aw shell init <shell>` normally writes shell wrapper code to stdout, so JSON mode returns a structured unsupported-mode error instead of mixing shell code with JSON.

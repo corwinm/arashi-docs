@@ -24,6 +24,8 @@ const aliasRequirements = new Map<string, string[]>([
   ["docs/commands/status.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
   ["docs/commands/switch.md", ["`-j, --json`"]],
   ["docs/commands/sync.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
+  ["docs/commands/uninstall.md", ["`-n, --dry-run`", "`-y, --yes`"]],
+  ["docs/commands/shell-uninstall.md", ["`-n, --dry-run`", "`-y, --yes`"]],
   ["docs/commands/update.md", ["`-j, --json`", "`-n, --dry-run`"]],
   ["docs/getting-started/index.md", ["`aw install -j`", "`aw install --json`"]]
 ]);
@@ -87,6 +89,53 @@ const semanticRequirements = new Map<string, string[]>([
     ]
   ],
   [
+    "docs/commands/uninstall.md",
+    [
+      "Run `aw uninstall --dry-run` first",
+      "defaults to no",
+      "`aw uninstall --yes`",
+      "`npm uninstall -g arashi`",
+      "`pnpm remove -g arashi`",
+      "`yarn global remove arashi`",
+      "`bun remove -g arashi`",
+      "`vp uninstall -g arashi`",
+      "current official direct install",
+      "schema-v2 manifest",
+      "current official installer over the same install directory",
+      "manual, modified, malformed, or ambiguous",
+      "does not support `--json` or `--force`",
+      "does not promise rollback",
+      "never recursively deletes the install directory",
+      "workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, Git metadata",
+      "unrelated profile bytes and unrelated install-directory files"
+    ]
+  ],
+  [
+    "docs/commands/shell-uninstall.md",
+    [
+      "exactly one complete managed shell block",
+      "preserves every byte outside",
+      "missing managed markers are a no-op",
+      "malformed or ambiguous markers",
+      "executable files, PATH, manifests, workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, and Git metadata"
+    ]
+  ],
+  [
+    "docs/getting-started/index.md",
+    [
+      "[Uninstall Arashi](/commands/uninstall/)",
+      "[remove shell integration only](/commands/shell-uninstall/)",
+      "https://arashi.haphazard.dev/uninstall",
+      "https://arashi.haphazard.dev/uninstall.ps1",
+      "unique temporary file",
+      "exact non-default install directory",
+      "`--install-dir`",
+      "`-InstallDir`",
+      "`-DryRun`",
+      "`-Yes`"
+    ]
+  ],
+  [
     "docs/commands/update.md",
     [
       "`--check` conflicts with `--dry-run` and `-n`",
@@ -125,6 +174,8 @@ checkRequirements(aliasRequirements);
 checkRequirements(semanticRequirements);
 checkGeneratedParity();
 checkUpdateJsonPolicy();
+checkUninstallPolicy();
+checkUninstallHelperRoutes();
 checkDeprecatedGuidance();
 checkContract();
 checkDeterministicExports();
@@ -133,6 +184,55 @@ if (errors.length > 0) {
   console.error("CLI option documentation contract failed:");
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
+}
+
+function checkUninstallPolicy(): void {
+  for (const relativePath of [
+    "docs/commands/uninstall.md",
+    "docs/commands/shell-uninstall.md",
+    "public/commands/uninstall.md",
+    "public/commands/shell-uninstall.md",
+  ]) {
+    const content = read(relativePath);
+    if (content === null) continue;
+    for (const forbidden of [
+      /\baw\s+(?:shell\s+)?uninstall\b[^\n`]*--json/i,
+      /\baw\s+(?:shell\s+)?uninstall\b[^\n`]*--force/i,
+      /\b(?:Arashi|uninstall|command|it)\s+(?:will\s+)?automatically\s+(?:adopts?|migrates?)[^.!?]*(?:schema[- ]?v?1|legacy)/i,
+      /rollback (?:is |are )?(?:guaranteed|supported)/i,
+      /\b(?:Arashi|uninstall|command|it)\s+(?:will\s+)?recursively\s+(?:deletes?|removes?)/i,
+    ]) {
+      if (forbidden.test(content)) {
+        errors.push(`${relativePath} claims unsupported uninstall behavior matching ${forbidden}`);
+      }
+    }
+  }
+
+  const deliberateJsonClaim = "Run `aw uninstall --json` to receive a structured plan.";
+  if (!/--json/.test(deliberateJsonClaim) || !/\baw\s+uninstall\b[^\n`]*--json/i.test(deliberateJsonClaim)) {
+    errors.push("uninstall unsupported-option guard cannot reject a deliberate JSON claim");
+  }
+}
+
+function checkUninstallHelperRoutes(): void {
+  const config = read("netlify.toml");
+  if (config === null) return;
+  const routes = [
+    ["/uninstall", "scripts/uninstall.sh"],
+    ["/uninstall/", "scripts/uninstall.sh"],
+    ["/uninstall.ps1", "scripts/uninstall.ps1"],
+    ["/uninstall.ps1/", "scripts/uninstall.ps1"],
+  ] as const;
+  for (const [route, target] of routes) {
+    const block = [
+      "[[redirects]]",
+      `  from = "${route}"`,
+      `  to = "https://raw.githubusercontent.com/corwinm/arashi/main/${target}"`,
+      "  status = 302",
+      "  force = true",
+    ].join("\n");
+    if (!config.includes(block)) errors.push(`netlify.toml is missing the static helper route ${route}`);
+  }
 }
 
 console.log(

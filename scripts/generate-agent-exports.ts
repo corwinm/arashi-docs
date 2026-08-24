@@ -47,6 +47,8 @@ const coreOrder = [
   "commands/add.md",
   "commands/configure.md",
   "commands/update.md",
+  "commands/uninstall.md",
+  "commands/shell-uninstall.md",
   "contributing/index.md"
 ];
 
@@ -67,6 +69,8 @@ const requiredRoutes = [
   "commands/status.md",
   "commands/configure.md",
   "commands/completion.md",
+  "commands/uninstall.md",
+  "commands/shell-uninstall.md",
   "contributing.md"
 ];
 
@@ -316,7 +320,7 @@ function renderLlmsTxt(): string {
 - Prefer canonical \`aw switch --launch --ignore-configured-launcher\` for generic automatic launch. Common command-local aliases are \`-v/-f/-j/-o/-g/-n\`; \`add -n\` remains name and \`exec --jobs\` remains long-only.
 - Repository selectors accept repeated and comma-separated \`--only\`/\`--group\`, flatten in order, trim, ignore blank segments beside values, and deduplicate first occurrences. Empty, unknown, or no-match filters fail closed; \`status --only\` is configured-only.
 - \`update --check\` conflicts with \`--dry-run\`/\`-n\` before lookup or mutation. Markdown is the default for \`handoff\`; omit its deprecated explicit Markdown option in preferred guidance.
-- Use \`aw completion bash|zsh|fish\` for native completion. Static completion works outside workspaces; dynamic repositories, groups, worktrees, branches, paths, shells, and constrained values are local and read-only with a 200 ms whole-query budget. Use \`command aw\` in activation code to bypass wrappers.
+- Use \`aw completion bash|zsh|fish|powershell\` for native completion. Static completion works outside workspaces; dynamic repositories, groups, worktrees, branches, paths, shells, and constrained values are local and read-only with a 200 ms whole-query budget. Use \`command aw\` in POSIX activation code to bypass wrappers.
 - Use \`aw switch --tmux\` or \`aw create --tmux\` for a per-invocation plain tmux override. Configured \`auto\` remains the persistent contextual choice inside tmux; \`tmux\` is not added to configuration vocabularies.
 - Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--tmux\`, \`--sesh\`, or \`--herdr\` wins, then \`--tab\` or \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
 - In configured workspaces only, \`repos.<name>.copy\` is a direct array and \`repos.<name>.symlink\` is a direct array. Entries use the same relative path from the Git-primary child checkout into each new worktree. Choose \`copy\` for an independent, isolated file and \`symlink\` only to share intentional state or dependencies. Globs are not supported, path remapping is not supported, and standalone mode is not supported. Use lifecycle hooks for globs, remapping, external sources, interpolation, required entries, generated files, or conditional behavior. \`aw doctor\` non-mutatively diagnoses materialization source availability and destination safety without repair or mutation.
