@@ -67,6 +67,11 @@ For a repository named `example` and branch `feature/auth`, the path relative to
 | Bare `repo-branch` + `preserve` | `example-feature/auth` |
 | Bare `repo-branch` + `flatten` | `example-feature-auth` |
 | Non-bare `default` + `preserve` | `feature/auth` |
+| Non-bare `default` + `flatten` | `feature-auth` |
+| Non-bare `branch` + `preserve` | `feature/auth` |
+| Non-bare `branch` + `flatten` | `feature-auth` |
+| Non-bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Non-bare `repo-branch` + `flatten` | `example-feature-auth` |
 
 The mapping changes only the filesystem path; the Git branch remains exactly `feature/auth`. If the chosen destination collides, create fails deterministically instead of appending a suffix. Existing worktree paths are metadata-authoritative and are never renamed by this setting. Coordinated children remain under the planned parent path using their configured child paths. Standalone `.worktrees/<branch>` placement is unchanged.
 

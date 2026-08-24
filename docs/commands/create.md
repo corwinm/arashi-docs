@@ -119,6 +119,11 @@ For a repository named `example` and branch `feature/auth`, the path relative to
 | Bare `repo-branch` + `preserve` | `example-feature/auth` |
 | Bare `repo-branch` + `flatten` | `example-feature-auth` |
 | Non-bare `default` + `preserve` | `feature/auth` |
+| Non-bare `default` + `flatten` | `feature-auth` |
+| Non-bare `branch` + `preserve` | `feature/auth` |
+| Non-bare `branch` + `flatten` | `feature-auth` |
+| Non-bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Non-bare `repo-branch` + `flatten` | `example-feature-auth` |
 
 For example:
 
