@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  cpSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -8,6 +9,7 @@ import {
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 type Category =
   | "distinction"
@@ -152,6 +154,10 @@ const discoveryRequirements = new Map<string, RegExp[]>([
   ["docs/workflows/hooks.md", [/delete[\s\S]{0,260}repository-targeted[\s\S]{0,160}hook/i, /shared[^.!?]{0,80}user-global[^.!?]{0,80}preserv/i]],
   ["public/workflows/hooks.md", [/delete[\s\S]{0,260}repository-targeted[\s\S]{0,160}hook/i, /shared[^.!?]{0,80}user-global[^.!?]{0,80}preserv/i]],
 ]);
+const generatedFreshnessPaths = [...new Set([
+  ...owningSurfaces.keys(),
+  ...discoveryRequirements.keys(),
+])].filter((relativePath) => relativePath.startsWith("public/"));
 
 const root = path.resolve(process.cwd());
 runControlledMutationSelfTests();
@@ -241,6 +247,36 @@ function checkGeneration(rootPath: string, found: string[]): void {
   }
   if (!/"commands\/delete\.md"/.test(generator.slice(generator.indexOf("const requiredRoutes")))) {
     found.push("scripts/generate-agent-exports.ts must require commands/delete.md generation");
+  }
+
+  const regenerationRoot = mkdtempSync(path.join(os.tmpdir(), "arashi-delete-docs-regenerate-"));
+  try {
+    cpSync(path.join(rootPath, "docs"), path.join(regenerationRoot, "docs"), { recursive: true });
+    mkdirSync(path.join(regenerationRoot, "scripts"), { recursive: true });
+    writeFileSync(
+      path.join(regenerationRoot, "scripts", "generate-agent-exports.ts"),
+      generator,
+    );
+    const result = spawnSync(process.execPath, ["scripts/generate-agent-exports.ts"], {
+      cwd: regenerationRoot,
+      encoding: "utf8",
+    });
+    if (result.status !== 0) {
+      found.push(`delete export regeneration failed with status ${result.status ?? "unknown"}`);
+      return;
+    }
+
+    for (const relativePath of generatedFreshnessPaths) {
+      const committed = read(rootPath, relativePath, found);
+      const regenerated = read(regenerationRoot, relativePath, found);
+      if (committed !== null && regenerated !== null && committed !== regenerated) {
+        found.push(`${relativePath} generated export is stale`);
+      }
+    }
+  } catch {
+    found.push("delete export regeneration fixture could not be prepared");
+  } finally {
+    rmSync(regenerationRoot, { recursive: true, force: true });
   }
 }
 
@@ -430,6 +466,41 @@ function runDiscoveryAndGeneratedDriftSelfTests(): void {
     stalePhaseStateErrors.some((error) => error.includes("exact closed delete phase order and states")),
     "controlled stale generated delete phase state was not rejected",
   );
+
+  const freshnessRoot = mkdtempSync(path.join(os.tmpdir(), "arashi-delete-docs-freshness-"));
+  try {
+    cpSync(path.join(root, "docs"), path.join(freshnessRoot, "docs"), { recursive: true });
+    cpSync(path.join(root, "public"), path.join(freshnessRoot, "public"), { recursive: true });
+    mkdirSync(path.join(freshnessRoot, "scripts"), { recursive: true });
+    cpSync(
+      path.join(root, "scripts", "generate-agent-exports.ts"),
+      path.join(freshnessRoot, "scripts", "generate-agent-exports.ts"),
+    );
+
+    const baselineErrors: string[] = [];
+    checkGeneration(freshnessRoot, baselineErrors);
+    assert.deepEqual(
+      baselineErrors,
+      [],
+      `valid canonical/generated freshness fixture failed: ${baselineErrors.join("; ")}`,
+    );
+
+    const canonicalDeletePath = path.join(freshnessRoot, "docs", "commands", "delete.md");
+    writeFileSync(
+      canonicalDeletePath,
+      `${readFileSync(canonicalDeletePath, "utf8").trimEnd()}\n\nFreshness fixture marker.\n`,
+    );
+    const staleGeneratedErrors: string[] = [];
+    checkGeneration(freshnessRoot, staleGeneratedErrors);
+    assert.ok(
+      staleGeneratedErrors.some((error) =>
+        error.includes("public/commands/delete.md generated export is stale"),
+      ),
+      "controlled stale generated delete export was not rejected after canonical regeneration input changed",
+    );
+  } finally {
+    rmSync(freshnessRoot, { recursive: true, force: true });
+  }
 }
 
 function runReachabilitySelfTest(): void {
