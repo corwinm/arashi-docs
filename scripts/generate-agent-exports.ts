@@ -35,6 +35,7 @@ const coreOrder = [
   "commands/pull.md",
   "commands/push.md",
   "commands/sync.md",
+  "commands/delete.md",
   "commands/remove.md",
   "commands/prune.md",
   "commands/shell.md",
@@ -66,6 +67,7 @@ const requiredRoutes = [
   "commands/exec.md",
   "commands/status.md",
   "commands/configure.md",
+  "commands/delete.md",
   "commands/completion.md",
   "contributing.md"
 ];
@@ -309,6 +311,10 @@ function renderLlmsTxt(): string {
 - Existing active native files are external state: configure never clears, deletes, or overwrites them and offers keep/skip. At final confirmation, the exact serialized candidate JSON contains the same bytes that save will persist. A separate active-file plan lists lifecycle, exact path, safe-no-op state, and runtime readiness, and does not show contents. When serialized bytes are unchanged and there is no active-file plan, configure exits before final confirmation or save.
 - Human and JSON modes both require a configured valid workspace. Missing configuration, standalone context, and invalid configuration fail before prompt or inspection; configure does not initialize or repair configuration. Human editing requires stdin and stdout TTY; \`aw configure --json\` never prompts and never mutates. Visible plaintext command entry and the exact final preview are the only views that include inline command bodies. Selection screens, setting lists, ordinary views, diagnostics, cancellation, JSON, and the generated active-file plan remain body-free without inline command bodies.
 - Directly edit \`.arashi/config.json\` for unsupported fields because configure is not a schema editor and has no broad non-interactive mutation flags. See [Configuration workflow Markdown](${site}/workflows/config.md).
+- Delete removes configured repository dependencies, while remove deletes branch worktrees. \`aw delete <repository>\` targets one exact configured repository key. With \`aw delete\` omitted, a human TTY opens a checkbox to select one or more keys. Non-TTY and JSON use with the target omitted fails selection-required and requires an explicit key; force and dry-run never invent a target.
+- Arashi prepares all selected repository plans before mutation and presents the complete selected plans in one combined preview followed by one default-no confirmation. Run \`--dry-run\` before \`--force\`; \`--force\` skips confirmation and bypasses confirmation and Git data-loss guards only. Path containment, symlink, topology, identity, hook ambiguity, and concurrent-config checks remain mandatory.
+- Delete removes the canonical clone, owned linked worktrees, local refs, exact config entry, and repository-targeted hook files/templates. It preserves unrelated configuration, managed-ignore policy, shared hooks, user-global hooks, remote repositories, and remote branches. Hook logical identity, path, or status may appear without file contents or inline command bodies.
+- \`aw delete <repository> --dry-run --json\` returns \`data.plan\` and \`data.result: null\`; \`aw delete <repository> --force --json\` never prompts. Partial failures retain the accepted scope and phase ledger at \`error.details.plan\` and \`error.details.result\`. Earlier repositories may be completed, the failing repository is failed, and later repositories are not started; inspect the phase ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback. See [Delete command Markdown](${site}/commands/delete.md).
 - Configure switching with one \`defaults.switch.mode\`: \`auto | cd | launch | sesh | herdr\`. An absent mode preserves automatic launch; configured \`auto\` prefers managed contexts before parent-shell \`cd\`.
 - Prefer canonical \`aw switch --launch --ignore-configured-launcher\` for generic automatic launch. Common command-local aliases are \`-v/-f/-j/-o/-g/-n\`; \`add -n\` remains name and \`exec --jobs\` remains long-only.
 - Repository selectors accept repeated and comma-separated \`--only\`/\`--group\`, flatten in order, trim, ignore blank segments beside values, and deduplicate first occurrences. Empty, unknown, or no-match filters fail closed; \`status --only\` is configured-only.
@@ -363,6 +369,7 @@ function renderLlmsTxt(): string {
 - [tmux and sesh workflow Markdown](${site}/workflows/tmux-and-sesh.md)
 - [Switch command Markdown](${site}/commands/switch.md)
 - [Create command Markdown](${site}/commands/create.md)
+- [Delete command Markdown](${site}/commands/delete.md)
 - [Exec command Markdown](${site}/commands/exec.md)
 - [Add command Markdown](${site}/commands/add.md)
 - [Completion command Markdown](${site}/commands/completion.md)
