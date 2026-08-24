@@ -263,9 +263,14 @@ function checkDestinationMappingContradictions(label: string, content: string): 
       : /\bflatten\b/i.test(statement)
         ? "flatten"
         : null;
-    const destination = statement.match(
-      /\b(?:maps?|resolves?|places?)\b[^.\n]*?\b(?:to|as|at)\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
-    )?.[1];
+    const destinationPatterns = [
+      /\b(?:maps?|resolves?|places?|puts?)\b[^.\n]*?\b(?:to|as|at)\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+      /\byields?\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+      /\bdestination\b[^.\n]*?\bis\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+    ];
+    const destination = destinationPatterns
+      .map((pattern) => statement.match(pattern)?.[1])
+      .find((candidate) => candidate !== undefined);
     if (topology === null || style === null || slashes === null || destination === undefined) continue;
     const expected = expectedRows.find(
       ([rowTopology, rowStyle, rowSlashes]) =>
@@ -282,18 +287,29 @@ function checkDestinationMappingContradictions(label: string, content: string): 
 function checkCollisionCarveOuts(label: string, content: string): void {
   const statements = content.split(/(?<=[.!?])\s+|\n+/);
   for (const statement of statements) {
-    if (!/\b(?:collision|conflict)\b/i.test(statement) || !/\bsuffix\b/i.test(statement)) continue;
-    const negatesFallback =
-      /\b(?:never|without)\b[^.\n]{0,60}\b(?:append|add|use|choose|retry)/i.test(statement) ||
-      /\binstead\s+of\b[^.\n]{0,40}\b(?:append|add|use|choose|retry)/i.test(statement) ||
-      /\b(?:does|do|will)\s+not\b[^.\n]{0,40}\b(?:append|add|use|choose|retry)/i.test(statement);
-    const permitsFallback =
-      /\b(?:may|can|might|will)\s+(?:append|add|use|choose|retry)/i.test(statement) ||
-      /\b(?:retries?\s+with|appends?|adds?|uses?|chooses?)\b[^.\n]{0,60}\bsuffix\b/i.test(
+    if (!/\b(?:collision|conflict)\b/i.test(statement)) continue;
+    const mentionsAlternate =
+      /\bsuffix\b/i.test(statement) ||
+      /\b(?:another|alternate|alternative)\b[^.\n]{0,40}\b(?:destination|name|path)\b/i.test(
         statement,
       );
+    if (!mentionsAlternate) continue;
+    const negatesFallback =
+      /\b(?:never|without)\b[^.\n]{0,80}\b(?:append|add|use|choose|retry|fallback|fall\s+back)/i.test(
+        statement,
+      ) ||
+      /\binstead\s+of\b[^.\n]{0,60}\b(?:append|add|use|choose|retry|fallback|fall\s+back)/i.test(
+        statement,
+      ) ||
+      /\b(?:does|do|will)\s+not\b[^.\n]{0,60}\b(?:append|add|use|choose|retry|fallback|fall\s+back)/i.test(
+        statement,
+      );
+    const permitsFallback =
+      /\b(?:may|can|might|will)\s+(?:append|add|use|choose|retry|fall\s+back)/i.test(statement) ||
+      /\b(?:falls?\s+back|retries?\s+with|appends?|adds?|uses?|chooses?)\b/i.test(statement) ||
+      /\bis\s+(?:resolved|handled)\s+by\s+(?:append|add|use|choos)/i.test(statement);
     if (permitsFallback && !negatesFallback) {
-      failures.push(`${label} contains contradictory collision suffix fallback`);
+      failures.push(`${label} contains contradictory collision fallback`);
     }
   }
 }

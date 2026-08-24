@@ -128,6 +128,30 @@ for (const [id, claim] of [
     "collision-carveout-contradiction",
     "Despite the deterministic rule above, create may append a numeric suffix when a collision occurs.",
   ],
+  [
+    "destination-matrix-prose-contradiction-puts",
+    "For bare workspaces, default plus preserve puts feature/auth at wrong-example-feature-auth.",
+  ],
+  [
+    "destination-matrix-prose-contradiction-yields",
+    "In a bare workspace, default with preserve yields wrong-example-feature-auth for feature/auth.",
+  ],
+  [
+    "destination-matrix-prose-contradiction-copula",
+    "For bare workspaces with default and preserve, the destination for feature/auth is wrong-example-feature-auth.",
+  ],
+  [
+    "collision-carveout-falls-back",
+    "Despite the deterministic rule above, a collision falls back to a numeric suffix.",
+  ],
+  [
+    "collision-carveout-passive",
+    "Despite the deterministic rule above, a collision is resolved by adding a numeric suffix.",
+  ],
+  [
+    "collision-carveout-alternate-destination",
+    "Despite the deterministic rule above, on collision create chooses another available destination.",
+  ],
   ["metadata-additive-contradiction", "Changing this setting relocates existing registered worktrees."],
   ["coordinated-additive-contradiction", "Each coordinated child reapplies naming policy independently."],
   ["standalone-additive-contradiction", "Standalone create also honors worktreeNaming."],
