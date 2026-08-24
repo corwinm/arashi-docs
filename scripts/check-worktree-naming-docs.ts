@@ -265,13 +265,21 @@ function checkDestinationMappingContradictions(label: string, content: string): 
         : null;
     const destinationPatterns = [
       /\b(?:maps?|resolves?|places?|puts?)\b[^.\n]*?\b(?:to|as|at)\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
-      /\byields?\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
-      /\bdestination\b[^.\n]*?\bis\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+      /\b(?:yields?|produces?)\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+      /\bresults?\s+in\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+      /\bis\s+placed\s+at\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+      /\bdestination\b[^.\n]*?\bis\s+(?!not\b)`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
     ];
-    const destination = destinationPatterns
-      .map((pattern) => statement.match(pattern)?.[1])
-      .find((candidate) => candidate !== undefined);
+    const match = destinationPatterns
+      .map((pattern) => statement.match(pattern))
+      .find((candidate) => candidate !== null);
+    const destination = match?.[1];
     if (topology === null || style === null || slashes === null || destination === undefined) continue;
+    const claimPrefix = statement.slice(0, match?.index ?? 0);
+    const negated = /\b(?:does|do|is|are|will|can|cannot|can't)\s+not\b[^.\n]{0,24}$/i.test(
+      claimPrefix,
+    );
+    if (negated) continue;
     const expected = expectedRows.find(
       ([rowTopology, rowStyle, rowSlashes]) =>
         rowTopology === topology && rowStyle === style && rowSlashes === slashes,
@@ -290,7 +298,7 @@ function checkCollisionCarveOuts(label: string, content: string): void {
     if (!/\b(?:collision|conflict)\b/i.test(statement)) continue;
     const mentionsAlternate =
       /\bsuffix\b/i.test(statement) ||
-      /\b(?:another|alternate|alternative)\b[^.\n]{0,40}\b(?:destination|name|path)\b/i.test(
+      /\b(?:another|alternate|alternative|different)\b[^.\n]{0,40}\b(?:destination|name|path)\b/i.test(
         statement,
       );
     if (!mentionsAlternate) continue;
@@ -301,12 +309,15 @@ function checkCollisionCarveOuts(label: string, content: string): void {
       /\binstead\s+of\b[^.\n]{0,60}\b(?:append|add|use|choose|retry|fallback|fall\s+back)/i.test(
         statement,
       ) ||
-      /\b(?:does|do|will)\s+not\b[^.\n]{0,60}\b(?:append|add|use|choose|retry|fallback|fall\s+back)/i.test(
+      /\b(?:does|do|will|can)\s+not\b[^.\n]{0,60}\b(?:append|add|use|choose|select|retry|fallback|fall\s+back)/i.test(
+        statement,
+      ) ||
+      /\b(?:cannot|can't)\b[^.\n]{0,60}\b(?:append|add|use|choose|select|retry|fallback|fall\s+back)/i.test(
         statement,
       );
     const permitsFallback =
-      /\b(?:may|can|might|will)\s+(?:append|add|use|choose|retry|fall\s+back)/i.test(statement) ||
-      /\b(?:falls?\s+back|retries?\s+with|appends?|adds?|uses?|chooses?)\b/i.test(statement) ||
+      /\b(?:may|can|might|will)\s+(?:append|add|use|choose|select|retry|fall\s+back)/i.test(statement) ||
+      /\b(?:falls?\s+back|retries?\s+with|appends?|adds?|uses?|chooses?|selects?)\b/i.test(statement) ||
       /\bis\s+(?:resolved|handled)\s+by\s+(?:append|add|use|choos)/i.test(statement);
     if (permitsFallback && !negatesFallback) {
       failures.push(`${label} contains contradictory collision fallback`);

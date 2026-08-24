@@ -152,6 +152,22 @@ for (const [id, claim] of [
     "collision-carveout-alternate-destination",
     "Despite the deterministic rule above, on collision create chooses another available destination.",
   ],
+  [
+    "destination-matrix-prose-contradiction-produces",
+    "For a bare workspace, default with preserve produces wrong-example-feature-auth for feature/auth.",
+  ],
+  [
+    "destination-matrix-prose-contradiction-results-in",
+    "For a bare workspace, default with preserve results in wrong-example-feature-auth for feature/auth.",
+  ],
+  [
+    "destination-matrix-prose-contradiction-is-placed-at",
+    "For a bare workspace with default and preserve, feature/auth is placed at wrong-example-feature-auth.",
+  ],
+  [
+    "collision-carveout-different-destination",
+    "On collision create selects a different available destination.",
+  ],
   ["metadata-additive-contradiction", "Changing this setting relocates existing registered worktrees."],
   ["coordinated-additive-contradiction", "Each coordinated child reapplies naming policy independently."],
   ["standalone-additive-contradiction", "Standalone create also honors worktreeNaming."],
@@ -231,6 +247,46 @@ for (const fixture of fixtures) {
         env: { ...process.env, WORKTREE_NAMING_FIXTURE_TEST: "1" },
       });
       if (result.status === 0) unexpected.push(`${fixture.id} (${mode})`);
+    }
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true });
+  }
+}
+
+const truthfulClaims = [
+  "For a bare workspace, default with preserve does not yield wrong-example-feature-auth for feature/auth.",
+  "For a bare workspace with default and preserve, the destination for feature/auth is not wrong-example-feature-auth.",
+  "On collision, create cannot choose another destination.",
+] as const;
+for (const claim of truthfulClaims) {
+  const fixtureRoot = mkdtempSync(path.join(tmpdir(), "arashi-docs-worktree-naming-green-"));
+  try {
+    cpSync(sourceRoot, fixtureRoot, {
+      recursive: true,
+      filter(source) {
+        const relative = path.relative(sourceRoot, source);
+        return relative !== ".git" && relative !== "node_modules" && relative !== "dist" && relative !== ".astro";
+      },
+    });
+    writeFileSync(
+      path.join(fixtureRoot, "scripts/semantic-doc-checks.json"),
+      `${JSON.stringify([checker], null, 2)}\n`,
+    );
+    const target = path.join(fixtureRoot, detailedPath);
+    writeFileSync(
+      target,
+      appendToSection("## Worktree naming", claim)(readFileSync(target, "utf8")),
+    );
+    for (const [mode, script] of [
+      ["focused", checker],
+      ["stable aggregate", "run-semantic-doc-checks.ts"],
+    ] as const) {
+      const result = spawnSync(process.execPath, [path.join(fixtureRoot, "scripts", script)], {
+        cwd: fixtureRoot,
+        encoding: "utf8",
+        env: { ...process.env, WORKTREE_NAMING_FIXTURE_TEST: "1" },
+      });
+      if (result.status !== 0) unexpected.push(`truthful negation rejected: ${claim} (${mode})`);
     }
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true });
