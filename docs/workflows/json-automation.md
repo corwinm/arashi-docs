@@ -136,7 +136,11 @@ Prefer branching on `error.code` instead of parsing `message`. Messages are writ
 
 Preview an explicit dependency with `aw delete <repository> --dry-run --json`. The one stdout document places the accepted plan at `data.plan` and sets `data.result: null`. Mutation uses `aw delete <repository> --force --json`, which never prompts.
 
-On partial failure, inspect `error.details.plan` and `error.details.result` as the accepted scope and phase ledger. Earlier repositories may be completed, the failing repository is failed, and later repositories are not started. Inspect the phase ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback. Branch on structured fields and the process exit status instead of parsing stderr or human summaries.
+On partial failure, inspect `error.details.plan` and `error.details.result` as the accepted scope and phase ledger. An explicit-key JSON partial failure keeps its item ledger and phase ledger within one selected repository; it never describes batch repositories as earlier, failing, or later. Inspect the ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback. Branch on structured fields and the process exit status instead of parsing stderr or human summaries.
+
+Items are deterministic and ordered by phase. Linked worktrees are deepest physical descendant first with normalized-path bytewise ties; refs, hooks, receipt records, and configuration records use canonical bytewise identity order within their phase. The plan and result retain the same item IDs and order. Item states are exactly `planned`, `completed`, `preserved`, `blocked`, `failed`, and `not-started`.
+
+Phases use this exact closed order: `provenance`, `worktrees`, `metadata`, `canonical-clone`, `workspace-hooks`, `configuration`, `verification`. Phase states are exactly `not-started`, `started`, `completed`, and `failed`.
 
 Hook logical identity, path, or status may appear without file contents or inline command bodies. This secrecy boundary applies to plans, successful results, warnings, and error details.
 

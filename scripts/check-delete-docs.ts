@@ -107,9 +107,30 @@ const commandContract: Requirement[] = [
 const conciseWorkflowContract = commandContract.filter(([category]) =>
   ["distinction", "targeting", "confirmation", "safety", "scope", "retry"].includes(category),
 );
-const jsonContract = commandContract.filter(([category]) =>
-  ["targeting", "json", "secrecy", "retry"].includes(category),
-);
+const jsonSpecificContract: Requirement[] = [
+  [
+    "json",
+    "explicit-key JSON partial failure stays within one selected repository",
+    /explicit-key JSON[^.!?]{0,180}(?:partial failure|failure)[^.!?]{0,180}(?:items?|item ledger)[^.!?]{0,120}(?:phases?|phase ledger)[^.!?]{0,180}(?:one selected repository|single repository)[^.!?]{0,140}never[^.!?]{0,80}(?:batch|earlier repositories)/i,
+  ],
+  [
+    "json",
+    "deterministic delete item order and closed item states",
+    /items?[^.!?]{0,100}(?:deterministic|ordered by phase)[\s\S]{0,220}linked worktrees?[^.!?]{0,100}deepest[^.!?]{0,160}bytewise[\s\S]{0,260}(?:plan and result|plan\/result)[^.!?]{0,120}(?:same|retain)[^.!?]{0,80}(?:IDs? and order|item IDs? and order)[\s\S]{0,220}planned[^.!?]{0,40}completed[^.!?]{0,40}preserved[^.!?]{0,40}blocked[^.!?]{0,40}failed[^.!?]{0,40}not-started/i,
+  ],
+  [
+    "json",
+    "exact closed delete phase order and states",
+    /phases?[^.!?]{0,100}(?:exact|closed) order[^.!?]{0,80}provenance[^.!?]{0,40}worktrees[^.!?]{0,40}metadata[^.!?]{0,40}canonical-clone[^.!?]{0,40}workspace-hooks[^.!?]{0,40}configuration[^.!?]{0,40}verification[\s\S]{0,180}(?:phase )?states?[^.!?]{0,80}not-started[^.!?]{0,40}started[^.!?]{0,40}completed[^.!?]{0,40}failed/i,
+  ],
+];
+const jsonContract = [
+  ...commandContract.filter(
+    ([category, label]) =>
+      ["targeting", "json", "secrecy"].includes(category) || label === "no atomic rollback claim",
+  ),
+  ...jsonSpecificContract,
+];
 const owningSurfaces = new Map<string, Requirement[]>([
   ["docs/commands/delete.md", commandContract],
   ["public/commands/delete.md", commandContract],
@@ -134,6 +155,7 @@ const discoveryRequirements = new Map<string, RegExp[]>([
 
 const root = path.resolve(process.cwd());
 runControlledMutationSelfTests();
+runDiscoveryAndGeneratedDriftSelfTests();
 runReachabilitySelfTest();
 if (process.argv.includes("--self-test-only")) {
   console.log("Delete documentation checker controlled fixtures passed.");
@@ -158,12 +180,7 @@ function checkRoot(rootPath: string): string[] {
   }
   for (const [relativePath, requirements] of discoveryRequirements) {
     const content = read(rootPath, relativePath, found);
-    if (content === null) continue;
-    for (const requirement of requirements) {
-      if (!requirement.test(content)) {
-        found.push(`${relativePath} is missing delete navigation guidance matching ${requirement}`);
-      }
-    }
+    if (content !== null) checkDiscovery(relativePath, content, requirements, found);
   }
   checkGeneration(rootPath, found);
   checkReachability(rootPath, found);
@@ -194,6 +211,25 @@ function checkContradictions(relativePath: string, content: string, found: strin
   ];
   for (const [category, pattern, message] of claims) {
     if (pattern.test(content)) found.push(`${relativePath} [${category}] ${message}`);
+  }
+  if (
+    (relativePath.endsWith("workflows/json-automation.md") || relativePath === "public/llms.txt") &&
+    /(?:explicit-key JSON|aw delete <repository>[^.!?]{0,120}--json)[\s\S]{0,500}earlier repositories[\s\S]{0,160}failing repository[\s\S]{0,160}later repositories/i.test(content)
+  ) {
+    found.push(`${relativePath} [json] must not describe batch repository progress for explicit-key JSON`);
+  }
+}
+
+function checkDiscovery(
+  relativePath: string,
+  content: string,
+  requirements: RegExp[],
+  found: string[],
+): void {
+  for (const requirement of requirements) {
+    if (!requirement.test(content)) {
+      found.push(`${relativePath} is missing delete navigation guidance matching ${requirement}`);
+    }
   }
 }
 
@@ -283,6 +319,117 @@ function runControlledMutationSelfTests(): void {
     if (!errors.some((error) => error.includes(`[${category}]`))) missed.push(`contradiction:${category}`);
   }
   assert.deepEqual(missed, [], "controlled delete drift was not rejected");
+}
+
+function runDiscoveryAndGeneratedDriftSelfTests(): void {
+  const navigation = "[delete](/commands/delete/) deletes a configured repository dependency.";
+  const navigationErrors: string[] = [];
+  checkDiscovery(
+    "fixture-navigation.md",
+    navigation,
+    discoveryRequirements.get("docs/commands/index.md")!,
+    navigationErrors,
+  );
+  assert.deepEqual(navigationErrors, [], "valid delete navigation fixture failed");
+
+  const removedNavigationErrors: string[] = [];
+  checkDiscovery(
+    "fixture-navigation.md",
+    "Configured repository commands are documented here.",
+    discoveryRequirements.get("docs/commands/index.md")!,
+    removedNavigationErrors,
+  );
+  assert.ok(removedNavigationErrors.length > 0, "controlled delete navigation removal was not rejected");
+
+  const generated = [
+    "aw delete <repository> targets one exact configured repository key.",
+    "With aw delete omitted, a human TTY opens a checkbox to select one or more keys.",
+    "Non-TTY and JSON use with the target omitted fails selection-required and requires an explicit key.",
+    "aw delete <repository> --dry-run --json returns data.plan and data.result: null.",
+    "aw delete <repository> --force --json never prompts.",
+    "A partial error uses error.details.plan and error.details.result as the accepted scope and phase ledger.",
+    "Hook logical identity, path, or status may appear without file contents or inline command bodies.",
+    "There is no atomic rollback.",
+    "An explicit-key JSON partial failure keeps its item ledger and phase ledger within one selected repository and never describes batch repositories.",
+    "Items are deterministic and ordered by phase. Linked worktrees are deepest physical descendant first with normalized-path bytewise ties. The plan and result retain the same item IDs and order. Item states are exactly planned, completed, preserved, blocked, failed, and not-started.",
+    "Phases use this exact closed order: provenance, worktrees, metadata, canonical-clone, workspace-hooks, configuration, verification. Phase states are exactly not-started, started, completed, and failed.",
+  ].join(" ");
+  const generatedErrors: string[] = [];
+  checkGuidance("public/workflows/json-automation.md", generated, jsonContract, generatedErrors);
+  assert.deepEqual(
+    generatedErrors,
+    [],
+    `valid generated export fixture failed: ${generatedErrors.join("; ")}`,
+  );
+
+  const contradictionErrors: string[] = [];
+  checkGuidance(
+    "public/workflows/json-automation.md",
+    generated.replace(
+      "An explicit-key JSON partial failure keeps its item ledger and phase ledger within one selected repository and never describes batch repositories.",
+      "An explicit-key JSON partial failure keeps its item ledger and phase ledger within one selected repository and never describes batch repositories. Earlier repositories may be completed, the failing repository is failed, and later repositories are not started.",
+    ),
+    jsonContract,
+    contradictionErrors,
+  );
+  assert.ok(
+    contradictionErrors.some((error) => error.includes("must not describe batch repository progress")),
+    "controlled explicit-key JSON batch contradiction was not rejected",
+  );
+
+  const staleItemOrderErrors: string[] = [];
+  checkGuidance(
+    "public/workflows/json-automation.md",
+    generated.replace("deepest physical descendant first", "lexical path order"),
+    jsonContract,
+    staleItemOrderErrors,
+  );
+  assert.ok(
+    staleItemOrderErrors.some((error) => error.includes("deterministic delete item order")),
+    "controlled stale generated delete item order was not rejected",
+  );
+
+  const staleItemStateErrors: string[] = [];
+  checkGuidance(
+    "public/workflows/json-automation.md",
+    generated.replace(
+      "Item states are exactly planned, completed, preserved, blocked, failed, and not-started.",
+      "Item states are exactly planned, completed, preserved, blocked, failed, and skipped.",
+    ),
+    jsonContract,
+    staleItemStateErrors,
+  );
+  assert.ok(
+    staleItemStateErrors.some((error) => error.includes("closed item states")),
+    "controlled stale generated delete item state was not rejected",
+  );
+
+  const stalePhaseOrderErrors: string[] = [];
+  checkGuidance(
+    "public/workflows/json-automation.md",
+    generated.replace("canonical-clone, workspace-hooks", "workspace-hooks, canonical-clone"),
+    jsonContract,
+    stalePhaseOrderErrors,
+  );
+  assert.ok(
+    stalePhaseOrderErrors.some((error) => error.includes("exact closed delete phase order and states")),
+    "controlled stale generated delete phase order was not rejected",
+  );
+
+  const stalePhaseStateErrors: string[] = [];
+  checkGuidance(
+    "public/workflows/json-automation.md",
+    generated.replace(
+      "Phase states are exactly not-started, started, completed, and failed.",
+      "Phase states are exactly not-started, started, completed, and skipped.",
+    ),
+    jsonContract,
+    stalePhaseStateErrors,
+  );
+  assert.ok(
+    stalePhaseStateErrors.some((error) => error.includes("exact closed delete phase order and states")),
+    "controlled stale generated delete phase state was not rejected",
+  );
 }
 
 function runReachabilitySelfTest(): void {
