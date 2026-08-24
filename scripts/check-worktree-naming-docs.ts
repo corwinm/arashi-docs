@@ -239,6 +239,63 @@ function checkContradictions(label: string, content: string): void {
   for (const [claimLabel, pattern] of contradictions) {
     if (pattern.test(content)) failures.push(`${label} contains contradictory ${claimLabel}`);
   }
+  checkDestinationMappingContradictions(label, content);
+  checkCollisionCarveOuts(label, content);
+}
+
+function checkDestinationMappingContradictions(label: string, content: string): void {
+  const statements = content.split(/(?<=[.!?])\s+|\n+/);
+  for (const statement of statements) {
+    const topology = /\bnon-bare\b/i.test(statement)
+      ? "Non-bare"
+      : /\bbare(?:\s+workspaces?)?\b/i.test(statement)
+        ? "Bare"
+        : null;
+    const style = /\brepo-branch\b/i.test(statement)
+      ? "repo-branch"
+      : /\bdefault\b/i.test(statement)
+        ? "default"
+        : /\bbranch\b/i.test(statement)
+          ? "branch"
+          : null;
+    const slashes = /\bpreserve\b/i.test(statement)
+      ? "preserve"
+      : /\bflatten\b/i.test(statement)
+        ? "flatten"
+        : null;
+    const destination = statement.match(
+      /\b(?:maps?|resolves?|places?)\b[^.\n]*?\b(?:to|as|at)\s+`?([A-Za-z0-9][A-Za-z0-9_./-]*)`?/i,
+    )?.[1];
+    if (topology === null || style === null || slashes === null || destination === undefined) continue;
+    const expected = expectedRows.find(
+      ([rowTopology, rowStyle, rowSlashes]) =>
+        rowTopology === topology && rowStyle === style && rowSlashes === slashes,
+    )?.[3];
+    if (expected !== undefined && destination !== expected) {
+      failures.push(
+        `${label} contains contradictory destination mapping for ${topology} ${style} + ${slashes}`,
+      );
+    }
+  }
+}
+
+function checkCollisionCarveOuts(label: string, content: string): void {
+  const statements = content.split(/(?<=[.!?])\s+|\n+/);
+  for (const statement of statements) {
+    if (!/\b(?:collision|conflict)\b/i.test(statement) || !/\bsuffix\b/i.test(statement)) continue;
+    const negatesFallback =
+      /\b(?:never|without)\b[^.\n]{0,60}\b(?:append|add|use|choose|retry)/i.test(statement) ||
+      /\binstead\s+of\b[^.\n]{0,40}\b(?:append|add|use|choose|retry)/i.test(statement) ||
+      /\b(?:does|do|will)\s+not\b[^.\n]{0,40}\b(?:append|add|use|choose|retry)/i.test(statement);
+    const permitsFallback =
+      /\b(?:may|can|might|will)\s+(?:append|add|use|choose|retry)/i.test(statement) ||
+      /\b(?:retries?\s+with|appends?|adds?|uses?|chooses?)\b[^.\n]{0,60}\bsuffix\b/i.test(
+        statement,
+      );
+    if (permitsFallback && !negatesFallback) {
+      failures.push(`${label} contains contradictory collision suffix fallback`);
+    }
+  }
 }
 
 function checkReachability(): void {

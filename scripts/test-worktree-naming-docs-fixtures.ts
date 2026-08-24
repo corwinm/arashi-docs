@@ -120,6 +120,14 @@ for (const [id, claim] of [
   ["scope-additive-contradiction", "Interactive `aw configure` can edit worktreeNaming."],
   ["branch-additive-contradiction", "For flattened paths, Arashi rewrites the Git branch to `feature-auth`."],
   ["collision-additive-contradiction", "On collision, create retries with a numeric suffix."],
+  [
+    "destination-matrix-prose-contradiction",
+    "For bare workspaces, default plus preserve instead maps feature/auth to wrong-example-feature-auth.",
+  ],
+  [
+    "collision-carveout-contradiction",
+    "Despite the deterministic rule above, create may append a numeric suffix when a collision occurs.",
+  ],
   ["metadata-additive-contradiction", "Changing this setting relocates existing registered worktrees."],
   ["coordinated-additive-contradiction", "Each coordinated child reapplies naming policy independently."],
   ["standalone-additive-contradiction", "Standalone create also honors worktreeNaming."],
