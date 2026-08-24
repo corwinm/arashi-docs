@@ -168,6 +168,20 @@ for (const [id, claim] of [
     "collision-carveout-different-destination",
     "On collision create selects a different available destination.",
   ],
+  [
+    "destination-matrix-prose-contradiction-leads-to",
+    "For a bare workspace, default with preserve leads to wrong-example-feature-auth for feature/auth.",
+  ],
+  [
+    "destination-matrix-prose-contradiction-ends-up-at",
+    "For a bare workspace using default and preserve, feature/auth ends up at wrong-example-feature-auth.",
+  ],
+  [
+    "destination-matrix-prose-contradiction-resulting-path",
+    "For bare default plus preserve, the resulting path is wrong-example-feature-auth for feature/auth.",
+  ],
+  ["collision-carveout-picks-different", "On collision, create picks a different destination."],
+  ["collision-carveout-selects-distinct", "On collision, create selects a distinct destination."],
   ["metadata-additive-contradiction", "Changing this setting relocates existing registered worktrees."],
   ["coordinated-additive-contradiction", "Each coordinated child reapplies naming policy independently."],
   ["standalone-additive-contradiction", "Standalone create also honors worktreeNaming."],
@@ -257,6 +271,8 @@ const truthfulClaims = [
   "For a bare workspace, default with preserve does not yield wrong-example-feature-auth for feature/auth.",
   "For a bare workspace with default and preserve, the destination for feature/auth is not wrong-example-feature-auth.",
   "On collision, create cannot choose another destination.",
+  "For a bare workspace, default with preserve doesn't produce wrong-example-feature-auth for feature/auth.",
+  "For a bare workspace, default with preserve cannot yield wrong-example-feature-auth for feature/auth.",
 ] as const;
 for (const claim of truthfulClaims) {
   const fixtureRoot = mkdtempSync(path.join(tmpdir(), "arashi-docs-worktree-naming-green-"));
