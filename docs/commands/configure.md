@@ -44,6 +44,7 @@ aw configure --json
 - Keep and semantic no-op choices do not rewrite `.arashi/config.json`.
 - Existing active native hook files are external state and are never overwritten, imported, converted, or deleted.
 - Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl` remain owned by repository onboarding and are not editable here.
+- The initial `worktreeNaming` slice is authored directly in `.arashi/config.json`; interactive `aw configure` does not edit it.
 - For the complete supported field list, keep/edit/clear semantics, preview boundaries, and hook-body disclosure rules, see the [Config workflow](/workflows/config/#inspect-and-change-supported-settings).
 
 ## Related Commands
