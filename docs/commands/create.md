@@ -101,9 +101,44 @@ aw create feature-auth-refresh --no-hook-input
 
 ## Worktree locations
 
-Configured non-bare workspaces place the parent worktree at `<worktreesDir>/<branch>`. Configured bare workspaces use a repository namespace because their default `worktreesDir` is the shared parent directory: a bare source at `/projects/example.git` creates branch `feature/auth` at `/projects/example/feature/auth`. A conventional terminal `.git` suffix is omitted from the fallback namespace.
+Configured workspaces can customize new paths with the root `worktreeNaming` object. This initial configuration slice is not available in interactive `aw configure`; edit `.arashi/config.json` directly. The closed values are:
 
-Standalone mode remains `<repository>/.worktrees/<branch>`. Coordinated child repositories are nested beneath the exact parent destination using their configured paths.
+- `style`: `default | branch | repo-branch`
+- `branchSlashes`: `preserve | flatten`
+
+Omitting `style` means `default`, and omitting `branchSlashes` means `preserve`. Arashi applies those defaults in memory: it does not auto-persist either default and does not migrate existing configuration.
+
+For a repository named `example` and branch `feature/auth`, the path relative to the configured worktree root is:
+
+| Workspace and setting | New worktree path |
+| --- | --- |
+| Bare `default` + `preserve` | `example/feature/auth` |
+| Bare `default` + `flatten` | `example/feature-auth` |
+| Bare `branch` + `preserve` | `feature/auth` |
+| Bare `branch` + `flatten` | `feature-auth` |
+| Bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Bare `repo-branch` + `flatten` | `example-feature-auth` |
+| Non-bare `default` + `preserve` | `feature/auth` |
+| Non-bare `default` + `flatten` | `feature-auth` |
+| Non-bare `branch` + `preserve` | `feature/auth` |
+| Non-bare `branch` + `flatten` | `feature-auth` |
+| Non-bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Non-bare `repo-branch` + `flatten` | `example-feature-auth` |
+
+For example:
+
+```json
+{
+  "worktreeNaming": {
+    "style": "repo-branch",
+    "branchSlashes": "flatten"
+  }
+}
+```
+
+The mapping changes only the filesystem path; the Git branch remains exactly `feature/auth`. If the chosen destination collides, create fails deterministically instead of appending a suffix. Existing worktree paths are metadata-authoritative and are never renamed by this setting.
+
+Coordinated children remain under the planned parent path using their configured child paths. Standalone `.worktrees/<branch>` placement is unchanged.
 
 ## Choosing a base branch
 

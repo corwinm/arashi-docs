@@ -46,6 +46,45 @@ Delete removes the canonical clone, owned linked worktrees, local refs, the exac
 
 In a partial batch, earlier repositories may be completed, the failing repository is failed, and later repositories are not started. Inspect the phase ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback; do not hand-edit configuration or broadly delete surviving paths. See the [delete command](/commands/delete/) for the copy-pasteable preview, confirmation, JSON, and recovery workflow.
 
+## Worktree naming
+
+Configured workspaces can customize new worktree paths with the root `worktreeNaming` object. This initial configuration slice is not available in interactive `aw configure`; edit `.arashi/config.json` directly:
+
+```json
+{
+  "worktreeNaming": {
+    "style": "repo-branch",
+    "branchSlashes": "flatten"
+  }
+}
+```
+
+Both fields have closed values:
+
+- `style`: `default | branch | repo-branch`
+- `branchSlashes`: `preserve | flatten`
+
+Omitting `style` means `default`, and omitting `branchSlashes` means `preserve`. Arashi applies those defaults in memory: it does not auto-persist either default and does not migrate existing configuration.
+
+For a repository named `example` and branch `feature/auth`, the path relative to the configured worktree root is:
+
+| Workspace and setting | New worktree path |
+| --- | --- |
+| Bare `default` + `preserve` | `example/feature/auth` |
+| Bare `default` + `flatten` | `example/feature-auth` |
+| Bare `branch` + `preserve` | `feature/auth` |
+| Bare `branch` + `flatten` | `feature-auth` |
+| Bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Bare `repo-branch` + `flatten` | `example-feature-auth` |
+| Non-bare `default` + `preserve` | `feature/auth` |
+| Non-bare `default` + `flatten` | `feature-auth` |
+| Non-bare `branch` + `preserve` | `feature/auth` |
+| Non-bare `branch` + `flatten` | `feature-auth` |
+| Non-bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Non-bare `repo-branch` + `flatten` | `example-feature-auth` |
+
+The mapping changes only the filesystem path; the Git branch remains exactly `feature/auth`. If the chosen destination collides, create fails deterministically instead of appending a suffix. Existing worktree paths are metadata-authoritative and are never renamed by this setting. Coordinated children remain under the planned parent path using their configured child paths. Standalone `.worktrees/<branch>` placement is unchanged.
+
 ## Managed Paths And Ignore Scope
 
 The shared `.arashi/config.json` defines `reposDir` and `worktreesDir`. For safe repository-relative subdirectories, Arashi reconciles those managed paths with Git during `init`, `pull`, `clone`, `add`, and `create` before creating repositories or worktrees.
