@@ -152,10 +152,12 @@ In PowerShell, the deterministic default is `$HOME\.arashi\bin`. Use the exact n
 $helper = Join-Path ([System.IO.Path]::GetTempPath()) ("arashi-uninstall-" + [guid]::NewGuid() + ".ps1")
 Invoke-WebRequest https://arashi.haphazard.dev/uninstall.ps1 -OutFile $helper
 Get-Content -LiteralPath $helper
-& $helper -InstallDir "D:\Tools\Arashi\bin" -DryRun
-& $helper -InstallDir "D:\Tools\Arashi\bin" -Yes
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $helper -InstallDir "D:\Tools\Arashi\bin" -DryRun
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $helper -InstallDir "D:\Tools\Arashi\bin" -Yes
 Remove-Item -LiteralPath $helper -ErrorAction SilentlyContinue
 ```
+
+`-ExecutionPolicy Bypass` applies only to the recovery subprocess; it does not change the machine or user execution-policy configuration.
 
 Omit the install-directory option only for the deterministic platform default. Never infer a custom directory from PATH or search the filesystem for one. If manifest validation refuses, preserve the installation and use the bounded remediation printed by the helper.
 

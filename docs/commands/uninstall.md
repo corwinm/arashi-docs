@@ -33,9 +33,9 @@ Conflicting, unsupported, unavailable, or absent package-manager evidence also p
 
 ## Safety boundary
 
-Product uninstall removes only proven manifest-owned payload files, one exact safe installer-added PATH mutation, and exact complete managed shell blocks. It never recursively deletes the install directory.
+For a current official direct install, product uninstall removes only proven manifest-owned payload files, one exact safe installer-added PATH mutation, and exact complete managed shell blocks. Package-manager uninstall delegates only to that manager; run `aw shell uninstall` first if you previously installed Arashi's managed shell block. Direct uninstall never recursively deletes the install directory.
 
-It strictly preserves workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, Git metadata, unrelated profile bytes and unrelated install-directory files, and all other unrelated state. A changed file, unexpected file type, symlink or reparse point, changed profile bytes, or ambiguous shell markers causes refusal before the first mutation.
+It strictly preserves workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, Git metadata, unrelated profile bytes and unrelated install-directory files, and all other unrelated state. A changed payload file, unexpected file type, unsafe symlink or reparse point, or ambiguous shell marker state causes refusal before the first mutation. If the exact installer-added PATH bytes are absent, duplicated, or otherwise ambiguous, Arashi preserves that PATH state while continuing only with independently proven cleanup.
 
 The command does not support `--json` or `--force`, does not automatically migrate schema-v1 state, and does not promise rollback. Its recovery boundary is complete preflight, manifest-last cleanup, and safe reruns for exact manifest-listed files already absent after an interruption.
 

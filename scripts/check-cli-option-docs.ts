@@ -132,7 +132,9 @@ const semanticRequirements = new Map<string, string[]>([
       "`--install-dir`",
       "`-InstallDir`",
       "`-DryRun`",
-      "`-Yes`"
+      "`-Yes`",
+      "-ExecutionPolicy Bypass",
+      "does not change the machine or user execution-policy configuration"
     ]
   ],
   [
