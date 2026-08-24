@@ -36,6 +36,40 @@ Human and JSON modes both require a configured valid workspace. Missing configur
 
 `aw configure` is not a schema editor. It preserves compatible fields outside the supported list but does not offer controls for them. To change an unsupported canonical field, directly edit `.arashi/config.json`, then use Arashi's normal validation and diagnostics before relying on the change.
 
+## Worktree naming
+
+Configured workspaces can customize new worktree paths with the root `worktreeNaming` object. This initial configuration slice is not available in interactive `aw configure`; edit `.arashi/config.json` directly:
+
+```json
+{
+  "worktreeNaming": {
+    "style": "repo-branch",
+    "branchSlashes": "flatten"
+  }
+}
+```
+
+Both fields have closed values:
+
+- `style`: `default | branch | repo-branch`
+- `branchSlashes`: `preserve | flatten`
+
+Omitting `style` means `default`, and omitting `branchSlashes` means `preserve`. Arashi applies those defaults in memory: it does not auto-persist either default and does not migrate existing configuration.
+
+For a repository named `example` and branch `feature/auth`, the path relative to the configured worktree root is:
+
+| Workspace and setting | New worktree path |
+| --- | --- |
+| Bare `default` + `preserve` | `example/feature/auth` |
+| Bare `default` + `flatten` | `example/feature-auth` |
+| Bare `branch` + `preserve` | `feature/auth` |
+| Bare `branch` + `flatten` | `feature-auth` |
+| Bare `repo-branch` + `preserve` | `example-feature/auth` |
+| Bare `repo-branch` + `flatten` | `example-feature-auth` |
+| Non-bare `default` + `preserve` | `feature/auth` |
+
+The mapping changes only the filesystem path; the Git branch remains exactly `feature/auth`. If the chosen destination collides, create fails deterministically instead of appending a suffix. Existing worktree paths are metadata-authoritative and are never renamed by this setting. Coordinated children remain under the planned parent path using their configured child paths. Standalone `.worktrees/<branch>` placement is unchanged.
+
 ## Managed Paths And Ignore Scope
 
 The shared `.arashi/config.json` defines `reposDir` and `worktreesDir`. For safe repository-relative subdirectories, Arashi reconciles those managed paths with Git during `init`, `pull`, `clone`, `add`, and `create` before creating repositories or worktrees.
