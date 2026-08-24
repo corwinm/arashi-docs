@@ -64,6 +64,9 @@ jobs:
       - name: Validate documentation
         run: pnpm validate
 
+      - name: Exercise worktree-naming semantic drift fixtures
+        run: pnpm test:worktree-naming-docs
+
   publish-gate:
     name: Publish gate status
     if: github.event_name == 'push'

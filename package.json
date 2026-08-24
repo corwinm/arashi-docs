@@ -10,6 +10,7 @@
     "dev": "pnpm sync:content && astro dev",
     "build": "pnpm sync:content && astro check && astro build",
     "preview": "astro preview",
+    "test:worktree-naming-docs": "node scripts/test-worktree-naming-docs-fixtures.ts",
     "lint:markdown": "markdownlint \"README.md\" \"docs/**/*.md\" --disable MD013",
     "lint": "pnpm lint:markdown",
     "validate:build": "pnpm sync:content && astro check && astro build",

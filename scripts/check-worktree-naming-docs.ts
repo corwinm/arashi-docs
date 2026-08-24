@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -106,19 +105,6 @@ if (failures.length > 0) {
   console.error("Worktree-naming documentation contract failed:");
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
-}
-
-if (process.env.WORKTREE_NAMING_FIXTURE_TEST !== "1") {
-  const selfTest = spawnSync(
-    process.execPath,
-    [path.join(root, "scripts/test-worktree-naming-docs-fixtures.ts")],
-    { cwd: root, encoding: "utf8", env: { ...process.env, WORKTREE_NAMING_FIXTURE_DRIVER: "1" } },
-  );
-  if (selfTest.status !== 0) {
-    process.stderr.write(selfTest.stderr);
-    process.exit(selfTest.status ?? 1);
-  }
-  process.stdout.write(selfTest.stdout);
 }
 
 console.log(
