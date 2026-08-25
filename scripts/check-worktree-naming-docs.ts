@@ -9,6 +9,7 @@ const expectedConfiguration = {
   worktreeNaming: {
     style: "repo-branch",
     branchSlashes: "flatten",
+    maxPathLength: 180,
   },
 };
 const expectedStyles = ["default", "branch", "repo-branch"];
@@ -35,6 +36,32 @@ const requiredClaims = [
   ["preserve slash omission", "omitting `branchSlashes` means `preserve`"],
   ["no automatic persistence", "does not auto-persist either default"],
   ["no automatic migration", "does not migrate existing configuration"],
+  ["optional positive integer budget", "`maxPathLength` is an optional positive integer from 1 through 2,147,483,647"],
+  [
+    "full absolute UTF-16 scope",
+    "limits each full absolute newly planned configured-worktree destination in UTF-16 code units",
+  ],
+  ["budget omission preservation", "Omitting `maxPathLength` preserves current path bytes"],
+  ["no budget default persistence or migration", "does not persist or migrate a default"],
+  [
+    "deterministic parent shortening",
+    "shortens the generated parent namespace to a readable prefix followed by `-` and the first eight lowercase SHA-256 hex characters of the portable ordinary namespace",
+  ],
+  [
+    "complete coordinated sizing",
+    "sizes one parent against all selected coordinated child paths",
+  ],
+  ["unchanged child-relative paths", "child-relative paths remain unchanged"],
+  [
+    "pre-mutation impossible-topology failure",
+    "reports `WORKTREE_PATH_LENGTH_EXCEEDED` before mutation",
+  ],
+  ["new configured paths only", "Only newly planned configured paths may shorten"],
+  ["worktree-root reservation", "reserves space only for each worktree root"],
+  [
+    "no repository-file guarantee",
+    "cannot guarantee repository-internal files fit",
+  ],
   ["filesystem-only mapping", "changes only the filesystem path"],
   ["exact Git branch", "Git branch remains exactly `feature/auth`"],
   ["deterministic no-suffix collision", "fails deterministically instead of appending a suffix"],
@@ -52,9 +79,41 @@ const contradictions = [
   ["interactive naming edit", /interactive\s+`?aw configure`?[^.\n]*(?:can|may|does)[^.\n]*(?:edit|configure|change)[^.\n]*worktreeNaming/i],
   ["Git branch rewrite", /(?:rewrites?|changes?)[^.\n]*Git branch[^.\n]*`feature-auth`/i],
   ["collision suffix fallback", /(?:^|[.!?]\s+)On\s+(?:a\s+)?collision[^.\n]*(?:retries?|appends?|uses?)[^.\n]*(?:numeric\s+)?suffix/im],
-  ["existing-worktree relocation", /(?:changing|naming)[^.\n]*(?:relocates?|renames?|moves?)[^.\n]*existing[^.\n]*worktrees?/i],
+  ["existing-worktree relocation", /(?:changing|naming)[^.\n]*(?<!not )(?:relocates?|renames?|moves?)[^.\n]*existing[^.\n]*worktrees?/i],
   ["coordinated-child policy reapplication", /coordinated child[^.\n]*(?:reappl(?:y|ies)|independent)[^.\n]*naming/i],
   ["standalone policy expansion", /standalone[^.\n]*(?:also\s+)?(?:honors?|uses?|follows?)[^.\n]*worktreeNaming/i],
+  [
+    "component-only budget scope",
+    /(?:maxPathLength|path\s+budget)[^.\n]*(?<!not )(?:applies?|limits?|measures?)[^.\n]*only[^.\n]*(?:folder|directory|namespace)\s+component/i,
+  ],
+  [
+    "automatic Windows budget default",
+    /(?:Windows[^.\n]*(?<!not )(?:automatically|auto(?:matically)?)[^.\n]*(?:defaults?|sets?|chooses?)[^.\n]*maxPathLength|maxPathLength[^.\n]*(?<!not )(?:automatically|auto(?:matically)?)[^.\n]*(?:defaults?|sets?|chooses?)[^.\n]*Windows)/i,
+  ],
+  [
+    "non-UTF-16 measurement",
+    /(?:maxPathLength|path\s+budget|path\s+length)[^.\n]*(?<!not )(?:measured|counted|uses?)[^.\n]*(?:UTF-8|bytes|Unicode\s+code\s+points?)/i,
+  ],
+  [
+    "numeric shortening suffix",
+    /(?:shorten(?:ed|ing)?|fitted)[^.\n]*suffix[^.\n]*(?:numeric|number|increment)/i,
+  ],
+  [
+    "independent child shortening",
+    /(?:each\s+)?coordinated\s+child[^.\n]*(?<!not )shortens?[^.\n]*independent/i,
+  ],
+  [
+    "repository-file guarantee",
+    /(?:maxPathLength|path\s+budget|enabling\s+the\s+budget)[^.\n]*(?<!cannot )(?<!can't )(?<!not )guarantees?[^.\n]*repository[^.\n]*files?[^.\n]*fit/i,
+  ],
+  [
+    "existing rename from budget",
+    /(?:changing|setting|adding)[^.\n]*maxPathLength[^.\n]*(?<!not )renames?[^.\n]*existing[^.\n]*worktrees?/i,
+  ],
+  [
+    "standalone budget application",
+    /standalone[^.\n]*(?<!not )(?:applies?|honors?|uses?|follows?)[^.\n]*maxPathLength/i,
+  ],
 ] as const;
 
 type DetailedSurface = {
@@ -210,9 +269,12 @@ function checkCompactContract(label: string, content: string | null, template: b
     failures.push(`${label} must contain the exact ordered 12-entry compact destination mapping`);
   }
 
-  for (const [claimLabel, claim] of requiredClaims.slice(6)) {
+  for (const [claimLabel, claim] of requiredClaims.slice(17)) {
     const compactClaim = claimLabel === "filesystem-only mapping" ? "changes only the filesystem path" : claim;
     if (!block.includes(compactClaim)) failures.push(`${label} is missing ${claimLabel}`);
+  }
+  for (const [claimLabel, claim] of requiredClaims.slice(6, 17)) {
+    if (!block.includes(claim)) failures.push(`${label} is missing ${claimLabel}`);
   }
   checkContradictions(label, block);
 

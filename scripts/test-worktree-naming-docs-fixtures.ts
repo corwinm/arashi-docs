@@ -16,6 +16,8 @@ const replace = (from: string, to: string) => (content: string): string => {
   if (!content.includes(from)) throw new Error(`fixture source not found: ${JSON.stringify(from)}`);
   return content.replace(from, to);
 };
+const replaceWhenPresent = (from: string, to: string) => (content: string): string =>
+  content.includes(from) ? content.replace(from, to) : content;
 const appendToSection = (heading: string, claim: string) => (content: string): string => {
   const start = content.indexOf(heading);
   if (start < 0) throw new Error(`fixture heading not found: ${heading}`);
@@ -55,10 +57,12 @@ fixtures.push(
   {
     id: "nested-json-shape-mutated",
     relativePath: detailedPath,
-    mutate: replace(
-      '  "worktreeNaming": {\n    "style": "repo-branch",\n    "branchSlashes": "flatten"\n  }',
-      '  "style": "repo-branch",\n  "branchSlashes": "flatten"',
-    ),
+    mutate(content) {
+      const withBudget = '  "worktreeNaming": {\n    "style": "repo-branch",\n    "branchSlashes": "flatten",\n    "maxPathLength": 180\n  }';
+      const withoutBudget = '  "worktreeNaming": {\n    "style": "repo-branch",\n    "branchSlashes": "flatten"\n  }';
+      const source = content.includes(withBudget) ? withBudget : withoutBudget;
+      return replace(source, '  "style": "repo-branch",\n  "branchSlashes": "flatten"')(content);
+    },
   },
   {
     id: "direct-authored-scope-mutated",
@@ -110,6 +114,22 @@ for (const [id, from, to] of [
   ["configure-exclusion", "not available in interactive `aw configure`", "available in interactive `aw configure`"],
 ] as const) {
   fixtures.push({ id: `${id}-mutated`, relativePath: detailedPath, mutate: replace(from, to) });
+}
+
+for (const [id, from, to] of [
+  ["positive-integer-budget", "`maxPathLength` is an optional positive integer from 1 through 2,147,483,647", "`maxPathLength` accepts any number"],
+  ["absolute-utf16-scope", "limits each full absolute newly planned configured-worktree destination in UTF-16 code units", "limits one generated folder name in bytes"],
+  ["budget-omission", "Omitting `maxPathLength` preserves current path bytes", "Omitting `maxPathLength` may shorten paths"],
+  ["budget-default-persistence", "does not persist or migrate a default", "persists a Windows default"],
+  ["hash-shortening", "shortens the generated parent namespace to a readable prefix followed by `-` and the first eight lowercase SHA-256 hex characters of the portable ordinary namespace", "shortens each name with a numeric suffix"],
+  ["coordinated-sizing", "sizes one parent against all selected coordinated child paths", "sizes only the parent repository path"],
+  ["child-relative-path", "child-relative paths remain unchanged", "child-relative paths may shorten"],
+  ["overflow-before-mutation", "reports `WORKTREE_PATH_LENGTH_EXCEEDED` before mutation", "mutates before reporting overflow"],
+  ["new-configured-only", "Only newly planned configured paths may shorten", "All worktree paths may shorten"],
+  ["root-reservation", "reserves space only for each worktree root", "reserves space for every repository file"],
+  ["repository-file-limitation", "cannot guarantee repository-internal files fit", "guarantees repository-internal files fit"],
+] as const) {
+  fixtures.push({ id: `${id}-mutated`, relativePath: detailedPath, mutate: replaceWhenPresent(from, to) });
 }
 
 for (const [id, claim] of [
@@ -185,6 +205,14 @@ for (const [id, claim] of [
   ["metadata-additive-contradiction", "Changing this setting relocates existing registered worktrees."],
   ["coordinated-additive-contradiction", "Each coordinated child reapplies naming policy independently."],
   ["standalone-additive-contradiction", "Standalone create also honors worktreeNaming."],
+  ["component-only-budget-contradiction", "The path budget applies only to one folder component."],
+  ["automatic-windows-default-contradiction", "On Windows, Arashi automatically defaults maxPathLength to 260."],
+  ["non-utf16-measurement-contradiction", "The path budget is measured in UTF-8 bytes."],
+  ["numeric-shortening-suffix-contradiction", "A shortened path uses a numeric suffix that increments after collisions."],
+  ["independent-child-shortening-contradiction", "Each coordinated child shortens its parent independently."],
+  ["repository-file-guarantee-contradiction", "Enabling the budget guarantees all repository files fit."],
+  ["existing-budget-rename-contradiction", "Changing maxPathLength renames existing worktrees."],
+  ["standalone-budget-application-contradiction", "Standalone create applies maxPathLength."],
 ] as const) {
   fixtures.push({
     id,
@@ -273,6 +301,14 @@ const truthfulClaims = [
   "On collision, create cannot choose another destination.",
   "For a bare workspace, default with preserve doesn't produce wrong-example-feature-auth for feature/auth.",
   "For a bare workspace, default with preserve cannot yield wrong-example-feature-auth for feature/auth.",
+  "The path budget does not apply only to one folder component.",
+  "On Windows, Arashi does not automatically choose a maxPathLength default.",
+  "The path budget is not measured in UTF-8 bytes.",
+  "A shortened path does not use a numeric suffix.",
+  "Coordinated children do not shorten their parents independently.",
+  "The path budget cannot guarantee repository-internal files fit.",
+  "Changing maxPathLength does not rename existing worktrees.",
+  "Standalone create does not apply maxPathLength.",
 ] as const;
 for (const claim of truthfulClaims) {
   const fixtureRoot = mkdtempSync(path.join(tmpdir(), "arashi-docs-worktree-naming-green-"));
