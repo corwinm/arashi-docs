@@ -190,8 +190,8 @@ function checkUninstallPolicy(): void {
     const content = read(relativePath);
     if (content === null) continue;
     for (const forbidden of [
-      /\baw\s+(?:shell\s+)?uninstall\b[^\n`]*--json/i,
-      /\baw\s+(?:shell\s+)?uninstall\b[^\n`]*--force/i,
+      /\baw\s+(?:shell\s+)?uninstall\b[^\n]*--json/i,
+      /\baw\s+(?:shell\s+)?uninstall\b[^\n]*--force/i,
       /\b(?:Arashi|uninstall|command|it)\s+(?:will\s+)?automatically\s+(?:adopts?|migrates?)[^.!?]*(?:schema[- ]?v?1|legacy)/i,
       /rollback (?:is |are )?(?:guaranteed|supported)/i,
       /\b(?:Arashi|uninstall|command|it)\s+(?:will\s+)?recursively\s+(?:deletes?|removes?)/i,
@@ -203,8 +203,13 @@ function checkUninstallPolicy(): void {
   }
 
   const deliberateJsonClaim = "Run `aw uninstall --json` to receive a structured plan.";
-  if (!/--json/.test(deliberateJsonClaim) || !/\baw\s+uninstall\b[^\n`]*--json/i.test(deliberateJsonClaim)) {
+  const splitSpanJsonClaim = "Run `aw uninstall` with `--json` to receive a structured plan.";
+  const unsupportedJsonPattern = /\baw\s+uninstall\b[^\n]*--json/i;
+  if (!/--json/.test(deliberateJsonClaim) || !unsupportedJsonPattern.test(deliberateJsonClaim)) {
     errors.push("uninstall unsupported-option guard cannot reject a deliberate JSON claim");
+  }
+  if (!unsupportedJsonPattern.test(splitSpanJsonClaim)) {
+    errors.push("uninstall unsupported-option guard cannot reject a split-span JSON claim");
   }
 }
 
