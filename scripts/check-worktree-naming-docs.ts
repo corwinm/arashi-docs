@@ -84,37 +84,55 @@ const contradictions = [
   ["standalone policy expansion", /standalone[^.\n]*(?:also\s+)?(?:honors?|uses?|follows?)[^.\n]*worktreeNaming/i],
   [
     "component-only budget scope",
-    /(?:maxPathLength|path\s+budget)[^.\n]*(?<!not )(?:applies?|limits?|measures?)[^.\n]*only[^.\n]*(?:folder|directory|namespace)\s+component/i,
+    /(?:(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*(?:applies?|limits?|measures?|counts?)[^.\n]*only[^.\n]*(?:folder|directory|namespace)\s+component|only[^.\n]*(?:folder|directory|namespace)\s+component[^.\n]*(?:counts?|contributes?)[^.\n]*(?:configured\s+limit|path\s+budget))/i,
+    true,
   ],
   [
     "automatic Windows budget default",
-    /(?:Windows[^.\n]*(?<!not )(?:automatically|auto(?:matically)?)[^.\n]*(?:defaults?|sets?|chooses?)[^.\n]*maxPathLength|maxPathLength[^.\n]*(?<!not )(?:automatically|auto(?:matically)?)[^.\n]*(?:defaults?|sets?|chooses?)[^.\n]*Windows)/i,
+    /(?:(?:Windows|Arashi)[^.\n]*(?:automatically[^.\n]*)?(?:defaults?|sets?|chooses?|uses?)[^.\n]*(?:automatically[^.\n]*)?(?:maxPathLength|configured\s+limit|path\s+(?:budget|limit)|platform\s+default|260)|maxPathLength[^.\n]*(?:automatically|by\s+default)[^.\n]*(?:defaults?|sets?|chooses?)[^.\n]*Windows)/i,
+    true,
   ],
   [
     "non-UTF-16 measurement",
-    /(?:maxPathLength|path\s+budget|path\s+length)[^.\n]*(?<!not )(?:measured|counted|uses?)[^.\n]*(?:UTF-8|bytes|Unicode\s+code\s+points?)/i,
+    /(?:(?:maxPathLength|path\s+budget|path\s+length|configured\s+limit)[^.\n]*(?:measured|counted|uses?)[^.\n]*(?:UTF-8|bytes|Unicode\s+code\s+points?)|(?:Arashi|the\s+setting)[^.\n]*(?:measures?|counts?)[^.\n]*(?:configured\s+limit|maxPathLength|path\s+(?:budget|limit))[^.\n]*(?:UTF-8|bytes|Unicode\s+code\s+points?))/i,
+    true,
   ],
   [
     "numeric shortening suffix",
-    /(?:shorten(?:ed|ing)?|fitted)[^.\n]*suffix[^.\n]*(?:numeric|number|increment)/i,
+    /(?:shorten(?:ed|ing)?\s+(?:names?|paths?)?|fitted|path\s+budget)[^.\n]*(?:suffix[^.\n]*(?:numeric|number|increment)|(?:appends?|uses?|receives?)[^.\n]*(?:incrementing\s+number|numeric\s+suffix))/i,
+    true,
   ],
   [
     "independent child shortening",
-    /(?:each\s+)?coordinated\s+child[^.\n]*(?<!not )shortens?[^.\n]*independent/i,
+    /(?:each\s+)?(?:coordinated\s+)?child[^.\n]*(?:shortens?|computes?|calculates?)[^.\n]*(?:independent|its\s+own|their\s+own)[^.\n]*parent|(?:each\s+)?(?:coordinated\s+)?child[^.\n]*(?:shortens?|computes?|calculates?)[^.\n]*parent[^.\n]*(?:independent|separate|own)/i,
+    true,
   ],
   [
     "repository-file guarantee",
-    /(?:maxPathLength|path\s+budget|enabling\s+the\s+budget)[^.\n]*(?<!cannot )(?<!can't )(?<!not )guarantees?[^.\n]*repository[^.\n]*files?[^.\n]*fit/i,
+    /(?:maxPathLength|path\s+budget|enabling\s+the\s+budget|configured\s+limit|this\s+setting)[^.\n]*guarantees?[^.\n]*(?:all\s+|every\s+)?(?:repository[^.\n]*)?files?[^.\n]*fit/i,
+    true,
   ],
   [
     "existing rename from budget",
-    /(?:changing|setting|adding)[^.\n]*maxPathLength[^.\n]*(?<!not )renames?[^.\n]*existing[^.\n]*worktrees?/i,
+    /(?:(?:changing|setting|adding)[^.\n]*(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*renames?[^.\n]*existing[^.\n]*worktrees?|existing[^.\n]*worktrees?[^.\n]*(?:are\s+)?renamed[^.\n]*(?:budget|limit|maxPathLength)[^.\n]*changes?)/i,
+    true,
   ],
   [
     "standalone budget application",
-    /standalone[^.\n]*(?<!not )(?:applies?|honors?|uses?|follows?)[^.\n]*maxPathLength/i,
+    /standalone[^.\n]*(?:applies?|honors?|uses?|follows?)[^.\n]*(?:maxPathLength|configured\s+limit|path\s+(?:budget|limit)|the\s+limit)/i,
+    true,
   ],
 ] as const;
+
+const truthfulNegation =
+  /\b(?:do|does|is|are|was|were|can|could|will|would|may|might|must|should)\s+not\b|\b(?:cannot|never)\b|n't\b/i;
+
+function containsContradiction(content: string, pattern: RegExp, negationAware: boolean): boolean {
+  if (!negationAware) return pattern.test(content);
+  return content
+    .split(/(?<=[.!?])\s+|\n+/u)
+    .some((fragment) => pattern.test(fragment) && !truthfulNegation.test(fragment));
+}
 
 type DetailedSurface = {
   label: string;
@@ -284,8 +302,10 @@ function checkCompactContract(label: string, content: string | null, template: b
 }
 
 function checkContradictions(label: string, content: string): void {
-  for (const [claimLabel, pattern] of contradictions) {
-    if (pattern.test(content)) failures.push(`${label} contains contradictory ${claimLabel}`);
+  for (const [claimLabel, pattern, negationAware = false] of contradictions) {
+    if (containsContradiction(content, pattern, negationAware)) {
+      failures.push(`${label} contains contradictory ${claimLabel}`);
+    }
   }
   checkDestinationMappingContradictions(label, content);
   checkCollisionCarveOuts(label, content);

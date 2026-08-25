@@ -213,6 +213,14 @@ for (const [id, claim] of [
   ["repository-file-guarantee-contradiction", "Enabling the budget guarantees all repository files fit."],
   ["existing-budget-rename-contradiction", "Changing maxPathLength renames existing worktrees."],
   ["standalone-budget-application-contradiction", "Standalone create applies maxPathLength."],
+  ["component-only-budget-synonym", "Only one folder component counts toward the configured limit."],
+  ["automatic-windows-default-synonym", "Windows chooses 260 automatically when the setting is absent."],
+  ["non-utf16-measurement-synonym", "Arashi measures the configured limit in UTF-8 bytes."],
+  ["numeric-shortening-suffix-synonym", "Shortened names append an incrementing number."],
+  ["independent-child-shortening-synonym", "Each child computes its own shortened parent."],
+  ["repository-file-guarantee-synonym", "This setting guarantees that all repository files fit."],
+  ["existing-budget-rename-synonym", "Existing worktrees are renamed when the budget changes."],
+  ["standalone-budget-application-synonym", "Standalone configured worktrees use the limit."],
 ] as const) {
   fixtures.push({
     id,
