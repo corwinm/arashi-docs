@@ -9,6 +9,7 @@ const expectedConfiguration = {
   worktreeNaming: {
     style: "repo-branch",
     branchSlashes: "flatten",
+    maxPathLength: 180,
   },
 };
 const expectedStyles = ["default", "branch", "repo-branch"];
@@ -35,6 +36,32 @@ const requiredClaims = [
   ["preserve slash omission", "omitting `branchSlashes` means `preserve`"],
   ["no automatic persistence", "does not auto-persist either default"],
   ["no automatic migration", "does not migrate existing configuration"],
+  ["optional positive integer budget", "`maxPathLength` is an optional positive integer from 1 through 2,147,483,647"],
+  [
+    "full absolute UTF-16 scope",
+    "limits each full absolute newly planned configured-worktree destination in UTF-16 code units",
+  ],
+  ["budget omission preservation", "Omitting `maxPathLength` preserves current path bytes"],
+  ["no budget default persistence or migration", "does not persist or migrate a default"],
+  [
+    "deterministic parent shortening",
+    "shortens the generated parent namespace to a readable prefix followed by `-` and the first eight lowercase SHA-256 hex characters of the portable ordinary namespace",
+  ],
+  [
+    "complete coordinated sizing",
+    "sizes one parent against all selected coordinated child paths",
+  ],
+  ["unchanged child-relative paths", "child-relative paths remain unchanged"],
+  [
+    "pre-mutation impossible-topology failure",
+    "reports `WORKTREE_PATH_LENGTH_EXCEEDED` before mutation",
+  ],
+  ["new configured paths only", "Only newly planned configured paths may shorten"],
+  ["worktree-root reservation", "reserves space only for each worktree root"],
+  [
+    "no repository-file guarantee",
+    "cannot guarantee repository-internal files fit",
+  ],
   ["filesystem-only mapping", "changes only the filesystem path"],
   ["exact Git branch", "Git branch remains exactly `feature/auth`"],
   ["deterministic no-suffix collision", "fails deterministically instead of appending a suffix"],
@@ -52,10 +79,75 @@ const contradictions = [
   ["interactive naming edit", /interactive\s+`?aw configure`?[^.\n]*(?:can|may|does)[^.\n]*(?:edit|configure|change)[^.\n]*worktreeNaming/i],
   ["Git branch rewrite", /(?:rewrites?|changes?)[^.\n]*Git branch[^.\n]*`feature-auth`/i],
   ["collision suffix fallback", /(?:^|[.!?]\s+)On\s+(?:a\s+)?collision[^.\n]*(?:retries?|appends?|uses?)[^.\n]*(?:numeric\s+)?suffix/im],
-  ["existing-worktree relocation", /(?:changing|naming)[^.\n]*(?:relocates?|renames?|moves?)[^.\n]*existing[^.\n]*worktrees?/i],
+  ["existing-worktree relocation", /(?:changing|naming)[^.\n]*(?<!not )(?:relocates?|renames?|moves?)[^.\n]*existing[^.\n]*worktrees?/i],
   ["coordinated-child policy reapplication", /coordinated child[^.\n]*(?:reappl(?:y|ies)|independent)[^.\n]*naming/i],
   ["standalone policy expansion", /standalone[^.\n]*(?:also\s+)?(?:honors?|uses?|follows?)[^.\n]*worktreeNaming/i],
+  [
+    "component-only budget scope",
+    /(?:(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*(?:applies?|limits?|measures?|counts?)[^.\n]*only[^.\n]*(?:folder|directory|namespace)\s+component|only[^.\n]*(?:folder|directory|namespace)\s+component[^.\n]*(?:counts?|contributes?)[^.\n]*(?:configured\s+limit|path\s+budget))/i,
+    true,
+  ],
+  [
+    "automatic Windows budget default",
+    /(?:(?:Windows|Arashi)[^.\n]*(?:automatically[^.\n]*)?(?:defaults?|sets?|chooses?|uses?)[^.\n]*(?:automatically[^.\n]*)?(?:maxPathLength|configured\s+limit|path\s+(?:budget|limit)|platform\s+default|260)|maxPathLength[^.\n]*(?:automatically|by\s+default)[^.\n]*(?:defaults?|sets?|chooses?)[^.\n]*Windows)/i,
+    true,
+  ],
+  [
+    "non-UTF-16 measurement",
+    /(?:(?:maxPathLength|path\s+budget|path\s+length|configured\s+limit)[^.\n]*(?:measured|counted|uses?)[^.\n]*(?:UTF-8|bytes|Unicode\s+code\s+points?)|(?:Arashi|the\s+setting)[^.\n]*(?:measures?|counts?)[^.\n]*(?:configured\s+limit|maxPathLength|path\s+(?:budget|limit))[^.\n]*(?:UTF-8|bytes|Unicode\s+code\s+points?))/i,
+    true,
+  ],
+  [
+    "numeric shortening suffix",
+    /(?:shorten(?:ed|ing)?\s+(?:names?|paths?)?|fitted|path\s+budget)[^.\n]*(?:suffix[^.\n]*(?:numeric|number|increment)|(?:appends?|uses?|receives?)[^.\n]*(?:incrementing\s+number|numeric\s+suffix))/i,
+    true,
+  ],
+  [
+    "independent child shortening",
+    /(?:each\s+)?(?:coordinated\s+)?child[^.\n]*(?:shortens?|computes?|calculates?)[^.\n]*(?:independent|its\s+own|their\s+own)[^.\n]*parent|(?:each\s+)?(?:coordinated\s+)?child[^.\n]*(?:shortens?|computes?|calculates?)[^.\n]*parent[^.\n]*(?:independent|separate|own)/i,
+    true,
+  ],
+  [
+    "repository-file guarantee",
+    /(?:maxPathLength|path\s+budget|enabling\s+the\s+budget|configured\s+limit|this\s+setting)[^.\n]*guarantees?[^.\n]*(?:all\s+|every\s+)?(?:repository[^.\n]*)?files?[^.\n]*fit/i,
+    true,
+  ],
+  [
+    "existing rename from budget",
+    /(?:(?:changing|setting|adding)[^.\n]*(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*renames?[^.\n]*existing[^.\n]*worktrees?|existing[^.\n]*worktrees?[^.\n]*(?:are\s+)?renamed[^.\n]*(?:budget|limit|maxPathLength)[^.\n]*changes?)/i,
+    true,
+  ],
+  [
+    "standalone budget application",
+    /standalone[^.\n]*(?:applies?|honors?|uses?|follows?)[^.\n]*(?:maxPathLength|configured\s+limit|path\s+(?:budget|limit)|the\s+limit)/i,
+    true,
+  ],
 ] as const;
+
+const truthfulNegation =
+  /\b(?:do|does|is|are|was|were|can|could|will|would|may|might|must|should)\s+not\b|\b(?:cannot|never)\b|n't\b/i;
+
+function contradictionClauses(content: string): string[] {
+  return content
+    .split(/(?<=[.!?])\s+|\n+|;\s*/u)
+    .flatMap((fragment) =>
+      fragment.split(
+        /(?:\s*,?\s*\b(?:but|while|whereas|however|yet)\b\s*|\s*,?\s*\band\b\s*(?=(?:`|[A-Z]|\b(?:the|this|that|each|standalone|existing|coordinated|maxPathLength)\b)))/u,
+      ),
+    )
+    .flatMap((fragment) => {
+      if (!/^\s*(?:although|though|even\s+though)\b/iu.test(fragment)) return [fragment];
+      const comma = fragment.indexOf(",");
+      return comma < 0 ? [fragment] : [fragment.slice(0, comma), fragment.slice(comma + 1)];
+    });
+}
+
+function containsContradiction(content: string, pattern: RegExp, negationAware: boolean): boolean {
+  if (!negationAware) return pattern.test(content);
+  return contradictionClauses(content).some(
+    (fragment) => pattern.test(fragment) && !truthfulNegation.test(fragment),
+  );
+}
 
 type DetailedSurface = {
   label: string;
@@ -210,9 +302,12 @@ function checkCompactContract(label: string, content: string | null, template: b
     failures.push(`${label} must contain the exact ordered 12-entry compact destination mapping`);
   }
 
-  for (const [claimLabel, claim] of requiredClaims.slice(6)) {
+  for (const [claimLabel, claim] of requiredClaims.slice(17)) {
     const compactClaim = claimLabel === "filesystem-only mapping" ? "changes only the filesystem path" : claim;
     if (!block.includes(compactClaim)) failures.push(`${label} is missing ${claimLabel}`);
+  }
+  for (const [claimLabel, claim] of requiredClaims.slice(6, 17)) {
+    if (!block.includes(claim)) failures.push(`${label} is missing ${claimLabel}`);
   }
   checkContradictions(label, block);
 
@@ -222,8 +317,10 @@ function checkCompactContract(label: string, content: string | null, template: b
 }
 
 function checkContradictions(label: string, content: string): void {
-  for (const [claimLabel, pattern] of contradictions) {
-    if (pattern.test(content)) failures.push(`${label} contains contradictory ${claimLabel}`);
+  for (const [claimLabel, pattern, negationAware = false] of contradictions) {
+    if (containsContradiction(content, pattern, negationAware)) {
+      failures.push(`${label} contains contradictory ${claimLabel}`);
+    }
   }
   checkDestinationMappingContradictions(label, content);
   checkCollisionCarveOuts(label, content);

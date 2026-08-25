@@ -54,7 +54,8 @@ Configured workspaces can customize new worktree paths with the root `worktreeNa
 {
   "worktreeNaming": {
     "style": "repo-branch",
-    "branchSlashes": "flatten"
+    "branchSlashes": "flatten",
+    "maxPathLength": 180
   }
 }
 ```
@@ -65,6 +66,8 @@ Both fields have closed values:
 - `branchSlashes`: `preserve | flatten`
 
 Omitting `style` means `default`, and omitting `branchSlashes` means `preserve`. Arashi applies those defaults in memory: it does not auto-persist either default and does not migrate existing configuration.
+
+`maxPathLength` is an optional positive integer from 1 through 2,147,483,647. It limits each full absolute newly planned configured-worktree destination in UTF-16 code units, rather than limiting one folder component. Omitting `maxPathLength` preserves current path bytes; Arashi does not persist or migrate a default.
 
 For a repository named `example` and branch `feature/auth`, the path relative to the configured worktree root is:
 
@@ -83,7 +86,11 @@ For a repository named `example` and branch `feature/auth`, the path relative to
 | Non-bare `repo-branch` + `preserve` | `example-feature/auth` |
 | Non-bare `repo-branch` + `flatten` | `example-feature-auth` |
 
-The mapping changes only the filesystem path; the Git branch remains exactly `feature/auth`. If the chosen destination collides, create fails deterministically instead of appending a suffix. Existing worktree paths are metadata-authoritative and are never renamed by this setting. Coordinated children remain under the planned parent path using their configured child paths. Standalone `.worktrees/<branch>` placement is unchanged.
+The mapping changes only the filesystem path; the Git branch remains exactly `feature/auth`. If every selected destination fits the budget, its path remains exact. Only newly planned configured paths may shorten. When the budget is exceeded, Arashi shortens the generated parent namespace to a readable prefix followed by `-` and the first eight lowercase SHA-256 hex characters of the portable ordinary namespace. If the chosen destination collides, create fails deterministically instead of appending a suffix.
+
+Arashi sizes one parent against all selected coordinated child paths, even when selection excludes the parent; child-relative paths remain unchanged. Coordinated children remain under the planned parent path using their configured child paths. If the fixed base and child topology cannot leave room for the collision-resistant suffix, create reports `WORKTREE_PATH_LENGTH_EXCEEDED` before mutation.
+
+Existing worktree paths are metadata-authoritative and are never renamed by this setting. Standalone `.worktrees/<branch>` placement is unchanged. The budget reserves space only for each worktree root; it cannot guarantee repository-internal files fit.
 
 ## Managed Paths And Ignore Scope
 
