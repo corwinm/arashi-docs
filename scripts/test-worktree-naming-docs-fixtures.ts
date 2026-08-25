@@ -266,8 +266,12 @@ for (const [id, claim] of [
     "The path budget is not measured in UTF-8 bytes, whereas Arashi measures the configured limit in UTF-8 bytes.",
   ],
   [
-    "repository-file-guarantee-concessive-clause",
-    "Although the path budget cannot guarantee repository files fit, this setting guarantees that all repository files fit.",
+    "repository-file-guarantee-leading-concessive",
+    "Although the path budget cannot guarantee repository files fit, this setting guarantees every repository file fits.",
+  ],
+  [
+    "repository-file-guarantee-elided-subject-negation",
+    "The path budget does not affect branch names and guarantees all repository files fit.",
   ],
 ] as const) {
   fixtures.push({
