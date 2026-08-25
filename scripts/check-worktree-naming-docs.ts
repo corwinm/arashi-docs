@@ -130,7 +130,7 @@ const truthfulNegation =
 function containsContradiction(content: string, pattern: RegExp, negationAware: boolean): boolean {
   if (!negationAware) return pattern.test(content);
   return content
-    .split(/(?<=[.!?])\s+|\n+/u)
+    .split(/(?<=[.!?])\s+|\n+|\s*,?\s*\b(?:but|however|yet)\b\s*|;\s*/u)
     .some((fragment) => pattern.test(fragment) && !truthfulNegation.test(fragment));
 }
 

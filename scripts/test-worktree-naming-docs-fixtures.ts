@@ -221,6 +221,38 @@ for (const [id, claim] of [
   ["repository-file-guarantee-synonym", "This setting guarantees that all repository files fit."],
   ["existing-budget-rename-synonym", "Existing worktrees are renamed when the budget changes."],
   ["standalone-budget-application-synonym", "Standalone configured worktrees use the limit."],
+  [
+    "component-only-budget-mixed-polarity",
+    "The path budget does not apply only to one folder component, but the configured limit counts only one folder component.",
+  ],
+  [
+    "automatic-windows-default-mixed-polarity",
+    "Arashi does not automatically set maxPathLength, but Windows chooses 260 automatically when the setting is absent.",
+  ],
+  [
+    "non-utf16-measurement-mixed-polarity",
+    "The path budget is not measured in UTF-8 bytes, but Arashi measures the configured limit in UTF-8 bytes.",
+  ],
+  [
+    "numeric-shortening-suffix-mixed-polarity",
+    "A shortened path does not use a numeric suffix, but shortened names append an incrementing number.",
+  ],
+  [
+    "independent-child-shortening-mixed-polarity",
+    "Coordinated children do not shorten independently, but each child computes its own shortened parent.",
+  ],
+  [
+    "repository-file-guarantee-mixed-polarity",
+    "The path budget cannot guarantee repository files fit, but this setting guarantees that all repository files fit.",
+  ],
+  [
+    "existing-budget-rename-mixed-polarity",
+    "Changing maxPathLength does not rename existing worktrees, but existing worktrees are renamed when the budget changes.",
+  ],
+  [
+    "standalone-budget-application-mixed-polarity",
+    "Standalone create does not apply maxPathLength, but standalone configured worktrees use the limit.",
+  ],
 ] as const) {
   fixtures.push({
     id,
