@@ -253,6 +253,22 @@ for (const [id, claim] of [
     "standalone-budget-application-mixed-polarity",
     "Standalone create does not apply maxPathLength, but standalone configured worktrees use the limit.",
   ],
+  [
+    "component-only-budget-coordinating-conjunction",
+    "The path budget does not apply only to one folder component, and the configured limit counts only one folder component.",
+  ],
+  [
+    "automatic-windows-default-subordinate-clause",
+    "Arashi does not automatically set maxPathLength, while Windows chooses 260 automatically when the setting is absent.",
+  ],
+  [
+    "non-utf16-measurement-contrasting-clause",
+    "The path budget is not measured in UTF-8 bytes, whereas Arashi measures the configured limit in UTF-8 bytes.",
+  ],
+  [
+    "repository-file-guarantee-concessive-clause",
+    "Although the path budget cannot guarantee repository files fit, this setting guarantees that all repository files fit.",
+  ],
 ] as const) {
   fixtures.push({
     id,

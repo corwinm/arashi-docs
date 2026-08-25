@@ -127,11 +127,26 @@ const contradictions = [
 const truthfulNegation =
   /\b(?:do|does|is|are|was|were|can|could|will|would|may|might|must|should)\s+not\b|\b(?:cannot|never)\b|n't\b/i;
 
+function contradictionClauses(content: string): string[] {
+  return content
+    .split(/(?<=[.!?])\s+|\n+|;\s*/u)
+    .flatMap((fragment) =>
+      fragment.split(
+        /(?:\s*,?\s*\b(?:but|while|whereas|however|yet)\b\s*|\s*,?\s*\band\b\s*(?=(?:`|[A-Z]|\b(?:the|this|that|each|standalone|existing|coordinated|maxPathLength)\b)))/u,
+      ),
+    )
+    .flatMap((fragment) => {
+      if (!/^\s*(?:although|though|even\s+though)\b/iu.test(fragment)) return [fragment];
+      const comma = fragment.indexOf(",");
+      return comma < 0 ? [fragment] : [fragment.slice(0, comma), fragment.slice(comma + 1)];
+    });
+}
+
 function containsContradiction(content: string, pattern: RegExp, negationAware: boolean): boolean {
   if (!negationAware) return pattern.test(content);
-  return content
-    .split(/(?<=[.!?])\s+|\n+|\s*,?\s*\b(?:but|however|yet)\b\s*|;\s*/u)
-    .some((fragment) => pattern.test(fragment) && !truthfulNegation.test(fragment));
+  return contradictionClauses(content).some(
+    (fragment) => pattern.test(fragment) && !truthfulNegation.test(fragment),
+  );
 }
 
 type DetailedSurface = {
