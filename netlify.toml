@@ -38,3 +38,27 @@
   to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/install.ps1"
   status = 302
   force = true
+
+[[redirects]]
+  from = "/uninstall"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/uninstall.sh"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/uninstall/"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/uninstall.sh"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/uninstall.ps1"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/uninstall.ps1"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/uninstall.ps1/"
+  to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/uninstall.ps1"
+  status = 302
+  force = true

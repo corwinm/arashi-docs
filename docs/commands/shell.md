@@ -20,6 +20,7 @@ aw shell <subcommand>
 
 - `init <bash|zsh|fish>` print shell wrapper code for manual setup.
 - `install` detect the active shell and update the matching startup file.
+- `uninstall` inspect and remove an exact managed shell block.
 - `-j, --json` request a structured result when the selected shell action supports JSON mode.
 
 ## Managed Installation
@@ -63,7 +64,7 @@ Use `command aw` in startup files to bypass the wrapper while generating wrapper
 
 ## Notes
 
-- Arashi supports Bash, Zsh, and Fish shell integration and completion.
+- Shell integration remains limited to Bash, Zsh, and Fish. This release separately adds PowerShell support to `aw completion`; it does not add PowerShell support to `aw shell init` or `aw shell install`.
 - If install cannot determine a writable startup file, Arashi tells you to use manual setup instead.
 - Shell integration enables explicit `aw switch --cd`, configured `mode: "cd"`, and the parent-shell `cd` fallback for configured `mode: "auto"`. Auto considers this fallback only after no managed context is strictly detected.
 - `aw shell init <shell>` normally writes shell wrapper code to stdout, so JSON mode returns a structured unsupported-mode error instead of mixing shell code with JSON.
@@ -75,3 +76,22 @@ Use `command aw` in startup files to bypass the wrapper while generating wrapper
 - Do not run `aw shell install` unless the user explicitly asks you to change their shell startup files.
 - For inspection, run `command aw shell init <shell>` and `command aw completion <shell>` separately so the user can review both scripts without mutation.
 - Expect JSON mode to be unsupported for shell-code output because stdout is reserved for the wrapper script.
+
+## Uninstall Shell Integration
+
+Use `aw shell uninstall` to remove shell integration while keeping the Arashi installation and project data.
+
+```bash
+aw shell uninstall [options]
+```
+
+- `-n, --dry-run` inspects the shell-file plan without prompting or writing.
+- `-y, --yes` consents to the preflighted plan without an interactive prompt.
+
+Inspect first with `aw shell uninstall --dry-run`. Interactive removal defaults to no, and non-interactive removal requires `aw shell uninstall --yes`.
+
+The command uses the same deterministic startup-file policy as `aw shell install`. It removes exactly one complete managed shell block and preserves every byte outside that block. Missing managed markers are a no-op. Malformed or ambiguous markers—including orphaned, reversed, nested, overlapping, or duplicate markers—cause refusal before any write.
+
+Shell-only removal preserves executable files, PATH, manifests, workspaces, repositories, worktrees, project files, configuration, `.arashi.yaml`, and Git metadata. It does not scan arbitrary files or remove manually added shell code.
+
+Shell uninstall does not support `--json` or `--force`. For full product removal, see [`aw uninstall`](/commands/uninstall/).

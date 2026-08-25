@@ -5,7 +5,8 @@ const sourceRequirements = new Map<string, string[]>([
   [
     "docs/commands/completion.md",
     [
-      "aw completion <bash|zsh|fish>",
+      "aw completion <bash|zsh|fish|powershell>",
+      "aw completion powershell | Out-String | Invoke-Expression",
       "Static command and option completion works outside an Arashi workspace",
       "repositories, configured groups, worktrees, branches, supported shells, and constrained option values",
       "`switch [filter]` and `remove [target]`",
@@ -22,7 +23,7 @@ const sourceRequirements = new Map<string, string[]>([
       "command aw",
       "Bash retains the canonical descriptions",
       "does not natively display per-candidate descriptions",
-      "Zsh and Fish"
+      "Zsh, Fish, and PowerShell"
     ]
   ],
   [
@@ -46,7 +47,7 @@ const generatedRequirements = new Map<string, string[]>([
   [
     "public/llms.txt",
     [
-      "`aw completion bash|zsh|fish`",
+      "`aw completion bash|zsh|fish|powershell`",
       "static completion works outside workspaces",
       "local and read-only",
       "200 ms",
@@ -57,7 +58,7 @@ const generatedRequirements = new Map<string, string[]>([
     "public/llms-full.txt",
     [
       "Source: https://arashi.haphazard.dev/commands/completion/",
-      "aw completion <bash|zsh|fish>",
+      "aw completion <bash|zsh|fish|powershell>",
       "`aw shell init <shell>` remains wrapper-only",
       "silently returns no dynamic candidates",
       "does not perform network requests or mutate workspace state"

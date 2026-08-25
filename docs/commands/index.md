@@ -22,9 +22,10 @@ Use this section when you want command-level guidance.
 - [list](/commands/list/) - list worktree paths.
 - [status](/commands/status/) - inspect repository state.
 - [update](/commands/update/) - check for and apply CLI updates.
+- [uninstall](/commands/uninstall/) - inspect and remove a proven Arashi installation.
 - [switch](/commands/switch/) - open a terminal context for a worktree.
-- [shell](/commands/shell/) - install shell integration and helpers.
-- [completion](/commands/completion/) - generate native Bash, Zsh, or Fish completion.
+- [shell](/commands/shell/) - install or remove shell integration and helpers.
+- [completion](/commands/completion/) - generate native Bash, Zsh, Fish, or PowerShell completion.
 - [delete](/commands/delete/) - delete one explicit or multiple interactively selected configured repository dependencies.
 - [remove](/commands/remove/) - remove worktrees and branches.
 - [prune](/commands/prune/) - clean stale Git worktree metadata.

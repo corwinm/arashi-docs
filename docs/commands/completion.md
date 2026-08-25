@@ -1,6 +1,6 @@
 ---
 title: completion Command
-description: Generate native Bash, Zsh, or Fish completion for Arashi commands and workspace values.
+description: Generate native Bash, Zsh, Fish, or PowerShell completion for Arashi commands and workspace values.
 draft: false
 sidebar:
   hidden: false
@@ -13,7 +13,7 @@ Generate native shell completion for Arashi commands, options, and safe workspac
 ## Usage
 
 ```bash
-aw completion <bash|zsh|fish>
+aw completion <bash|zsh|fish|powershell>
 ```
 
 The command writes a shell script to stdout. Source it from your shell startup file or current session; it does not edit startup files itself.
@@ -30,9 +30,16 @@ source <(command aw completion zsh)
 
 # Fish
 command aw completion fish | source
+
+# PowerShell
+aw completion powershell | Out-String | Invoke-Expression
 ```
 
-Use `command aw` in activation code so completion generation bypasses any installed `arashi` wrapper function.
+In Bash, Zsh, and Fish, use `command aw` in activation code so completion generation bypasses any installed shell wrapper function. Managed shell integration is not installed in PowerShell, so the normal PowerShell example invokes `aw` directly. If a user-defined PowerShell alias or function shadows the executable, bypass it explicitly:
+
+```powershell
+& (Get-Command aw -CommandType Application).Source completion powershell | Out-String | Invoke-Expression
+```
 
 ## Candidate Behavior
 
@@ -42,14 +49,14 @@ Dynamic ownership is exact: every `--only` segment completes configured reposito
 
 Dynamic lookup is local and read-only, with a 200 ms whole-query budget. It does not perform network requests or mutate workspace state. It does not execute hooks, does not prompt, and does not start child operations. Repeated or comma-separated repository and group selectors complete only the active segment and preserve the prefix already entered.
 
-The canonical completion model retains candidate descriptions for every supported shell. Zsh and Fish can display per-candidate descriptions. Bash retains the canonical descriptions but native Bash programmable completion does not natively display per-candidate descriptions.
+The canonical completion model retains candidate descriptions for every supported shell. Zsh, Fish, and PowerShell can display per-candidate descriptions. Bash retains the canonical descriptions but native Bash programmable completion does not natively display per-candidate descriptions.
 
 ## Troubleshooting
 
-- If static suggestions are missing, confirm `command aw completion <shell>` prints a script, source it again, and restart the shell if needed.
+- If static suggestions are missing in Bash, Zsh, or Fish, confirm `command aw completion <shell>` prints a script, source it again, and restart the shell if needed. In PowerShell, run the PowerShell activation example again.
 - Outside a workspace, when local discovery fails, or when the 200 ms whole-query budget expires, completion silently returns no dynamic candidates while static command and option completion keeps working.
 - Empty dynamic results do not trigger a network fallback: completion does not perform network requests or mutate workspace state.
-- If an installed shell wrapper behaves differently from direct invocation, keep `command aw` in the completion activation line so generation bypasses the wrapper.
+- In Bash, Zsh, or Fish, if an installed shell wrapper behaves differently from direct invocation, keep `command aw` in the completion activation line so generation bypasses the wrapper.
 
 ## Related
 
