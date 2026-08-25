@@ -36,6 +36,16 @@ Human and JSON modes both require a configured valid workspace. Missing configur
 
 `aw configure` is not a schema editor. It preserves compatible fields outside the supported list but does not offer controls for them. To change an unsupported canonical field, directly edit `.arashi/config.json`, then use Arashi's normal validation and diagnostics before relying on the change.
 
+## Delete A Configured Repository Dependency
+
+Delete removes configured repository dependencies, while `remove` deletes branch worktrees. `aw delete <repository>` targets one exact configured repository key. With `aw delete` omitted, a human TTY opens a checkbox to select one or more keys; non-TTY and JSON use with the target omitted fails selection-required and requires an explicit key.
+
+Run `--dry-run` before `--force`; `--force` skips confirmation. For one or many TTY selections, Arashi prepares all selected repository plans and displays the complete selected plans in one combined preview followed by one default-no confirmation. `--force` bypasses confirmation and Git data-loss guards only. Path containment, symlink, topology, identity, hook ambiguity, and concurrent-config checks remain mandatory.
+
+Delete removes the canonical clone, owned linked worktrees, local refs, the exact config entry, and repository-targeted hook files/templates. It preserves unrelated configuration, managed-ignore policy, shared hooks, user-global hooks, remote repositories, and remote branches.
+
+In a partial batch, earlier repositories may be completed, the failing repository is failed, and later repositories are not started. Inspect the phase ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback; do not hand-edit configuration or broadly delete surviving paths. See the [delete command](/commands/delete/) for the copy-pasteable preview, confirmation, JSON, and recovery workflow.
+
 ## Worktree naming
 
 Configured workspaces can customize new worktree paths with the root `worktreeNaming` object. This initial configuration slice is not available in interactive `aw configure`; edit `.arashi/config.json` directly:

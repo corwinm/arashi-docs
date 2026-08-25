@@ -26,6 +26,7 @@ Use this section when you want command-level guidance.
 - [switch](/commands/switch/) - open a terminal context for a worktree.
 - [shell](/commands/shell/) - install or remove shell integration and helpers.
 - [completion](/commands/completion/) - generate native Bash, Zsh, Fish, or PowerShell completion.
+- [delete](/commands/delete/) - delete one explicit or multiple interactively selected configured repository dependencies.
 - [remove](/commands/remove/) - remove worktrees and branches.
 - [prune](/commands/prune/) - clean stale Git worktree metadata.
 - [pull](/commands/pull/) - pull remote updates across repos.

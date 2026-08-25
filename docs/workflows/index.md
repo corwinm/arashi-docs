@@ -21,6 +21,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 - [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
 - [Kitty](/workflows/kitty/) for automatic exact worktree-window reuse and live Kitty session ownership.
 - [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
+- [delete](/commands/delete/) for configured dependency deletion; `remove` remains for branch worktrees.
 - [Standalone Repository](/workflows/standalone/) for ad hoc use in a project that has not adopted Arashi configuration.
 
 ## Recommended Path After `aw init`
@@ -34,6 +35,7 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 ## Related Commands
 
 - [create](/commands/create/)
+- [delete](/commands/delete/)
 - [remove](/commands/remove/)
 - [switch](/commands/switch/)
 - [shell](/commands/shell/)

@@ -28,6 +28,7 @@
     "validate:tab-launch-docs": "pnpm sync:content && node scripts/check-tab-launch-docs.ts",
     "validate:cli-option-docs": "pnpm sync:content && node scripts/check-cli-option-docs.ts",
     "validate:configure-docs": "pnpm sync:content && node scripts/check-configure-docs.ts",
+    "validate:delete-docs": "pnpm sync:content && node scripts/check-delete-docs.ts",
     "validate:create-launch-docs": "pnpm sync:content && node scripts/check-create-launch-docs.ts",
     "validate:create-base-docs": "pnpm sync:content && node scripts/check-create-base-docs.ts",
     "validate:executable-alias-docs": "pnpm sync:content && node scripts/check-executable-alias-docs.ts",
