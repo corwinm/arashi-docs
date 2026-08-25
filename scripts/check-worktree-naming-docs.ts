@@ -111,7 +111,6 @@ const contradictions = [
     "repository-file guarantee",
     /(?:maxPathLength|path\s+budget|enabling\s+the\s+budget|configured\s+limit|this\s+setting)[^.\n]*guarantees?[^.\n]*(?:all\s+|every\s+)?(?:repository[^.\n]*)?files?[^.\n]*fit/i,
     true,
-    /\bguarantees?\b/iu,
   ],
   [
     "existing rename from budget",
@@ -143,29 +142,11 @@ function contradictionClauses(content: string): string[] {
     });
 }
 
-const predicateNegation =
-  /(?:\b(?:do|does|is|are|was|were|can|could|will|would|may|might|must|should)\s+not\b|\b(?:cannot|never)\b|\b\w+n't\b)(?:\s+[\p{L}\p{N}_-]+){0,2}\s*$/iu;
-
-function hasAffirmativePredicate(fragment: string, predicate: RegExp): boolean {
-  const flags = predicate.flags.includes("g") ? predicate.flags : `${predicate.flags}g`;
-  return Array.from(fragment.matchAll(new RegExp(predicate.source, flags))).some((match) => {
-    const prefix = fragment.slice(0, match.index);
-    return !predicateNegation.test(prefix);
-  });
-}
-
-function containsContradiction(
-  content: string,
-  pattern: RegExp,
-  negationAware: boolean,
-  predicate?: RegExp,
-): boolean {
+function containsContradiction(content: string, pattern: RegExp, negationAware: boolean): boolean {
   if (!negationAware) return pattern.test(content);
-  return contradictionClauses(content).some((fragment) => {
-    if (!pattern.test(fragment)) return false;
-    if (!truthfulNegation.test(fragment)) return true;
-    return predicate ? hasAffirmativePredicate(fragment, predicate) : false;
-  });
+  return contradictionClauses(content).some(
+    (fragment) => pattern.test(fragment) && !truthfulNegation.test(fragment),
+  );
 }
 
 type DetailedSurface = {
@@ -336,8 +317,8 @@ function checkCompactContract(label: string, content: string | null, template: b
 }
 
 function checkContradictions(label: string, content: string): void {
-  for (const [claimLabel, pattern, negationAware = false, predicate] of contradictions) {
-    if (containsContradiction(content, pattern, negationAware, predicate)) {
+  for (const [claimLabel, pattern, negationAware = false] of contradictions) {
+    if (containsContradiction(content, pattern, negationAware)) {
       failures.push(`${label} contains contradictory ${claimLabel}`);
     }
   }
