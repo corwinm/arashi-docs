@@ -134,16 +134,31 @@ const semanticContract: Requirement[] = [
   ],
 ];
 
+type CommandRequirement = [label: string, pattern: RegExp];
+const commandContract: CommandRequirement[] = [
+  ["configured and effective values remain separate", /configured values[^.\n]{0,120}(?:separate|separately)[^.\n]{0,120}(?:inherited|built-in)[^.\n]{0,80}effective values/i],
+  ["keep edit and clear actions", /keep[^.\n]{0,80}edit[^.\n]{0,80}clear/i],
+  ["finite supported setting set", /finite supported setting set/i],
+  ["no arbitrary schema editing", /without exposing arbitrary schema fields/i],
+  ["exact JSON and separate active-file preview", /exact canonical JSON[^.\n]{0,120}(?:saved|save)[^.\n]{0,120}separate active-file plan/i],
+  ["JSON inspection never prompts or writes", /aw configure --json[^.\n]{0,100}inspection only[^.\n]{0,100}never prompts[^.\n]{0,80}(?:writes|mutates)/i],
+  ["valid configured workspace without init or repair", /requires an existing valid configured workspace[\s\S]{0,160}does not[\s\S]{0,100}(?:initialize|migrate|repair)/i],
+  ["existing active native hook files are preserved", /existing active native hook files[^.\n]{0,120}(?:never|not)[^.\n]{0,100}(?:overwritten|deleted)/i],
+  ["repository identity fields are not editable", /repos\.<name>\.path[^.\n]{0,100}repos\.<name>\.gitUrl[^.\n]{0,140}not editable/i],
+];
+
 const owningSurfaces = [
   "public/llms.txt",
 ] as const;
+const commandSurfaces = [
+  "docs/commands/configure.md",
+  "public/commands/configure.md",
+] as const;
 const discoveryRequirements = new Map<string, RegExp[]>([
   ["docs/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
-  ["docs/commands/configure.md", [/aw configure/i, /--json/i, /\/workflows\/config\//i]],
   ["docs/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/commands\/configure\//i]],
   ["docs/workflows/config.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
   ["public/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
-  ["public/commands/configure.md", [/aw configure/i, /--json/i, /\/workflows\/config\//i]],
   ["public/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/commands\/configure\//i]],
   ["public/workflows/config.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
 ]);
@@ -173,6 +188,15 @@ function checkRoot(rootPath: string): string[] {
     const content = read(rootPath, relativePath, found);
     if (content === null) continue;
     checkGuidance(relativePath, content, found);
+  }
+  for (const relativePath of commandSurfaces) {
+    const content = read(rootPath, relativePath, found);
+    if (content === null) continue;
+    const normalized = content.replaceAll("`", "").replace(/\s+/g, " ");
+    for (const [label, pattern] of commandContract) {
+      if (!pattern.test(normalized)) found.push(`${relativePath} is missing ${label}`);
+    }
+    checkContradictions(relativePath, content, found);
   }
   for (const [relativePath, requirements] of discoveryRequirements) {
     const content = read(rootPath, relativePath, found);
