@@ -26,7 +26,7 @@ const appendToSection = (heading: string, claim: string) => (content: string): s
   return `${content.slice(0, insertion).trimEnd()}\n\n${claim}\n${content.slice(insertion)}`;
 };
 
-const detailedPath = "docs/workflows/config.md";
+const detailedPath = "docs/commands/create.md";
 const fixtures: Fixture[] = [];
 
 for (const value of ["default", "branch", "repo-branch"]) {
@@ -273,14 +273,12 @@ for (const [id, claim] of [
   fixtures.push({
     id,
     relativePath: detailedPath,
-    mutate: appendToSection("## Worktree naming", claim),
+    mutate: appendToSection("## Worktree locations", claim),
   });
 }
 
 for (const [id, relativePath, heading] of [
-  ["authored-config-section-removed", "docs/workflows/config.md", "## Worktree naming"],
   ["authored-create-section-removed", "docs/commands/create.md", "## Worktree locations"],
-  ["generated-config-section-removed", "public/workflows/config.md", "## Worktree naming"],
   ["generated-create-section-removed", "public/commands/create.md", "## Worktree locations"],
 ] as const) {
   fixtures.push({
@@ -295,11 +293,6 @@ for (const [id, relativePath, heading] of [
   });
 }
 fixtures.push(
-  {
-    id: "full-export-config-section-removed",
-    relativePath: "public/llms-full.txt",
-    mutate: replace("## Worktree naming", "## Removed naming guidance"),
-  },
   {
     id: "full-export-create-section-removed",
     relativePath: "public/llms-full.txt",
@@ -383,7 +376,7 @@ for (const claim of truthfulClaims) {
     const target = path.join(fixtureRoot, detailedPath);
     writeFileSync(
       target,
-      appendToSection("## Worktree naming", claim)(readFileSync(target, "utf8")),
+      appendToSection("## Worktree locations", claim)(readFileSync(target, "utf8")),
     );
     for (const [mode, script] of [
       ["focused", checker],

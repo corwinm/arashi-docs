@@ -177,7 +177,7 @@ For each selected configured child repository, the construction order is `pre-cr
 
 Missing sources are skipped with a visible non-fatal outcome. Arashi never overwrites an existing destination, and every destination must remain inside the new worktree; unsafe paths or an existing destination fail that repository's materialization. A native `symlink` fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback. Materialization does not fall back to the caller's checkout or another source repository: it always reads from the Git-primary child checkout.
 
-`aw create --dry-run` previews the ordered materialization plan in declaration order before any worktree or file mutation. See the [Config workflow](/workflows/config/#worktree-file-materialization) to choose between isolated copies and intentionally shared symlinks.
+`aw create --dry-run` previews the ordered materialization plan in declaration order before any worktree or file mutation. See [Copy or share worktree files](/workflows/config/#copy-or-share-worktree-files) to choose between isolated copies and intentionally shared symlinks.
 
 ## Notes
 

@@ -22,16 +22,8 @@ const sourceRequirements = new Map<string, string[]>([
     "docs/workflows/config.md",
     [
       modeVocabulary,
-      "independent boolean",
-      "An absent `defaults.create.launch` preserves built-in no-launch behavior",
-      "defaults.editors.<host>.create",
-      "does not fall back",
-      "Legacy create launch migration",
-      "launchMode",
-      "launch_mode",
-      "stderr",
-      "byte-for-byte unchanged",
-      "reject"
+      "defaults.create.switch",
+      "defaults.editors.<editor>.create"
     ]
   ],
   [
@@ -53,10 +45,7 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/commands/create.md", [modeVocabulary, "launch implies switch", "configured launch"]],
-  [
-    "public/workflows/config.md",
-    [modeVocabulary, "Legacy create launch migration", "launch_mode", "byte-for-byte unchanged"]
-  ],
+  ["public/workflows/config.md", [modeVocabulary, "defaults.create.switch"]],
   ["public/workflows/tmux-and-sesh.md", ["launch: \"sesh\"", "does not fall back"]],
   ["public/workflows/herdr.md", ["launch: \"herdr\"", "does not inherit"]],
   ["public/workflows/cmux.md", ["\"launch\": \"auto\"", "worktrees remain created"]],
@@ -73,7 +62,6 @@ const generatedRequirements = new Map<string, string[]>([
     "public/llms-full.txt",
     [
       modeVocabulary,
-      "Legacy create launch migration",
       "launch implies switch",
       "launch: \"sesh\"",
       "launch: \"herdr\""

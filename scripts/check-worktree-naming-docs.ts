@@ -157,16 +157,8 @@ type DetailedSurface = {
 };
 
 const detailedSurfaces: DetailedSurface[] = [
-  { label: "docs/workflows/config.md", relativePath: "docs/workflows/config.md", heading: "## Worktree naming" },
   { label: "docs/commands/create.md", relativePath: "docs/commands/create.md", heading: "## Worktree locations" },
-  { label: "public/workflows/config.md", relativePath: "public/workflows/config.md", heading: "## Worktree naming" },
   { label: "public/commands/create.md", relativePath: "public/commands/create.md", heading: "## Worktree locations" },
-  {
-    label: "public/llms-full.txt config page",
-    relativePath: "public/llms-full.txt",
-    pageSource: "https://arashi.haphazard.dev/workflows/config/",
-    heading: "## Worktree naming",
-  },
   {
     label: "public/llms-full.txt create page",
     relativePath: "public/llms-full.txt",
