@@ -23,6 +23,9 @@ const requirements = new Map<string, string[]>([
       "Git and OpenSSH resolve the host and authenticate",
       "does not read, resolve, or edit `~/.ssh/config`",
       "does not run a separate SSH connectivity probe",
+      "git config --global",
+      "url.\"git@work-github:\".insteadOf",
+      "global rather than repository-local Git configuration",
       "continues with the remaining selected repositories"
     ]
   ],
@@ -43,7 +46,9 @@ const requirements = new Map<string, string[]>([
       "keeps every configured SSH URL byte-for-byte",
       "never converts an SSH URL to HTTPS",
       "Git and OpenSSH resolve the host and authenticate",
-      "does not run a separate SSH connectivity probe"
+      "does not run a separate SSH connectivity probe",
+      "git config --global",
+      "url.\"git@work-github:\".insteadOf"
     ]
   ],
 

@@ -38,12 +38,29 @@ aw configure
 aw configure --json
 ```
 
+## Supported Fields
+
+`aw configure` edits this product-owned set rather than exposing the full schema:
+
+- Workspace: `reposDir`, `worktreesDir`, `baseBranch`, `sync.timeoutSeconds`, and `hooks.timeout`.
+- Workspace hooks: `hooks.scripts.pre-create`, `hooks.scripts.post-create`, `hooks.scripts.pre-remove`, and `hooks.scripts.post-remove`.
+- Command defaults: `defaults.create.switch`, `defaults.create.launch`, and `defaults.switch.mode`.
+- Editor defaults: `defaults.editors.vscode.create.switch`, `defaults.editors.vscode.create.launch`, `defaults.editors.cursor.create.switch`, `defaults.editors.cursor.create.launch`, `defaults.editors.kiro.create.switch`, and `defaults.editors.kiro.create.launch`.
+- Meta repository: `meta.baseBranch`.
+- Child repositories: `repos.<name>.groups`, `repos.<name>.baseBranch`, `repos.<name>.copy`, `repos.<name>.symlink`, `repos.<name>.hooks.pre-create`, `repos.<name>.hooks.post-create`, `repos.<name>.hooks.pre-remove`, and `repos.<name>.hooks.post-remove`.
+
+Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl` are not editable here. Edit `.arashi/config.json` directly for other supported configuration fields.
+
+## Editing Behavior
+
+- **Configured** means the field is stored. **Effective** shows an inherited or built-in value without saving it.
+- **Keep** preserves the stored field, **Edit** validates and replaces it, and **Clear** removes an optional stored field. Required `reposDir` cannot be cleared, and blank input does not mean Clear.
+- The final preview is the exact canonical JSON that will be saved. Any active-file plan is shown separately and lists paths without file contents or inline command bodies.
+- Existing active native hook files are preserved. If the JSON is unchanged and there is no active-file plan, Arashi exits without confirmation or a write.
+
 ## Notes
 
 - `configure` requires an existing valid configured workspace. It does not initialize, migrate, or repair configuration.
-- Keep and semantic no-op choices do not rewrite `.arashi/config.json`.
-- Existing active native hook files are external state and are never overwritten, imported, converted, or deleted.
-- Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl` remain owned by repository onboarding and are not editable here.
 - The initial `worktreeNaming` slice is authored directly in `.arashi/config.json`; interactive `aw configure` does not edit it.
 - See the [Config workflow](/workflows/config/) for practical configuration examples.
 
