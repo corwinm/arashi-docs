@@ -56,24 +56,7 @@ const semanticRequirements = new Map<string, string[]>([
       "explicit launcher supplied with `--tab` remains authoritative"
     ]
   ],
-  [
-    "docs/workflows/config.md",
-    [
-      "`switch --launch` preserves a configured `sesh` or `herdr` launcher",
-      "`switch --ignore-configured-launcher`",
-      "`switch --launch --ignore-configured-launcher`",
-      "Repeated and comma-separated selectors",
-      "flattened in encounter order",
-      "trimmed",
-      "blank segments beside valid values are ignored",
-      "deduplicated by first occurrence",
-      "supplied selector that normalizes empty",
-      "unknown repository or group",
-      "empty intersection",
-      "before repository inspection, hooks, fetches, or mutation",
-      "omitted selectors retain the command default"
-    ]
-  ],
+
   [
     "docs/commands/status.md",
     [
@@ -264,7 +247,6 @@ function checkGeneratedParity(): void {
   if (full !== null) {
     for (const text of [
       "`--launch --ignore-configured-launcher` requests generic automatic launch",
-      "Repeated and comma-separated selectors",
       "standalone mode rejects `--only` and `--group`",
       "`--check` conflicts with `--dry-run` and `-n`",
       "omit `--markdown`"

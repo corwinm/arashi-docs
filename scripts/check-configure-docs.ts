@@ -134,19 +134,33 @@ const semanticContract: Requirement[] = [
   ],
 ];
 
+type CommandRequirement = [label: string, pattern: RegExp];
+const commandContract: CommandRequirement[] = [
+  ["configured and effective values remain separate", /configured values[^.\n]{0,120}(?:separate|separately)[^.\n]{0,120}(?:inherited|built-in)[^.\n]{0,80}effective values/i],
+  ["keep edit and clear actions", /keep[^.\n]{0,80}edit[^.\n]{0,80}clear/i],
+  ["finite supported setting set", /finite supported setting set/i],
+  ["no arbitrary schema editing", /without exposing arbitrary schema fields/i],
+  ["exact JSON and separate active-file preview", /exact canonical JSON[^.\n]{0,120}(?:saved|save)[^.\n]{0,120}separate active-file plan/i],
+  ["JSON inspection never prompts or writes", /aw configure --json[^.\n]{0,100}inspection only[^.\n]{0,100}never prompts[^.\n]{0,80}(?:writes|mutates)/i],
+  ["valid configured workspace without init or repair", /requires an existing valid configured workspace[\s\S]{0,160}does not[\s\S]{0,100}(?:initialize|migrate|repair)/i],
+  ["existing active native hook files are preserved", /existing active native hook files[^.\n]{0,120}(?:are preserved|(?:never|not)[^.\n]{0,100}(?:overwritten|deleted))/i],
+  ["repository identity fields are not editable", /repos\.<name>\.path[^.\n]{0,100}repos\.<name>\.gitUrl[^.\n]{0,140}not editable/i],
+];
+
 const owningSurfaces = [
-  "docs/workflows/config.md",
-  "public/workflows/config.md",
   "public/llms.txt",
-  "public/llms-full.txt",
+] as const;
+const commandSurfaces = [
+  "docs/commands/configure.md",
+  "public/commands/configure.md",
 ] as const;
 const discoveryRequirements = new Map<string, RegExp[]>([
   ["docs/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
-  ["docs/commands/configure.md", [/aw configure/i, /--json/i, /\/workflows\/config\//i]],
-  ["docs/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/workflows\/config\//i]],
+  ["docs/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/commands\/configure\//i]],
+  ["docs/workflows/config.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
   ["public/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
-  ["public/commands/configure.md", [/aw configure/i, /--json/i, /\/workflows\/config\//i]],
-  ["public/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/workflows\/config\//i]],
+  ["public/workflows/json-automation.md", [/`configure`/i, /inspection only/i, /\/commands\/configure\//i]],
+  ["public/workflows/config.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
 ]);
 
 const root = path.resolve(process.cwd());
@@ -165,7 +179,7 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `Interactive configure documentation contract passed for ${owningSurfaces.length} owning/generated surfaces, ${discoveryRequirements.size} discovery surfaces, ${descriptorPaths.length} exact descriptor paths, controlled category mutations, and registry reachability.`,
+  `Interactive configure documentation contract passed for ${owningSurfaces.length} agent surface, ${commandSurfaces.length} command surfaces, ${discoveryRequirements.size} discovery surfaces, ${descriptorPaths.length} exact descriptor paths, controlled category mutations, and registry reachability.`,
 );
 
 function checkRoot(rootPath: string): string[] {
@@ -174,6 +188,16 @@ function checkRoot(rootPath: string): string[] {
     const content = read(rootPath, relativePath, found);
     if (content === null) continue;
     checkGuidance(relativePath, content, found);
+  }
+  for (const relativePath of commandSurfaces) {
+    const content = read(rootPath, relativePath, found);
+    if (content === null) continue;
+    checkCommandDescriptorSet(relativePath, content, found);
+    const normalized = content.replaceAll("`", "").replace(/\s+/g, " ");
+    for (const [label, pattern] of commandContract) {
+      if (!pattern.test(normalized)) found.push(`${relativePath} is missing ${label}`);
+    }
+    checkContradictions(relativePath, content, found);
   }
   for (const [relativePath, requirements] of discoveryRequirements) {
     const content = read(rootPath, relativePath, found);
@@ -184,6 +208,29 @@ function checkRoot(rootPath: string): string[] {
   }
   checkReachability(rootPath, found);
   return found;
+}
+
+function checkCommandDescriptorSet(relativePath: string, content: string, found: string[]): void {
+  const start = content.indexOf("- Workspace:");
+  const end = content.indexOf("Repository identity fields", start);
+  if (start === -1 || end === -1) {
+    found.push(`${relativePath} [descriptors] is missing the supported-field list boundaries`);
+    return;
+  }
+
+  const documented = new Set(
+    Array.from(content.slice(start, end).matchAll(/`([^`\n]+)`/g), (match) => match[1]),
+  );
+  const expected = new Set<string>(descriptorPaths);
+  const missing = descriptorPaths.filter((descriptorPath) => !documented.has(descriptorPath));
+  const unsupported = [...documented].filter((descriptorPath) => !expected.has(descriptorPath)).sort();
+  if (missing.length > 0 || unsupported.length > 0) {
+    const details = [
+      missing.length > 0 ? `missing: ${missing.join(", ")}` : "",
+      unsupported.length > 0 ? `unsupported: ${unsupported.join(", ")}` : "",
+    ].filter(Boolean);
+    found.push(`${relativePath} [descriptors] supported fields must equal the canonical set (${details.join("; ")})`);
+  }
 }
 
 function checkGuidance(relativePath: string, content: string, found: string[]): void {

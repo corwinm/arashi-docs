@@ -26,6 +26,14 @@ const configurationContract: Requirement[] = [
   ["non-mutating doctor discovery", /aw doctor(?=[^.\n]{0,320}(?:inspect|diagnos))(?=[^.\n]{0,320}(?:non-mutat|without[^.\n]{0,80}(?:repair|mutation)))(?=[^.\n]{0,320}(?:materialization|source|destination))/i],
 ];
 
+const conciseConfigurationContract: Requirement[] = [
+  ["copy setting", /\bcopy\b/i],
+  ["symlink setting", /\bsymlink\b/i],
+  ["same-relative-path materialization", /same path/i],
+  ["node_modules symlink warning", /Avoid symlinking node_modules/i],
+  ["hooks escape hatch", /lifecycle hooks/i],
+];
+
 const createContract: Requirement[] = [
   [
     "pre-create then copy then symlink then post-create ordering",
@@ -45,12 +53,12 @@ const createContract: Requirement[] = [
 
 const combinedContract = [...configurationContract, ...createContract];
 const surfaces = new Map<string, Requirement[]>([
-  ["docs/workflows/config.md", configurationContract],
+  ["docs/workflows/config.md", conciseConfigurationContract],
   ["docs/commands/create.md", createContract],
-  ["public/workflows/config.md", configurationContract],
+  ["public/workflows/config.md", conciseConfigurationContract],
   ["public/commands/create.md", createContract],
   ["public/llms.txt", combinedContract],
-  ["public/llms-full.txt", combinedContract],
+  ["public/llms-full.txt", [...conciseConfigurationContract, ...createContract]],
   ["scripts/generate-agent-exports.ts", combinedContract],
 ]);
 

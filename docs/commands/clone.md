@@ -81,6 +81,14 @@ Arashi validates malformed, duplicate, unknown, and unselected overrides plus ev
 
 Git and OpenSSH resolve the host and authenticate. Arashi does not read, resolve, or edit `~/.ssh/config`, identity files, or keys, and it does not run a separate SSH connectivity probe. If an alias cannot be resolved or authenticated, review the underlying Git error and test the same remote with Git in your local environment.
 
+For configuration shared across machines, commit a canonical remote URL. A machine that needs a local SSH alias can rewrite that canonical host globally with Git, for example:
+
+```bash
+git config --global url."git@work-github:".insteadOf "git@github.com:"
+```
+
+Use global rather than repository-local Git configuration because the rewrite must be available before a missing repository is cloned.
+
 In a multi-repository clone, a failed alias is reported for that repository and Arashi continues with the remaining selected repositories. Successful clones are retained under the existing partial-success contract. For an `add` failure, Arashi uses the existing rollback boundary described in the [add command reference](/commands/add/).
 
 ## Agent Notes

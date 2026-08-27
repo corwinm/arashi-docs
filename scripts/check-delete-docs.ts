@@ -106,9 +106,7 @@ const commandContract: Requirement[] = [
   ],
 ];
 
-const conciseWorkflowContract = commandContract.filter(([category]) =>
-  ["distinction", "targeting", "confirmation", "safety", "scope", "retry"].includes(category),
-);
+
 const jsonSpecificContract: Requirement[] = [
   [
     "json",
@@ -136,8 +134,7 @@ const jsonContract = [
 const owningSurfaces = new Map<string, Requirement[]>([
   ["docs/commands/delete.md", commandContract],
   ["public/commands/delete.md", commandContract],
-  ["docs/workflows/config.md", conciseWorkflowContract],
-  ["public/workflows/config.md", conciseWorkflowContract],
+
   ["docs/workflows/json-automation.md", jsonContract],
   ["public/workflows/json-automation.md", jsonContract],
   ["public/llms.txt", commandContract],

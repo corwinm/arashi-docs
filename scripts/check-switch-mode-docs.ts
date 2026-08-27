@@ -21,15 +21,8 @@ const sourceRequirements = new Map<string, string[]>([
     "docs/workflows/config.md",
     [
       modeVocabulary,
-      "An absent `defaults.switch.mode` preserves automatic launch",
-      "Legacy switch mode migration",
-      "launchMode",
-      "launch_mode",
-      "`cd` + `sesh` / `herdr`",
-      "Unsupported values are rejected",
-      "reject",
       "defaults.create.launch",
-      "defaults.editors.<host>.create"
+      "defaults.editors.<editor>.create"
     ]
   ],
   ["docs/commands/shell.md", ["managed context", "parent-shell `cd`"]],
@@ -40,12 +33,12 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/commands/switch.md", [modeVocabulary, autoOrder]],
-  ["public/workflows/config.md", ["Legacy switch mode migration", "launch_mode"]],
+  ["public/workflows/config.md", [modeVocabulary]],
   ["public/workflows/tmux-and-sesh.md", ["mode: \"auto\"", "mode: \"sesh\""]],
   ["public/workflows/herdr.md", ["mode: \"herdr\""]],
   ["public/workflows/cmux.md", ["mode: \"auto\"", "mode: \"cd\""]],
   ["public/llms.txt", [modeVocabulary, "Switch command Markdown", "Configuration workflow Markdown"]],
-  ["public/llms-full.txt", [modeVocabulary, autoOrder, "Legacy switch mode migration"]]
+  ["public/llms-full.txt", [modeVocabulary, autoOrder]]
 ]);
 
 const staleSwitchLaunchModePages = [

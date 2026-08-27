@@ -83,7 +83,6 @@ There is no atomic rollback after an owned worktree, clone, ref, hook, or config
 
 ## Related
 
-- [Configuration workflow](/workflows/config/#delete-a-configured-repository-dependency)
 - [JSON Automation](/workflows/json-automation/#delete-plans-results-and-retries)
 - [Hooks workflow](/workflows/hooks/#configured-repository-deletion)
 - [remove command](/commands/remove/)

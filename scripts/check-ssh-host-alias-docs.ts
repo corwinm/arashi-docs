@@ -23,24 +23,13 @@ const requirements = new Map<string, string[]>([
       "Git and OpenSSH resolve the host and authenticate",
       "does not read, resolve, or edit `~/.ssh/config`",
       "does not run a separate SSH connectivity probe",
+      "git config --global",
+      "url.\"git@work-github:\".insteadOf",
+      "global rather than repository-local Git configuration",
       "continues with the remaining selected repositories"
     ]
   ],
-  [
-    "docs/workflows/config.md",
-    [
-      "SSH aliases are machine-local",
-      "define the same alias",
-      "commit a canonical remote",
-      "`url.<base>.insteadOf`",
-      "machine-global Git configuration",
-      "`~/.gitconfig`",
-      "`--global`",
-      "[url \"git@work-github:\"]",
-      "insteadOf = git@github.com:",
-      "Arashi does not install or synchronize this Git configuration"
-    ]
-  ],
+
   [
     "public/commands/add.md",
     [
@@ -57,29 +46,20 @@ const requirements = new Map<string, string[]>([
       "keeps every configured SSH URL byte-for-byte",
       "never converts an SSH URL to HTTPS",
       "Git and OpenSSH resolve the host and authenticate",
-      "does not run a separate SSH connectivity probe"
+      "does not run a separate SSH connectivity probe",
+      "git config --global",
+      "url.\"git@work-github:\".insteadOf"
     ]
   ],
-  [
-    "public/workflows/config.md",
-    [
-      "SSH aliases are machine-local",
-      "commit a canonical remote",
-      "`url.<base>.insteadOf`",
-      "machine-global Git configuration",
-      "`--global`",
-      "Arashi does not install or synchronize this Git configuration"
-    ]
-  ],
+
   [
     "public/llms.txt",
     [
       "SSH aliases are machine-local",
       "preserves configured SSH URLs exactly",
       "never maps them to HTTPS automatically",
-      "machine-global Git `url.<base>.insteadOf`",
-      "SSH alias guidance",
-      "https://arashi.haphazard.dev/workflows/config/"
+      "SSH remote troubleshooting",
+      "https://arashi.haphazard.dev/commands/clone/#troubleshooting-ssh-remotes"
     ]
   ],
   [
@@ -93,11 +73,7 @@ const requirements = new Map<string, string[]>([
       "`ssh://git@work-github/acme/api.git`",
       "keeps every configured SSH URL byte-for-byte",
       "never converts an SSH URL to HTTPS",
-      "does not read, resolve, or edit `~/.ssh/config`",
-      "SSH aliases are machine-local",
-      "`url.<base>.insteadOf`",
-      "machine-global Git configuration",
-      "`--global`"
+      "does not read, resolve, or edit `~/.ssh/config`"
     ]
   ]
 ]);

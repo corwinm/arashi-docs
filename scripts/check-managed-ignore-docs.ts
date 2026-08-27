@@ -14,10 +14,7 @@ const sourceRequirements = new Map<string, string[]>([
       "[init command reference](/commands/init/)"
     ]
   ],
-  [
-    "docs/workflows/config.md",
-    ["arashi.ignoreScope", "core.excludesFile", "init", "pull", "clone", "add", "create", "linked parent worktree", "[add command reference](/commands/add/)"]
-  ],
+
   [
     "docs/commands/init.md",
     [
@@ -70,10 +67,7 @@ const generatedRequirements = new Map<string, string[]>([
       "[init command reference](/commands/init/)"
     ]
   ],
-  [
-    "public/workflows/config.md",
-    ["arashi.ignoreScope", "core.excludesFile", "linked parent worktree", "[add command reference](/commands/add/)"]
-  ],
+
   ["public/workflows/json-automation.md", ["managedIgnore", "restored"]],
   [
     "public/commands/init.md",

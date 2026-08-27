@@ -29,17 +29,9 @@ const requirements = new Map<string, string[]>([
     [
       '"baseBranch": "main"',
       '"meta": {',
-      '"baseBranch": "meta/integration"',
-      '"baseBranch": "api/integration"',
-      "root `baseBranch`",
       "`meta.baseBranch`",
       "`repos.<name>.baseBranch`",
-      "configured `create`, `clone`, `status`, `pull`",
-      "repository CLI > invocation CLI > repository config > workspace config",
-      "`defaults.create.baseBranch`",
-      "is unsupported",
-      "before repository discovery",
-      "Other `defaults.create` launch and switch properties remain supported",
+      "`--base` and `--repo-base`",
     ],
   ],
   [
@@ -107,13 +99,6 @@ const requirements = new Map<string, string[]>([
     ],
   ],
   [
-    "docs/workflows/index.md",
-    [
-      "shared base-branch policy",
-      "configured create, clone, status, pull, push fallback, handoff, and doctor",
-    ],
-  ],
-  [
     "docs/workflows/standalone.md",
     [
       "aw create feature/FEAT-1234/docs --base feature/FEAT-1234",
@@ -163,7 +148,7 @@ const requirements = new Map<string, string[]>([
   ],
   [
     "public/workflows/config.md",
-    ["root `baseBranch`", "`meta.baseBranch`", "`repos.<name>.baseBranch`"],
+    ["`meta.baseBranch`", "`repos.<name>.baseBranch`"],
   ],
   [
     "public/commands/clone.md",

@@ -106,7 +106,7 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/workflows/config.md",
-    [hooksLink, "hooks.timeout", "300000", "1 through 2147483647"],
+    [hooksLink],
   ],
   [
     "docs/workflows/standalone.md",

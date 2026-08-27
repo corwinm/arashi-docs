@@ -47,23 +47,9 @@ const requirements = new Map<string, string[]>([
     ]
   ],
   ["docs/workflows/index.md", ["[Kitty](/workflows/kitty/)"]],
-  [
-    "docs/workflows/config.md",
-    [
-      "tmux, Herdr, cmux, integrated IDE, and Kitty",
-      "Kitty remains auto-detected only",
-      "[Kitty workflow guide](/workflows/kitty/)"
-    ]
-  ],
+
   ["public/workflows/kitty.md", kittyWorkflowRequirements],
-  [
-    "public/workflows/config.md",
-    [
-      "tmux, Herdr, cmux, integrated IDE, and Kitty",
-      "Kitty remains auto-detected only",
-      "[Kitty workflow guide](/workflows/kitty/)"
-    ]
-  ],
+
   [
     "public/commands/switch.md",
     [

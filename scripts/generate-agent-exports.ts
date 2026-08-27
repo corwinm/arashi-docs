@@ -300,7 +300,7 @@ function renderLlmsTxt(): string {
 - Use \`aw exec --json -- <command>\` for repeated multi-repo inspection or validation commands, with explicit \`--only\` filters for mutating or expensive commands.
 - Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
 - When \`aw add\` runs from a linked parent worktree, use its reported canonical and active paths instead of cloning the child twice.
-- SSH aliases are machine-local. Arashi preserves configured SSH URLs exactly, never maps them to HTTPS automatically, and leaves resolution, authentication, and SSH configuration to Git/OpenSSH. For portable shared configuration, commit canonical remotes and use machine-global Git \`url.<base>.insteadOf\` rewriting (\`git config --global\`), not repository-local configuration; see [SSH alias guidance](${site}/workflows/config/).
+- SSH aliases are machine-local. Arashi preserves configured SSH URLs exactly, never maps them to HTTPS automatically, and leaves resolution, authentication, and SSH configuration to Git/OpenSSH. See [SSH remote troubleshooting](${site}/commands/clone/#troubleshooting-ssh-remotes).
 - Treat [Hooks](${site}/workflows/hooks/) as the lifecycle contract: configured create scopes have different mutation points, configured remove evaluates every scope per target, standalone uses targeted-then-shared user-global hooks only, and aggregate cleanup parses \`ARASHI_REMOVE_TARGETS_JSON\`.
 - Configured inline hooks use \`hooks.scripts.<lifecycle>\` for workspace ownership and \`repos.<name>.hooks.<lifecycle>\` for repository ownership. The four keys are \`pre-create\`, \`post-create\`, \`pre-remove\`, and \`post-remove\`; a string is Bash shorthand, while a closed interpreter map accepts only \`bash\`, \`powershell\`, and \`cmd\`.
 - Prefer short reviewable inline commands and substantial reusable native files. Configured create discovers either inline configuration or native files as alternatives at workspace and repository-specific logical locations. Inline snippets are non-portable unless compatible interpreter variants are supplied. Inline and file sources at the same logical location produce an inline/file ambiguity and neither runs. On POSIX, configured Bash resolves from the first executable \`bash\` in \`PATH\` order. On Windows, configured selection is PowerShell, then cmd, then Bash. \`SystemRoot\` supplies the fixed PowerShell and cmd paths, while \`PATH\` selects \`bash.exe\`. No compatible executable fails as \`interpreter_unavailable\`.
@@ -348,8 +348,8 @@ function renderLlmsTxt(): string {
 
 - [Getting started](${site}/getting-started/) - install and configured meta-repository workflow.
 - [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
-- [Configuration workflow](${site}/workflows/config/) - managed path ignore scope and command defaults.
-- [SSH alias guidance](${site}/workflows/config/) - exact remote preservation, Git/OpenSSH ownership, and portable local URL rewriting.
+- [Configuration workflow](${site}/workflows/config/) - workspace layout, repositories, worktree behavior, and command defaults.
+- [SSH remote troubleshooting](${site}/commands/clone/#troubleshooting-ssh-remotes) - exact remote preservation and Git/OpenSSH ownership.
 - [Hooks workflow](${site}/workflows/hooks/) - lifecycle timing, scope, environment, platform, timeout, failure, and safe setup guidance.
 - [Launch disposition workflow](${site}/workflows/launch-disposition/) - default independent launch, one-invocation tabs, precedence, support matrix, and no-fallback safety.
 - [Herdr workflow](${site}/workflows/herdr/) - explicit, configured, and automatic workspace launch, reuse, ownership, and troubleshooting.
