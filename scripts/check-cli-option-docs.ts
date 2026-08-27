@@ -56,6 +56,17 @@ const semanticRequirements = new Map<string, string[]>([
       "explicit launcher supplied with `--tab` remains authoritative"
     ]
   ],
+  [
+    "docs/workflows/agents-and-specs.md",
+    [
+      "Use `--json` (or `-j`)",
+      "stdout contains exactly one JSON document",
+      "process exit status and the envelope's `ok` field",
+      "Branch on `error.code`",
+      "ignore unknown fields",
+      "[command reference](/commands/)"
+    ]
+  ],
 
   [
     "docs/commands/status.md",
@@ -135,16 +146,6 @@ const semanticRequirements = new Map<string, string[]>([
       "separately approved breaking-change issue"
     ]
   ],
-  [
-    "docs/workflows/json-automation.md",
-    [
-      "Every command that supports `--json` also accepts `-j`",
-      "`update --check --dry-run`",
-      "Bare `update --json` is inspection-only",
-      "one structured error envelope",
-      "`status -o arashi-docs -j`"
-    ]
-  ]
 ]);
 
 checkRequirements(aliasRequirements);
@@ -153,6 +154,7 @@ checkGeneratedParity();
 checkUpdateJsonPolicy();
 checkUninstallPolicy();
 checkUninstallHelperRoutes();
+checkRetiredJsonRoutes();
 checkDeprecatedGuidance();
 checkContract();
 checkDeterministicExports();
@@ -214,6 +216,32 @@ function checkUninstallHelperRoutes(): void {
       "  force = true",
     ].join("\n");
     if (!config.includes(block)) errors.push(`netlify.toml is missing the static helper route ${route}`);
+  }
+}
+
+function checkRetiredJsonRoutes(): void {
+  const config = read("netlify.toml");
+  if (config === null) return;
+  const target = "/workflows/agents-and-specs/#automation-and-json";
+  for (const route of ["/workflows/json-automation", "/workflows/json-automation/"]) {
+    const block = [
+      "[[redirects]]",
+      `  from = "${route}"`,
+      `  to = "${target}"`,
+      "  status = 301",
+      "  force = true",
+    ].join("\n");
+    if (!config.includes(block)) errors.push(`netlify.toml is missing the retired JSON route ${route}`);
+  }
+  const markdownBlock = [
+    "[[redirects]]",
+    '  from = "/workflows/json-automation.md"',
+    '  to = "/workflows/agents-and-specs.md#automation-and-json"',
+    "  status = 301",
+    "  force = true",
+  ].join("\n");
+  if (!config.includes(markdownBlock)) {
+    errors.push("netlify.toml is missing the retired JSON Markdown route");
   }
 }
 

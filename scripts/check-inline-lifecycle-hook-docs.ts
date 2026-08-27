@@ -38,7 +38,7 @@ const completeInlineContract: Requirement[] = [
 ];
 
 const automationContract = completeInlineContract.slice(11);
-const automationPageContract = automationContract.filter(([label]) => /remove dry-run|configured-create|source metadata|source path|no-disclosure/.test(label));
+
 const reviewedGuidanceContract: Requirement[] = [
   [
     "configured-create inline/file discovery alternatives",
@@ -52,12 +52,12 @@ const reviewedGuidanceContract: Requirement[] = [
 const surfaces = new Map<string, Requirement[]>([
   ["docs/workflows/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
 
-  ["docs/workflows/json-automation.md", automationPageContract],
+
   ["docs/commands/create.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|configured-create|source metadata|no-disclosure/.test(label))],
   ["docs/commands/remove.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|remove dry-run|source metadata|no-disclosure/.test(label))],
   ["public/workflows/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
 
-  ["public/workflows/json-automation.md", automationPageContract],
+
   ["public/commands/create.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|configured-create|source metadata|no-disclosure/.test(label))],
   ["public/commands/remove.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|remove dry-run|source metadata|no-disclosure/.test(label))],
   ["public/llms.txt", [...completeInlineContract, ...reviewedGuidanceContract]],

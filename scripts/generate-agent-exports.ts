@@ -18,7 +18,6 @@ const coreOrder = [
   "getting-started/index.md",
   "workflows/index.md",
   "workflows/agents-and-specs.md",
-  "workflows/json-automation.md",
   "workflows/config.md",
   "workflows/hooks.md",
   "workflows/launch-disposition.md",
@@ -60,7 +59,6 @@ const requiredRoutes = [
   "workflows.md",
   "workflows/standalone.md",
   "workflows/agents-and-specs.md",
-  "workflows/json-automation.md",
   "workflows/launch-disposition.md",
   "workflows/herdr.md",
   "workflows/kitty.md",
@@ -347,7 +345,7 @@ function renderLlmsTxt(): string {
 ## Core Docs
 
 - [Getting started](${site}/getting-started/) - install and configured meta-repository workflow.
-- [Agents workflow](${site}/workflows/agents-and-specs/) - bootstrap guidance for coding agents in Arashi meta-repos.
+- [Agents and automation](${site}/workflows/agents-and-specs/) - repository ownership, handoffs, and the shared JSON contract for agents, scripts, and CI.
 - [Configuration workflow](${site}/workflows/config/) - workspace layout, repositories, worktree behavior, and command defaults.
 - [SSH remote troubleshooting](${site}/commands/clone/#troubleshooting-ssh-remotes) - exact remote preservation and Git/OpenSSH ownership.
 - [Hooks workflow](${site}/workflows/hooks/) - lifecycle timing, scope, environment, platform, timeout, failure, and safe setup guidance.
@@ -355,7 +353,6 @@ function renderLlmsTxt(): string {
 - [Herdr workflow](${site}/workflows/herdr/) - explicit, configured, and automatic workspace launch, reuse, ownership, and troubleshooting.
 - [Kitty workflow](${site}/workflows/kitty/) - Kitty 0.43+ remote-control setup, exact window reuse, live-only ownership, and troubleshooting.
 - [tmux and sesh workflow](${site}/workflows/tmux-and-sesh/) - explicit plain tmux launch, contextual auto behavior, and sesh integration.
-- [JSON automation](${site}/workflows/json-automation/) - machine-readable output contract, examples, and command support matrix.
 - [Standalone workflow](${site}/workflows/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
@@ -364,7 +361,6 @@ function renderLlmsTxt(): string {
 ## Useful Markdown Routes
 
 - [Agents workflow Markdown](${site}/workflows/agents-and-specs.md)
-- [JSON automation Markdown](${site}/workflows/json-automation.md)
 - [Getting started Markdown](${site}/getting-started.md)
 - [Status command Markdown](${site}/commands/status.md)
 - [Standalone workflow Markdown](${site}/workflows/standalone.md)

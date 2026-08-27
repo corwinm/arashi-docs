@@ -62,3 +62,21 @@
   to = "https://raw.githubusercontent.com/corwinm/arashi/main/scripts/uninstall.ps1"
   status = 302
   force = true
+
+[[redirects]]
+  from = "/workflows/json-automation"
+  to = "/workflows/agents-and-specs/#automation-and-json"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/workflows/json-automation/"
+  to = "/workflows/agents-and-specs/#automation-and-json"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/workflows/json-automation.md"
+  to = "/workflows/agents-and-specs.md#automation-and-json"
+  status = 301
+  force = true
