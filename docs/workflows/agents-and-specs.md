@@ -1,211 +1,119 @@
 ---
-title: Agents
-description: Use agents effectively in an Arashi meta-repo by keeping implementation in child repos and shared context in the meta-repo.
+title: Agents and Automation
+description: Keep agent work in the right repository and automate Arashi safely.
 draft: false
 sidebar:
   hidden: false
   order: 4
 ---
 
-Use this guide when you want an agent to work safely inside an Arashi meta-repo. It is designed to stand alone as a bootstrap document you can paste into an agent session or link from `/llms.txt`.
+Use this guide when an agent, script, or CI job works inside an Arashi meta-repository.
 
-## Quick Start For Agents
+## Quick start
 
-If you are an agent entering an Arashi-managed workspace:
+1. Start in the meta-repository root and run `aw doctor`.
+2. Read the root `AGENTS.md`, then the instructions in the child repository that owns the change.
+3. Keep implementation, tests, and repository-specific docs in `repos/<project>/`.
+4. Keep shared plans, specifications, and cross-repository coordination in the meta-repository.
+5. Use `aw status` when the task needs detailed repository state.
+6. Validate every affected repository before review or handoff.
+7. Use `aw handoff` when pausing or transferring unfinished work.
+8. Open focused, cross-linked PRs when a change spans repositories.
 
-1. Start in the meta-repo root and run `aw doctor` as a safe, non-mutating workspace-health diagnostic.
-2. Read the root `AGENTS.md` or equivalent workspace instructions, then read the owning child repo's instructions before editing.
-3. Identify which child repo owns the implementation.
-4. Keep implementation, tests, and repo-specific docs in `repos/<project>/`.
-5. Keep shared context, OpenSpec proposals, plans, and cross-repo coordination in the meta-repo.
-6. Inspect detailed repository state with `aw status` when `doctor` findings or the task require it.
-7. Validate every affected repo before review or handoff.
-8. Generate an `aw handoff` report when pausing, switching agents, or leaving dirty work.
-9. Use focused PRs and cross-link related PRs when work spans repositories.
+## Install the Arashi skill
 
-## Install The Arashi Skill
-
-For reusable Arashi guidance inside a supported coding agent, install the
-optional Arashi skill:
+Install the optional skill to give supported coding agents reusable Arashi workflow and safety guidance:
 
 ```bash
 npx skills add https://github.com/corwinm/arashi-skills --skill arashi
 ```
 
-The skill provides task routing, safety rules, troubleshooting, and focused
-references for common Arashi workflows. This page and [`/llms.txt`](/llms.txt)
-remain useful as bootstrap context; installing the skill makes that guidance
-available to the agent when relevant tasks are detected.
+You can also [view it on skills.sh](https://www.skills.sh/corwinm/arashi-skills/arashi) or [browse its source](https://github.com/corwinm/arashi-skills).
 
-You can also [view the skill on skills.sh](https://www.skills.sh/corwinm/arashi-skills/arashi)
-or [browse its source on GitHub](https://github.com/corwinm/arashi-skills).
-The Skills CLI can discover it by searching for `arashi`:
+## Keep work in its owning repository
+
+Arashi separates shared coordination from project implementation:
+
+- Put code, tests, and project-specific docs in the affected child repository.
+- Put shared context, plans, specifications, and cross-repository guidance in the meta-repository.
+- Commit and open PRs separately in every affected repository; one Git commit cannot span them.
+
+A root `AGENTS.md` only needs to state that boundary, point to child instructions, and name the validation expected in each repository. Avoid copying every child repository's rules into the root file.
+
+## Coordinated workflow
+
+Use the smallest repository set needed for the task:
 
 ```bash
-npx skills find arashi
+aw create docs/update-reference --only arashi-docs --no-launch --no-switch
+aw status --only arashi-docs
+aw exec --only arashi-docs -- pnpm validate
 ```
 
-## Core Idea
+`aw create --interactive` can build an intentionally partial coordinated worktree. From that worktree, use `aw clone` to add another configured child on the same branch. Use `aw status --verbose` or `aw status --json` when you need to see configured children that were intentionally omitted.
 
-Arashi works best with agents when the workspace has a clear split:
+Use `aw exec` for repeated inspection or validation that is not covered by a built-in command. Apply `--only` or `--group` to mutating, network-heavy, or expensive work unless the task explicitly requires every repository.
 
-- implementation belongs in the affected child repo under `repos/<project>/`
-- shared context, planning, and cross-repo documentation belong in the meta-repo
+## Handoff
 
-That structure makes it much easier to tell an agent where to read, where to write, and what not to mix together.
-
-## What To Tell The Agent
-
-When you give an agent work in this workspace, tell it:
-
-1. which child repo owns the implementation
-2. that implementation, tests, and repo-specific docs stay in `repos/<project>/`
-3. that meta-repo context, planning notes, and cross-repo guidance stay in the meta-repo
-4. which validation commands to run in the affected repo or repos
-
-If your workspace uses `AGENTS.md` files, point the agent at the root file first and then the file inside the child repo it is editing.
-
-## Recommended `AGENTS.md`
-
-Use a root `AGENTS.md` to tell agents how your meta-repo is organized. A good default looks like this:
-
-```md
-# Arashi Meta-Repo Agent Rules
-
-This repository is the meta-repo that coordinates work across the child repositories in `repos/`.
-
-## Core Rule
-
-- Put implementation in the affected child repository under `repos/<project>/`.
-- Keep shared context, planning, cross-repo notes, and workspace-level guidance in this meta-repo.
-
-## How To Work In This Workspace
-
-1. Start in the child repo that owns the change.
-2. Keep code, tests, and project-specific docs in that child repo.
-3. Use the meta-repo for change context, coordination, OpenSpec artifacts, and cross-repo guidance.
-4. When a change affects multiple repos, update each affected repo directly instead of mixing files into the wrong location.
-
-## Multi-Repo Expectations
-
-- A single git commit cannot span multiple repositories.
-- If a feature changes both planning artifacts and project implementation, commit each affected repository separately.
-- When command behavior, configuration, or user workflow changes in `repos/arashi`, review companion updates in `repos/arashi-docs/` and `repos/arashi-skills/`.
-- When multiple repositories need PRs, include explicit cross-links between the PRs and reference the originating issue in each one.
-
-## Repo-Specific Rules
-
-- `repos/arashi/AGENTS.md`
-- `repos/arashi-docs/AGENTS.md`
-- `repos/arashi-skills/AGENTS.md`
-- `repos/arashi-vscode/AGENTS.md`
-```
-
-Then add smaller `AGENTS.md` files inside the child repos so the agent can pick up repo-specific validation commands and editing rules.
-
-## Recommended Workflow
-
-1. decide which child repo owns the implementation
-2. gather context in the meta-repo before making code changes
-3. have the agent implement the change in the child repo
-4. update related docs or coordination files in the meta-repo when needed
-5. validate each affected repo before review or handoff
-6. run `aw handoff` with links, validation evidence, remaining work, risks, and next commands before pausing or transferring context
-
-For multi-repo work, do not try to make one commit span the whole workspace. Commit and open PRs from each affected repository, then cross-link those PRs so reviewers can follow the complete change.
-
-## Handoff Reports
-
-Use `aw handoff` to create a concise report when an agent is about to pause, switch with another agent, request review, or leave a dirty coordinated workspace. The command is read-only: it gathers current Arashi status and renders Markdown by default, but it does not run validations, write files, stage changes, commit, push, or delete worktrees.
-
-Include context Arashi cannot infer:
+`aw handoff` produces a read-only report of current workspace state. Add only evidence and context Arashi cannot infer:
 
 ```bash
 aw handoff \
-  --link https://github.com/corwinm/arashi-arashi/issues/186 \
-  --link https://github.com/corwinm/arashi/pull/123 \
-  --validation "pnpm test — passed" \
-  --validation "pnpm build — passed" \
+  --link https://github.com/example/project/pull/42 \
+  --validation "pnpm validate — passed" \
   --todo "watch CI" \
-  --risk "Windows matrix has not finished yet" \
-  --next-command "gh pr checks 123 --repo corwinm/arashi"
+  --next-command "gh pr checks 42"
 ```
 
-Use `--validation` only for commands and results that were actually run. If a check is pending or unverified, put it in `--todo` or `--risk` so the next worker does not mistake it for merge-ready evidence.
+Report checks as validation only after they have actually run. Put pending or unverified work under `--todo` or `--risk`.
 
-Use `aw handoff --json` when an agent or script needs to parse the report. JSON mode uses the standard single-document Arashi envelope and includes workspace metadata, current repository context, per-repository status records, supplied context arrays, warnings, and generated next-command hints.
+## Automation and JSON
 
-## Specs Pair Well, But They Are Optional
+Use `--json` (or `-j`) when an agent, script, or CI job needs to parse command output.
 
-Arashi pairs well with a spec-driven development framework such as OpenSpec because it gives the agent a clean place for proposals, tasks, and design context.
+- stdout contains exactly one JSON document followed by a newline.
+- Human progress, tables, colors, spinners, and prompts stay off stdout.
+- Check both the process exit status and the envelope's `ok` field.
+- Branch on `error.code`, not the human-readable `message`.
+- Read the fields you need and ignore unknown fields for forward compatibility.
+- Pass explicit selectors and non-interactive options when a command would otherwise prompt, switch shells, or launch another application.
+- Use the relevant [command reference](/commands/) for command-specific `data`, warnings, errors, and JSON support.
 
-The important part is not a specific framework. The important part is keeping:
+A successful envelope has this common shape:
 
-- code in the child repo that owns it
-- context and coordination in the meta-repo
-- instructions clear enough that the agent does not need to guess
+```json
+{
+  "ok": true,
+  "command": "status",
+  "schemaVersion": 1,
+  "data": {},
+  "warnings": []
+}
+```
 
-If your assistant environment exposes them, `OpenSpec` commands such as `/opsx-propose` and `/opsx-apply` are a good fit for this workflow.
+Failures use `ok: false` with a structured `error` object. stderr remains available for child-command diagnostics and unexpected runtime failures; do not parse human prose from stderr as an API.
 
-## Machine-Readable Command Output
-
-Agents should prefer `--json` when they need to inspect Arashi state or make decisions from command results. JSON mode keeps stdout reserved for one parseable result document and avoids brittle scraping of progress text, colors, tables, or prompts.
-
-Good agent-facing commands include:
+Start automation with safe inspection commands:
 
 ```bash
 aw doctor --json
 aw status --json
 aw list --json
-aw exec --json -- git status --short
-aw handoff --json --link https://github.com/corwinm/arashi-arashi/issues/186
-aw status --group docs --json
-aw exec --only arashi-docs --json -- pnpm validate
-aw exec --group agents --json -- pnpm validate
-aw create feature-branch --no-launch --no-switch --json
-aw clone --all --json
-aw pull --group docs --json
-aw setup --only api --json
 ```
 
-In JSON mode, successful commands include `ok: true`, `command`, `schemaVersion`, `data`, and `warnings`. Command-level failures use `ok: false` plus a structured `error` object so agents can branch on `error.code` instead of parsing English text. See the [JSON automation reference](/workflows/json-automation/) for the full envelope contract, stdout/stderr guarantees, and command support matrix.
+Then use targeted commands such as `aw exec --only arashi-docs --json -- pnpm validate`. Interactive-only flows return a structured unsupported-mode error instead of prompting.
 
-Use `aw doctor --json` as the first diagnostic command when troubleshooting workspace health. It is read-only and returns stable findings with `code`, `severity`, `category`, `scope`, `message`, and suggested follow-up commands. Treat `error` findings as blockers; use `warning` and `info` findings to guide lower-risk follow-up checks.
+## Specifications are optional
 
-## Managed Ignore Guidance For Agents
+A spec framework such as OpenSpec can keep proposals and tasks in the meta-repository while implementation stays in child repositories. The important contract is repository ownership, not a particular planning tool.
 
-Configured `init`, `pull`, `clone`, `add`, and `create` operations reconcile safe `reposDir` and `worktreesDir` rules before materializing workspace content. The default target is the common repository's local exclude file, normally `.git/info/exclude`, so a fresh clone does not modify tracked `.gitignore`.
+## Related references
 
-Treat the clone-local ignore scope as user intent:
-
-- `local` is the built-in default and is represented by the absence of a non-default preference.
-- `tracked` opts into Arashi-owned rules in the workspace-root `.gitignore`.
-- `none` opts out of ignore-file mutation and can produce warnings for unignored paths.
-
-Explicit `tracked` and `none` values live in local Git configuration under `arashi.ignoreScope`, not shared `.arashi/config.json`. Do not copy that preference between clones or change it merely to silence a warning. Never create, edit, or unset global Git configuration or the user's global excludes file; Arashi may honor an existing effective global rule, but global Git state is read-only for this workflow.
-
-In JSON lifecycle results, inspect `managedIgnore` for effective sources, planned/applied rules, unsafe skips, warnings, and final changed/restored state. Do not assume a failed command removed reconciliation: partial success may retain rules needed by surviving repositories, worktrees, or pulled config. Use `aw doctor --json` for non-mutating missing, stale, invalid-scope, and unsafe-path diagnostics.
-
-This guidance applies to configured workspaces. It does not assume the separate configless discovery proposed in [issue #212](https://github.com/corwinm/arashi-arashi/issues/212).
-
-Use `aw exec` for repeated multi-repo inspection or validation commands that are not covered by a built-in Arashi command. The child command must follow `--` and runs from each selected repository as its working directory. Prefer `--group <group>` for known semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`; use `--only <repos>` for one-off repository lists. For mutating, expensive, network-heavy, or long-running commands, always apply an explicit `--group` or `--only` filter unless the user asked for every managed repository. When both filters are supplied, `--group` intersects with and narrows `--only`.
-
-JSON mode is non-interactive. If a command would normally prompt, launch an editor or terminal, emit shell integration code, or change the parent shell directory, pass explicit non-interactive flags or expect a structured unsupported-mode error such as `JSON_UNSUPPORTED_FOR_MODE`.
-
-## Partial Coordinated Worktrees
-
-Arashi supports intentionally partial coordinated worktrees when a task only needs some child repositories.
-
-- Use `aw create <branch> --interactive` to choose child repositories while still creating the parent/meta worktree.
-- Default and short `aw status` output hide omitted child repositories so partial worktrees do not look broken during everyday checks.
-- Use `aw status --verbose` or `aw status --json` when an agent needs to inspect every configured repository, including missing child repositories.
-- From inside a partial worktree, use `aw clone` or `aw clone --all --json` to add missing child repositories on the current branch.
-
-## Related References
-
-- [Curated LLM entrypoint](/llms.txt)
+- [Commands](/commands/)
+- [Workflows](/workflows/)
+- [Config](/workflows/config/)
+- [Hooks](/workflows/hooks/)
+- [Curated agent entrypoint](/llms.txt)
 - [Full Markdown export](/llms-full.txt)
-- [JSON automation reference](/workflows/json-automation/)
-- [Workflows overview](/workflows/)
 - [Contributing](/contributing/)
-- [Meta-repo AGENTS.md](https://github.com/corwinm/arashi-arashi/blob/main/AGENTS.md)

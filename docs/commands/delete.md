@@ -75,6 +75,10 @@ aw delete api --force --json
 
 On partial failure, `error.details.plan` and `error.details.result` contain the accepted scope and phase ledger. Hook logical identity, path, or status may appear without file contents or inline command bodies.
 
+An explicit-key JSON partial failure describes only that selected repository, never batch progress from earlier or later repositories. Plans and results retain the same deterministic item IDs and order. Linked worktrees are deepest physical descendant first with normalized-path bytewise ties; other records use canonical bytewise identity order within their phase. Item states are exactly `planned`, `completed`, `preserved`, `blocked`, `failed`, and `not-started`.
+
+Phases use this exact order: `provenance`, `worktrees`, `metadata`, `canonical-clone`, `workspace-hooks`, `configuration`, `verification`. Phase states are exactly `not-started`, `started`, `completed`, and `failed`.
+
 ## Partial Failure And Retry
 
 A multi-repository deletion is not an all-or-nothing transaction. Earlier repositories may be completed, the failing repository is failed, and later repositories are not started. Inspect the phase ledger and surviving state, then retry the exact command only when Arashi reports that retry as safe. Each incomplete repository has its own retry guidance or manual-review outcome; do not synthesize a broad cleanup command.
@@ -83,7 +87,7 @@ There is no atomic rollback after an owned worktree, clone, ref, hook, or config
 
 ## Related
 
-- [JSON Automation](/workflows/json-automation/#delete-plans-results-and-retries)
+- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)
 - [Hooks workflow](/workflows/hooks/#configured-repository-deletion)
 - [remove command](/commands/remove/)
 - [doctor command](/commands/doctor/)

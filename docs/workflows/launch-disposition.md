@@ -142,4 +142,4 @@ Check nested managed-context markers first. Ghostty containing tmux must select 
 - [Herdr workflow](/workflows/herdr/)
 - [cmux workflow](/workflows/cmux/)
 - [Kitty workflow](/workflows/kitty/)
-- [JSON automation](/workflows/json-automation/)
+- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)

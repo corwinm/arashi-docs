@@ -89,17 +89,7 @@ const sourceRequirements: Requirement[] = [
       "[launch disposition workflow](/workflows/launch-disposition/)",
     ],
   },
-  {
-    path: "docs/workflows/json-automation.md",
-    text: [
-      "switch --json --tab",
-      "`launch`",
-      "exit status `2`",
-      "create --json --tab",
-      "`interactive-or-launch`",
-      "exit status `1`",
-    ],
-  },
+
   {
     path: "docs/workflows/tmux-and-sesh.md",
     text: [

@@ -70,4 +70,4 @@ Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl`
 - [add](/commands/add/)
 - [doctor](/commands/doctor/)
 - [Config workflow](/workflows/config/)
-- [JSON Automation](/workflows/json-automation/)
+- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)

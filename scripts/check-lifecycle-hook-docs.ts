@@ -121,17 +121,7 @@ const sourceRequirements = new Map<string, string[]>([
       "immediate EOF",
     ],
   ],
-  [
-    "docs/workflows/json-automation.md",
-    [
-      hooksLink,
-      "ARASHI_HOOK_INPUT=disabled",
-      "immediate EOF",
-      "even when stdin is a TTY",
-      "exactly one JSON document",
-      "no prompt text or interactive attribution",
-    ],
-  ],
+
   ["docs/commands/setup.md", [hooksLink, "not a lifecycle hook"]],
   [
     "docs/workflows/herdr.md",
@@ -181,10 +171,7 @@ const generatedRequirements = new Map<string, string[]>([
     "public/workflows/herdr.md",
     sourceRequirements.get("docs/workflows/herdr.md") ?? [],
   ],
-  [
-    "public/workflows/json-automation.md",
-    sourceRequirements.get("docs/workflows/json-automation.md") ?? [],
-  ],
+
   [
     "public/commands/setup.md",
     sourceRequirements.get("docs/commands/setup.md") ?? [],

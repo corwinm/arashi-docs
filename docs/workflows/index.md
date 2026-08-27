@@ -13,14 +13,13 @@ Use this section when you want outcome-focused guidance instead of a command-by-
 
 - [Config](/workflows/config/) for workspace layout, repositories, worktree behavior, and command defaults.
 - [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
-- [Agents](/workflows/agents-and-specs/) for implementation boundaries and meta-repo guidance.
+- [Agents and Automation](/workflows/agents-and-specs/) for implementation boundaries, handoffs, and machine-readable command use.
 - [VS Code](/workflows/vscode/) for editor-first worktree management.
 - [Launch disposition](/workflows/launch-disposition/) for default independent windows/sessions, one-invocation `--tab`, precedence, and terminal support.
 - [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
 - [Herdr](/workflows/herdr/) for persistent workspace focus/reuse while Arashi retains Git worktree ownership.
 - [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
 - [Kitty](/workflows/kitty/) for automatic exact worktree-window reuse and live Kitty session ownership.
-- [JSON Automation](/workflows/json-automation/) for machine-readable output, envelope examples, and command support.
 - [delete](/commands/delete/) for configured dependency deletion; `remove` remains for branch worktrees.
 - [Standalone Repository](/workflows/standalone/) for ad hoc use in a project that has not adopted Arashi configuration.
 

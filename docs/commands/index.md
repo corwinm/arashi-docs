@@ -49,7 +49,7 @@ aw switch
 
 ## Related
 
-- [JSON Automation](/workflows/json-automation/)
+- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)
 - [Getting Started](/getting-started/)
 - [Workflows](/workflows/)
 - [Contributing](/contributing/)

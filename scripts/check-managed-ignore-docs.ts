@@ -52,9 +52,7 @@ const sourceRequirements = new Map<string, string[]>([
     "docs/commands/create.md",
     ["before creating any parent or child worktree", "--dry-run", "changed/restored"]
   ],
-  ["docs/commands/doctor.md", ["managed ignore", "does not repair"]],
-  ["docs/workflows/agents-and-specs.md", ["global Git", "managedIgnore"]],
-  ["docs/workflows/json-automation.md", ["managedIgnore", "effective source", "restored"]]
+  ["docs/commands/doctor.md", ["managed ignore", "does not repair"]]
 ]);
 
 const generatedRequirements = new Map<string, string[]>([
@@ -68,7 +66,6 @@ const generatedRequirements = new Map<string, string[]>([
     ]
   ],
 
-  ["public/workflows/json-automation.md", ["managedIgnore", "restored"]],
   [
     "public/commands/init.md",
     [
@@ -97,7 +94,6 @@ const generatedRequirements = new Map<string, string[]>([
   ],
   ["public/commands/create.md", ["--dry-run", "changed/restored"]],
   ["public/commands/doctor.md", ["managed ignore", "does not repair"]],
-  ["public/workflows/agents-and-specs.md", ["global Git", "managedIgnore"]],
   [
     "public/llms.txt",
     ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)"]
@@ -108,7 +104,6 @@ const generatedRequirements = new Map<string, string[]>([
       ".git/info/exclude",
       "--ignore-scope tracked",
       "--ignore-scope none",
-      "managedIgnore",
       "Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.",
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
