@@ -75,7 +75,7 @@ const sourceRequirements: Requirement[] = [
       "`--tab` alone uses automatic launcher resolution",
       "conflicts only with explicit `--cd`",
       "canonical `--launch` and `--ignore-configured-launcher` remain compatible",
-      "[Launching reference](/reference/launching/)",
+      "[Launching](/reference/launching/)",
     ],
   },
   {
@@ -86,7 +86,7 @@ const sourceRequirements: Requirement[] = [
       "implies launch and switch",
       "wins over `--no-launch` and `--no-switch`",
       "bypasses configured generic or editor-scoped launch defaults",
-      "[Launching reference](/reference/launching/)",
+      "[Launching](/reference/launching/)",
     ],
   },
 
@@ -95,7 +95,7 @@ const sourceRequirements: Requirement[] = [
     text: [
       "Ghostty containing tmux",
       "tmux window",
-      "[Launching reference](/reference/launching/)",
+      "[Launching](/reference/launching/)",
     ],
   },
   {
@@ -104,7 +104,7 @@ const sourceRequirements: Requirement[] = [
       "Ghostty containing Herdr",
       "active Herdr workspace",
       "Herdr tab",
-      "[Launching reference](/reference/launching/)",
+      "[Launching](/reference/launching/)",
     ],
   },
   {
@@ -112,7 +112,7 @@ const sourceRequirements: Requirement[] = [
     text: [
       "workspace / vertical tab",
       "active cmux session",
-      "[Launching reference](/reference/launching/)",
+      "[Launching](/reference/launching/)",
     ],
   },
   {
@@ -120,7 +120,7 @@ const sourceRequirements: Requirement[] = [
     text: [
       "managed Kitty",
       "`--tab`",
-      "[Launching reference](/reference/launching/)",
+      "[Launching](/reference/launching/)",
     ],
   },
   {

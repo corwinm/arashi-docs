@@ -1,50 +1,34 @@
 ---
 title: VS Code
-description: Open and manage Arashi worktrees from VS Code with the CLI or the Arashi extension.
+description: Open and manage worktrees in VS Code and compatible editors.
 draft: false
 sidebar:
   hidden: false
   order: 5
 ---
 
-Use this guide when VS Code or a VS Code-based editor is your primary destination for opening and managing Arashi worktrees.
-
-Cursor and Kiro are VS Code forks, so the same editor-first workflow generally applies there as well. This page focuses on VS Code because the Arashi extension is published through the standard VS Code extension ecosystems.
-
-## Open a Worktree in VS Code
-
-Use the CLI when you are already in the terminal and want to open a specific worktree immediately.
+## Open a worktree
 
 ```bash
 aw switch --vscode feature-auth
 ```
 
-- Best for editor-first workflows where the terminal is secondary.
-- Good default when your team reviews changes primarily inside VS Code.
-- Useful when you want a one-off editor launch without changing workspace defaults.
+Use `--cursor` or `--kiro` for those editors.
 
-## Install the VS Code Extension
+## Use the extension
 
-Install the Arashi extension when you want Arashi controls inside the editor, not just a one-off CLI launch.
+Install `haphazarddev.arashi-vscode` from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=haphazarddev.arashi-vscode) or [Open VSX](https://open-vsx.org/extension/haphazarddev/arashi-vscode).
 
-- VS Code Marketplace: [haphazarddev.arashi-vscode](https://marketplace.visualstudio.com/items?itemName=haphazarddev.arashi-vscode)
-- Open VSX: [haphazarddev.arashi-vscode](https://open-vsx.org/extension/haphazarddev/arashi-vscode)
+The extension provides:
 
-With the extension installed, you can:
+- core Arashi commands in the command palette
+- a worktree view with switch and remove actions
+- workspace and repository shortcuts
+- diagnostics in the **Arashi** output channel
 
-- run core Arashi commands from the command palette, including `init`, `add`, `clone`, `create`, `pull`, `sync`, `switch`, and `remove`
-- browse available worktrees in the **Arashi Worktrees** Explorer view grouped by repository, including repo, branch, path, and change status
-- use panel title actions to create worktrees and refresh the current view without leaving the editor
-- use inline worktree actions to switch or remove a selected worktree with the exact clicked target
-- open the workspace root or a related repository in a new editor window from the panel or command palette
-- review command diagnostics in the **Arashi** output channel when setup or command execution fails
-- respond to startup warnings in-editor, including a shortcut to run `Arashi: Init Workspace`
+## Show child repositories
 
-If the panel is not immediately visible, open the Explorer sidebar and reveal the **Arashi Worktrees** view from the Explorer view menu.
-
-## Show Child Repositories in Source Control
-
-By default, Arashi keeps child repositories at `repos/<repository>`, two directories below the workspace root. If VS Code's built-in **Source Control** view does not show them, add this workspace setting:
+If Source Control does not find repositories under `repos/`, increase its scan depth:
 
 ```json
 {
@@ -52,17 +36,15 @@ By default, Arashi keeps child repositories at `repos/<repository>`, two directo
 }
 ```
 
-Open **Preferences: Open Workspace Settings (JSON)** to add it, then reload the editor window if the repositories do not appear immediately. Custom repository paths may require a different depth; repositories outside the workspace must be added as workspace folders.
+Custom paths may need a different depth. Repositories outside the workspace must be added as workspace folders.
 
-## Recommended Usage Pattern
+## Choose a workflow
 
-- Use `aw switch --vscode <branch>` when you are already in the terminal and want VS Code to open a specific worktree immediately.
-- Use the extension when VS Code is your primary shell for day-to-day worktree management and you want a persistent worktree panel.
-- Set `arashi.binaryPath`, `arashi.workspaceRoot`, or `arashi.commandTimeoutMs` in VS Code settings when the editor should target a specific binary or workspace root.
-- Use `--cursor` or `--kiro` when you want the same VS Code-style workflow in those editors.
+- Use `aw switch --vscode` from a terminal.
+- Use the extension when VS Code is your main workspace.
+- Set `arashi.binaryPath` or `arashi.workspaceRoot` only when the defaults are wrong.
 
-## Related References
+## Related
 
-- [switch command](/commands/switch/)
-- [shell command](/commands/shell/)
-- [tmux and sesh workflow guide](/workflows/tmux-and-sesh/)
+- [switch](/commands/switch/)
+- [Integrations](/workflows/environment-integrations/)

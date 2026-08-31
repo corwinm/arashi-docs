@@ -279,7 +279,7 @@ python -m pip install -r requirements.txt
 4. Keep scripts fail-fast and idempotent; workspace and shared remove hooks can run repeatedly across targets.
 5. Run with `--dry-run` where supported, then inspect human or JSON hook outcomes.
 
-Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove).
+Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see [Herdr](/workflows/herdr/#ownership).
 
 ## Related references
 

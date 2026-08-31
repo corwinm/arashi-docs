@@ -5,12 +5,11 @@ const sourceRequirements = new Map<string, string[]>([
   [
     "docs/getting-started/workspace.md",
     [
-      ".git/info/exclude",
+      "Repository-local ignore rules are the default",
       "--ignore-scope tracked",
       "--ignore-scope none",
-      "In non-bare repositories, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status",
-      "Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository.",
-      "[init command reference](/commands/init/)"
+      "Use `aw doctor` to inspect managed-ignore state",
+      "[init](/commands/init/)"
     ]
   ],
 
@@ -58,10 +57,10 @@ const generatedRequirements = new Map<string, string[]>([
   [
     "public/getting-started/workspace.md",
     [
-      ".git/info/exclude",
+      "Repository-local ignore rules are the default",
       "--ignore-scope tracked",
-      "Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository.",
-      "[init command reference](/commands/init/)"
+      "Use `aw doctor` to inspect managed-ignore state",
+      "[init](/commands/init/)"
     ]
   ],
 

@@ -1,168 +1,66 @@
 ---
 title: Herdr
-description: Open, focus, and reuse Arashi-managed worktrees as Herdr workspaces without transferring Git lifecycle ownership.
+description: Open and reuse worktrees as Herdr workspaces.
 draft: false
 sidebar:
   hidden: false
   order: 7
 ---
 
-Use Herdr when you want an Arashi-created worktree to open as a persistent Herdr workspace with repository provenance, focus, and reuse.
+## Requirements
 
-## Prerequisites
+- Herdr 0.7.4
+- a running default session and reachable socket
+- a non-bare main checkout
 
-- Herdr v0.7.4, the version used to verify this integration, must be installed and available as `herdr` on `PATH`.
-- A Herdr default session/server and its local socket must be running and reachable.
-- The repository must have a non-bare main checkout. Herdr needs that checkout as its source; a bare repository alone is not sufficient.
-- Arashi must already know or create the target Git worktree. Herdr does not create it for this workflow.
+Arashi creates the Git worktree. Herdr opens it.
 
-Check the installed version before troubleshooting the integration:
-
-```bash
-herdr --version
-```
-
-## Choose Herdr Explicitly
-
-Open an existing worktree from any terminal that can reach the running Herdr session:
+## Use Herdr
 
 ```bash
 aw switch --herdr feature-auth
-```
-
-Create worktrees and open the primary created worktree in Herdr:
-
-```bash
 aw create feature-auth --herdr
 ```
 
-On `create`, `--herdr` implies post-create launch, like `--sesh`. An explicit `--herdr` takes precedence over `--no-launch`. Do not combine it with `--sesh`; on `switch`, do not combine it with `--sesh`, an explicit IDE flag, or `--cd`. Arashi rejects conflicting explicit launchers before launch, and it rejects `create --json --herdr` before worktree creation. `switch --json --herdr` remains a non-mutating unsupported mode.
-
-## Configure Herdr As The Default
-
-Set the single create launch choice and the unified switch mode to `herdr`:
+Set Herdr as the default when wanted:
 
 ```json
 {
   "defaults": {
-    "create": {
-      "launch": "herdr"
-    },
-    "switch": {
-      "mode": "herdr"
-    }
+    "create": { "launch": "herdr" },
+    "switch": { "mode": "herdr" }
   }
 }
 ```
 
-Editor-scoped create defaults under `defaults.editors.<host>.create` use the same `launch: "herdr"` choice for `vscode`, `cursor`, and `kiro`. An editor-hosted invocation reads only its matching host scope and does not inherit generic or another host's create defaults. Configured Herdr works outside a Herdr-managed pane as long as the CLI can reach the running default session.
+Use `launch: "herdr"` for create and `mode: "herdr"` for switch.
 
-- `aw switch --ignore-configured-launcher ...` bypasses configured Herdr for that invocation while retaining launch behavior through automatic resolution.
-- `aw switch --launch ...` forces launch behavior while preserving configured Herdr.
-- `aw create --no-launch ...` suppresses configured Herdr unless explicit `--herdr` is also present.
+An editor scope at `defaults.editors.<host>.create` does not inherit another editor's setting. `--no-launch` suppresses configured create launch; explicit `--herdr` remains authoritative.
 
-## Automatic Detection And Precedence
+Automatic detection uses Herdr inside an active Herdr environment unless tmux is nested above it. Ghostty containing Herdr selects Herdr. With `--tab`, Arashi opens a Herdr tab in the active Herdr workspace. See [Launching](/reference/launching/).
 
-With no explicit or configured launcher, Arashi automatically selects Herdr only when trimming `HERDR_ENV` produces the exact string `1`. Values such as an empty string, `0`, or `true` are not Herdr signals.
+## Ownership
 
-Switch resolution is:
+Arashi owns Git worktree creation and removal. It never delegates those operations to Herdr.
 
-1. validate explicit launcher conflicts and `--cd` conflicts
-2. apply one explicit launcher or explicit `--cd`
-3. apply configured `mode: "sesh"`, `mode: "herdr"`, `mode: "cd"`, or `mode: "launch"`
-4. for configured `auto`, detect tmux, Herdr, cmux, or an integrated IDE before parent-shell `cd`
-5. continue to terminal-app and generic fallback when automatic launch has no managed context
+If launch fails after create, Arashi preserves every successfully created worktree and does not fall back to another launcher.
 
-Therefore an explicit or configured Herdr mode overrides automatic environment detection. `--launch` preserves configured Herdr, while `--ignore-configured-launcher` bypasses configured Herdr and returns to automatic launch. In automatic launch, a tmux session nested inside Herdr retains tmux behavior; otherwise Herdr precedes cmux, IDE, terminal-app, and generic fallbacks. Once Herdr is selected by any route, a Herdr failure does not silently open another launcher or fall back to `cd`.
-
-Ghostty containing Herdr selects Herdr rather than the containing terminal. With `--tab`, Arashi creates a Herdr tab in the active Herdr workspace; strict workspace evidence is required and unsupported or failed tab launch does not fall back to a Ghostty window. See the [Launching reference](/reference/launching/) for the default-versus-tab matrix.
-
-## Verified v0.7.4 Contract
-
-For each target, Arashi resolves the repository's non-bare main checkout through Git and invokes the argv equivalent of:
-
-```bash
-herdr worktree open \
-  --cwd <non-bare-main-checkout> \
-  --path <existing-linked-worktree> \
-  --label '<repo-name>: <branch-name>' \
-  --focus \
-  --json
-```
-
-The source path, target path, and label are separate arguments, so spaces and shell-significant characters are not interpolated by a shell. If the selected target is itself the non-bare main checkout, Arashi uses that path for both `--cwd` and `--path`.
-
-Arashi accepts success only when all of these conditions hold:
-
-- the Herdr process exits successfully
-- stdout is valid JSON
-- `result.type` is exactly `"worktree_opened"`
-- `result.already_open` is a boolean
-- `result.workspace.workspace_id` is a non-empty string
-
-The first open normally reports `already_open: false`. Repeating the request for the same checkout reports `already_open: true` with the same workspace ID, focuses the existing workspace, and reapplies Arashi's deterministic `<repo-name>: <branch-name>` label. Herdr keeps the linked workspace grouped with the source checkout through its native Git provenance.
-
-## Ownership And Repository Limits
-
-Arashi remains the sole owner of Git worktree creation and removal. The integration only opens an existing checkout. It never uses:
-
-- `herdr worktree create`
-- `herdr worktree remove`
-- `herdr workspace create` as a fallback
-
-Configured and standalone linked-worktree flows are supported when Git can resolve a non-bare main checkout. A bare repository with no non-bare main checkout cannot provide Herdr's required source path. `switch --herdr` then fails before Herdr runs. If post-create Herdr launch fails for this reason—or for any external Herdr error—Arashi preserves every successfully created worktree and reports creation as complete with launch failed; it does not roll back Git work or try another launcher.
-
-## Troubleshooting
-
-Arashi reports `LAUNCH_FAILED` with the selected worktree and attempted command instead of falling through when:
-
-- **The executable is missing:** install Herdr v0.7.4 and ensure `herdr` is on the invoking process's `PATH`.
-- **The server or socket is unavailable:** start the Herdr default session/server and confirm its local socket is reachable from the same user environment.
-- **Herdr exits non-zero or returns an API error:** read the included stderr/stdout guidance and verify the target and source checkout still exist.
-- **The response is invalid:** a malformed JSON document, unexpected result type, non-boolean `already_open`, or missing workspace ID indicates a v0.7.4 contract mismatch. Update the components deliberately rather than bypassing validation.
-- **The source is bare:** create or use a normal non-bare main checkout for the repository; Arashi will not replace provenance-aware open with a generic workspace.
-
-## Optional Cleanup Before Remove
-
-`aw remove` intentionally does not close Herdr workspaces. A workspace can contain agents or unsaved terminal state, so automatic cleanup could destroy useful work. After a Git worktree is removed, its Herdr workspace may remain stale; inspect it and close it manually only when its state is no longer needed:
+`aw remove` does not close Herdr workspaces. Close stale workspaces manually:
 
 ```bash
 herdr workspace list
 herdr workspace close <workspace-id>
 ```
 
-If your team has explicitly chosen automatic cleanup, use a trusted `pre-remove.sh` hook so each workspace can be identified while its checkout still exists. Herdr v0.7.4's `workspace list` output is JSON, so this opt-in example parses Arashi's canonical structured target list and matches every exact checkout path before closing a workspace:
+Automated cleanup is optional. If used, a trusted pre-remove hook should parse `ARASHI_REMOVE_TARGETS_JSON`, match the exact checkout path from `.worktreePath`, and close only that workspace. Never call `herdr worktree remove`.
 
-```bash
-#!/bin/sh
-set -eu
+## Troubleshoot
 
-targets_file=$(mktemp)
-trap 'rm -f "$targets_file"' 0 HUP INT TERM
+Check `herdr --version`, the default session, socket access, and the non-bare main checkout. Contract or process failures return `LAUNCH_FAILED`.
 
-printf '%s\n' "$ARASHI_REMOVE_TARGETS_JSON" |
-  jq -r '.[] | select(.worktreePath != null) | .worktreePath' >"$targets_file"
+## Related
 
-while IFS= read -r target_path; do
-  workspaces_json=$(herdr workspace list)
-  workspace_id=$(
-    printf '%s\n' "$workspaces_json" |
-      jq -r --arg path "$target_path" \
-        '[.result.workspaces[] | select(.worktree.checkout_path == $path)][0].workspace_id // empty'
-  )
-
-  if [ -n "$workspace_id" ]; then
-    herdr workspace close "$workspace_id"
-  fi
-done <"$targets_file"
-```
-
-Review the matched workspace and your hook scope before enabling this mutation. Never substitute `herdr worktree remove`: Git worktree removal belongs to Arashi.
-
-## Related References
-
-- [switch command](/commands/switch/)
-- [create command](/commands/create/)
-- [remove command](/commands/remove/)
-- [Configuration reference](/reference/configuration/)
-- [Lifecycle Hooks reference](/reference/hooks/)
+- [switch](/commands/switch/)
+- [create](/commands/create/)
+- [remove](/commands/remove/)
+- [Lifecycle Hooks](/reference/hooks/)

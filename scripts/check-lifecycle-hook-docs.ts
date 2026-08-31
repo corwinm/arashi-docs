@@ -108,19 +108,6 @@ const sourceRequirements = new Map<string, string[]>([
     "docs/reference/configuration.md",
     [hooksLink],
   ],
-  [
-    "docs/getting-started/standalone.md",
-    [
-      hooksLink,
-      "targeted before shared",
-      "main-root basename",
-      "configless repository-local and workspace hooks remain inactive",
-      "ARASHI_HOOK_INPUT",
-      "--no-hook-input",
-      "JSON",
-      "immediate EOF",
-    ],
-  ],
 
   ["docs/commands/setup.md", [hooksLink, "not a lifecycle hook"]],
   [
@@ -163,10 +150,7 @@ const generatedRequirements = new Map<string, string[]>([
     "public/reference/configuration.md",
     sourceRequirements.get("docs/reference/configuration.md") ?? [],
   ],
-  [
-    "public/getting-started/standalone.md",
-    sourceRequirements.get("docs/getting-started/standalone.md") ?? [],
-  ],
+
   [
     "public/workflows/herdr.md",
     sourceRequirements.get("docs/workflows/herdr.md") ?? [],

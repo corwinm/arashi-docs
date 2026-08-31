@@ -7,14 +7,13 @@ const sourceRequirements = new Map<string, string[]>([
   ["astro.config.mjs", ["configured meta-repositories", "ad hoc support"]],
   [
     "docs/index.mdx",
-    [standaloneLink, "configured meta-repositories", "Configured mode is preferred"]
+    [standaloneLink, "configured meta-repositories", "one unconfigured project"]
   ],
   [
     "docs/getting-started/standalone.md",
     [
       "aw init --zero-config",
-      "works best with configuration",
-      "use Arashi ad hoc",
+      "Configured mode is preferred",
       ".worktrees/<branch>",
       "aw create",
       "aw list",
@@ -22,8 +21,7 @@ const sourceRequirements = new Map<string, string[]>([
       "aw switch",
       "aw remove",
       "aw init",
-      "user-global",
-      "--json"
+      "user-global"
     ]
   ],
   [

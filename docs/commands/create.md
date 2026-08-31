@@ -202,7 +202,7 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`aw clone`](/commands/clone/) from inside that worktree.
 - Configure one post-create choice in `.arashi/config.json` at `defaults.create.launch`: `none | auto | sesh | herdr`. The independent `switch` boolean can still select the new primary worktree without launching; every launch mode except `none` selects it too, so launch implies switch.
 - `--tmux` is a per-invocation-only override and is not persisted in the generic or editor-scoped create configuration. Configured `auto` can still choose tmux contextually when launch runs inside tmux.
-- `--tab` is a CLI-only, one-invocation disposition. It implies launch and switch, bypasses configured generic or editor-scoped launch defaults, and wins over `--no-launch` and `--no-switch`; automatic contextual launcher resolution applies unless `--tmux`, `--sesh`, or `--herdr` explicitly chooses the adapter. Knowable unsupported requests fail before mutation, while runtime failures after creation preserve the worktrees and never fall back to a window. See the [Launching reference](/reference/launching/) for the complete matrix and JSON exit behavior.
+- `--tab` is a CLI-only, one-invocation disposition. It implies launch and switch, bypasses configured generic or editor-scoped launch defaults, and wins over `--no-launch` and `--no-switch`; automatic contextual launcher resolution applies unless `--tmux`, `--sesh`, or `--herdr` explicitly chooses the adapter. Knowable unsupported requests fail before mutation, while runtime failures after creation preserve the worktrees and never fall back to a window. See the [Launching](/reference/launching/) for the complete matrix and JSON exit behavior.
 - Explicit `--tmux` takes precedence over generic and editor-scoped create defaults and automatic Herdr, cmux, or IDE detection. `--tmux` + `--no-launch` still implies post-create launch, and `--tmux` + `--no-switch` still selects and launches the primary created worktree.
 - `--tmux` conflicts with `--sesh` and `--herdr`. Arashi reports the complete explicit-launcher conflict set before repository mutation.
 - Launch precedence is deliberate. Otherwise `--sesh` or `--herdr` selects that explicit launcher even beside `--launch` or `--no-launch`; `--launch` selects `auto`; `--no-launch` selects `none`; then configured launch applies; an absent choice is built-in `none`.
@@ -242,4 +242,4 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
 - [Kitty workflow guide](/workflows/kitty/)
-- [Launching reference](/reference/launching/)
+- [Launching](/reference/launching/)

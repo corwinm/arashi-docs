@@ -118,17 +118,6 @@ const requirements = new Map<string, string[]>([
       "Standalone doctor remains unchanged",
     ],
   ],
-  [
-    "docs/getting-started/standalone.md",
-    [
-      "aw create feature/FEAT-1234/docs --base feature/FEAT-1234",
-      "invocation-only",
-      "does not load root or repository base configuration",
-      "rejects `--repo-base`",
-      "current `HEAD`",
-      "local branch first and then `origin/<branch>`",
-    ],
-  ],
 
   [
     "public/commands/create.md",
@@ -191,10 +180,6 @@ const requirements = new Map<string, string[]>([
   [
     "public/commands/doctor.md",
     ["`REPOSITORY_CONFIGURED_BASE_BEHIND`", "`REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`"],
-  ],
-  [
-    "public/getting-started/standalone.md",
-    ["--base feature/FEAT-1234", "invocation-only", "rejects `--repo-base`"],
   ],
 
   [

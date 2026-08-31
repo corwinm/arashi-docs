@@ -15,16 +15,10 @@ const kittyWorkflowRequirements = [
   "`aw remove` does not close Kitty windows or sessions",
   "Close stale Kitty windows manually",
   "no `--kitty` flag",
-  "does not add Kitty to persistent Arashi launch configuration",
+  "not added to persistent launch configuration",
   "`LAUNCH_FAILED`",
   "does not fall back",
-  "created worktrees remain available",
-  "cross-process identity lock",
-  "10 seconds",
-  "live owner",
-  "dead owner",
-  "30 seconds",
-  "ownership-safe release"
+  "created worktrees remain available"
 ];
 
 const requirements = new Map<string, string[]>([
