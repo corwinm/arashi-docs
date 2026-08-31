@@ -3,12 +3,11 @@ import path from "node:path";
 
 const sourceRequirements = new Map<string, string[]>([
   [
-    "docs/getting-started/index.md",
+    "docs/getting-started/workspace.md",
     [
       ".git/info/exclude",
       "--ignore-scope tracked",
       "--ignore-scope none",
-      "--zero-config",
       "In non-bare repositories, `init` keeps the managed `reposDir` and `worktreesDir` out of Git status",
       "Non-bare workspaces keep managed worktrees inside the workspace by default, while bare workspaces place them alongside the bare repository.",
       "[init command reference](/commands/init/)"
@@ -57,7 +56,7 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   [
-    "public/getting-started.md",
+    "public/getting-started/workspace.md",
     [
       ".git/info/exclude",
       "--ignore-scope tracked",

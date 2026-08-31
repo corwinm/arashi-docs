@@ -14,6 +14,7 @@ Use these conventions for all pages under `docs/`.
 - Use active voice and short paragraphs.
 - Prefer concrete command examples with expected context.
 - Keep terminology consistent: use "documentation site" for `arashi-docs`.
+- Keep workflow pages task-oriented; move exhaustive contracts to Reference or Commands.
 
 ## Formatting Rules
 

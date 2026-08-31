@@ -157,10 +157,10 @@ const commandSurfaces = [
 const discoveryRequirements = new Map<string, RegExp[]>([
   ["docs/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
 
-  ["docs/workflows/config.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
+  ["docs/reference/configuration.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
   ["public/commands/index.md", [/`configure`/i, /\/commands\/configure\//i]],
 
-  ["public/workflows/config.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
+  ["public/reference/configuration.md", [/aw configure/i, /\.arashi\/config\.json/i, /aw doctor/i]],
 ]);
 
 const root = path.resolve(process.cwd());

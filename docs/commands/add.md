@@ -71,7 +71,7 @@ Do not clone the child twice manually—the active child is a worktree backed by
 
 ## Notes
 
-- `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/) for the mode boundary.
+- `add` requires configured mode because it persists child repositories. In standalone mode, run ordinary `aw init` to upgrade; see the [Use Arashi in One Repository](/getting-started/standalone/) for the mode boundary.
 - Run `aw init` first so workspace config exists.
 - Setup-script detection uses the default-branch canonical clone and reports the setup path separately from the active worktree path.
 - Arashi changes only its owned ignore block and never writes global Git configuration.
@@ -86,4 +86,4 @@ Do not clone the child twice manually—the active child is a worktree backed by
 
 - [init](/commands/init/)
 - [create](/commands/create/)
-- [Config workflow](/workflows/config/)
+- [Configuration reference](/reference/configuration/)

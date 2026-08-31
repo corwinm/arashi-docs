@@ -83,7 +83,7 @@ aw init --zero-config --dry-run --json
 - If `init` is run outside a Git repository without an interactive terminal, it exits with guidance instead of prompting.
 - JSON mode does not prompt; provide explicit options when running initialization from automation.
 - `init` creates `.arashi/config.json` and inert lifecycle examples under `.arashi/hooks/`. Activate one example at a time: on POSIX, `install -m 755 <chosen>.sh.example <chosen>.sh` creates the active executable; on native Windows, copy one matching `.ps1.example`, `.cmd.example`, or `.bat.example` to the same filename without `.example`.
-- POSIX setup guidance uses `.arashi/setup.sh.example`; activate it with `install -m 755 .arashi/setup.sh.example .arashi/setup.sh`. Setup uses its documented cwd rather than lifecycle variables. No native Windows setup example is introduced because setup discovery does not support it. See the [Hooks workflow](/workflows/hooks/).
+- POSIX setup guidance uses `.arashi/setup.sh.example`; activate it with `install -m 755 .arashi/setup.sh.example .arashi/setup.sh`. Setup uses its documented cwd rather than lifecycle variables. No native Windows setup example is introduced because setup discovery does not support it. See the [Lifecycle Hooks reference](/reference/hooks/).
 - Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.
 - With the bare default, Arashi namespaces linked worktrees beside the source: `/projects/example.git` and branch `feature/auth` produce `/projects/example/feature/auth` rather than checked-out files inside the bare Git directory.
 - An explicit `--worktrees-dir` takes precedence in either repository type. New and forced initialization normalizes the selected value, which is persisted as `worktreesDir` in `.arashi/config.json`; later commands use that configured value instead of re-inferring the repository type.
@@ -102,10 +102,10 @@ aw init --zero-config --dry-run --json
 - Prefer ordinary `aw init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
 - `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It is an ad hoc path for otherwise-unconfigured projects and never writes tracked or global ignore state, `.arashi/`, hooks, or config.
 - Zero-config mode accepts `--dry-run`, `--verbose`, and `--json`; it rejects configured-init options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` before mutation.
-- Use the [Standalone Repository workflow](/workflows/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
+- Use the [Use Arashi in One Repository](/getting-started/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
 
 ## Related Commands
 
 - [add](/commands/add/)
 - [create](/commands/create/)
-- [Config workflow](/workflows/config/)
+- [Configuration reference](/reference/configuration/)

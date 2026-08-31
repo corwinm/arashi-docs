@@ -9,8 +9,12 @@ sidebar:
 ## Section Placement
 
 - Put onboarding material in `/getting-started/`.
+- Put task-oriented development and environment-integration guides in `/workflows/`.
+- Put detailed configuration and behavior contracts in `/reference/`.
 - Put command documentation in `/commands/`.
 - Put authoring workflow and governance content in `/contributing/`.
+
+Workflow pages should carry a user outcome from a clear starting state to a verifiable result. Link to Reference or Commands for complete option matrices, schemas, precedence rules, and uncommon edge cases.
 
 ## Ordering Rules
 
@@ -25,5 +29,6 @@ sidebar:
 
 ## Change Control
 
-- Any sidebar structure change must update `astro.config.mjs` and at least one cross-linking index page.
+- Any sidebar structure change must update `astro.config.mjs` and the affected cross-linking index pages.
+- Preserve public routes with redirects when moving an existing page.
 - Navigation changes require validation with [Review Checklist](/contributing/review-checklist/).

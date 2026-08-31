@@ -53,9 +53,9 @@ const createContract: Requirement[] = [
 
 const combinedContract = [...configurationContract, ...createContract];
 const surfaces = new Map<string, Requirement[]>([
-  ["docs/workflows/config.md", conciseConfigurationContract],
+  ["docs/reference/configuration.md", conciseConfigurationContract],
   ["docs/commands/create.md", createContract],
-  ["public/workflows/config.md", conciseConfigurationContract],
+  ["public/reference/configuration.md", conciseConfigurationContract],
   ["public/commands/create.md", createContract],
   ["public/llms.txt", combinedContract],
   ["public/llms-full.txt", [...conciseConfigurationContract, ...createContract]],

@@ -1,13 +1,13 @@
 ---
-title: Agents and Automation
-description: Keep agent work in the right repository and automate Arashi safely.
+title: Work with Coding Agents
+description: Keep agent-assisted implementation, coordination, validation, and handoffs in the right repositories.
 draft: false
 sidebar:
   hidden: false
   order: 4
 ---
 
-Use this guide when an agent, script, or CI job works inside an Arashi meta-repository.
+Use this guide when a coding agent works inside an Arashi meta-repository.
 
 ## Quick start
 
@@ -68,42 +68,6 @@ aw handoff \
 
 Report checks as validation only after they have actually run. Put pending or unverified work under `--todo` or `--risk`.
 
-## Automation and JSON
-
-Use `--json` (or `-j`) when an agent, script, or CI job needs to parse command output.
-
-- stdout contains exactly one JSON document followed by a newline.
-- Human progress, tables, colors, spinners, and prompts stay off stdout.
-- Check both the process exit status and the envelope's `ok` field.
-- Branch on `error.code`, not the human-readable `message`.
-- Read the fields you need and ignore unknown fields for forward compatibility.
-- Pass explicit selectors and non-interactive options when a command would otherwise prompt, switch shells, or launch another application.
-- Use the relevant [command reference](/commands/) for command-specific `data`, warnings, errors, and JSON support.
-
-A successful envelope has this common shape:
-
-```json
-{
-  "ok": true,
-  "command": "status",
-  "schemaVersion": 1,
-  "data": {},
-  "warnings": []
-}
-```
-
-Failures use `ok: false` with a structured `error` object. stderr remains available for child-command diagnostics and unexpected runtime failures; do not parse human prose from stderr as an API.
-
-Start automation with safe inspection commands:
-
-```bash
-aw doctor --json
-aw status --json
-aw list --json
-```
-
-Then use targeted commands such as `aw exec --only arashi-docs --json -- pnpm validate`. Interactive-only flows return a structured unsupported-mode error instead of prompting.
-
 ## Specifications are optional
 
 A spec framework such as OpenSpec can keep proposals and tasks in the meta-repository while implementation stays in child repositories. The important contract is repository ownership, not a particular planning tool.
@@ -112,8 +76,9 @@ A spec framework such as OpenSpec can keep proposals and tasks in the meta-repos
 
 - [Commands](/commands/)
 - [Workflows](/workflows/)
-- [Config](/workflows/config/)
-- [Hooks](/workflows/hooks/)
+- [Scripts and CI](/workflows/automation/)
+- [Config](/reference/configuration/)
+- [Hooks](/reference/hooks/)
 - [Curated agent entrypoint](/llms.txt)
 - [Full Markdown export](/llms-full.txt)
 - [Contributing](/contributing/)

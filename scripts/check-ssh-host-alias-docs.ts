@@ -67,7 +67,7 @@ const requirements = new Map<string, string[]>([
     [
       "Source: https://arashi.haphazard.dev/commands/add/",
       "Source: https://arashi.haphazard.dev/commands/clone/",
-      "Source: https://arashi.haphazard.dev/workflows/config/",
+      "Source: https://arashi.haphazard.dev/reference/configuration/",
       "`git@work-github:acme/api.git`",
       "`work-github:acme/api.git`",
       "`ssh://git@work-github/acme/api.git`",

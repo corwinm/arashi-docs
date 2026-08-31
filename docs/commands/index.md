@@ -34,23 +34,12 @@ Use this section when you want command-level guidance.
 - [sync](/commands/sync/) - align child repos to parent branch.
 - [setup](/commands/setup/) - run setup scripts across repos.
 
-## Typical Flow
-
-```bash
-aw init
-aw add git@github.com:your-org/frontend.git
-aw create feature-branch-name
-aw doctor
-aw status
-aw exec -- git status --short
-aw handoff --link https://github.com/your-org/project/issues/123
-aw switch
-```
-
 ## Related
 
-- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)
-- [Getting Started](/getting-started/)
+- [Start, Resume, and Finish a Change](/workflows/change-lifecycle/)
+- [Scripts and CI](/workflows/automation/)
+- [Quickstart](/getting-started/)
 - [Workflows](/workflows/)
+- [Reference](/reference/)
 - [Contributing](/contributing/)
-- [Standalone Repository](/workflows/standalone/)
+- [Use Arashi in One Repository](/getting-started/standalone/)

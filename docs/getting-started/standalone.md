@@ -1,10 +1,10 @@
 ---
-title: Standalone Repository Workflow
-description: Use Arashi ad hoc in a Git project that has not adopted Arashi configuration.
+title: Use Arashi in One Repository
+description: Adopt Arashi in a Git project that does not use a configured multi-repository workspace.
 draft: false
 sidebar:
   hidden: false
-  order: 20
+  order: 4
 ---
 
 Arashi works best with configuration whenever a project can adopt it—even for one repository—because configured mode enables repository and workspace hooks, persisted defaults, custom paths, and coordination. Standalone mode lets you use Arashi ad hoc in any existing non-bare Git project that has not adopted Arashi. The root `.worktrees/` directory is the discovery convention; Arashi keeps the implicit workspace model in memory and does not create `.arashi/` or `.arashi/config.json`.
@@ -82,7 +82,7 @@ Repository filters and multi-repository selection have no meaning here. Standalo
 
 Standalone create/remove lifecycles run platform-native repository-targeted and shared **user-global** hooks under `~/.arashi/hooks/`, targeted before shared. Targeted lookup uses the resolved main-root basename even when invocation begins in a linked worktree. Configless repository-local and workspace hooks remain inactive; use configured mode when those scopes are required. Hook cwd is the resolved standalone main root, create follows the documented rollback boundary, and remove preserves pre-abort/post-finalization outcomes.
 
-The same input matrix applies in standalone mode: a human terminal provides `ARASHI_HOOK_INPUT=tty`, `--no-hook-input` or JSON provides `disabled`, and non-TTY automation provides `unavailable`. Disabled and unavailable hooks receive immediate EOF; JSON remains authoritative even with terminal stdin. See the [Hooks workflow](/workflows/hooks/) for native prompt examples, attribution, security, timeout, and failure details.
+The same input matrix applies in standalone mode: a human terminal provides `ARASHI_HOOK_INPUT=tty`, `--no-hook-input` or JSON provides `disabled`, and non-TTY automation provides `unavailable`. Disabled and unavailable hooks receive immediate EOF; JSON remains authoritative even with terminal stdin. See the [Lifecycle Hooks reference](/reference/hooks/) for native prompt examples, attribution, security, timeout, and failure details.
 
 ## Upgrade to Configured Mode
 

@@ -11,7 +11,7 @@ import path from "node:path";
 
 type Requirement = { path: string; text: string[] };
 
-const canonicalWorkflow = "docs/workflows/launch-disposition.md";
+const canonicalWorkflow = "docs/reference/launching.md";
 const canonicalRequirements = [
   "new terminal window or an independent managed session",
   "`--tab` is a CLI-only, one-invocation request",
@@ -75,7 +75,7 @@ const sourceRequirements: Requirement[] = [
       "`--tab` alone uses automatic launcher resolution",
       "conflicts only with explicit `--cd`",
       "canonical `--launch` and `--ignore-configured-launcher` remain compatible",
-      "[launch disposition workflow](/workflows/launch-disposition/)",
+      "[Launching reference](/reference/launching/)",
     ],
   },
   {
@@ -86,7 +86,7 @@ const sourceRequirements: Requirement[] = [
       "implies launch and switch",
       "wins over `--no-launch` and `--no-switch`",
       "bypasses configured generic or editor-scoped launch defaults",
-      "[launch disposition workflow](/workflows/launch-disposition/)",
+      "[Launching reference](/reference/launching/)",
     ],
   },
 
@@ -95,7 +95,7 @@ const sourceRequirements: Requirement[] = [
     text: [
       "Ghostty containing tmux",
       "tmux window",
-      "[launch disposition workflow](/workflows/launch-disposition/)",
+      "[Launching reference](/reference/launching/)",
     ],
   },
   {
@@ -104,7 +104,7 @@ const sourceRequirements: Requirement[] = [
       "Ghostty containing Herdr",
       "active Herdr workspace",
       "Herdr tab",
-      "[launch disposition workflow](/workflows/launch-disposition/)",
+      "[Launching reference](/reference/launching/)",
     ],
   },
   {
@@ -112,7 +112,7 @@ const sourceRequirements: Requirement[] = [
     text: [
       "workspace / vertical tab",
       "active cmux session",
-      "[launch disposition workflow](/workflows/launch-disposition/)",
+      "[Launching reference](/reference/launching/)",
     ],
   },
   {
@@ -120,12 +120,12 @@ const sourceRequirements: Requirement[] = [
     text: [
       "managed Kitty",
       "`--tab`",
-      "[launch disposition workflow](/workflows/launch-disposition/)",
+      "[Launching reference](/reference/launching/)",
     ],
   },
   {
-    path: "docs/workflows/index.md",
-    text: ["[Launch disposition](/workflows/launch-disposition/)"],
+    path: "docs/reference/index.md",
+    text: ["[Launching, Tabs, and Precedence](/reference/launching/)"],
   },
 ];
 
@@ -141,14 +141,14 @@ const generatedRequirements: Requirement[] = [
       "`--tab` is CLI-only",
       "bypasses configured switch and create launch defaults",
       "explicit launcher selectors remain authoritative",
-      "[Launch disposition workflow]",
-      "https://arashi.haphazard.dev/workflows/launch-disposition.md",
+      "[Launch reference Markdown]",
+      "https://arashi.haphazard.dev/reference/launching.md",
     ],
   },
   {
     path: "public/llms-full.txt",
     text: [
-      "Source: https://arashi.haphazard.dev/workflows/launch-disposition/",
+      "Source: https://arashi.haphazard.dev/reference/launching/",
       ...canonicalRequirements,
     ],
   },

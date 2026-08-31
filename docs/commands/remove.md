@@ -92,11 +92,11 @@ Behavior:
 - Any failing `post-remove` hook contributes to a nonzero command result without collapsing earlier timeout or removal failures.
 - Per-target scalar context comes only from the current repository. Command-wide cleanup parses `ARASHI_REMOVE_TARGETS_JSON`; comma-separated compatibility aggregates are lossy.
 
-See the [Hooks workflow](/workflows/hooks/) for discovery paths, structured target shape, cwd, timeout, compatibility, and outcome contracts.
+See the [Lifecycle Hooks reference](/reference/hooks/) for discovery paths, structured target shape, cwd, timeout, compatibility, and outcome contracts.
 
 ## Related Commands
 
-`remove` supports standalone repository worktrees and applicable user-global hooks, but configless local `.arashi/hooks` are inactive. See the [Standalone Repository workflow](/workflows/standalone/).
+`remove` supports standalone repository worktrees and applicable user-global hooks, but configless local `.arashi/hooks` are inactive. See the [Use Arashi in One Repository](/getting-started/standalone/).
 
 - [list](/commands/list/)
 - [create](/commands/create/)

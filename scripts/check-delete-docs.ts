@@ -135,12 +135,12 @@ const owningSurfaces = new Map<string, Requirement[]>([
 const discoveryRequirements = new Map<string, RegExp[]>([
   ["docs/commands/index.md", [/\[delete\]\(\/commands\/delete\/\)/i, /delete[^\n]{0,100}configured repositor/i]],
   ["public/commands/index.md", [/\[delete\]\(\/commands\/delete\/\)/i, /delete[^\n]{0,100}configured repositor/i]],
-  ["docs/workflows/index.md", [/\[delete\]\(\/commands\/delete\/\)/i, /remove[^\n]{0,100}branch worktrees/i]],
-  ["public/workflows/index.md", [/\[delete\]\(\/commands\/delete\/\)/i, /remove[^\n]{0,100}branch worktrees/i]],
+  ["docs/workflows/change-lifecycle.md", [/\[`delete`\]\(\/commands\/delete\/\)/i, /remove[^\n]{0,100}branch worktrees/i]],
+  ["public/workflows/change-lifecycle.md", [/\[`delete`\]\(\/commands\/delete\/\)/i, /remove[^\n]{0,100}branch worktrees/i]],
   ["docs/commands/remove.md", [/delete[^.!?]{0,120}configured repositor/i, /remove[^.!?]{0,100}branch worktrees/i]],
   ["public/commands/remove.md", [/delete[^.!?]{0,120}configured repositor/i, /remove[^.!?]{0,100}branch worktrees/i]],
-  ["docs/workflows/hooks.md", [/delete[\s\S]{0,260}repository-targeted[\s\S]{0,160}hook/i, /shared[^.!?]{0,80}user-global[^.!?]{0,80}preserv/i]],
-  ["public/workflows/hooks.md", [/delete[\s\S]{0,260}repository-targeted[\s\S]{0,160}hook/i, /shared[^.!?]{0,80}user-global[^.!?]{0,80}preserv/i]],
+  ["docs/reference/hooks.md", [/delete[\s\S]{0,260}repository-targeted[\s\S]{0,160}hook/i, /shared[^.!?]{0,80}user-global[^.!?]{0,80}preserv/i]],
+  ["public/reference/hooks.md", [/delete[\s\S]{0,260}repository-targeted[\s\S]{0,160}hook/i, /shared[^.!?]{0,80}user-global[^.!?]{0,80}preserv/i]],
 ]);
 const generatedFreshnessPaths = [...new Set([
   ...owningSurfaces.keys(),

@@ -181,17 +181,17 @@ For each selected configured child repository, the construction order is `pre-cr
 
 Missing sources are skipped with a visible non-fatal outcome. Arashi never overwrites an existing destination, and every destination must remain inside the new worktree; unsafe paths or an existing destination fail that repository's materialization. A native `symlink` fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback. Materialization does not fall back to the caller's checkout or another source repository: it always reads from the Git-primary child checkout.
 
-`aw create --dry-run` previews the ordered materialization plan in declaration order before any worktree or file mutation. See [Copy or share worktree files](/workflows/config/#copy-or-share-worktree-files) to choose between isolated copies and intentionally shared symlinks.
+`aw create --dry-run` previews the ordered materialization plan in declaration order before any worktree or file mutation. See [Copy or share worktree files](/reference/configuration/#copy-or-share-worktree-files) to choose between isolated copies and intentionally shared symlinks.
 
 ## Notes
 
-- In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [Standalone Repository workflow](/workflows/standalone/).
+- In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [Use Arashi in One Repository](/getting-started/standalone/).
 - `create` validates branch names and repository readiness.
 - Configured create runs workspace `pre-create` once before branch/worktree mutation, then each repository's retained-name `pre-create.<repo>` after Git worktree creation and before configured file materialization/setup, followed by `post-create.<repo>`. Workspace `post-create` runs once after coordinated Git creation and before move-changes or switch/launch handling. Repository hooks run in the new child worktree; workspace hooks run at the workspace root.
-- Any create-hook validation failure, timeout, or nonzero exit fails create and enters the owned Git rollback boundary. Configured-create human results summarize the complete hook outcome ledger with status counts and per-failure details; JSON results preserve every outcome record. Rollback warnings remain visible in the applicable result. See the [Hooks workflow](/workflows/hooks/) for scope, environment, platform, timeout, and outcome details.
+- Any create-hook validation failure, timeout, or nonzero exit fails create and enters the owned Git rollback boundary. Configured-create human results summarize the complete hook outcome ledger with status counts and per-failure details; JSON results preserve every outcome record. Rollback warnings remain visible in the applicable result. See the [Lifecycle Hooks reference](/reference/hooks/) for scope, environment, platform, timeout, and outcome details.
 - Inline configured hooks use the same lifecycle timing as native files. Results identify them with `sourceKind: "inline-config"`, `sourceOwnerKind`, and `sourceOwnerName`; outcomes, previews, diagnostics, and logs do not reveal snippet text.
 - A normal terminal run exposes `ARASHI_HOOK_INPUT=tty`; `--no-hook-input` or JSON uses `disabled`, and non-TTY automation uses `unavailable`. Disabled and unavailable hooks receive immediate EOF. `--no-hook-input` does not skip hooks; it is distinct from `--no-hooks`, which skips hook execution, and `--interactive`, which continues to control configured repository selection. The input opt-out is invocation only and is not persisted.
-- `--no-hooks` is create-only; `--no-hook-input` is shared by create and remove. Configured-create dry-run performs no hook discovery, returns an empty hook ledger, and has no hook preview. See the [Hooks workflow](/workflows/hooks/#inline-configured-hooks) for choosing inline configuration or native files.
+- `--no-hooks` is create-only; `--no-hook-input` is shared by create and remove. Configured-create dry-run performs no hook discovery, returns an empty hook ledger, and has no hook preview. See the [Lifecycle Hooks reference](/reference/hooks/#inline-configured-hooks) for choosing inline configuration or native files.
 - On other failures, coordinated operations can roll back to keep repos consistent.
 - Reconciliation honors existing effective tracked, repository-local, or global rules before using the clone's stored scope or repository-local default. Scope `none` creates no ignore-file changes and warns for safe paths that remain unignored.
 - `--dry-run` previews managed ignore scope, effective sources, planned rules, warnings, and unsafe skips without changing ignore files or clone-local preference state.
@@ -202,11 +202,11 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`aw clone`](/commands/clone/) from inside that worktree.
 - Configure one post-create choice in `.arashi/config.json` at `defaults.create.launch`: `none | auto | sesh | herdr`. The independent `switch` boolean can still select the new primary worktree without launching; every launch mode except `none` selects it too, so launch implies switch.
 - `--tmux` is a per-invocation-only override and is not persisted in the generic or editor-scoped create configuration. Configured `auto` can still choose tmux contextually when launch runs inside tmux.
-- `--tab` is a CLI-only, one-invocation disposition. It implies launch and switch, bypasses configured generic or editor-scoped launch defaults, and wins over `--no-launch` and `--no-switch`; automatic contextual launcher resolution applies unless `--tmux`, `--sesh`, or `--herdr` explicitly chooses the adapter. Knowable unsupported requests fail before mutation, while runtime failures after creation preserve the worktrees and never fall back to a window. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete matrix and JSON exit behavior.
+- `--tab` is a CLI-only, one-invocation disposition. It implies launch and switch, bypasses configured generic or editor-scoped launch defaults, and wins over `--no-launch` and `--no-switch`; automatic contextual launcher resolution applies unless `--tmux`, `--sesh`, or `--herdr` explicitly chooses the adapter. Knowable unsupported requests fail before mutation, while runtime failures after creation preserve the worktrees and never fall back to a window. See the [Launching reference](/reference/launching/) for the complete matrix and JSON exit behavior.
 - Explicit `--tmux` takes precedence over generic and editor-scoped create defaults and automatic Herdr, cmux, or IDE detection. `--tmux` + `--no-launch` still implies post-create launch, and `--tmux` + `--no-switch` still selects and launches the primary created worktree.
 - `--tmux` conflicts with `--sesh` and `--herdr`. Arashi reports the complete explicit-launcher conflict set before repository mutation.
 - Launch precedence is deliberate. Otherwise `--sesh` or `--herdr` selects that explicit launcher even beside `--launch` or `--no-launch`; `--launch` selects `auto`; `--no-launch` selects `none`; then configured launch applies; an absent choice is built-in `none`.
-- Terminal and editor-hosted defaults are isolated. See the [Config workflow](/workflows/config/) for matching editor scope and supported default values.
+- Terminal and editor-hosted defaults are isolated. See the [Configuration reference](/reference/configuration/) for matching editor scope and supported default values.
 - Explicit tmux requires a non-empty `TMUX` value after trimming. A missing or blank value is an actionable usage error before creating worktrees or running create hooks, so no create rollback is needed.
 - After successful preflight, Arashi invokes `tmux new-window -c <primary-worktree-path>` without a shell. Paths containing spaces, quotes, or shell-significant characters remain the exact single argument after `tmux new-window -c`.
 - If `tmux new-window` fails after creation, Arashi reports the launch failure, preserves the successfully created worktrees, and does not fall back to another launcher or roll back Git creation.
@@ -238,8 +238,8 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 
 - [status](/commands/status/)
 - [remove](/commands/remove/)
-- [Config workflow](/workflows/config/)
+- [Configuration reference](/reference/configuration/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
 - [Kitty workflow guide](/workflows/kitty/)
-- [launch disposition workflow](/workflows/launch-disposition/)
+- [Launching reference](/reference/launching/)

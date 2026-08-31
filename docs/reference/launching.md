@@ -1,10 +1,10 @@
 ---
-title: Window and Tab Launching
+title: Launching, Tabs, and Precedence
 description: Choose Arashi's default independent launch or request a tab for one switch or create invocation.
 draft: false
 sidebar:
   hidden: false
-  order: 6
+  order: 3
 ---
 
 Use this guide when you need to control whether Arashi opens a worktree in its normal independent context or as a tab in the current supported terminal or managed session.
@@ -142,4 +142,4 @@ Check nested managed-context markers first. Ghostty containing tmux must select 
 - [Herdr workflow](/workflows/herdr/)
 - [cmux workflow](/workflows/cmux/)
 - [Kitty workflow](/workflows/kitty/)
-- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)
+- [Scripts and CI](/workflows/automation/)

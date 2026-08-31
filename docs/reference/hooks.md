@@ -1,10 +1,10 @@
 ---
-title: Hooks
-description: Automate setup and cleanup with scope-correct create and remove lifecycle hooks.
+title: Lifecycle Hooks
+description: Reference for lifecycle timing, discovery, input, environment variables, failures, and platform behavior.
 draft: false
 sidebar:
   hidden: false
-  order: 3
+  order: 2
 ---
 
 Use lifecycle hooks for trusted setup and cleanup around `aw create` and `aw remove`. Use short reviewable inline commands; put substantial or reusable logic in native files. Standalone hooks remain native files only, as do user-global hooks.
@@ -286,7 +286,7 @@ Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` ne
 - [create command](/commands/create/)
 - [remove command](/commands/remove/)
 - [init command](/commands/init/)
-- [Config workflow guide](/workflows/config/)
-- [Standalone workflow guide](/workflows/standalone/)
+- [Configuration reference](/reference/configuration/)
+- [Use Arashi in One Repository](/getting-started/standalone/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [Full hooks reference](https://github.com/corwinm/arashi/blob/main/docs/hooks.md)

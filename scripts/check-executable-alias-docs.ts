@@ -121,12 +121,12 @@ function checkRepository(root: string): string[] {
     .join("\n");
   const noteCount = authored.split(compatibilityNote).length - 1;
   if (noteCount !== 1) errors.push(`docs must contain exactly one compatibility note; found ${noteCount}`);
-  const gettingStarted = readFileSync(path.join(docsRoot, "getting-started/index.md"), "utf8");
+  const gettingStarted = readFileSync(path.join(docsRoot, "getting-started/installation.md"), "utf8");
   if (!gettingStarted.includes(compatibilityNote)) {
-    errors.push("docs/getting-started/index.md must own the concise compatibility note");
+    errors.push("docs/getting-started/installation.md must own the concise compatibility note");
   }
 
-  for (const generated of ["getting-started.md", "llms.txt", "llms-full.txt"]) {
+  for (const generated of ["getting-started/installation.md", "llms.txt", "llms-full.txt"]) {
     const content = readFileSync(path.join(publicRoot, generated), "utf8");
     const count = content.split(compatibilityNote).length - 1;
     if (count !== 1) errors.push(`public/${generated} must contain the compatibility note exactly once; found ${count}`);
@@ -136,7 +136,7 @@ function checkRepository(root: string): string[] {
 }
 
 const distributionRequirements = new Map<string, Array<[text: string, diagnostic: string]>>([
-  ["docs/getting-started/index.md", [
+  ["docs/getting-started/installation.md", [
     ["macOS/Linux installer provides both `arashi` and `aw`", "macOS/Linux dual-name installation"],
     ["PowerShell installer provides both `arashi` and `aw`", "PowerShell dual-name installation"],
     ["npm installs provide both `arashi` and `aw`", "npm dual-name installation"],
@@ -155,7 +155,7 @@ const distributionRequirements = new Map<string, Array<[text: string, diagnostic
   ["docs/commands/update.md", [
     ["refreshes both `arashi` and `aw`", "dual-name update"],
   ]],
-  ["public/getting-started.md", [
+  ["public/getting-started/installation.md", [
     ["macOS/Linux installer provides both `arashi` and `aw`", "macOS/Linux dual-name installation"],
     ["PowerShell installer provides both `arashi` and `aw`", "PowerShell dual-name installation"],
     ["npm installs provide both `arashi` and `aw`", "npm dual-name installation"],
@@ -199,11 +199,11 @@ function checkDistributionSemantics(root: string, errors: string[]): void {
     }
   }
 
-  for (const relativePath of ["docs/getting-started/index.md", "public/getting-started.md", "public/llms-full.txt"]) {
+  for (const relativePath of ["docs/getting-started/installation.md", "public/getting-started/installation.md", "public/llms-full.txt"]) {
     const content = readFileSync(path.join(root, relativePath), "utf8");
-    const heading = "### Manual Windows fallback";
+    const heading = "## Manual Windows fallback";
     const sectionStart = content.indexOf(heading);
-    const nextHeading = content.indexOf("\n### ", sectionStart + heading.length);
+    const nextHeading = content.indexOf("\n## ", sectionStart + heading.length);
     const section = sectionStart === -1 ? "" : content.slice(sectionStart, nextHeading === -1 ? undefined : nextHeading);
     const listedAssets = [...section.matchAll(/^- `([^`]+)`$/gm)]
       .map((match) => match[1])
@@ -243,20 +243,20 @@ function runDistributionControlledMismatchTests(sourceRoot: string): string[] {
     writeFileSync(fixturePath, content.replace(oldText, newText));
   };
   const cases = [
-    ["POSIX dual-name install", "docs/getting-started/index.md", "macOS/Linux installer provides both `arashi` and `aw`", "macOS/Linux installer provides only `aw`", "macOS/Linux dual-name installation"],
-    ["PowerShell dual-name install", "docs/getting-started/index.md", "PowerShell installer provides both `arashi` and `aw`", "PowerShell installer provides only `aw`", "PowerShell dual-name installation"],
-    ["npm dual-name install", "docs/getting-started/index.md", "npm installs provide both `arashi` and `aw`", "npm installs provide only `aw`", "npm dual-name installation"],
-    ["effective PATH collision", "docs/getting-started/index.md", "on PATH or at the destination", "at the destination", "effective PATH and destination collisions"],
-    ["destination collision", "docs/getting-started/index.md", "on PATH or at the destination", "on PATH", "effective PATH and destination collisions"],
-    ["manual wrapper ownership", "docs/getting-started/index.md", "no direct-installer ownership ledger", "an automatically adopted installer record", "manual wrapper ownership and migration"],
-    ["manual wrapper migration", "docs/getting-started/index.md", "deliberately move or remove the complete manual payload", "leave the complete manual payload in place", "manual wrapper ownership and migration"],
-    ["Windows payload", "docs/getting-started/index.md", "- `aw.bat`", "- `aw.cmd`", "exact seven-file manual Windows payload"],
+    ["POSIX dual-name install", "docs/getting-started/installation.md", "macOS/Linux installer provides both `arashi` and `aw`", "macOS/Linux installer provides only `aw`", "macOS/Linux dual-name installation"],
+    ["PowerShell dual-name install", "docs/getting-started/installation.md", "PowerShell installer provides both `arashi` and `aw`", "PowerShell installer provides only `aw`", "PowerShell dual-name installation"],
+    ["npm dual-name install", "docs/getting-started/installation.md", "npm installs provide both `arashi` and `aw`", "npm installs provide only `aw`", "npm dual-name installation"],
+    ["effective PATH collision", "docs/getting-started/installation.md", "on PATH or at the destination", "at the destination", "effective PATH and destination collisions"],
+    ["destination collision", "docs/getting-started/installation.md", "on PATH or at the destination", "on PATH", "effective PATH and destination collisions"],
+    ["manual wrapper ownership", "docs/getting-started/installation.md", "no direct-installer ownership ledger", "an automatically adopted installer record", "manual wrapper ownership and migration"],
+    ["manual wrapper migration", "docs/getting-started/installation.md", "deliberately move or remove the complete manual payload", "leave the complete manual payload in place", "manual wrapper ownership and migration"],
+    ["Windows payload", "docs/getting-started/installation.md", "- `aw.bat`", "- `aw.cmd`", "exact seven-file manual Windows payload"],
     ["shell managed block", "docs/commands/shell.md", "both activation lines in one managed block", "one activation line", "managed shell integration"],
     ["shell dual names", "docs/commands/shell.md", "native completion for both executable names", "native completion for aw", "dual-name shell integration"],
     ["shell collision", "docs/commands/shell.md", "unrelated `aw` alias or function", "unrelated executable", "shell namespace collision"],
     ["completion dual names", "docs/commands/completion.md", "registers both `arashi` and `aw`", "registers only `aw`", "dual-name completion"],
     ["update dual names", "docs/commands/update.md", "refreshes both `arashi` and `aw`", "refreshes only `aw`", "dual-name update"],
-    ["generated Markdown drift", "public/getting-started.md", "PowerShell installer provides both `arashi` and `aw`", "PowerShell installer provides only `aw`", "public/getting-started.md"],
+    ["generated Markdown drift", "public/getting-started/installation.md", "PowerShell installer provides both `arashi` and `aw`", "PowerShell installer provides only `aw`", "public/getting-started/installation.md"],
     ["generated shell drift", "public/commands/shell.md", "native completion for both executable names", "native completion for aw", "public/commands/shell.md"],
     ["generated completion drift", "public/commands/completion.md", "registers both `arashi` and `aw`", "registers only `aw`", "public/commands/completion.md"],
     ["generated update drift", "public/commands/update.md", "refreshes both `arashi` and `aw`", "refreshes only `aw`", "public/commands/update.md"],

@@ -97,7 +97,7 @@ For implementation work, run the relevant validations first, then pass the comma
 
 ## Related
 
-`handoff` supports standalone mode and reports the main repository, caller worktree, and workspace mode in Markdown or JSON. See the [Standalone Repository workflow](/workflows/standalone/).
+`handoff` supports standalone mode and reports the main repository, caller worktree, and workspace mode in Markdown or JSON. See the [Use Arashi in One Repository](/getting-started/standalone/).
 
 - [status](/commands/status/) for focused repository state inspection.
 - [exec](/commands/exec/) for repeated validation across selected repositories.

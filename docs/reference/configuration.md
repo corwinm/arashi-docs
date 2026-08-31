@@ -1,10 +1,10 @@
 ---
-title: Config
+title: Configuration
 description: Configure workspace layout, repositories, worktree behavior, and command defaults.
 draft: false
 sidebar:
   hidden: false
-  order: 2
+  order: 1
 ---
 
 `aw init` creates `.arashi/config.json`. Commit this file when the workspace configuration should be shared with your team.
@@ -148,11 +148,11 @@ Use `copy` for files that each worktree should edit independently. Use `symlink`
 }
 ```
 
-Entries are repository-relative and appear at the same path in each new worktree. Avoid symlinking `node_modules`; dependencies can differ between branches. Use [lifecycle hooks](/workflows/hooks/) for generated files, conditional setup, or more complex preparation.
+Entries are repository-relative and appear at the same path in each new worktree. Avoid symlinking `node_modules`; dependencies can differ between branches. Use [lifecycle hooks](/reference/hooks/) for generated files, conditional setup, or more complex preparation.
 
 ## Hooks
 
-Short lifecycle commands can live in `hooks.scripts` for the workspace or `repos.<name>.hooks` for one repository. For script files, platform-specific commands, execution order, and timeout settings, see the [Hooks workflow](/workflows/hooks/).
+Short lifecycle commands can live in `hooks.scripts` for the workspace or `repos.<name>.hooks` for one repository. For script files, platform-specific commands, execution order, and timeout settings, see the [Lifecycle Hooks reference](/reference/hooks/).
 
 ## Related references
 

@@ -1,41 +1,35 @@
 ---
 title: Workflows
-description: Choose guidance for hooks, configuration defaults, editor or terminal workflows, and working with agents in an Arashi workspace.
+description: Guides for carrying changes through Arashi and fitting worktrees into your development environment.
 draft: false
 sidebar:
   hidden: false
   order: 1
 ---
 
-Use this section when you want outcome-focused guidance instead of a command-by-command reference. Arashi's primary workflow coordinates worktrees across the repositories in a configured meta-repo.
+Use this section when you want to accomplish a development task rather than look up one command or configuration field.
 
-## Choose a Workflow
+## Manage a change
 
-- [Config](/workflows/config/) for workspace layout, repositories, worktree behavior, and command defaults.
-- [Hooks](/workflows/hooks/) for lifecycle automation around create and remove.
-- [Agents and Automation](/workflows/agents-and-specs/) for implementation boundaries, handoffs, and machine-readable command use.
-- [VS Code](/workflows/vscode/) for editor-first worktree management.
-- [Launch disposition](/workflows/launch-disposition/) for default independent windows/sessions, one-invocation `--tab`, precedence, and terminal support.
-- [tmux and sesh](/workflows/tmux-and-sesh/) for terminal-native switching and session workflows.
-- [Herdr](/workflows/herdr/) for persistent workspace focus/reuse while Arashi retains Git worktree ownership.
-- [cmux](/workflows/cmux/) for automatic workspace creation and focus from cmux-managed terminals.
-- [Kitty](/workflows/kitty/) for automatic exact worktree-window reuse and live Kitty session ownership.
-- [delete](/commands/delete/) for configured dependency deletion; `remove` remains for branch worktrees.
-- [Standalone Repository](/workflows/standalone/) for ad hoc use in a project that has not adopted Arashi configuration.
+- [Start, Resume, and Finish a Change](/workflows/change-lifecycle/) follows the complete day-to-day lifecycle from worktree creation through handoff and cleanup.
+- [Coordinate a Change Across Repositories](/workflows/coordinate-repositories/) explains repository selection, partial coordinated worktrees, validation, and separate Git ownership.
+- [Automate Worktree Setup and Cleanup](/workflows/setup-and-cleanup/) helps you prepare each new worktree and run trusted lifecycle cleanup.
 
-## Recommended Path After `aw init`
+## Work with tools and automation
 
-1. Confirm the repository-local managed ignore default or deliberately select `tracked` or `none` for this clone.
-2. Configure root and repository base branches when create and clone need stable integration ancestry, then set `defaults.create` and `defaults.switch` for launch behavior.
-3. Add lifecycle hooks if you need setup or cleanup automation around `create` and `remove`.
-4. Choose how you want to open worktrees: VS Code, Herdr workspace reuse, automatic cmux or Kitty contexts, terminal-native tmux flows, or `sesh`-driven session switching.
-5. If you work with agents, keep code changes in the affected project repo and shared context in the meta-repo.
+- [Work with Coding Agents](/workflows/agents-and-specs/) keeps implementation, shared context, validation, and handoffs in the right repositories.
+- [Use Arashi from Scripts and CI](/workflows/automation/) covers JSON envelopes, explicit selection, non-interactive execution, and stable error handling.
 
-## Related Commands
+## Integrate your development environment
 
-- [create](/commands/create/)
-- [delete](/commands/delete/)
-- [remove](/commands/remove/)
-- [switch](/commands/switch/)
-- [shell](/commands/shell/)
-- [setup](/commands/setup/)
+Start with [Environment Integrations](/workflows/environment-integrations/) to choose how Arashi should open and reuse worktrees.
+
+- [VS Code, Cursor, and Kiro](/workflows/vscode/)
+- [tmux and sesh](/workflows/tmux-and-sesh/)
+- [Herdr](/workflows/herdr/)
+- [cmux](/workflows/cmux/)
+- [Kitty](/workflows/kitty/)
+
+## Look up exact behavior
+
+Use [Reference](/reference/) for configuration, lifecycle-hook contracts, and launch precedence. Use [Commands](/commands/) for command options, output, errors, and command-specific JSON behavior.

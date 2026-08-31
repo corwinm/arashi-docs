@@ -37,7 +37,7 @@ const requirements = new Map<string, string[]>([
     ],
   ],
   [
-    "docs/workflows/config.md",
+    "docs/reference/configuration.md",
     [
       '"baseBranch": "main"',
       '"meta": {',
@@ -119,7 +119,7 @@ const requirements = new Map<string, string[]>([
     ],
   ],
   [
-    "docs/workflows/standalone.md",
+    "docs/getting-started/standalone.md",
     [
       "aw create feature/FEAT-1234/docs --base feature/FEAT-1234",
       "invocation-only",
@@ -144,7 +144,7 @@ const requirements = new Map<string, string[]>([
     ],
   ],
   [
-    "public/workflows/config.md",
+    "public/reference/configuration.md",
     ["`meta.baseBranch`", "`repos.<name>.baseBranch`"],
   ],
   [
@@ -193,7 +193,7 @@ const requirements = new Map<string, string[]>([
     ["`REPOSITORY_CONFIGURED_BASE_BEHIND`", "`REPOSITORY_CONFIGURED_BASE_UNAVAILABLE`"],
   ],
   [
-    "public/workflows/standalone.md",
+    "public/getting-started/standalone.md",
     ["--base feature/FEAT-1234", "invocation-only", "rejects `--repo-base`"],
   ],
 
@@ -247,8 +247,8 @@ const requirements = new Map<string, string[]>([
     [
       "Source: https://arashi.haphazard.dev/commands/create/",
       "Source: https://arashi.haphazard.dev/commands/clone/",
-      "Source: https://arashi.haphazard.dev/workflows/config/",
-      "Source: https://arashi.haphazard.dev/workflows/standalone/",
+      "Source: https://arashi.haphazard.dev/reference/configuration/",
+      "Source: https://arashi.haphazard.dev/getting-started/standalone/",
 
       "`meta.baseBranch`",
       "`repos.<name>.baseBranch`",

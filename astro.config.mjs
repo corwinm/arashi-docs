@@ -37,7 +37,29 @@ export default defineConfig({
         },
         {
           label: "Workflows",
-          items: [{ autogenerate: { directory: "workflows" } }]
+          items: [
+            { label: "Overview", link: "/workflows/" },
+            { label: "Start, Resume, and Finish a Change", link: "/workflows/change-lifecycle/" },
+            { label: "Coordinate Across Repositories", link: "/workflows/coordinate-repositories/" },
+            { label: "Automate Setup and Cleanup", link: "/workflows/setup-and-cleanup/" },
+            { label: "Work with Coding Agents", link: "/workflows/agents-and-specs/" },
+            { label: "Use Arashi from Scripts and CI", link: "/workflows/automation/" },
+            {
+              label: "Environment Integrations",
+              items: [
+                { label: "Choose an Environment", link: "/workflows/environment-integrations/" },
+                { label: "VS Code, Cursor, and Kiro", link: "/workflows/vscode/" },
+                { label: "tmux and sesh", link: "/workflows/tmux-and-sesh/" },
+                { label: "Herdr", link: "/workflows/herdr/" },
+                { label: "cmux", link: "/workflows/cmux/" },
+                { label: "Kitty", link: "/workflows/kitty/" }
+              ]
+            }
+          ]
+        },
+        {
+          label: "Reference",
+          items: [{ autogenerate: { directory: "reference" } }]
         },
         {
           label: "Commands",

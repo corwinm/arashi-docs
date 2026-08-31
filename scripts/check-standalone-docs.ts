@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const standaloneLink = "/workflows/standalone/";
+const standaloneLink = "/getting-started/standalone/";
 
 const sourceRequirements = new Map<string, string[]>([
   ["astro.config.mjs", ["configured meta-repositories", "ad hoc support"]],
@@ -10,7 +10,7 @@ const sourceRequirements = new Map<string, string[]>([
     [standaloneLink, "configured meta-repositories", "Configured mode is preferred"]
   ],
   [
-    "docs/workflows/standalone.md",
+    "docs/getting-started/standalone.md",
     [
       "aw init --zero-config",
       "works best with configuration",
@@ -28,9 +28,8 @@ const sourceRequirements = new Map<string, string[]>([
   ],
   [
     "docs/getting-started/index.md",
-    [standaloneLink, "aw init --zero-config", "Configured mode remains the better choice"]
+    [standaloneLink, "one repository"]
   ],
-  ["docs/workflows/index.md", [standaloneLink, "Standalone"]],
   ["docs/commands/index.md", [standaloneLink, "standalone"]],
   ["docs/commands/init.md", [standaloneLink, "--zero-config"]],
   ...[
@@ -63,13 +62,13 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/index.md", [standaloneLink, "configured meta-repositories", "run ad hoc"]],
-  ["public/workflows/standalone.md", ["aw init --zero-config", ".worktrees/<branch>"]],
-  ["public/getting-started.md", [standaloneLink, "aw init --zero-config"]],
+  ["public/getting-started/standalone.md", ["aw init --zero-config", ".worktrees/<branch>"]],
+  ["public/getting-started.md", [standaloneLink, "one repository"]],
   ["public/commands.md", [standaloneLink, "standalone"]],
-  ["public/llms.txt", ["Standalone workflow", "/workflows/standalone.md"]],
+  ["public/llms.txt", ["Use Arashi in one repository", "/getting-started/standalone.md"]],
   [
     "public/llms-full.txt",
-    ["# Standalone Repository Workflow", "aw init --zero-config", ".worktrees/<branch>"]
+    ["# Use Arashi in One Repository", "aw init --zero-config", ".worktrees/<branch>"]
   ],
   ...[
     "create",
@@ -135,8 +134,8 @@ function checkGeneratedStandaloneLinks(): void {
     [...content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map((match) => [match[1], match[2]])
   );
   const expectedLinks = new Map([
-    ["Standalone workflow", "https://arashi.haphazard.dev/workflows/standalone/"],
-    ["Standalone workflow Markdown", "https://arashi.haphazard.dev/workflows/standalone.md"]
+    ["Use Arashi in one repository", "https://arashi.haphazard.dev/getting-started/standalone/"],
+    ["Standalone workflow Markdown", "https://arashi.haphazard.dev/getting-started/standalone.md"]
   ]);
 
   for (const [label, target] of expectedLinks) {
@@ -152,10 +151,11 @@ function checkGeneratedPageOrder(): void {
 
   const sources = [...content.matchAll(/^Source:\s+(\S+)$/gm)].map((match) => match[1]);
   const expectedOrder = [
+    "https://arashi.haphazard.dev/getting-started/workspace/",
+    "https://arashi.haphazard.dev/getting-started/standalone/",
     "https://arashi.haphazard.dev/workflows/",
     "https://arashi.haphazard.dev/workflows/agents-and-specs/",
-    "https://arashi.haphazard.dev/workflows/config/",
-    "https://arashi.haphazard.dev/workflows/standalone/",
+    "https://arashi.haphazard.dev/reference/configuration/",
     "https://arashi.haphazard.dev/commands/"
   ];
   const positions = expectedOrder.map((source) => sources.indexOf(source));
@@ -163,7 +163,7 @@ function checkGeneratedPageOrder(): void {
   if (positions.some((position) => position === -1)) {
     errors.push("public/llms-full.txt must export primary configured workflows, standalone, and commands");
   } else if (!positions.every((position, index) => index === 0 || positions[index - 1] < position)) {
-    errors.push("public/llms-full.txt must present configured workflows before standalone convenience guidance");
+    errors.push("public/llms-full.txt must present configured onboarding before standalone guidance and task workflows");
   }
 }
 

@@ -62,12 +62,12 @@ Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl`
 
 - `configure` requires an existing valid configured workspace. It does not initialize, migrate, or repair configuration.
 - The initial `worktreeNaming` slice is authored directly in `.arashi/config.json`; interactive `aw configure` does not edit it.
-- See the [Config workflow](/workflows/config/) for practical configuration examples.
+- See the [Configuration reference](/reference/configuration/) for practical configuration examples.
 
 ## Related Commands
 
 - [init](/commands/init/)
 - [add](/commands/add/)
 - [doctor](/commands/doctor/)
-- [Config workflow](/workflows/config/)
-- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)
+- [Configuration reference](/reference/configuration/)
+- [Scripts and CI](/workflows/automation/)

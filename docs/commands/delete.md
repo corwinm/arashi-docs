@@ -87,7 +87,7 @@ There is no atomic rollback after an owned worktree, clone, ref, hook, or config
 
 ## Related
 
-- [Agents and Automation](/workflows/agents-and-specs/#automation-and-json)
-- [Hooks workflow](/workflows/hooks/#configured-repository-deletion)
+- [Scripts and CI](/workflows/automation/)
+- [Lifecycle Hooks reference](/reference/hooks/#configured-repository-deletion)
 - [remove command](/commands/remove/)
 - [doctor command](/commands/doctor/)

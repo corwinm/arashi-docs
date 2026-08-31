@@ -18,7 +18,7 @@ const sourceRequirements = new Map<string, string[]>([
     ]
   ],
   [
-    "docs/workflows/config.md",
+    "docs/reference/configuration.md",
     [
       modeVocabulary,
       "defaults.create.launch",
@@ -33,11 +33,11 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/commands/switch.md", [modeVocabulary, autoOrder]],
-  ["public/workflows/config.md", [modeVocabulary]],
+  ["public/reference/configuration.md", [modeVocabulary]],
   ["public/workflows/tmux-and-sesh.md", ["mode: \"auto\"", "mode: \"sesh\""]],
   ["public/workflows/herdr.md", ["mode: \"herdr\""]],
   ["public/workflows/cmux.md", ["mode: \"auto\"", "mode: \"cd\""]],
-  ["public/llms.txt", [modeVocabulary, "Switch command Markdown", "Configuration workflow Markdown"]],
+  ["public/llms.txt", [modeVocabulary, "Switch command Markdown", "Configuration reference Markdown"]],
   ["public/llms-full.txt", [modeVocabulary, autoOrder]]
 ]);
 

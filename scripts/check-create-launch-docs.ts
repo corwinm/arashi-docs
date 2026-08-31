@@ -19,7 +19,7 @@ const sourceRequirements = new Map<string, string[]>([
     ]
   ],
   [
-    "docs/workflows/config.md",
+    "docs/reference/configuration.md",
     [
       modeVocabulary,
       "defaults.create.switch",
@@ -45,7 +45,7 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/commands/create.md", [modeVocabulary, "launch implies switch", "configured launch"]],
-  ["public/workflows/config.md", [modeVocabulary, "defaults.create.switch"]],
+  ["public/reference/configuration.md", [modeVocabulary, "defaults.create.switch"]],
   ["public/workflows/tmux-and-sesh.md", ["launch: \"sesh\"", "does not fall back"]],
   ["public/workflows/herdr.md", ["launch: \"herdr\"", "does not inherit"]],
   ["public/workflows/cmux.md", ["\"launch\": \"auto\"", "worktrees remain created"]],
@@ -55,7 +55,7 @@ const generatedRequirements = new Map<string, string[]>([
       modeVocabulary,
       "An absent create launch choice means no launch",
       "Create command Markdown",
-      "Configuration workflow Markdown"
+      "Configuration reference Markdown"
     ]
   ],
   [
@@ -105,13 +105,13 @@ function checkCanonicalGuidance(): void {
     }
   }
 
-  const config = read("docs/workflows/config.md");
+  const config = read("docs/reference/configuration.md");
   if (config !== null) {
     const migrationHeading = "## Legacy create launch migration";
     const migrationStart = config.indexOf(migrationHeading);
     const canonicalSection = migrationStart === -1 ? config : config.slice(0, migrationStart);
     if (/create[^\n`]*`?launchMode|defaults\.create\.launchMode|defaults\.editors\.<host>\.create[^\n]*launchMode/i.test(canonicalSection)) {
-      errors.push("docs/workflows/config.md still advertises canonical create launchMode guidance");
+      errors.push("docs/reference/configuration.md still advertises canonical create launchMode guidance");
     }
   }
 
