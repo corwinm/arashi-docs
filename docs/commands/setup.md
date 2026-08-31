@@ -57,7 +57,7 @@ aw setup --only api --json
 
 ## Related Commands
 
-`setup` depends on configured repositories and setup scripts, so it requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [Use Arashi in One Repository](/getting-started/standalone/).
+`setup` depends on configured repositories and setup scripts, so it requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [One Repository](/getting-started/standalone/).
 
 A setup script is not a lifecycle hook and does not receive the create/remove terminal-input contract. See the [Lifecycle Hooks reference](/reference/hooks/) when automation belongs at a lifecycle boundary instead.
 

@@ -101,7 +101,7 @@ In a multi-repository clone, a failed alias is reported for that repository and 
 
 ## Related Commands
 
-`clone` requires configured mode and persisted child repositories. From standalone mode, run ordinary `aw init` to upgrade; see the [Use Arashi in One Repository](/getting-started/standalone/).
+`clone` requires configured mode and persisted child repositories. From standalone mode, run ordinary `aw init` to upgrade; see the [One Repository](/getting-started/standalone/).
 
 - [add](/commands/add/)
 - [status](/commands/status/)

@@ -1,5 +1,5 @@
 ---
-title: Launching, Tabs, and Precedence
+title: Launching
 description: Choose Arashi's default independent launch or request a tab for one switch or create invocation.
 draft: false
 sidebar:

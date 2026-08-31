@@ -36,10 +36,10 @@ Use this section when you want command-level guidance.
 
 ## Related
 
-- [Start, Resume, and Finish a Change](/workflows/change-lifecycle/)
+- [Work on a Change](/workflows/change-lifecycle/)
 - [Scripts and CI](/workflows/automation/)
 - [Quickstart](/getting-started/)
 - [Workflows](/workflows/)
 - [Reference](/reference/)
 - [Contributing](/contributing/)
-- [Use Arashi in One Repository](/getting-started/standalone/)
+- [One Repository](/getting-started/standalone/)

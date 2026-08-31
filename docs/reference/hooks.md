@@ -287,6 +287,6 @@ Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` ne
 - [remove command](/commands/remove/)
 - [init command](/commands/init/)
 - [Configuration reference](/reference/configuration/)
-- [Use Arashi in One Repository](/getting-started/standalone/)
+- [One Repository](/getting-started/standalone/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [Full hooks reference](https://github.com/corwinm/arashi/blob/main/docs/hooks.md)

@@ -1,5 +1,5 @@
 ---
-title: Work with Coding Agents
+title: Coding Agents
 description: Keep agent-assisted implementation, coordination, validation, and handoffs in the right repositories.
 draft: false
 sidebar:

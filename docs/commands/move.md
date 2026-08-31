@@ -65,7 +65,7 @@ aw move --from main --to feature-auth-refresh --json
 
 ## Related Commands
 
-`move` supports standalone mode and limits source and target discovery to the resolved repository's worktrees. See the [Use Arashi in One Repository](/getting-started/standalone/).
+`move` supports standalone mode and limits source and target discovery to the resolved repository's worktrees. See the [One Repository](/getting-started/standalone/).
 
 - [create](/commands/create/)
 - [list](/commands/list/)

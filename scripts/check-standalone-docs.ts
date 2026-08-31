@@ -68,7 +68,7 @@ const generatedRequirements = new Map<string, string[]>([
   ["public/llms.txt", ["Use Arashi in one repository", "/getting-started/standalone.md"]],
   [
     "public/llms-full.txt",
-    ["# Use Arashi in One Repository", "aw init --zero-config", ".worktrees/<branch>"]
+    ["# One Repository", "aw init --zero-config", ".worktrees/<branch>"]
   ],
   ...[
     "create",

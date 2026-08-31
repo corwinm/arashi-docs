@@ -96,7 +96,7 @@ See the [Lifecycle Hooks reference](/reference/hooks/) for discovery paths, stru
 
 ## Related Commands
 
-`remove` supports standalone repository worktrees and applicable user-global hooks, but configless local `.arashi/hooks` are inactive. See the [Use Arashi in One Repository](/getting-started/standalone/).
+`remove` supports standalone repository worktrees and applicable user-global hooks, but configless local `.arashi/hooks` are inactive. See the [One Repository](/getting-started/standalone/).
 
 - [list](/commands/list/)
 - [create](/commands/create/)

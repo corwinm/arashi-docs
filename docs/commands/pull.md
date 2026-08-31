@@ -75,7 +75,7 @@ aw pull --only api --json
 
 ## Related Commands
 
-`pull` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [Use Arashi in One Repository](/getting-started/standalone/).
+`pull` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [One Repository](/getting-started/standalone/).
 
 - [push](/commands/push/)
 - [sync](/commands/sync/)

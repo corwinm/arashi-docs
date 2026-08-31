@@ -1,5 +1,5 @@
 ---
-title: Set Up a Multi-Repository Workspace
+title: Set Up a Workspace
 description: Initialize a configured Arashi workspace, add repositories, and create the first coordinated change.
 draft: false
 sidebar:

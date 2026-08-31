@@ -53,7 +53,7 @@ aw list --json
 
 ## Related Commands
 
-`list` supports standalone repositories from the main or a linked worktree. See the [Use Arashi in One Repository](/getting-started/standalone/) for discovery and lifecycle scope.
+`list` supports standalone repositories from the main or a linked worktree. See the [One Repository](/getting-started/standalone/) for discovery and lifecycle scope.
 
 - [status](/commands/status/)
 - [remove](/commands/remove/)

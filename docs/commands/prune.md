@@ -59,7 +59,7 @@ aw prune --json
 
 ## Related Commands
 
-`prune` supports standalone repository metadata and worktrees from either the main or a linked worktree. See the [Use Arashi in One Repository](/getting-started/standalone/).
+`prune` supports standalone repository metadata and worktrees from either the main or a linked worktree. See the [One Repository](/getting-started/standalone/).
 
 - [remove](/commands/remove/)
 - [list](/commands/list/)

@@ -43,7 +43,7 @@ aw add git@github.com:your-org/backend.git
 
 When `aw init` asks for the repository target, enter `.` so the current directory becomes the workspace root.
 
-Commit `.arashi/config.json` when the workspace configuration should be shared with your team. See [Set Up a Multi-Repository Workspace](/getting-started/workspace/) for layout, base branches, and managed-ignore choices.
+Commit `.arashi/config.json` when the workspace configuration should be shared with your team. See [Set Up a Workspace](/getting-started/workspace/) for layout, base branches, and managed-ignore choices.
 
 ## Start the first change
 
@@ -55,10 +55,10 @@ aw switch feature-auth
 aw status
 ```
 
-Continue with [Start, Resume, and Finish a Change](/workflows/change-lifecycle/) for the complete day-to-day lifecycle.
+Continue with [Work on a Change](/workflows/change-lifecycle/) for the complete day-to-day lifecycle.
 
 ## Other paths
 
 - Use [Arashi in One Repository](/getting-started/standalone/) when a project has not adopted workspace configuration.
-- Open [Environment Integrations](/workflows/environment-integrations/) to connect Arashi with your editor, terminal, or workspace manager.
+- Open [Integrations](/workflows/environment-integrations/) to connect Arashi with your editor, terminal, or workspace manager.
 - Browse [Commands](/commands/) when you need exact CLI behavior.

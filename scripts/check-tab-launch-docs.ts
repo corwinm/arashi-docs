@@ -125,7 +125,7 @@ const sourceRequirements: Requirement[] = [
   },
   {
     path: "docs/reference/index.md",
-    text: ["[Launching, Tabs, and Precedence](/reference/launching/)"],
+    text: ["[Launching](/reference/launching/)"],
   },
 ];
 

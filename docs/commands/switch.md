@@ -122,7 +122,7 @@ The legacy `--no-cd` maps to `--launch`, and `--no-default-launch` maps to `--ig
 
 ## Related Commands
 
-`switch` supports standalone repository worktrees; multi-repository scopes such as `--repos` and `--all` are configured-mode features. See the [Use Arashi in One Repository](/getting-started/standalone/).
+`switch` supports standalone repository worktrees; multi-repository scopes such as `--repos` and `--all` are configured-mode features. See the [One Repository](/getting-started/standalone/).
 
 - [list](/commands/list/)
 - [status](/commands/status/)

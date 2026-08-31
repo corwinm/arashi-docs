@@ -102,7 +102,7 @@ aw init --zero-config --dry-run --json
 - Prefer ordinary `aw init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
 - `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It is an ad hoc path for otherwise-unconfigured projects and never writes tracked or global ignore state, `.arashi/`, hooks, or config.
 - Zero-config mode accepts `--dry-run`, `--verbose`, and `--json`; it rejects configured-init options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` before mutation.
-- Use the [Use Arashi in One Repository](/getting-started/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
+- Use the [One Repository](/getting-started/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
 
 ## Related Commands
 

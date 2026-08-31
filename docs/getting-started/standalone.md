@@ -1,5 +1,5 @@
 ---
-title: Use Arashi in One Repository
+title: One Repository
 description: Adopt Arashi in a Git project that does not use a configured multi-repository workspace.
 draft: false
 sidebar:

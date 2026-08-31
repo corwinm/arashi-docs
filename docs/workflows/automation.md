@@ -1,15 +1,15 @@
 ---
-title: Use Arashi from Scripts and CI
-description: Parse Arashi safely in agents, scripts, and continuous integration jobs.
+title: Scripts and CI
+description: Parse Arashi safely in scripts and CI.
 draft: false
 sidebar:
   hidden: false
   order: 6
 ---
 
-Use `--json` (or `-j`) when a script or CI job needs to parse Arashi output.
+Use `--json` (or `-j`) for machine-readable output.
 
-## Start with read-only inspection
+## Start read-only
 
 ```bash
 aw doctor --json
@@ -17,17 +17,14 @@ aw status --json
 aw list --json
 ```
 
-Start automation with inspection, then add the narrowest mutating command and repository selector needed by the job.
+Add mutations only after inspection works.
 
-## Parse the stable envelope
+## Parse the envelope
 
 - stdout contains exactly one JSON document followed by a newline.
-- Human progress, tables, colors, spinners, and prompts stay off stdout.
-- Check both the process exit status and the envelope's `ok` field.
-- Branch on `error.code`, not the human-readable `message`.
-- Read the fields you need and ignore unknown fields for forward compatibility.
-
-A successful envelope has this common shape:
+- Check the process exit status and the envelope's `ok` field.
+- Branch on `error.code`, not `message`.
+- Read needed fields and ignore unknown fields.
 
 ```json
 {
@@ -39,28 +36,22 @@ A successful envelope has this common shape:
 }
 ```
 
-Failures use `ok: false` with a structured `error` object. stderr remains available for child-command diagnostics and unexpected runtime failures; do not parse human prose from stderr as an API.
+Do not parse human prose from stderr as an API.
 
-## Make selection and interaction explicit
+## Be explicit
 
-Pass `--only` or `--group` for mutating, network-heavy, or expensive work unless the job intentionally targets every repository:
+Use selectors for mutating or expensive work:
 
 ```bash
 aw exec --only arashi-docs --json -- pnpm validate
 ```
 
-Pass non-interactive options whenever a command would otherwise prompt, change the parent shell, or launch another application. Interactive-only or external-launch flows return a structured unsupported-mode error rather than prompting in JSON mode.
+Pass non-interactive options when a command might prompt, change the parent shell, or launch an application. JSON mode gives hooks immediate EOF. Use `--no-hook-input` for the same behavior outside JSON mode.
 
-## Preserve hook input safety
+See the [command reference](/commands/) for supported JSON modes, command data, warnings, and errors.
 
-JSON execution gives lifecycle hooks immediate EOF and reports disabled hook input. Use `--no-hook-input` for non-JSON automation that must also prevent hooks from reading stdin. Disabling input does not skip hooks or change their order.
+## Related
 
-## Use command-specific contracts
-
-The common envelope does not replace each command's data contract. Use the relevant [command reference](/commands/) for supported JSON modes, command-specific `data`, warnings, and error codes.
-
-## Related guides
-
-- [Work with Coding Agents](/workflows/agents-and-specs/)
-- [Coordinate a Change Across Repositories](/workflows/coordinate-repositories/)
+- [Coding Agents](/workflows/agents-and-specs/)
+- [Coordinate Repositories](/workflows/coordinate-repositories/)
 - [Lifecycle Hooks](/reference/hooks/)

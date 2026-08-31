@@ -1,92 +1,64 @@
 ---
-title: Coordinate a Change Across Repositories
-description: Select the repositories a change needs and keep their worktrees, validation, and handoff aligned.
+title: Coordinate Repositories
+description: Select, validate, and hand off work across repositories.
 draft: false
 sidebar:
   hidden: false
   order: 3
 ---
 
-Use this workflow when one change spans several independently versioned repositories, or when a configured workspace contains more repositories than the task needs.
+Use the smallest repository set that completes the change.
 
-## Choose the participating repositories
-
-Create worktrees in one named repository:
+## Select repositories
 
 ```bash
+# One repository
 aw create feature-auth --only frontend
-```
 
-Use a configured group for a recurring set:
-
-```bash
+# A configured group
 aw create feature-auth --group web
-```
 
-Use interactive selection when the combination is temporary:
-
-```bash
+# A temporary selection
 aw create feature-auth --interactive
 ```
 
-Combining `--group` with `--only` selects their intersection. Prefer the smallest complete repository set for the task.
+Combining `--group` with `--only` selects their intersection.
 
-## Add an omitted repository later
+## Add a repository later
 
-An intentionally partial coordinated worktree does not need to remain partial. From that worktree, clone another configured child on the same branch:
+From a partial coordinated worktree, run:
 
 ```bash
 aw clone
 ```
 
-Choose `api` from the interactive repository selection. Use `aw clone --all` instead when every missing configured child should join the coordinated worktree.
+Choose the missing repository. Use `aw clone --all` to add every missing configured child.
 
-Use verbose or JSON status when you need to distinguish participating children from configured repositories that were intentionally omitted:
+## Inspect and validate
 
 ```bash
 aw status --verbose
-aw status --json
-```
-
-## Inspect and validate consistently
-
-Run targeted checks across the repositories that own the change:
-
-```bash
 aw exec --only frontend -- pnpm test
 aw exec --only api -- pnpm test
 ```
 
-Arashi coordinates paths and command execution; it does not combine repository-specific test suites or release rules. Validate each affected repository using its own documented commands.
+Arashi coordinates worktrees and commands. Each repository keeps its own commits, CI, pull request, and project-specific documentation.
 
-## Keep Git ownership separate
+Keep shared plans in the meta-repository. Keep implementation and tests in the child repository that owns them.
 
-Each repository keeps its own:
-
-- commits and branch history,
-- remote branch,
-- CI checks,
-- pull request,
-- repository-specific documentation.
-
-Keep shared plans and cross-repository coordination in the meta-repository. Keep implementation, tests, and project-specific documentation in the child repository that owns them. Open focused, cross-linked pull requests when a change spans repositories.
-
-## Hand off the coordinated state
-
-Use a single Arashi handoff to summarize the workspace, then attach repository-specific links and remaining work:
+## Hand off
 
 ```bash
 aw handoff \
   --link https://github.com/example/frontend/pull/42 \
   --link https://github.com/example/api/pull/18 \
-  --todo "watch both CI runs"
+  --todo "watch CI"
 ```
 
-## Related guides
+## Related
 
-- [Start, Resume, and Finish a Change](/workflows/change-lifecycle/)
-- [Work with Coding Agents](/workflows/agents-and-specs/)
+- [Work on a Change](/workflows/change-lifecycle/)
+- [Coding Agents](/workflows/agents-and-specs/)
 - [Repository groups](/reference/configuration/#repository-groups)
-- [create command](/commands/create/)
-- [clone command](/commands/clone/)
-- [exec command](/commands/exec/)
+- [clone](/commands/clone/)
+- [exec](/commands/exec/)

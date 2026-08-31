@@ -11,7 +11,8 @@ Use these conventions for all pages under `docs/`.
 ## Writing Rules
 
 - Write for user outcomes first, implementation detail second.
-- Use active voice and short paragraphs.
+- Use short titles, short paragraphs, and direct sentences.
+- Remove repeated context, qualifiers, and navigation prose.
 - Prefer concrete command examples with expected context.
 - Keep terminology consistent: use "documentation site" for `arashi-docs`.
 - Keep workflow pages task-oriented; move exhaustive contracts to Reference or Commands.
