@@ -31,6 +31,34 @@ The optional skill gives supported agents reusable Arashi guidance. You can also
 
 A planning framework is optional. Repository ownership is the important contract.
 
+## Recommended `AGENTS.md`
+
+Add a root `AGENTS.md` so agents know where work belongs:
+
+```md
+# Workspace Agent Rules
+
+This meta-repository coordinates child repositories in `repos/`.
+
+## Core Rules
+
+- Put implementation, tests, and project docs in `repos/<project>/`.
+- Keep shared plans and cross-repository context in the meta-repository.
+- Read the child repository's `AGENTS.md` before editing it.
+
+## Multi-Repository Work
+
+- A single Git commit cannot span multiple repositories.
+- Validate each affected repository.
+- Open separate, cross-linked pull requests.
+
+## Child Instructions
+
+- `repos/<project>/AGENTS.md`
+```
+
+Add smaller `AGENTS.md` files inside child repositories for their validation commands and editing rules.
+
 ## Target the task
 
 ```bash

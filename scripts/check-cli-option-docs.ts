@@ -67,6 +67,14 @@ const semanticRequirements = new Map<string, string[]>([
       "[command reference](/commands/)"
     ]
   ],
+  [
+    "docs/workflows/agents-and-specs.md",
+    [
+      "## Recommended `AGENTS.md`",
+      "`repos/<project>/AGENTS.md`",
+      "A single Git commit cannot span multiple repositories"
+    ]
+  ],
 
   [
     "docs/commands/status.md",
