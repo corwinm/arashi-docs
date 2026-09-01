@@ -16,16 +16,24 @@ const site = "https://arashi.haphazard.dev";
 const coreOrder = [
   "index.mdx",
   "getting-started/index.md",
+  "getting-started/installation.md",
+  "getting-started/workspace.md",
+  "getting-started/standalone.md",
   "workflows/index.md",
+  "workflows/change-lifecycle.md",
+  "workflows/coordinate-repositories.md",
+  "workflows/setup-and-cleanup.md",
   "workflows/agents-and-specs.md",
-  "workflows/config.md",
-  "workflows/hooks.md",
-  "workflows/launch-disposition.md",
+  "workflows/automation.md",
+  "workflows/environment-integrations.md",
   "workflows/herdr.md",
   "workflows/kitty.md",
   "workflows/vscode.md",
   "workflows/tmux-and-sesh.md",
-  "workflows/standalone.md",
+  "reference/index.md",
+  "reference/configuration.md",
+  "reference/hooks.md",
+  "reference/launching.md",
   "commands/index.md",
   "commands/status.md",
   "commands/create.md",
@@ -51,17 +59,27 @@ const coreOrder = [
   "contributing/index.md"
 ];
 
-const generatedDirs = ["getting-started", "workflows", "commands", "contributing"];
+const generatedDirs = ["getting-started", "workflows", "reference", "commands", "contributing"];
 const requiredRoutes = [
   "llms.txt",
   "llms-full.txt",
   "getting-started.md",
+  "getting-started/installation.md",
+  "getting-started/workspace.md",
+  "getting-started/standalone.md",
   "workflows.md",
-  "workflows/standalone.md",
+  "workflows/change-lifecycle.md",
+  "workflows/coordinate-repositories.md",
+  "workflows/setup-and-cleanup.md",
   "workflows/agents-and-specs.md",
-  "workflows/launch-disposition.md",
+  "workflows/automation.md",
+  "workflows/environment-integrations.md",
   "workflows/herdr.md",
   "workflows/kitty.md",
+  "reference.md",
+  "reference/configuration.md",
+  "reference/hooks.md",
+  "reference/launching.md",
   "commands.md",
   "commands/exec.md",
   "commands/status.md",
@@ -299,7 +317,7 @@ function renderLlmsTxt(): string {
 - Expect configured lifecycle commands to reconcile safe managed paths with repository-local rules by default; inspect \`managedIgnore\` in JSON results.
 - When \`aw add\` runs from a linked parent worktree, use its reported canonical and active paths instead of cloning the child twice.
 - SSH aliases are machine-local. Arashi preserves configured SSH URLs exactly, never maps them to HTTPS automatically, and leaves resolution, authentication, and SSH configuration to Git/OpenSSH. See [SSH remote troubleshooting](${site}/commands/clone/#troubleshooting-ssh-remotes).
-- Treat [Hooks](${site}/workflows/hooks/) as the lifecycle contract: configured create scopes have different mutation points, configured remove evaluates every scope per target, standalone uses targeted-then-shared user-global hooks only, and aggregate cleanup parses \`ARASHI_REMOVE_TARGETS_JSON\`.
+- Treat [Hooks](${site}/reference/hooks/) as the lifecycle contract: configured create scopes have different mutation points, configured remove evaluates every scope per target, standalone uses targeted-then-shared user-global hooks only, and aggregate cleanup parses \`ARASHI_REMOVE_TARGETS_JSON\`.
 - Configured inline hooks use \`hooks.scripts.<lifecycle>\` for workspace ownership and \`repos.<name>.hooks.<lifecycle>\` for repository ownership. The four keys are \`pre-create\`, \`post-create\`, \`pre-remove\`, and \`post-remove\`; a string is Bash shorthand, while a closed interpreter map accepts only \`bash\`, \`powershell\`, and \`cmd\`.
 - Prefer short reviewable inline commands and substantial reusable native files. Configured create discovers either inline configuration or native files as alternatives at workspace and repository-specific logical locations. Inline snippets are non-portable unless compatible interpreter variants are supplied. Inline and file sources at the same logical location produce an inline/file ambiguity and neither runs. On POSIX, configured Bash resolves from the first executable \`bash\` in \`PATH\` order. On Windows, configured selection is PowerShell, then cmd, then Bash. \`SystemRoot\` supplies the fixed PowerShell and cmd paths, while \`PATH\` selects \`bash.exe\`. No compatible executable fails as \`interpreter_unavailable\`.
 - \`--no-hooks\` is create-only; \`--no-hook-input\` is shared by create and remove. Remove dry-run returns source-aware previews. Configured-create dry-run performs no hook discovery, has an empty hook ledger, and no hook preview. Public metadata uses \`sourceKind: "inline-config"\`, \`sourceOwnerKind\`, and \`sourceOwnerName\`; \`sourceScriptPath\` is null or omitted. Outcomes, previews, diagnostics, and logs never reveal snippet command text.
@@ -310,7 +328,7 @@ function renderLlmsTxt(): string {
 - Configured means a persisted field is present; Not configured means the field is absent or not persisted. Effective is shown separately for inherited or built-in values and never persists a value implicitly. These state labels are not runtime health; use \`aw doctor\` for diagnostics. Keep preserves the persisted field; Edit validates and replaces it; Clear removes an optional persisted field. Required \`reposDir\` cannot be cleared, and empty input is not clear.
 - Existing active native files are external state: configure never clears, deletes, or overwrites them and offers keep/skip. At final confirmation, the exact serialized candidate JSON contains the same bytes that save will persist. A separate active-file plan lists lifecycle, exact path, safe-no-op state, and runtime readiness, and does not show contents. When serialized bytes are unchanged and there is no active-file plan, configure exits before final confirmation or save.
 - Human and JSON modes both require a configured valid workspace. Missing configuration, standalone context, and invalid configuration fail before prompt or inspection; configure does not initialize or repair configuration. Human editing requires stdin and stdout TTY; \`aw configure --json\` never prompts and never mutates. Visible plaintext command entry and the exact final preview are the only views that include inline command bodies. Selection screens, setting lists, ordinary views, diagnostics, cancellation, JSON, and the generated active-file plan remain body-free without inline command bodies.
-- Directly edit \`.arashi/config.json\` for unsupported fields because configure is not a schema editor and has no broad non-interactive mutation flags. See [Configuration workflow Markdown](${site}/workflows/config.md).
+- Directly edit \`.arashi/config.json\` for unsupported fields because configure is not a schema editor and has no broad non-interactive mutation flags. See [Configuration reference Markdown](${site}/reference/configuration.md).
 - Delete removes configured repository dependencies, while remove deletes branch worktrees. \`aw delete <repository>\` targets one exact configured repository key. With \`aw delete\` omitted, a human TTY opens a checkbox to select one or more keys. Non-TTY and JSON use with the target omitted fails selection-required and requires an explicit key; force and dry-run never invent a target.
 - Arashi prepares all selected repository plans before mutation and presents the complete selected plans in one combined preview followed by one default-no confirmation. Run \`--dry-run\` before \`--force\`; \`--force\` skips confirmation and bypasses confirmation and Git data-loss guards only. Path containment, symlink, topology, identity, hook ambiguity, and concurrent-config checks remain mandatory.
 - Delete removes the canonical clone, owned linked worktrees, local refs, exact config entry, and repository-targeted hook files/templates. It preserves unrelated configuration, managed-ignore policy, shared hooks, user-global hooks, remote repositories, and remote branches. Hook logical identity, path, or status may appear without file contents or inline command bodies. For a human multi-repository deletion, earlier repositories may be completed, the failing repository is failed, and later repositories are not started; inspect the phase ledger and surviving state, then retry the exact command only when reported safe. There is no atomic rollback.
@@ -329,7 +347,7 @@ function renderLlmsTxt(): string {
 - Configure create with one \`defaults.create.launch\`: \`none | auto | sesh | herdr\`, plus an independent \`switch\` boolean. An absent create launch choice means no launch; any requested launch selects the new primary worktree. Explicit \`--tmux\`, \`--sesh\`, or \`--herdr\` wins, then \`--tab\` or \`--launch\`, \`--no-launch\`, matching-scope configuration, and built-in \`none\`.
 - In configured workspaces only, \`repos.<name>.copy\` is a direct array and \`repos.<name>.symlink\` is a direct array. Entries use the same relative path from the Git-primary child checkout into each new worktree. Choose \`copy\` for an independent, isolated file and \`symlink\` only to share intentional state or dependencies. Globs are not supported, path remapping is not supported, and standalone mode is not supported. Use lifecycle hooks for globs, remapping, external sources, interpolation, required entries, generated files, or conditional behavior. \`aw doctor\` non-mutatively diagnoses materialization source availability and destination safety without repair or mutation.
 - Configured child construction runs \`pre-create\`, \`copy\`, \`symlink\`, then \`post-create\`; \`--no-hooks\` does not disable materialization. Missing sources are skipped, Arashi never overwrites an existing destination, and every destination must remain inside the worktree. A native \`symlink\` fails when platform policy or the filesystem rejects it, with no copy, hard-link, or junction fallback. Materialization does not fall back to the caller's checkout or another source repository. \`aw create --dry-run\` previews the ordered materialization plan in declaration order before any worktree or file mutation.
-- Use the shared configured base policy for long-running ancestry: root \`baseBranch\` is the workspace fallback, \`meta.baseBranch\` owns the meta override, and \`repos.<name>.baseBranch\` owns child overrides. Configured create, clone, status, pull, no-upstream push comparison, handoff, and doctor use this policy. For create, the primary form is \`aw create <target> --base <branch>\`; for create and clone, use \`--base <branch>\` invocation-wide and repeatable \`--repo-base <repository=branch>\` per repository; \`@meta\` selects the configured meta repository rather than a child. Their precedence is repository CLI > invocation CLI > repository config > workspace config. The removed \`defaults.create.baseBranch\` property fails validation before hooks or mutation; migrate it to root or repository-specific configuration. See [Create command Markdown](${site}/commands/create.md), [Clone command Markdown](${site}/commands/clone.md), and [Configuration workflow](${site}/workflows/config/).
+- Use the shared configured base policy for long-running ancestry: root \`baseBranch\` is the workspace fallback, \`meta.baseBranch\` owns the meta override, and \`repos.<name>.baseBranch\` owns child overrides. Configured create, clone, status, pull, no-upstream push comparison, handoff, and doctor use this policy. For create, the primary form is \`aw create <target> --base <branch>\`; for create and clone, use \`--base <branch>\` invocation-wide and repeatable \`--repo-base <repository=branch>\` per repository; \`@meta\` selects the configured meta repository rather than a child. Their precedence is repository CLI > invocation CLI > repository config > workspace config. The removed \`defaults.create.baseBranch\` property fails validation before hooks or mutation; migrate it to root or repository-specific configuration. See [Create command Markdown](${site}/commands/create.md), [Clone command Markdown](${site}/commands/clone.md), and [Configuration workflow](${site}/reference/configuration/).
 - Status preserves upstream and remote-default roles while adding configured-base state and de-duplicating a shared target. Pull merges the refreshed configured remote base. Without persisted base policy, pull preserves its existing current-upstream behavior. Push uses configured base only for no-upstream publishability and never as the destination. Handoff and doctor report configured-base lag/unavailability. Standalone behavior is unchanged.
 - Configured clone from the main workspace checks out an effective base, while coordinated clone keeps the coordinated target branch checked out and only seeds a missing target from the child's effective base. Existing targets retain their ancestry; omitted policy preserves remote-default clone behavior.
 - Standalone create base selection is CLI-only and invocation-only: it does not load root or repository base configuration, rejects \`--repo-base\`, and creates no \`.arashi\` state.
@@ -338,22 +356,23 @@ function renderLlmsTxt(): string {
 - Launch defaults to a default new window or independent managed session. \`--tab\` is CLI-only for one \`switch\` or \`create\` invocation and bypasses configured switch and create launch defaults, while explicit launcher selectors remain authoritative. Tab disposition never falls back to a window when unsupported and does not change configuration vocabularies.
 - For persistent Herdr launch, use \`aw switch --herdr\` or \`aw create --herdr\`; Arashi owns Git worktree creation/removal, and Herdr only opens, focuses, and reuses the existing checkout.
 - In Kitty 0.43+, automatic launch uses remote control to reuse and focus the exact live worktree window. Kitty remains auto-detected and live-only; review the Kitty workflow before enabling remote control.
-- On Windows, use the canonical PowerShell installer. It installs Git Bash support through the extensionless \`arashi\` wrapper; open a new Git Bash window so it inherits the persistent user PATH. See [Getting started](${site}/getting-started/) for the verified manual payload and no-profile-edit guidance.
+- On Windows, use the canonical PowerShell installer. It installs Git Bash support through the extensionless \`arashi\` wrapper; open a new Git Bash window so it inherits the persistent user PATH. See [Install Arashi](${site}/getting-started/installation/) for the verified manual payload and no-profile-edit guidance.
 - Validate every affected repository before handing work back for review.
 - Use focused PRs and cross-link related PRs when work spans multiple repositories.
 
 ## Core Docs
 
-- [Getting started](${site}/getting-started/) - install and configured meta-repository workflow.
-- [Agents and automation](${site}/workflows/agents-and-specs/) - repository ownership, handoffs, and the shared JSON contract for agents, scripts, and CI.
-- [Configuration workflow](${site}/workflows/config/) - workspace layout, repositories, worktree behavior, and command defaults.
+- [Quickstart](${site}/getting-started/) - shortest path to a configured workspace and first change.
+- [Install Arashi](${site}/getting-started/installation/) - supported installation methods and troubleshooting.
+- [Change lifecycle](${site}/workflows/change-lifecycle/) - start, resume, publish, hand off, and clean up work.
+- [Coding agents](${site}/workflows/agents-and-specs/) - repository ownership, validation, and handoffs for agent-assisted work.
+- [Scripts and CI](${site}/workflows/automation/) - JSON envelopes, explicit selection, and non-interactive execution.
+- [Configuration reference](${site}/reference/configuration/) - workspace layout, repositories, worktree behavior, and command defaults.
 - [SSH remote troubleshooting](${site}/commands/clone/#troubleshooting-ssh-remotes) - exact remote preservation and Git/OpenSSH ownership.
-- [Hooks workflow](${site}/workflows/hooks/) - lifecycle timing, scope, environment, platform, timeout, failure, and safe setup guidance.
-- [Launch disposition workflow](${site}/workflows/launch-disposition/) - default independent launch, one-invocation tabs, precedence, support matrix, and no-fallback safety.
-- [Herdr workflow](${site}/workflows/herdr/) - explicit, configured, and automatic workspace launch, reuse, ownership, and troubleshooting.
-- [Kitty workflow](${site}/workflows/kitty/) - Kitty 0.43+ remote-control setup, exact window reuse, live-only ownership, and troubleshooting.
-- [tmux and sesh workflow](${site}/workflows/tmux-and-sesh/) - explicit plain tmux launch, contextual auto behavior, and sesh integration.
-- [Standalone workflow](${site}/workflows/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
+- [Lifecycle-hook reference](${site}/reference/hooks/) - lifecycle timing, scope, environment, platform, timeout, and failure behavior.
+- [Launch reference](${site}/reference/launching/) - default independent launch, one-invocation tabs, precedence, support matrix, and no-fallback safety.
+- [Environment integrations](${site}/workflows/environment-integrations/) - choose an editor, terminal, or workspace manager.
+- [Use Arashi in one repository](${site}/getting-started/standalone/) - ad hoc lifecycle and safety guidance for projects that have not adopted Arashi configuration.
 - [Commands](${site}/commands/) - command reference.
 - [Contributing](${site}/contributing/) - contribution flow for Arashi projects.
 - [Full Markdown export](${site}/llms-full.txt) - consolidated public docs context.
@@ -361,12 +380,13 @@ function renderLlmsTxt(): string {
 ## Useful Markdown Routes
 
 - [Agents workflow Markdown](${site}/workflows/agents-and-specs.md)
-- [Getting started Markdown](${site}/getting-started.md)
+- [Quickstart Markdown](${site}/getting-started.md)
+- [Installation Markdown](${site}/getting-started/installation.md)
 - [Status command Markdown](${site}/commands/status.md)
-- [Standalone workflow Markdown](${site}/workflows/standalone.md)
-- [Configuration workflow Markdown](${site}/workflows/config.md)
-- [Hooks workflow Markdown](${site}/workflows/hooks.md)
-- [Launch disposition workflow Markdown](${site}/workflows/launch-disposition.md)
+- [Standalone workflow Markdown](${site}/getting-started/standalone.md)
+- [Configuration reference Markdown](${site}/reference/configuration.md)
+- [Lifecycle-hook reference Markdown](${site}/reference/hooks.md)
+- [Launch reference Markdown](${site}/reference/launching.md)
 - [Herdr workflow Markdown](${site}/workflows/herdr.md)
 - [Kitty workflow Markdown](${site}/workflows/kitty.md)
 - [tmux and sesh workflow Markdown](${site}/workflows/tmux-and-sesh.md)
@@ -380,9 +400,9 @@ function renderLlmsTxt(): string {
 
 ## Optional
 
-- [Configuration workflow](${site}/workflows/config/)
-- [Hooks workflow](${site}/workflows/hooks/)
-- [Launch disposition workflow](${site}/workflows/launch-disposition/)
+- [Configuration workflow](${site}/reference/configuration/)
+- [Lifecycle Hooks reference](${site}/reference/hooks/)
+- [Launch disposition workflow](${site}/reference/launching/)
 - [Herdr workflow](${site}/workflows/herdr/)
 - [Kitty workflow](${site}/workflows/kitty/)
 - [VS Code workflow](${site}/workflows/vscode/)

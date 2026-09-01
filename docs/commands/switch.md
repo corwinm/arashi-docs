@@ -91,7 +91,7 @@ aw switch feature-auth --json
 - `--path` requires an exact worktree path and skips fuzzy branch/path matching.
 - `launch` always uses automatic launcher selection without preferring parent-shell switching. `sesh` and `herdr` always select that launcher, even when shell integration or another managed context is active.
 - An absent mode preserves automatic launch and does not newly prefer parent-shell `cd` in configured or standalone repositories.
-- `--tab` is a CLI-only, one-invocation disposition. It overrides configured or contextual parent-shell `cd` and bypasses configured `sesh` or `herdr` launch defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; canonical `--launch` and `--ignore-configured-launcher` remain compatible. It composes with explicit launcher selectors, which stay authoritative while `--tab` controls disposition; unsupported selected adapters fail without opening a window or falling through. See the [launch disposition workflow](/workflows/launch-disposition/) for the complete matrix, JSON behavior, and safety boundaries.
+- `--tab` is a CLI-only, one-invocation disposition. It overrides configured or contextual parent-shell `cd` and bypasses configured `sesh` or `herdr` launch defaults, so `--tab` alone uses automatic launcher resolution. It conflicts only with explicit `--cd`; canonical `--launch` and `--ignore-configured-launcher` remain compatible. It composes with explicit launcher selectors, which stay authoritative while `--tab` controls disposition; unsupported selected adapters fail without opening a window or falling through. See the [Launching](/reference/launching/) for the complete matrix, JSON behavior, and safety boundaries.
 - Configured `auto` uses this order: tmux → Herdr → cmux → integrated IDE → Kitty → parent-shell `cd` → terminal/platform fallback. Parent-shell switching is considered only when no managed context is strictly detected; it requires shell integration.
 - Explicit launcher flags take precedence over configuration and environment detection. `--tmux` therefore overrides configured `cd`, `sesh`, or `herdr` behavior and detected Herdr, cmux, or IDE contexts. `--tmux` conflicts with `--cd`, `--sesh`, `--herdr`, `--vscode`, `--cursor`, and `--kiro`; Arashi reports the complete set instead of choosing by flag order.
 - `--tmux` requires a non-empty `TMUX` value after trimming. Run the command from an active tmux client/session or choose another launcher. If the prerequisite is missing or `tmux new-window` fails, explicit tmux does not fall back to sesh, Herdr, cmux, an IDE, parent-shell `cd`, or a platform terminal.
@@ -122,7 +122,7 @@ The legacy `--no-cd` maps to `--launch`, and `--no-default-launch` maps to `--ig
 
 ## Related Commands
 
-`switch` supports standalone repository worktrees; multi-repository scopes such as `--repos` and `--all` are configured-mode features. See the [Standalone Repository workflow](/workflows/standalone/).
+`switch` supports standalone repository worktrees; multi-repository scopes such as `--repos` and `--all` are configured-mode features. See the [One Repository](/getting-started/standalone/).
 
 - [list](/commands/list/)
 - [status](/commands/status/)
@@ -130,4 +130,4 @@ The legacy `--no-cd` maps to `--launch`, and `--no-default-launch` maps to `--ig
 - [Herdr workflow guide](/workflows/herdr/)
 - [cmux workflow guide](/workflows/cmux/)
 - [Kitty workflow guide](/workflows/kitty/)
-- [launch disposition workflow](/workflows/launch-disposition/)
+- [Launching](/reference/launching/)

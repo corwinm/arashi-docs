@@ -64,7 +64,7 @@ aw sync --only api,web --json
 
 ## Related Commands
 
-`sync` requires configured mode and a persisted repository map. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`sync` requires configured mode and a persisted repository map. From standalone mode, run ordinary `aw init` to upgrade; see the [One Repository](/getting-started/standalone/).
 
 - [pull](/commands/pull/)
 - [push](/commands/push/)

@@ -26,7 +26,7 @@ const aliasRequirements = new Map<string, string[]>([
   ["docs/commands/sync.md", ["`-g, --group", "`-j, --json`", "`-o, --only", "`-v, --verbose`"]],
   ["docs/commands/uninstall.md", ["`-n, --dry-run`", "`-y, --yes`"]],
   ["docs/commands/update.md", ["`-j, --json`", "`-n, --dry-run`"]],
-  ["docs/getting-started/index.md", ["`aw install -j`", "`aw install --json`"]]
+  ["docs/getting-started/installation.md", ["`aw install -j`", "`aw install --json`"]]
 ]);
 
 const semanticRequirements = new Map<string, string[]>([
@@ -49,7 +49,7 @@ const semanticRequirements = new Map<string, string[]>([
     ]
   ],
   [
-    "docs/workflows/launch-disposition.md",
+    "docs/reference/launching.md",
     [
       "`--launch --ignore-configured-launcher`",
       "configured behavior and named-launcher defaults",
@@ -57,7 +57,7 @@ const semanticRequirements = new Map<string, string[]>([
     ]
   ],
   [
-    "docs/workflows/agents-and-specs.md",
+    "docs/workflows/automation.md",
     [
       "Use `--json` (or `-j`)",
       "stdout contains exactly one JSON document",
@@ -65,6 +65,14 @@ const semanticRequirements = new Map<string, string[]>([
       "Branch on `error.code`",
       "ignore unknown fields",
       "[command reference](/commands/)"
+    ]
+  ],
+  [
+    "docs/workflows/agents-and-specs.md",
+    [
+      "## Recommended `AGENTS.md`",
+      "`repos/<project>/AGENTS.md`",
+      "A single Git commit cannot span multiple repositories"
     ]
   ],
 
@@ -222,7 +230,7 @@ function checkUninstallHelperRoutes(): void {
 function checkRetiredJsonRoutes(): void {
   const config = read("netlify.toml");
   if (config === null) return;
-  const target = "/workflows/agents-and-specs/#automation-and-json";
+  const target = "/workflows/automation/";
   for (const route of ["/workflows/json-automation", "/workflows/json-automation/"]) {
     const block = [
       "[[redirects]]",
@@ -236,12 +244,37 @@ function checkRetiredJsonRoutes(): void {
   const markdownBlock = [
     "[[redirects]]",
     '  from = "/workflows/json-automation.md"',
-    '  to = "/workflows/agents-and-specs.md#automation-and-json"',
+    '  to = "/workflows/automation.md"',
     "  status = 301",
     "  force = true",
   ].join("\n");
   if (!config.includes(markdownBlock)) {
     errors.push("netlify.toml is missing the retired JSON Markdown route");
+  }
+
+  const movedRoutes = [
+    ["/workflows/config", "/reference/configuration/"],
+    ["/workflows/config/*", "/reference/configuration/:splat"],
+    ["/workflows/config.md", "/reference/configuration.md"],
+    ["/workflows/hooks", "/reference/hooks/"],
+    ["/workflows/hooks/*", "/reference/hooks/:splat"],
+    ["/workflows/hooks.md", "/reference/hooks.md"],
+    ["/workflows/launch-disposition", "/reference/launching/"],
+    ["/workflows/launch-disposition/*", "/reference/launching/:splat"],
+    ["/workflows/launch-disposition.md", "/reference/launching.md"],
+    ["/workflows/standalone", "/getting-started/standalone/"],
+    ["/workflows/standalone/*", "/getting-started/standalone/:splat"],
+    ["/workflows/standalone.md", "/getting-started/standalone.md"],
+  ] as const;
+  for (const [route, movedTarget] of movedRoutes) {
+    const block = [
+      "[[redirects]]",
+      `  from = "${route}"`,
+      `  to = "${movedTarget}"`,
+      "  status = 301",
+      "  force = true",
+    ].join("\n");
+    if (!config.includes(block)) errors.push(`netlify.toml is missing the moved documentation route ${route}`);
   }
 }
 

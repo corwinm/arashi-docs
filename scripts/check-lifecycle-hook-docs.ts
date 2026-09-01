@@ -9,11 +9,11 @@ import {
 import os from "node:os";
 import path from "node:path";
 
-const hooksLink = "/workflows/hooks/";
+const hooksLink = "/reference/hooks/";
 
 const sourceRequirements = new Map<string, string[]>([
   [
-    "docs/workflows/hooks.md",
+    "docs/reference/hooks.md",
     [
       "pre-create.<repo>",
       "After that Git worktree is created and before configured file materialization/setup",
@@ -105,21 +105,8 @@ const sourceRequirements = new Map<string, string[]>([
     ],
   ],
   [
-    "docs/workflows/config.md",
+    "docs/reference/configuration.md",
     [hooksLink],
-  ],
-  [
-    "docs/workflows/standalone.md",
-    [
-      hooksLink,
-      "targeted before shared",
-      "main-root basename",
-      "configless repository-local and workspace hooks remain inactive",
-      "ARASHI_HOOK_INPUT",
-      "--no-hook-input",
-      "JSON",
-      "immediate EOF",
-    ],
   ],
 
   ["docs/commands/setup.md", [hooksLink, "not a lifecycle hook"]],
@@ -144,8 +131,8 @@ const sourceRequirements = new Map<string, string[]>([
 
 const generatedRequirements = new Map<string, string[]>([
   [
-    "public/workflows/hooks.md",
-    sourceRequirements.get("docs/workflows/hooks.md") ?? [],
+    "public/reference/hooks.md",
+    sourceRequirements.get("docs/reference/hooks.md") ?? [],
   ],
   [
     "public/commands/create.md",
@@ -160,13 +147,10 @@ const generatedRequirements = new Map<string, string[]>([
     sourceRequirements.get("docs/commands/init.md") ?? [],
   ],
   [
-    "public/workflows/config.md",
-    sourceRequirements.get("docs/workflows/config.md") ?? [],
+    "public/reference/configuration.md",
+    sourceRequirements.get("docs/reference/configuration.md") ?? [],
   ],
-  [
-    "public/workflows/standalone.md",
-    sourceRequirements.get("docs/workflows/standalone.md") ?? [],
-  ],
+
   [
     "public/workflows/herdr.md",
     sourceRequirements.get("docs/workflows/herdr.md") ?? [],
@@ -240,8 +224,8 @@ function checkRequirements(requirements: Map<string, string[]>): void {
 
 function checkForbiddenAliases(): void {
   for (const relativePath of [
-    "docs/workflows/hooks.md",
-    "public/workflows/hooks.md",
+    "docs/reference/hooks.md",
+    "public/reference/hooks.md",
   ]) {
     const content = read(relativePath);
     if (content === null) continue;
@@ -376,7 +360,7 @@ function runControlledDriftSelfTest(): void {
   const fixtureRoot = mkdtempSync(
     path.join(os.tmpdir(), "arashi-lifecycle-hook-docs-"),
   );
-  const driftPath = "docs/workflows/hooks.md";
+  const driftPath = "docs/reference/hooks.md";
   const absoluteDriftPath = path.join(fixtureRoot, driftPath);
   try {
     mkdirSync(path.dirname(absoluteDriftPath), { recursive: true });

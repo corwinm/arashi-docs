@@ -40,9 +40,9 @@ const troubleshootingRequirements = [
 
 const requirements = new Map<string, string[]>([
   ["docs/index.mdx", landingRequirements],
-  ["docs/getting-started/index.md", [...installationRequirements, ...troubleshootingRequirements]],
+  ["docs/getting-started/installation.md", [...installationRequirements, ...troubleshootingRequirements]],
   ["public/index.md", landingRequirements],
-  ["public/getting-started.md", [...installationRequirements, ...troubleshootingRequirements]],
+  ["public/getting-started/installation.md", [...installationRequirements, ...troubleshootingRequirements]],
   [
     "public/llms.txt",
     [
@@ -111,7 +111,7 @@ function runOutOfRepositoryMismatchTest(sourceRoot: string): void {
       cpSync(path.join(sourceRoot, relativePath), destination);
     }
 
-    const gettingStartedPath = path.join(fixtureRoot, "docs/getting-started/index.md");
+    const gettingStartedPath = path.join(fixtureRoot, "docs/getting-started/installation.md");
     const valid = readFileSync(gettingStartedPath, "utf8");
     writeFileSync(
       gettingStartedPath,

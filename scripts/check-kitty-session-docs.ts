@@ -15,20 +15,25 @@ const kittyWorkflowRequirements = [
   "`aw remove` does not close Kitty windows or sessions",
   "Close stale Kitty windows manually",
   "no `--kitty` flag",
-  "does not add Kitty to persistent Arashi launch configuration",
+  "not added to persistent launch configuration",
   "`LAUNCH_FAILED`",
   "does not fall back",
   "created worktrees remain available",
+  "[Kitty identity lock](/reference/launching/#kitty-identity-lock)"
+];
+
+const kittyLockRequirements = [
   "cross-process identity lock",
   "10 seconds",
   "live owner",
   "dead owner",
   "30 seconds",
-  "ownership-safe release"
+  "Ownership-safe release"
 ];
 
 const requirements = new Map<string, string[]>([
   ["docs/workflows/kitty.md", kittyWorkflowRequirements],
+  ["docs/reference/launching.md", kittyLockRequirements],
   [
     "docs/commands/switch.md",
     [
@@ -49,6 +54,7 @@ const requirements = new Map<string, string[]>([
   ["docs/workflows/index.md", ["[Kitty](/workflows/kitty/)"]],
 
   ["public/workflows/kitty.md", kittyWorkflowRequirements],
+  ["public/reference/launching.md", kittyLockRequirements],
 
   [
     "public/commands/switch.md",
@@ -74,6 +80,7 @@ const requirements = new Map<string, string[]>([
     [
       "Source: https://arashi.haphazard.dev/workflows/kitty/",
       ...kittyWorkflowRequirements,
+      ...kittyLockRequirements,
       "same managed Kitty reuse-or-launch flow as `aw switch`"
     ]
   ]

@@ -50,12 +50,12 @@ const reviewedGuidanceContract: Requirement[] = [
   ],
 ];
 const surfaces = new Map<string, Requirement[]>([
-  ["docs/workflows/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
+  ["docs/reference/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
 
 
   ["docs/commands/create.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|configured-create|source metadata|no-disclosure/.test(label))],
   ["docs/commands/remove.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|remove dry-run|source metadata|no-disclosure/.test(label))],
-  ["public/workflows/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
+  ["public/reference/hooks.md", [...completeInlineContract, ...reviewedGuidanceContract]],
 
 
   ["public/commands/create.md", automationContract.filter(([label]) => /no-hooks|no-hook-input|configured-create|source metadata|no-disclosure/.test(label))],

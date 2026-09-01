@@ -18,7 +18,7 @@ const sourceRequirements = new Map<string, string[]>([
     ]
   ],
   [
-    "docs/workflows/config.md",
+    "docs/reference/configuration.md",
     [
       modeVocabulary,
       "defaults.create.launch",
@@ -26,18 +26,18 @@ const sourceRequirements = new Map<string, string[]>([
     ]
   ],
   ["docs/commands/shell.md", ["managed context", "parent-shell `cd`"]],
-  ["docs/workflows/tmux-and-sesh.md", ["mode: \"auto\"", "mode: \"sesh\""]],
-  ["docs/workflows/herdr.md", ["mode: \"herdr\"", "--ignore-configured-launcher", "--launch"]],
-  ["docs/workflows/cmux.md", ["mode: \"auto\"", "mode: \"cd\"", "--herdr"]]
+  ["docs/workflows/tmux-and-sesh.md", ["\"mode\": \"auto\"", "mode: \"sesh\""]],
+  ["docs/workflows/herdr.md", ["mode: \"herdr\"", "--herdr"]],
+  ["docs/workflows/cmux.md", ["\"mode\": \"auto\"", "mode: \"cd\"", "--herdr"]]
 ]);
 
 const generatedRequirements = new Map<string, string[]>([
   ["public/commands/switch.md", [modeVocabulary, autoOrder]],
-  ["public/workflows/config.md", [modeVocabulary]],
-  ["public/workflows/tmux-and-sesh.md", ["mode: \"auto\"", "mode: \"sesh\""]],
+  ["public/reference/configuration.md", [modeVocabulary]],
+  ["public/workflows/tmux-and-sesh.md", ["\"mode\": \"auto\"", "mode: \"sesh\""]],
   ["public/workflows/herdr.md", ["mode: \"herdr\""]],
-  ["public/workflows/cmux.md", ["mode: \"auto\"", "mode: \"cd\""]],
-  ["public/llms.txt", [modeVocabulary, "Switch command Markdown", "Configuration workflow Markdown"]],
+  ["public/workflows/cmux.md", ["\"mode\": \"auto\"", "mode: \"cd\""]],
+  ["public/llms.txt", [modeVocabulary, "Switch command Markdown", "Configuration reference Markdown"]],
   ["public/llms-full.txt", [modeVocabulary, autoOrder]]
 ]);
 

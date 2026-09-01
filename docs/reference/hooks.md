@@ -1,6 +1,6 @@
 ---
-title: Hooks
-description: Automate setup and cleanup with scope-correct create and remove lifecycle hooks.
+title: Lifecycle Hooks
+description: Reference for lifecycle timing, discovery, input, environment variables, failures, and platform behavior.
 draft: false
 sidebar:
   hidden: false
@@ -279,14 +279,14 @@ python -m pip install -r requirements.txt
 4. Keep scripts fail-fast and idempotent; workspace and shared remove hooks can run repeatedly across targets.
 5. Run with `--dry-run` where supported, then inspect human or JSON hook outcomes.
 
-Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see the [Herdr workflow guide](/workflows/herdr/#optional-cleanup-before-remove).
+Herdr workspaces can contain agents or unsaved terminal state, so `aw remove` never closes them automatically. If your team deliberately opts into cleanup, resolve the workspace while the target still exists and call only `herdr workspace close <workspace-id>`. Never use Git-mutating `herdr worktree remove`; see [Herdr](/workflows/herdr/#ownership).
 
 ## Related references
 
 - [create command](/commands/create/)
 - [remove command](/commands/remove/)
 - [init command](/commands/init/)
-- [Config workflow guide](/workflows/config/)
-- [Standalone workflow guide](/workflows/standalone/)
+- [Configuration reference](/reference/configuration/)
+- [One Repository](/getting-started/standalone/)
 - [Herdr workflow guide](/workflows/herdr/)
 - [Full hooks reference](https://github.com/corwinm/arashi/blob/main/docs/hooks.md)

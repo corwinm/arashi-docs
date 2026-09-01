@@ -71,7 +71,7 @@ aw push --set-upstream --json
 
 ## Related Commands
 
-`push` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [Standalone Repository workflow](/workflows/standalone/).
+`push` coordinates configured child repositories and therefore requires configured mode. From standalone mode, run ordinary `aw init` to upgrade; see the [One Repository](/getting-started/standalone/).
 
 - [pull](/commands/pull/)
 - [sync](/commands/sync/)
