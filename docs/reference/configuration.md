@@ -148,7 +148,7 @@ Use `copy` for files that each worktree should edit independently. Use `symlink`
 }
 ```
 
-Entries are repository-relative and appear at the same path in each new worktree. Avoid symlinking `node_modules`; dependencies can differ between branches. Use [lifecycle hooks](/reference/hooks/) for generated files, conditional setup, or more complex preparation.
+Entries are repository-relative and appear at the same path in each new worktree. Avoid symlinking `node_modules`; dependencies can differ between branches. Prefer package-manager content-addressed stores and per-worktree installs for dependency isolation. Use [lifecycle hooks](/reference/hooks/) for generated files, conditional setup, or more complex preparation.
 
 ## Hooks
 

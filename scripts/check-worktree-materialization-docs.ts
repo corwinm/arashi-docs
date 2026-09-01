@@ -31,6 +31,10 @@ const conciseConfigurationContract: Requirement[] = [
   ["symlink setting", /\bsymlink\b/i],
   ["same-relative-path materialization", /same path/i],
   ["node_modules symlink warning", /Avoid symlinking node_modules/i],
+  [
+    "dependency isolation guidance",
+    /package-manager[^.\n]{0,120}content-addressed stores[^.\n]{0,120}per-worktree installs/i,
+  ],
   ["hooks escape hatch", /lifecycle hooks/i],
 ];
 
