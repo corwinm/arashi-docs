@@ -4,7 +4,7 @@ description: Choose Arashi's default independent launch or request a tab for one
 draft: false
 sidebar:
   hidden: false
-  order: 3
+  order: 4
 ---
 
 Use this guide when you need to control whether Arashi opens a worktree in its normal independent context or as a tab in the current supported terminal or managed session.
@@ -129,6 +129,12 @@ Confirm the selected adapter in the error details and compare it with the suppor
 ### A supported tab fails to launch
 
 Treat `LAUNCH_FAILED` separately from `TAB_DISPOSITION_UNSUPPORTED`. Check the selected application's version, target/session evidence, automation permissions, and local socket or remote-control access. Retrying without `--tab` is a deliberate user choice, not an automatic Arashi fallback.
+
+### Kitty identity lock
+
+Kitty serializes each worktree's reuse-or-launch decision with a cross-process identity lock. A contender waits up to 10 seconds, never steals from a live owner, and recovers a dead owner automatically. Malformed owner metadata is recoverable after 30 seconds. Ownership-safe release ensures a process removes only the lock it created.
+
+If the wait fails, confirm whether the owner is still running before removing anything manually. Usually, wait for the current launch to finish and retry.
 
 ### The wrong containing terminal seems selected
 

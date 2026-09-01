@@ -48,6 +48,7 @@ If launch fails after create, created worktrees remain available. Kitty returns 
 - Run `kitten @ ls >/dev/null` in the same window.
 - Check remote-control, socket, and password settings.
 - Close duplicate exact worktree windows manually.
+- For lock contention and recovery, see [Kitty identity lock](/reference/launching/#kitty-identity-lock).
 
 ## Related
 

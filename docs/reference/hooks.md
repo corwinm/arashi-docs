@@ -4,7 +4,7 @@ description: Reference for lifecycle timing, discovery, input, environment varia
 draft: false
 sidebar:
   hidden: false
-  order: 2
+  order: 3
 ---
 
 Use lifecycle hooks for trusted setup and cleanup around `aw create` and `aw remove`. Use short reviewable inline commands; put substantial or reusable logic in native files. Standalone hooks remain native files only, as do user-global hooks.

@@ -4,7 +4,7 @@ description: Configure workspace layout, repositories, worktree behavior, and co
 draft: false
 sidebar:
   hidden: false
-  order: 1
+  order: 2
 ---
 
 `aw init` creates `.arashi/config.json`. Commit this file when the workspace configuration should be shared with your team.
