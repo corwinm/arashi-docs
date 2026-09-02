@@ -3,20 +3,6 @@ name: Docs Validate
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "README.md"
-      - "docs/**"
-      - "scripts/**"
-      - "contracts/**"
-      - "astro.config.mjs"
-      - "package.json"
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      - ".nvmrc"
-      - "tsconfig.json"
-      - "netlify.toml"
-      - "src/content.config.ts"
-      - ".github/workflows/docs-validate.yml"
   push:
     branches: [main]
     paths:
