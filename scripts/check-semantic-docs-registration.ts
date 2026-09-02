@@ -102,10 +102,13 @@ if (
     "docs-validate workflow must invoke the registration guard before the stable pnpm validate entrypoint",
   );
 }
+if (!/pull_request:\n    branches: \[main\]\n  push:/.test(workflow)) {
+  failures.push("docs-validate workflow must run for every pull request into main");
+}
 for (const requiredPath of ["scripts/**", "contracts/**", "docs/**", "package.json"]) {
   const count = workflow.split(`- \"${requiredPath}\"`).length - 1;
-  if (count !== 2) {
-    failures.push(`docs-validate workflow must include ${requiredPath} in pull_request and push path filters`);
+  if (count !== 1) {
+    failures.push(`docs-validate workflow must include ${requiredPath} in push path filters`);
   }
 }
 
