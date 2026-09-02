@@ -126,11 +126,11 @@ Customize newly created configured-worktree paths with `worktreeNaming`:
 }
 ```
 
-- `style`: `default`, `branch`, or `repo-branch`.
-- `branchSlashes`: `preserve` or `flatten`.
-- `maxPathLength`: optional maximum absolute worktree path length.
+`style` is `default`, `branch`, or `repo-branch`. `branchSlashes` is `preserve` or `flatten`. Omitting either field uses `default` and `preserve` effectively while leaving the omitted field omitted when configuration is normalized or saved. For branch `feature/auth`, `branch` produces `feature/auth` (or `feature-auth` when flattened); `repo-branch` produces `repo-feature/auth` (or `repo-feature-auth`). The shape-aware `default` uses the branch path for a non-bare configured repository and `repo/feature/auth` for a bare configured repository. Existing worktrees are not renamed when this policy changes; recorded worktree metadata remains authoritative, and a chosen destination collision fails without appending an alternate suffix. Coordinated children retain their configured paths beneath the single resolved parent destination.
 
-These settings affect new worktree paths only; they do not rename existing worktrees or change Git branch names.
+`maxPathLength` is optional and must be a positive integer from 1 through 2,147,483,647. It budgets the UTF-16 code units in every absolute newly planned configured-worktree destination, not just one folder component. Omitting `maxPathLength` preserves current destination bytes and does not persist or infer a platform default. When every selected destination already fits, names remain exact. Otherwise only newly planned configured paths may shorten. Arashi shortens the generated parent-relative namespace to a readable prefix plus the first eight lowercase hexadecimal characters of SHA-256 over the portable `/`-separated ordinary generated parent namespace. The longest selected child path determines the shared fitted parent; configured child-relative paths remain exact, including when only children are selected.
+
+If the fixed workspace, worktrees directory, and selected child topology leave fewer than nine UTF-16 units for `-<eight-hex-hash>`, create fails before any mutation with `WORKTREE_PATH_LENGTH_EXCEEDED`. The Git branch stays exact. Existing registered worktree paths are metadata-authoritative and are never renamed, and standalone `.worktrees/<branch>` placement remains unchanged. This setting reserves space at the worktree root; it does not guarantee that repository-internal file paths fit.
 
 ## Copy or share worktree files
 
@@ -148,7 +148,9 @@ Use `copy` for files that each worktree should edit independently. Use `symlink`
 }
 ```
 
-Entries are repository-relative and appear at the same path in each new worktree. Avoid symlinking `node_modules`; dependencies can differ between branches. Prefer package-manager content-addressed stores and per-worktree installs for dependency isolation. Use [lifecycle hooks](/reference/hooks/) for generated files, conditional setup, or more complex preparation.
+Entries are direct `repos.<name>.copy` and `repos.<name>.symlink` arrays. Each entry uses the same path in each new worktree: the repository-relative path from the Git-primary child checkout. Repository construction runs `pre-create`, each `copy`, each `symlink`, then `post-create`; `--no-hooks` does not disable materialization. Missing sources are visible non-fatal skips. Arashi never overwrites a destination, every destination must remain inside the worktree, and rejected native symlinks have no copy, hard-link, or junction fallback.
+
+Use `copy` for independent, isolated files and `symlink` only for intentionally shared state. Avoid symlinking `node_modules`; dependencies can differ between branches. Prefer package-manager content-addressed stores and per-worktree installs for dependency isolation. Materialization supports configured workspaces only; standalone mode, globs, and path remapping are unsupported. Use [lifecycle hooks](/reference/hooks/) for globs, remapping, external sources, interpolation, generated files, or conditional behavior. `aw create --dry-run` previews the ordered materialization plan before mutation, and `aw doctor` diagnoses source availability and destination safety without repair.
 
 ## Hooks
 
