@@ -79,6 +79,11 @@ function checkDocsValidationWorkflow(
   workflow: string,
   failures: string[],
 ): void {
+  if (!/^\s*name:\s*Validate docs quality gates\s*$/m.test(workflow)) {
+    failures.push(
+      "docs validation must preserve the required check name Validate docs quality gates",
+    );
+  }
   const validationRuns = [
     ...workflow.matchAll(/^\s*run:\s*pnpm\s+(validate(?::\S+)?)/gm),
   ].map((match) => match[1]);
@@ -214,7 +219,7 @@ function hasPnpmCommand(command: string, expected: string): boolean {
 function runControlledDriftTests(): void {
   const setupSha = "a".repeat(40);
   const valid: PipelineFiles = {
-    docsValidate: "run: pnpm validate\n",
+    docsValidate: "name: Validate docs quality gates\nrun: pnpm validate\n",
     externalLinks: `on:\n  schedule:\n  workflow_dispatch:\nsteps:\n  - uses: actions/setup-node@${setupSha}\n    with:\n      node-version: 24.18.0\n  - name: Run external links\n    run: node scripts/check-external-links.ts\n`,
     netlify: `[build]\ncommand = "pnpm build"\n`,
     packageJson: JSON.stringify({
@@ -266,6 +271,17 @@ function runControlledDriftTests(): void {
         docsValidate: `${valid.docsValidate}publish-gate:\n  name: Publish gate status\n`,
       },
       "no-op publication gate",
+    ],
+    [
+      "renamed required check",
+      {
+        ...valid,
+        docsValidate: valid.docsValidate.replace(
+          "Validate docs quality gates",
+          "Documentation validation",
+        ),
+      },
+      "required check name",
     ],
     [
       "validation in deploy build",
