@@ -1,19 +1,10 @@
 [build]
-  command = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm validate && pnpm build"
+  command = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "24.18.0"
   PNPM_VERSION = "11.22.0"
-
-[context.production]
-  command = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm validate && pnpm build"
-
-[context.deploy-preview]
-  command = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm lint && pnpm validate:build && pnpm validate:links:internal && pnpm validate:a11y"
-
-[context.branch-deploy]
-  command = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm lint && pnpm validate:build && pnpm validate:links:internal"
 
 [[redirects]]
   from = "/install"

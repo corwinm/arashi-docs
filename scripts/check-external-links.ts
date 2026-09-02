@@ -1,78 +1,92 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const docsRoot = path.resolve("docs");
-const markdownFiles = walk(docsRoot).filter((filePath) => /\.mdx?$/.test(filePath));
-const linkMap = new Map<string, Set<string>>();
-
-for (const filePath of markdownFiles) {
-  const content = readFileSync(filePath, "utf8");
-  for (const target of extractExternalTargets(content)) {
-    const files = linkMap.get(target) ?? new Set<string>();
-    files.add(path.relative(process.cwd(), filePath));
-    linkMap.set(target, files);
-  }
+interface CheckFailure {
+  ok: false;
+  reason: string;
 }
 
-const uniqueLinks = [...linkMap.keys()];
-const failures: string[] = [];
-
-for (const url of uniqueLinks) {
-  const result = await checkUrl(url);
-  if (!result.ok) {
-    const sources = [...(linkMap.get(url) ?? new Set<string>())].join(", ");
-    failures.push(`${url} (${result.reason}) [${sources}]`);
-  }
+interface CheckSuccess {
+  ok: true;
 }
 
-if (failures.length > 0) {
-  console.error("External link validation found failures:");
-  for (const failure of failures) {
-    console.error(`- ${failure}`);
-  }
-  process.exit(1);
+type CheckResult = CheckSuccess | CheckFailure;
+
+if (isMainModule()) {
+  await main();
 }
 
-console.log(`External link validation passed for ${uniqueLinks.length} links.`);
+async function main(): Promise<void> {
+  const docsRoot = path.resolve("docs");
+  const markdownFiles = walk(docsRoot).filter((filePath) =>
+    /\.mdx?$/.test(filePath),
+  );
+  const linkMap = new Map<string, Set<string>>();
 
-async function checkUrl(url: string): Promise<{ ok: true } | { ok: false; reason: string }> {
+  for (const filePath of markdownFiles) {
+    const content = readFileSync(filePath, "utf8");
+    for (const target of extractExternalTargets(content)) {
+      const files = linkMap.get(target) ?? new Set<string>();
+      files.add(path.relative(process.cwd(), filePath));
+      linkMap.set(target, files);
+    }
+  }
+
+  const uniqueLinks = [...linkMap.keys()];
+  const failures: string[] = [];
+
+  for (const url of uniqueLinks) {
+    const result = await checkUrl(url);
+    if (!result.ok) {
+      const sources = [...(linkMap.get(url) ?? new Set<string>())].join(", ");
+      failures.push(`${url} (${result.reason}) [${sources}]`);
+    }
+  }
+
+  if (failures.length > 0) {
+    console.error("External link validation found failures:");
+    for (const failure of failures) console.error(`- ${failure}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log(
+    `External link validation passed for ${uniqueLinks.length} links.`,
+  );
+}
+
+export async function checkUrl(url: string): Promise<CheckResult> {
   try {
     const head = await fetch(url, {
       method: "HEAD",
       redirect: "follow",
-      signal: AbortSignal.timeout(15000)
+      signal: AbortSignal.timeout(15000),
     });
 
-    if (head.status >= 200 && head.status < 400) {
-      return { ok: true };
-    }
+    if (isSuccessful(head.status)) return { ok: true };
+    return await checkWithGet(url);
+  } catch {
+    return await checkWithGet(url);
+  }
+}
 
-    if (head.status === 405 || head.status === 501) {
-      return await checkWithGet(url);
-    }
-
-    return { ok: false, reason: `status ${head.status}` };
+async function checkWithGet(url: string): Promise<CheckResult> {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      redirect: "follow",
+      signal: AbortSignal.timeout(15000),
+    });
+    if (isSuccessful(response.status)) return { ok: true };
+    return { ok: false, reason: `status ${response.status}` };
   } catch (error) {
     return { ok: false, reason: formatError(error) };
   }
 }
 
-async function checkWithGet(
-  url: string
-): Promise<{ ok: true } | { ok: false; reason: string }> {
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      redirect: "follow",
-      signal: AbortSignal.timeout(15000)
-    });
-    if (response.status >= 200 && response.status < 400) {
-      return { ok: true };
-    }
-    return { ok: false, reason: `status ${response.status}` };
-  } catch (error) {
-    return { ok: false, reason: formatError(error) };
-  }
+function isSuccessful(status: number): boolean {
+  return status >= 200 && status < 400;
 }
 
 function extractExternalTargets(content: string): string[] {
@@ -94,10 +108,9 @@ function extractExternalTargets(content: string): string[] {
 
 function normalizeTarget(raw: string): string {
   const trimmed = raw.trim();
-  const noTitle = trimmed.startsWith("<") && trimmed.endsWith(">")
+  return trimmed.startsWith("<") && trimmed.endsWith(">")
     ? trimmed.slice(1, -1)
     : trimmed.split(/\s+['"]/)[0];
-  return noTitle;
 }
 
 function walk(dir: string): string[] {
@@ -118,8 +131,14 @@ function walk(dir: string): string[] {
 }
 
 function formatError(value: unknown): string {
-  if (value instanceof Error) {
-    return value.message;
-  }
-  return "unknown error";
+  return value instanceof Error ? value.message : "unknown error";
+}
+
+function isMainModule(): boolean {
+  const entry = process.argv[1];
+  return (
+    Boolean(entry) &&
+    existsSync(entry) &&
+    path.resolve(entry) === fileURLToPath(import.meta.url)
+  );
 }
