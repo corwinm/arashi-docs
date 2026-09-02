@@ -13,22 +13,15 @@ jobs:
     name: External link health report
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    continue-on-error: true
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Setup pnpm and Node.js
-        uses: pnpm/setup@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          version: 11.22.0
-          runtime: node@24.18.0
-          cache: true
-          install: false
+          node-version: 24.18.0
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run non-blocking external link checks
-        run: pnpm validate:links:external
+      - name: Check external links
+        run: node scripts/check-external-links.ts

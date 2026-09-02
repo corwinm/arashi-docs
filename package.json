@@ -11,6 +11,7 @@
     "build": "pnpm sync:content && astro check && astro build",
     "preview": "astro preview",
     "test:worktree-naming-docs": "pnpm sync:content && node scripts/test-worktree-naming-docs-fixtures.ts",
+    "test:external-links": "node --test scripts/check-external-links.test.ts",
     "lint:markdown": "markdownlint \"README.md\" \"docs/**/*.md\" --disable MD013",
     "lint": "pnpm lint:markdown",
     "validate:build": "pnpm sync:content && astro check && astro build",
@@ -40,10 +41,11 @@
     "validate:shell-completion-docs": "pnpm sync:content && node scripts/check-shell-completion-docs.ts",
     "validate:ssh-host-alias-docs": "pnpm sync:content && node scripts/check-ssh-host-alias-docs.ts",
     "validate:links:external": "node scripts/check-external-links.ts",
+    "validate:pipeline-contract": "node scripts/check-docs-pipeline-contract.ts",
     "validate:readme-link": "node scripts/check-readme-link.ts",
     "validate:semantic-docs:registration": "node scripts/check-semantic-docs-registration.ts",
     "validate:semantic-docs": "pnpm validate:semantic-docs:registration && pnpm sync:content && node scripts/run-semantic-doc-checks.ts",
-    "validate": "pnpm lint && pnpm validate:semantic-docs && pnpm validate:build:prepared && pnpm validate:links:internal && pnpm validate:a11y:prepared && pnpm validate:docs-domain && pnpm validate:readme-link"
+    "validate": "pnpm lint && pnpm validate:semantic-docs && pnpm test:external-links && pnpm validate:pipeline-contract && pnpm validate:build:prepared && pnpm validate:links:internal && pnpm validate:a11y:prepared && pnpm validate:docs-domain && pnpm validate:readme-link"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.41.1",

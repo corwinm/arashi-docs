@@ -67,7 +67,7 @@ for (const checker of discoveredCheckers) {
 
 const validate = scripts.validate ?? "";
 const expectedValidate =
-  "pnpm lint && pnpm validate:semantic-docs && pnpm validate:build:prepared && pnpm validate:links:internal && pnpm validate:a11y:prepared && pnpm validate:docs-domain && pnpm validate:readme-link";
+  "pnpm lint && pnpm validate:semantic-docs && pnpm test:external-links && pnpm validate:pipeline-contract && pnpm validate:build:prepared && pnpm validate:links:internal && pnpm validate:a11y:prepared && pnpm validate:docs-domain && pnpm validate:readme-link";
 if (validate !== expectedValidate) {
   failures.push(`package.json validate must be ${JSON.stringify(expectedValidate)}`);
 }
@@ -96,10 +96,10 @@ const validationRuns = [...workflow.matchAll(/^\s*run:\s+pnpm\s+(validate(?::\S+
 );
 if (
   JSON.stringify(validationRuns) !==
-  JSON.stringify(["validate:semantic-docs:registration", "validate"])
+  JSON.stringify(["validate"])
 ) {
   failures.push(
-    "docs-validate workflow must invoke the registration guard before the stable pnpm validate entrypoint",
+    "docs-validate workflow must invoke only the stable pnpm validate entrypoint",
   );
 }
 if (!/pull_request:\n    branches: \[main\]\n  push:/.test(workflow)) {

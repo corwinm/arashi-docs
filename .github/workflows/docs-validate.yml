@@ -44,23 +44,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Verify semantic docs registration
-        run: pnpm validate:semantic-docs:registration
-
       - name: Validate documentation
         run: pnpm validate
 
       - name: Exercise worktree-naming semantic drift fixtures
         run: pnpm test:worktree-naming-docs
-
-  publish-gate:
-    name: Publish gate status
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    needs: [validate]
-
-    steps:
-      - name: Confirm production publication gate
-        run: |
-          echo "All blocking checks passed on main."
-          echo "Netlify production deployment may proceed from the default branch."

@@ -37,7 +37,7 @@ pnpm run build
 - `pnpm run validate:a11y` runs accessibility smoke checks for critical pages.
 - `pnpm run validate:managed-ignore-docs` checks managed-ignore guidance in source pages and generated agent-readable exports.
 - `pnpm run validate:standalone-docs` checks standalone workflow coverage in source pages and generated agent-readable exports.
-- `pnpm run validate:links:external` checks external links (scheduled, non-blocking).
+- `pnpm run validate:links:external` checks external links on a schedule outside pull-request gates.
 - `pnpm run validate:docs-domain` enforces canonical docs-domain policy and denylist checks.
 - `pnpm run validate:readme-link` checks canonical docs URL health.
 
@@ -49,6 +49,5 @@ pnpm run build
 
 ## Publishing
 
-- Netlify deploys production from `main`.
-- Pull requests use deploy preview context.
-- Validation workflows run in `.github/workflows/`.
+- GitHub Actions owns documentation quality validation.
+- Netlify builds and deploys production from `main`; pull requests use deploy previews.
