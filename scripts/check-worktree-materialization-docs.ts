@@ -11,6 +11,11 @@ import path from "node:path";
 
 type Requirement = [label: string, pattern: RegExp];
 
+const dependencyIsolationRequirement: Requirement = [
+  "dependency isolation guidance",
+  /package-manager[^.\n]{0,120}content-addressed stores[^.\n]{0,120}per-worktree installs/i,
+];
+
 const configurationContract: Requirement[] = [
   ["direct repos.<name>.copy array", /repos\.<name>\.copy[^.\n]{0,100}(?:array|list)/i],
   ["direct repos.<name>.symlink array", /repos\.<name>\.symlink[^.\n]{0,100}(?:array|list)/i],
@@ -19,6 +24,7 @@ const configurationContract: Requirement[] = [
   ["configured-only scope", /configured(?: mode| workspaces?)? only/i],
   ["copy isolation guidance", /copy[^.\n]{0,120}(?:independent|isolat)/i],
   ["symlink sharing guidance", /symlink[^.\n]{0,120}(?:shar|dependenc)/i],
+  dependencyIsolationRequirement,
   ["unsupported globs", /globs?[^.\n]{0,80}(?:not supported|unsupported)/i],
   ["unsupported remapping", /remapping[^.\n]{0,80}(?:not supported|unsupported)/i],
   ["unsupported standalone mode", /standalone(?: mode)?[^.\n]{0,100}(?:not supported|unsupported)/i],
@@ -31,6 +37,7 @@ const conciseConfigurationContract: Requirement[] = [
   ["symlink setting", /\bsymlink\b/i],
   ["same-relative-path materialization", /same path/i],
   ["node_modules symlink warning", /Avoid symlinking node_modules/i],
+  dependencyIsolationRequirement,
   ["hooks escape hatch", /lifecycle hooks/i],
 ];
 
@@ -285,6 +292,7 @@ function runControlledGuidanceSelfTest(): void {
     "Each entry uses the same relative path from the Git-primary child checkout into the worktree.",
     "This is available in configured workspaces only.",
     "Choose copy for an independent isolated file, or symlink to share dependencies with the primary checkout.",
+    "Prefer package-manager content-addressed stores and per-worktree installs for dependency isolation.",
     "Globs are not supported, remapping is unsupported, and standalone mode is not supported.",
     "Copy entries are not supported in standalone mode.",
     "Copy entries aren't supported in standalone mode.",

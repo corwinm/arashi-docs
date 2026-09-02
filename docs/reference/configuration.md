@@ -128,9 +128,9 @@ Customize newly created configured-worktree paths with `worktreeNaming`:
 
 - `style`: `default`, `branch`, or `repo-branch`.
 - `branchSlashes`: `preserve` or `flatten`.
-- `maxPathLength`: optional maximum absolute worktree path length.
+- `maxPathLength`: optional positive integer from 1 through 2,147,483,647.
 
-These settings affect new worktree paths only; they do not rename existing worktrees or change Git branch names.
+These fields affect newly planned configured-worktree destinations; they do not rename existing worktrees or change Git branch names. See [Worktree locations](/commands/create/#worktree-locations) for the topology mapping, path-budget behavior, and create-time failures.
 
 ## Copy or share worktree files
 
@@ -148,7 +148,11 @@ Use `copy` for files that each worktree should edit independently. Use `symlink`
 }
 ```
 
-Entries are repository-relative and appear at the same path in each new worktree. Avoid symlinking `node_modules`; dependencies can differ between branches. Use [lifecycle hooks](/reference/hooks/) for generated files, conditional setup, or more complex preparation.
+`repos.<name>.copy` and `repos.<name>.symlink` are direct arrays. Each entry uses the same path in each new worktree—the repository-relative path from the Git-primary child checkout. Use `copy` for independent, isolated files and `symlink` only for intentionally shared state. Avoid symlinking `node_modules`; dependencies can differ between branches. Prefer package-manager content-addressed stores and per-worktree installs for dependency isolation.
+
+Materialization is available in configured workspaces only; standalone mode, globs, and path remapping are unsupported. Use [lifecycle hooks](/reference/hooks/) for globs, remapping, external sources, interpolation, generated files, or conditional behavior. `aw doctor` provides non-mutating inspection of materialization sources and destinations without repair.
+
+See [Configured file materialization](/commands/create/#configured-file-materialization) for ordering, validation, dry-run, and failure behavior.
 
 ## Hooks
 
