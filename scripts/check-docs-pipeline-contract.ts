@@ -122,6 +122,11 @@ function checkDocsValidationWorkflow(
       "docs validation must target main for pull requests and pushes",
     );
   }
+  if (!/^      - ["']\.github\/workflows\/docs-link-health\.yml["']$/m.test(onBlock)) {
+    failures.push(
+      "docs validation must validate external-link workflow changes on push",
+    );
+  }
 
   const jobs = yamlChildKeys(yamlTopLevelBlock(workflow, "jobs"));
   if (JSON.stringify(jobs) !== JSON.stringify(["validate"])) {
@@ -136,7 +141,9 @@ function checkDocsValidationWorkflow(
   }
 
   const validationRuns = [
-    ...workflow.matchAll(/^\s*run:\s*pnpm\s+(validate(?::\S+)?)/gm),
+    ...workflow.matchAll(
+      /^\s*run:\s*pnpm\s+(validate(?::[A-Za-z0-9_-]+)?)\s*$/gm,
+    ),
   ].map((match) => match[1]);
   if (JSON.stringify(validationRuns) !== JSON.stringify(["validate"])) {
     failures.push(
@@ -295,7 +302,7 @@ function hasPnpmCommand(command: string, expected: string): boolean {
 function runControlledDriftTests(): void {
   const setupSha = "a".repeat(40);
   const valid: PipelineFiles = {
-    docsValidate: `on:\n  pull_request:\n    branches: [main]\n  push:\n    branches: [main]\n    paths:\n      - "docs/**"\njobs:\n  validate:\n    name: Validate docs quality gates\n    steps:\n      - name: Validate documentation\n        run: pnpm validate\n`,
+    docsValidate: `on:\n  pull_request:\n    branches: [main]\n  push:\n    branches: [main]\n    paths:\n      - "docs/**"\n      - ".github/workflows/docs-link-health.yml"\njobs:\n  validate:\n    name: Validate docs quality gates\n    steps:\n      - name: Validate documentation\n        run: pnpm validate\n`,
     externalLinks: `on:\n  schedule:\n    - cron: "0 13 * * 1"\n  workflow_dispatch:\njobs:\n  external-link-health:\n    steps:\n      - uses: actions/setup-node@${setupSha}\n        with:\n          node-version: 24.18.0\n          package-manager-cache: false\n      - name: Check external links\n        run: node scripts/check-external-links.ts\n`,
     netlify: `[build]\ncommand = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm build"\n`,
     packageJson: JSON.stringify({
@@ -324,6 +331,28 @@ function runControlledDriftTests(): void {
         ),
       },
       "must target main",
+    ],
+    [
+      "external-link workflow omitted from push paths",
+      {
+        ...valid,
+        docsValidate: valid.docsValidate.replace(
+          '      - ".github/workflows/docs-link-health.yml"\n',
+          "",
+        ),
+      },
+      "must validate external-link workflow changes",
+    ],
+    [
+      "validation script lookalike",
+      {
+        ...valid,
+        docsValidate: valid.docsValidate.replace(
+          "        run: pnpm validate\n",
+          "        run: pnpm validate-disabled\n",
+        ),
+      },
+      "canonical pnpm validate entrypoint",
     ],
     [
       "extra docs job",

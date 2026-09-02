@@ -19,6 +19,7 @@ on:
       - "netlify.toml"
       - "src/content.config.ts"
       - ".github/workflows/docs-validate.yml"
+      - ".github/workflows/docs-link-health.yml"
 
 permissions:
   contents: read
