@@ -22,6 +22,7 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 24.18.0
+          package-manager-cache: false
 
       - name: Check external links
         run: node scripts/check-external-links.ts

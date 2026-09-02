@@ -82,6 +82,11 @@ function checkExternalLinkWorkflow(workflow: string, failures: string[]): void {
   if (!/node-version:\s*["']?24\.18\.0["']?/.test(workflow)) {
     failures.push("external-link health must pin Node.js 24.18.0");
   }
+  if (!/package-manager-cache:\s*false/.test(workflow)) {
+    failures.push(
+      "external-link health must explicitly disable setup-node package-manager caching",
+    );
+  }
   if (
     /pnpm\/setup|cache:\s*true|\b(?:pnpm|npm|yarn|bun)\s+(?:install|ci)\b/.test(
       workflow,
@@ -291,7 +296,7 @@ function runControlledDriftTests(): void {
   const setupSha = "a".repeat(40);
   const valid: PipelineFiles = {
     docsValidate: `on:\n  pull_request:\n    branches: [main]\n  push:\n    branches: [main]\n    paths:\n      - "docs/**"\njobs:\n  validate:\n    name: Validate docs quality gates\n    steps:\n      - name: Validate documentation\n        run: pnpm validate\n`,
-    externalLinks: `on:\n  schedule:\n    - cron: "0 13 * * 1"\n  workflow_dispatch:\njobs:\n  external-link-health:\n    steps:\n      - uses: actions/setup-node@${setupSha}\n        with:\n          node-version: 24.18.0\n      - name: Check external links\n        run: node scripts/check-external-links.ts\n`,
+    externalLinks: `on:\n  schedule:\n    - cron: "0 13 * * 1"\n  workflow_dispatch:\njobs:\n  external-link-health:\n    steps:\n      - uses: actions/setup-node@${setupSha}\n        with:\n          node-version: 24.18.0\n          package-manager-cache: false\n      - name: Check external links\n        run: node scripts/check-external-links.ts\n`,
     netlify: `[build]\ncommand = "npm install --global corepack@0.35.0 && corepack enable && pnpm install --frozen-lockfile && pnpm build"\n`,
     packageJson: JSON.stringify({
       scripts: {
@@ -370,6 +375,17 @@ function runControlledDriftTests(): void {
         ),
       },
       "must not install",
+    ],
+    [
+      "implicit setup-node package-manager cache",
+      {
+        ...valid,
+        externalLinks: valid.externalLinks.replace(
+          "          package-manager-cache: false\n",
+          "",
+        ),
+      },
+      "must explicitly disable setup-node package-manager caching",
     ],
     [
       "single-quoted context override",
