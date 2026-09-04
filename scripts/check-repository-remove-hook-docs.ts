@@ -63,7 +63,8 @@ const order: Requirement = {
   label: "remove scope order",
   pattern:
     /repository[\s\S]{0,40}(?:→|,|then)[\s\S]{0,40}workspace[\s\S]{0,40}(?:→|,|then)[\s\S]{0,40}global-targeted[\s\S]{0,40}(?:→|,|then)[\s\S]{0,40}global-shared/i,
-  valid: "The order is repository → workspace → global-targeted → global-shared.",
+  valid:
+    "The order is repository → workspace → global-targeted → global-shared.",
   drift: "The order is workspace, repository, global-shared, global-targeted.",
 };
 
@@ -82,11 +83,13 @@ const inspection: Requirement = {
     /(?:doctor[\s\S]{0,180}dry-run|dry-run[\s\S]{0,180}doctor)[\s\S]{0,220}(?:same|shared|runtime)[\s\S]{0,120}(?:candidate|resolver|discovery)[\s\S]{0,220}(?:without|never|non-mutating)[\s\S]{0,100}(?:mutation|execute|spawns?)/i,
   valid:
     "Doctor and dry-run use the same runtime candidate discovery and report selection or ambiguity without mutation or execution.",
-  drift: "Doctor checks only inline configuration, and dry-run skips hook discovery.",
+  drift:
+    "Doctor checks only inline configuration, and dry-run skips hook discovery.",
 };
 
 const topology: Requirement = {
-  label: "configuration authority stores files while remove cwd stays active child",
+  label:
+    "configuration authority stores files while remove cwd stays active child",
   pattern:
     /(?:direct|bare|linked)[\s\S]{0,220}(?:configuration (?:authority|root)|config authority)[\s\S]{0,180}(?:stores?|storage|file)[\s\S]{0,220}(?:remove )?(?:cwd|working directory)[\s\S]{0,140}(?:active|target)[\s\S]{0,80}(?:child|checkout|repository)/i,
   valid:
@@ -96,7 +99,8 @@ const topology: Requirement = {
 };
 
 const onboarding: Requirement = {
-  label: "file onboarding creates the qualified path and child-local files block duplicates",
+  label:
+    "file onboarding creates the qualified path and child-local files block duplicates",
   pattern:
     /(?:file mode|file onboarding|native file)[\s\S]{0,220}(?:creates?|writes?|scaffolds?)[\s\S]{0,180}\.arashi\/hooks\/<lifecycle>\.<repo><ext>[\s\S]{0,260}(?:child-local|<activeRepo>\/\.arashi\/hooks)[\s\S]{0,180}(?:block|prevent|ambigu|duplicate)/i,
   valid:
@@ -117,10 +121,36 @@ const deletion: Requirement = {
 const pageRequirements = new Map<string, Requirement[]>([
   [
     "reference/hooks.md",
-    [canonicalPath, aliasSlot, collision, identityAndCwd, sourcePathMetadata, order, windows, inspection, topology, onboarding, deletion],
+    [
+      canonicalPath,
+      aliasSlot,
+      collision,
+      identityAndCwd,
+      sourcePathMetadata,
+      order,
+      windows,
+      inspection,
+      topology,
+      onboarding,
+      deletion,
+    ],
   ],
-  ["commands/remove.md", [canonicalPath, aliasSlot, collision, identityAndCwd, sourcePathMetadata, order, inspection]],
-  ["reference/configuration.md", [canonicalPath, aliasSlot, collision, inspection]],
+  [
+    "commands/remove.md",
+    [
+      canonicalPath,
+      aliasSlot,
+      collision,
+      identityAndCwd,
+      sourcePathMetadata,
+      order,
+      inspection,
+    ],
+  ],
+  [
+    "reference/configuration.md",
+    [canonicalPath, aliasSlot, collision, inspection],
+  ],
   ["commands/add.md", [canonicalPath, onboarding]],
   ["commands/configure.md", [canonicalPath, onboarding]],
   ["commands/delete.md", [deletion]],
@@ -193,58 +223,91 @@ function checkContradictions(
 ): void {
   const statements = content.split(/(?<=[.!?])\s+/);
   for (const statement of statements) {
-    const hasAliasContext = /(?:aliases?|repository(?:-| )slot|child-local|inline)/i.test(statement);
-    const hasRepositoryAlias = /(?:qualified|workspace-owned|child-local|inline)/i.test(statement);
+    const hasAliasContext =
+      /(?:aliases?|repository(?:-| )slot|child-local|inline)/i.test(statement);
+    const hasRepositoryAlias =
+      /(?:qualified|workspace-owned|child-local|inline)/i.test(statement);
     if (
       hasAliasContext &&
       hasRepositoryAlias &&
-      hasAffirmativeAction(statement, /\b(?:compose|run together|both execute)\b/gi)
+      hasAffirmativeAction(
+        statement,
+        /\b(?:compose|run together|both execute)\b/gi,
+      )
     ) {
       found.push(`${relativePath} must not compose repository-slot aliases`);
     }
-    if (
-      hasAliasContext &&
-      hasAffirmativeAliasSelection(statement)
-    ) {
-      found.push(`${relativePath} must not assign precedence among repository-slot aliases`);
+    if (hasAliasContext && hasAffirmativeAliasSelection(statement)) {
+      found.push(
+        `${relativePath} must not assign precedence among repository-slot aliases`,
+      );
     }
     if (hasNegatedRepositorySlotAliasRelationship(statement)) {
-      found.push(`${relativePath} must preserve the one-slot relationship among repository remove hook aliases`);
+      found.push(
+        `${relativePath} must preserve the one-slot relationship among repository remove hook aliases`,
+      );
     }
     if (hasAffirmativeLossOfChildLocalRemoveSupport(statement)) {
-      found.push(`${relativePath} must preserve compatible child-local repository remove file support`);
+      found.push(
+        `${relativePath} must preserve compatible child-local repository remove file support`,
+      );
     }
     if (hasDoctorInlineOnlyClaim(statement)) {
-      found.push(`${relativePath} doctor must inspect inline and native repository remove candidates`);
+      found.push(
+        `${relativePath} doctor must inspect inline and native repository remove candidates`,
+      );
     }
     if (hasRemoveDryRunDiscoverySkip(statement)) {
-      found.push(`${relativePath} remove dry-run must use native candidate discovery`);
+      found.push(
+        `${relativePath} remove dry-run must use native candidate discovery`,
+      );
     }
     if (hasNegatedInspectionParity(statement)) {
-      found.push(`${relativePath} doctor and remove dry-run must share the runtime candidate resolver`);
+      found.push(
+        `${relativePath} doctor and remove dry-run must share the runtime candidate resolver`,
+      );
+    }
+    if (
+      /\bqualified configuration-root remove hook paths?\s+(?:are|is)\s+not\b[^.!?]{0,100}<configurationRoot>\/\.arashi\/hooks\/(?:pre|post)-remove\.<repo><ext>/i.test(
+        statement,
+      )
+    ) {
+      found.push(
+        `${relativePath} must preserve the qualified configuration-root remove hook paths`,
+      );
     }
     if (hasNegatedCollisionFailure(statement)) {
-      found.push(`${relativePath} repository-slot ambiguity must fail before hook execution or removal mutation`);
+      found.push(
+        `${relativePath} repository-slot ambiguity must fail before hook execution or removal mutation`,
+      );
     }
     if (hasNegatedPreservationOfProtectedHooks(statement)) {
-      found.push(`${relativePath} must preserve hooks outside exact delete ownership`);
+      found.push(
+        `${relativePath} must preserve hooks outside exact delete ownership`,
+      );
     }
     if (hasAffirmativeDeletionOfProtectedHooks(statement)) {
-      found.push(`${relativePath} must not broaden delete ownership to protected hooks`);
+      found.push(
+        `${relativePath} must not broaden delete ownership to protected hooks`,
+      );
     }
     if (
       /(?:qualified|workspace-owned)[^.]{0,160}(?:workspace scope|runs? from (?:the )?configuration root|cwd is (?:the )?configuration root)/i.test(
         statement,
       )
     ) {
-      found.push(`${relativePath} must keep qualified files repository-scoped with target cwd`);
+      found.push(
+        `${relativePath} must keep qualified files repository-scoped with target cwd`,
+      );
     }
     if (
       /(?:add|configure|onboarding)[^.]{0,180}(?:creates?|writes?|scaffolds?)[^.]{0,120}<activeRepo>\/\.arashi\/hooks\/<lifecycle><ext>/i.test(
         statement,
       )
     ) {
-      found.push(`${relativePath} must onboard repository remove files at the qualified configuration-root path`);
+      found.push(
+        `${relativePath} must onboard repository remove files at the qualified configuration-root path`,
+      );
     }
   }
 }
@@ -257,8 +320,14 @@ function hasAffirmativeAliasSelection(statement: string): boolean {
 }
 
 function hasNegatedRepositorySlotAliasRelationship(statement: string): boolean {
-  return [...statement.matchAll(/\baliases?\s+for\s+one\s+repository\s+slot\b/gi)].some((match) => {
-    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
+  return [
+    ...statement.matchAll(/\baliases?\s+for\s+one\s+repository\s+slot\b/gi),
+  ].some((match) => {
+    if (
+      match.index === undefined ||
+      !isNegatedInClauseAt(statement, match.index)
+    )
+      return false;
     const clause = clauseAt(statement, match.index).text;
     return /\binline\b[^.!?]{0,80}\bqualified workspace-owned\b[^.!?]{0,80}\bchild-local\b[^.!?]{0,80}\brepository remove hook paths\b/i.test(
       clause,
@@ -266,7 +335,9 @@ function hasNegatedRepositorySlotAliasRelationship(statement: string): boolean {
   });
 }
 
-function hasAffirmativeLossOfChildLocalRemoveSupport(statement: string): boolean {
+function hasAffirmativeLossOfChildLocalRemoveSupport(
+  statement: string,
+): boolean {
   const actions = [
     /\b(?:no longer supported|unsupported)\b/gi,
     /\b(?:drops?|removes?|ends?|discontinues?)\s+support\b/gi,
@@ -274,65 +345,110 @@ function hasAffirmativeLossOfChildLocalRemoveSupport(statement: string): boolean
   ];
   return actions.some((pattern) =>
     [...statement.matchAll(pattern)].some((match) => {
-      if (match.index === undefined || isNegatedInClauseAt(statement, match.index)) return false;
+      if (
+        match.index === undefined ||
+        isNegatedInClauseAt(statement, match.index)
+      )
+        return false;
       const clause = clauseAt(statement, match.index);
-      return /\bcompatible\b/i.test(clause.text) &&
+      return (
+        /\bcompatible\b/i.test(clause.text) &&
         /\bchild-local\b/i.test(clause.text) &&
         /\brepository\s+remove\s+(?:files?|hooks?)\b/i.test(clause.text) &&
-        (/\bsupport\b/i.test(clause.text) || /\b(?:no longer supported|unsupported)\b/i.test(match[0]));
+        (/\bsupport\b/i.test(clause.text) ||
+          /\b(?:no longer supported|unsupported)\b/i.test(match[0]))
+      );
     }),
   );
 }
 
 function hasDoctorInlineOnlyClaim(statement: string): boolean {
-  const active = [...statement.matchAll(
-    /\b(?:checks?|inspects?|considers?|uses?)\s+only\s+(?:the\s+)?inline(?:\s+(?:configuration|config))?\b/gi,
-  )].some((match) =>
-    match.index !== undefined &&
-    !isNegatedInClauseAt(statement, match.index) &&
-    /\bdoctor\b/i.test(clauseAt(statement, match.index).text),
+  const active = [
+    ...statement.matchAll(
+      /\b(?:checks?|inspects?|considers?|uses?)\s+only\s+(?:the\s+)?inline(?:\s+(?:configuration|config))?\b/gi,
+    ),
+  ].some(
+    (match) =>
+      match.index !== undefined &&
+      !isNegatedInClauseAt(statement, match.index) &&
+      /\bdoctor\b/i.test(clauseAt(statement, match.index).text),
   );
   if (active) return true;
 
-  return [...statement.matchAll(
-    /\bonly\s+(?:the\s+)?inline(?:\s+(?:configuration|config))?[^.!?]{0,60}\b(?:is|are)\s+(?:checked|inspected|considered|used)\s+by\s+(?:the\s+)?doctor\b/gi,
-  )].some(
-    (match) => match.index !== undefined && !isNegatedInClauseAt(statement, match.index),
+  return [
+    ...statement.matchAll(
+      /\bonly\s+(?:the\s+)?inline(?:\s+(?:configuration|config))?[^.!?]{0,60}\b(?:is|are)\s+(?:checked|inspected|considered|used)\s+by\s+(?:the\s+)?doctor\b/gi,
+    ),
+  ].some(
+    (match) =>
+      match.index !== undefined && !isNegatedInClauseAt(statement, match.index),
   );
 }
 
 function hasRemoveDryRunDiscoverySkip(statement: string): boolean {
-  return [...statement.matchAll(/\b(?:skips?|omits?|bypasses?)\b/gi)].some((match) => {
-    if (match.index === undefined || isNegatedInClauseAt(statement, match.index)) return false;
-    const clause = clauseAt(statement, match.index);
-    return /\bremove\s+(?:--)?dry-run\b/i.test(clause.text) &&
-      /\bnative\s+(?:hook\s+)?candidate\s+discovery\b/i.test(clause.text);
-  });
+  return [...statement.matchAll(/\b(?:skips?|omits?|bypasses?)\b/gi)].some(
+    (match) => {
+      if (
+        match.index === undefined ||
+        isNegatedInClauseAt(statement, match.index)
+      )
+        return false;
+      const clause = clauseAt(statement, match.index);
+      return (
+        /\bremove\s+(?:--)?dry-run\b/i.test(clause.text) &&
+        /\bnative\s+(?:hook\s+)?candidate\s+discovery\b/i.test(clause.text)
+      );
+    },
+  );
 }
 
 function hasNegatedInspectionParity(statement: string): boolean {
-  return [...statement.matchAll(/\b(?:use|uses|share|shares)\b/gi)].some((match) => {
-    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
-    const clause = clauseAt(statement, match.index).text;
-    return /\bdoctor\b/i.test(clause) &&
-      /\bremove\s+(?:--)?dry-run\b/i.test(clause) &&
-      /\b(?:same|shared)\s+runtime\s+candidate\s+(?:resolver|discovery|model)\b/i.test(clause);
-  });
+  return [...statement.matchAll(/\b(?:use|uses|share|shares)\b/gi)].some(
+    (match) => {
+      if (
+        match.index === undefined ||
+        !isNegatedInClauseAt(statement, match.index)
+      )
+        return false;
+      const clause = clauseAt(statement, match.index).text;
+      return (
+        /\bdoctor\b/i.test(clause) &&
+        /\bremove\s+(?:--)?dry-run\b/i.test(clause) &&
+        /\b(?:same|shared)\s+runtime\s+candidate\s+(?:resolver|discovery|model)\b/i.test(
+          clause,
+        )
+      );
+    },
+  );
 }
 
 function hasNegatedCollisionFailure(statement: string): boolean {
   return [...statement.matchAll(/\b(?:fail|fails)\b/gi)].some((match) => {
-    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
+    if (
+      match.index === undefined ||
+      !isNegatedInClauseAt(statement, match.index)
+    )
+      return false;
     const clause = clauseAt(statement, match.index).text;
-    return /\b(?:two|multiple|more than one)\b[^.!?]{0,180}\b(?:claim|claims|source|sources|alias|aliases)\b/i.test(clause) &&
+    return (
+      /\b(?:two|multiple|more than one)\b[^.!?]{0,180}\b(?:claim|claims|source|sources|alias|aliases)\b/i.test(
+        clause,
+      ) &&
       /\b(?:ambiguity|ambiguous|collision|overlap)\b/i.test(clause) &&
-      /\bbefore\b[^.!?]{0,120}\b(?:hook execution|hook mutation|removal mutation|remove mutation|mutation)\b/i.test(clause);
+      /\bbefore\b[^.!?]{0,120}\b(?:hook execution|hook mutation|removal mutation|remove mutation|mutation)\b/i.test(
+        clause,
+      )
+    );
   });
 }
 
-function hasAffirmativeClauseAction(statement: string, pattern: RegExp): boolean {
+function hasAffirmativeClauseAction(
+  statement: string,
+  pattern: RegExp,
+): boolean {
   return [...statement.matchAll(pattern)].some(
-    (match) => match.index !== undefined && !isNegatedInClauseAt(statement, match.index),
+    (match) =>
+      match.index !== undefined && !isNegatedInClauseAt(statement, match.index),
   );
 }
 
@@ -344,12 +460,21 @@ function isNegatedInClauseAt(statement: string, actionIndex: number): boolean {
   );
 }
 
-function clauseAt(statement: string, index: number): { start: number; text: string } {
+function clauseAt(
+  statement: string,
+  index: number,
+): { start: number; text: string } {
   const boundaries = [
-    ...statement.matchAll(/[.;:!?]|\b(?:but|except|however|yet|unless|although|whereas)\b/gi),
+    ...statement.matchAll(
+      /[.;:!?]|\b(?:but|except|however|yet|unless|although|whereas)\b/gi,
+    ),
   ];
-  const before = boundaries.filter((boundary) => (boundary.index ?? -1) < index).at(-1);
-  const after = boundaries.find((boundary) => (boundary.index ?? statement.length) > index);
+  const before = boundaries
+    .filter((boundary) => (boundary.index ?? -1) < index)
+    .at(-1);
+  const after = boundaries.find(
+    (boundary) => (boundary.index ?? statement.length) > index,
+  );
   const start = (before?.index ?? -1) + (before?.[0].length ?? 1);
   const end = after?.index ?? statement.length;
   return { start, text: statement.slice(start, end) };
@@ -357,7 +482,8 @@ function clauseAt(statement: string, index: number): { start: number; text: stri
 
 function hasAffirmativeAction(statement: string, pattern: RegExp): boolean {
   return [...statement.matchAll(pattern)].some(
-    (match) => match.index !== undefined && !isNegatedAt(statement, match.index),
+    (match) =>
+      match.index !== undefined && !isNegatedAt(statement, match.index),
   );
 }
 
@@ -367,34 +493,49 @@ function isNegatedAt(statement: string, actionIndex: number): boolean {
     ...prefix.matchAll(/[,;:]|\b(?:and|or|but|except|however|yet|unless)\b/gi),
   ];
   const boundary = boundaries.at(-1);
-  const clausePrefix = prefix.slice((boundary?.index ?? -1) + (boundary?.[0].length ?? 1));
+  const clausePrefix = prefix.slice(
+    (boundary?.index ?? -1) + (boundary?.[0].length ?? 1),
+  );
   return /(?:\bnever\b|\bnone\b|\bno\b|\bnot\b|\b(?:do|does|will|can|may|must|should)\s+not\b|\b(?:don't|doesn't|won't|can't|mayn't|mustn't|shouldn't|don’t|doesn’t|won’t|can’t|mayn’t|mustn’t|shouldn’t)\b)[^.!?]{0,48}$/i.test(
     clausePrefix,
   );
 }
 
 function hasNegatedPreservationOfProtectedHooks(statement: string): boolean {
-  return [...statement.matchAll(/\bpreserv(?:e|es|ed|ing)\b/gi)].some((match) => {
-    if (match.index === undefined || !isNegatedAt(statement, match.index)) return false;
-    return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
-      statement.slice(match.index + match[0].length, match.index + match[0].length + 180),
-    );
-  });
+  return [...statement.matchAll(/\bpreserv(?:e|es|ed|ing)\b/gi)].some(
+    (match) => {
+      if (match.index === undefined || !isNegatedAt(statement, match.index))
+        return false;
+      return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
+        statement.slice(
+          match.index + match[0].length,
+          match.index + match[0].length + 180,
+        ),
+      );
+    },
+  );
 }
 
 function hasAffirmativeDeletionOfProtectedHooks(statement: string): boolean {
   const active = [
-    ...statement.matchAll(/\b(?:deletes|removes|(?:will|may|can|must)\s+(?:delete|remove))\b/gi),
+    ...statement.matchAll(
+      /\b(?:deletes|removes|(?:will|may|can|must)\s+(?:delete|remove))\b/gi,
+    ),
   ].some((match) => {
-    if (match.index === undefined || isNegatedAt(statement, match.index)) return false;
+    if (match.index === undefined || isNegatedAt(statement, match.index))
+      return false;
     return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
-      statement.slice(match.index + match[0].length, match.index + match[0].length + 180),
+      statement.slice(
+        match.index + match[0].length,
+        match.index + match[0].length + 180,
+      ),
     );
   });
   if (active) return true;
 
   return [...statement.matchAll(/\b(?:deleted|removed)\b/gi)].some((match) => {
-    if (match.index === undefined || isNegatedAt(statement, match.index)) return false;
+    if (match.index === undefined || isNegatedAt(statement, match.index))
+      return false;
     return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
       statement.slice(Math.max(0, match.index - 180), match.index),
     );
@@ -409,14 +550,28 @@ function runControlledDriftSelfTest(rootPath: string): void {
   for (const requirement of llmsRequirements) {
     const valid = normalize(requirement.valid);
     const drift = normalize(requirement.drift);
-    assert.match(valid, requirement.pattern, `valid fixture failed: ${requirement.label}`);
-    assert.doesNotMatch(drift, requirement.pattern, `controlled drift was accepted: ${requirement.label}`);
+    assert.match(
+      valid,
+      requirement.pattern,
+      `valid fixture failed: ${requirement.label}`,
+    );
+    assert.doesNotMatch(
+      drift,
+      requirement.pattern,
+      `controlled drift was accepted: ${requirement.label}`,
+    );
   }
 
-  const hooksSurface = normalize(readFileSync(path.join(rootPath, "docs/reference/hooks.md"), "utf8"));
+  const hooksSurface = normalize(
+    readFileSync(path.join(rootPath, "docs/reference/hooks.md"), "utf8"),
+  );
   const baselineErrors: string[] = [];
   checkContradictions("fixture.md", hooksSurface, baselineErrors);
-  assert.deepEqual(baselineErrors, [], "truthful maintained surface produced contradictions");
+  assert.deepEqual(
+    baselineErrors,
+    [],
+    "truthful maintained surface produced contradictions",
+  );
 
   const aliasDenial =
     "The inline, qualified workspace-owned, and child-local repository remove hook paths are not aliases for one repository slot.";
@@ -432,16 +587,34 @@ function runControlledDriftSelfTest(rootPath: string): void {
   ];
   const aliasPolarityErrors: string[] = [];
   for (const relativePath of maintainedSurfacePaths) {
-    const surface = normalize(readFileSync(path.join(rootPath, relativePath), "utf8"));
+    const surface = normalize(
+      readFileSync(path.join(rootPath, relativePath), "utf8"),
+    );
     const denialErrors: string[] = [];
-    checkContradictions("fixture.md", `${surface} ${aliasDenial}`, denialErrors);
-    if (denialErrors.length !== 1) aliasPolarityErrors.push(`${relativePath}: denial accepted or overcounted`);
+    checkContradictions(
+      "fixture.md",
+      `${surface} ${aliasDenial}`,
+      denialErrors,
+    );
+    if (denialErrors.length !== 1)
+      aliasPolarityErrors.push(
+        `${relativePath}: denial accepted or overcounted`,
+      );
 
     const affirmationErrors: string[] = [];
-    checkContradictions("fixture.md", `${surface} ${aliasAffirmation}`, affirmationErrors);
-    if (affirmationErrors.length !== 0) aliasPolarityErrors.push(`${relativePath}: truthful control rejected`);
+    checkContradictions(
+      "fixture.md",
+      `${surface} ${aliasAffirmation}`,
+      affirmationErrors,
+    );
+    if (affirmationErrors.length !== 0)
+      aliasPolarityErrors.push(`${relativePath}: truthful control rejected`);
   }
-  assert.deepEqual(aliasPolarityErrors, [], "repository-slot alias polarity fixture failed");
+  assert.deepEqual(
+    aliasPolarityErrors,
+    [],
+    "repository-slot alias polarity fixture failed",
+  );
 
   const inspectionDenial =
     "Doctor and remove dry-run do not use the same runtime candidate resolver.";
@@ -449,16 +622,36 @@ function runControlledDriftSelfTest(rootPath: string): void {
     "Doctor and remove dry-run use the same runtime candidate resolver.";
   const inspectionPolarityErrors: string[] = [];
   for (const relativePath of maintainedSurfacePaths) {
-    const surface = normalize(readFileSync(path.join(rootPath, relativePath), "utf8"));
+    const surface = normalize(
+      readFileSync(path.join(rootPath, relativePath), "utf8"),
+    );
     const denialErrors: string[] = [];
-    checkContradictions("fixture.md", `${surface} ${inspectionDenial}`, denialErrors);
-    if (denialErrors.length !== 1) inspectionPolarityErrors.push(`${relativePath}: denial accepted or overcounted`);
+    checkContradictions(
+      "fixture.md",
+      `${surface} ${inspectionDenial}`,
+      denialErrors,
+    );
+    if (denialErrors.length !== 1)
+      inspectionPolarityErrors.push(
+        `${relativePath}: denial accepted or overcounted`,
+      );
 
     const affirmationErrors: string[] = [];
-    checkContradictions("fixture.md", `${surface} ${inspectionAffirmation}`, affirmationErrors);
-    if (affirmationErrors.length !== 0) inspectionPolarityErrors.push(`${relativePath}: truthful control rejected`);
+    checkContradictions(
+      "fixture.md",
+      `${surface} ${inspectionAffirmation}`,
+      affirmationErrors,
+    );
+    if (affirmationErrors.length !== 0)
+      inspectionPolarityErrors.push(
+        `${relativePath}: truthful control rejected`,
+      );
   }
-  assert.deepEqual(inspectionPolarityErrors, [], "runtime candidate resolver polarity fixture failed");
+  assert.deepEqual(
+    inspectionPolarityErrors,
+    [],
+    "runtime candidate resolver polarity fixture failed",
+  );
 
   const contradictions = [
     "Workspace-owned and child-local aliases both execute together.",
@@ -466,6 +659,7 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Aliases never compose and have no precedence, except the workspace-owned file wins under --force.`,
     `${hooksSurface} The workspace-owned alias does not take precedence over the child-local alias, but wins under --force.`,
     "The qualified workspace-owned file has workspace scope and runs from the configuration root.",
+    "The qualified configuration-root remove hook paths are not <configurationRoot>/.arashi/hooks/pre-remove.<repo><ext> and <configurationRoot>/.arashi/hooks/post-remove.<repo><ext>.",
     "Configure creates <activeRepo>/.arashi/hooks/<lifecycle><ext> for repository file onboarding.",
     `${hooksSurface} Delete owns only exact pre-remove.<repo><ext> and post-remove.<repo><ext> files and their .example templates; it does not preserve lookalikes, shared, user-global, or child-local hook policy outside clone ownership.`,
     `${hooksSurface} Delete removes child-local remove hooks outside clone ownership.`,
@@ -482,10 +676,16 @@ function runControlledDriftSelfTest(rootPath: string): void {
     const claimErrors: string[] = [];
     checkContradictions("fixture.md", claim, claimErrors);
     if (claimErrors.length !== 1) {
-      contradictionErrors.push(claim.slice(hooksSurface.length).trim() || claim);
+      contradictionErrors.push(
+        claim.slice(hooksSurface.length).trim() || claim,
+      );
     }
   }
-  assert.deepEqual(contradictionErrors, [], "controlled contradiction fixture was accepted or overcounted");
+  assert.deepEqual(
+    contradictionErrors,
+    [],
+    "controlled contradiction fixture was accepted or overcounted",
+  );
 
   const truthful = [
     "The workspace-owned and child-local aliases never compose.",
@@ -506,6 +706,7 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} A single repository-slot alias does not fail; multiple claims still fail as ambiguity before hook execution or removal mutation.`,
   ];
   const truthfulErrors: string[] = [];
-  for (const claim of truthful) checkContradictions("fixture.md", claim, truthfulErrors);
+  for (const claim of truthful)
+    checkContradictions("fixture.md", claim, truthfulErrors);
   assert.deepEqual(truthfulErrors, []);
 }
