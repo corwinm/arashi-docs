@@ -53,9 +53,9 @@ Path containment, symlink, topology, identity, hook ambiguity, and concurrent-co
 
 ## Deleted And Preserved Scope
 
-Delete removes the canonical clone, all owned linked worktrees, owned local refs, the exact configuration entry, and canonical repository-targeted hook files/templates. The plan identifies this scope before confirmation.
+Delete removes the canonical clone, all owned linked worktrees, owned local refs, the exact configuration entry, and canonical repository-targeted hook files/templates. For remove hooks, delete owns only exact qualified `<configurationRoot>/.arashi/hooks/pre-remove.<repo><ext>` and `<configurationRoot>/.arashi/hooks/post-remove.<repo><ext>` files and their concrete `.example` templates. The plan identifies this scope before confirmation.
 
-It preserves unrelated configuration, managed-ignore policy, shared hooks, user-global hooks, remote repositories, and remote branches. It also leaves historical configuration in other worktrees, branches, and commits unchanged. There is no standalone or keep-files form of `delete`.
+It preserves lookalike repository hook files, unrelated configuration, managed-ignore policy, shared hooks, user-global hooks, child-local hook policy outside selected-clone ownership, remote repositories, and remote branches. It also leaves historical configuration in other worktrees, branches, and commits unchanged. There is no standalone or keep-files form of `delete`.
 
 ## JSON Automation
 

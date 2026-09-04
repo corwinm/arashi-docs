@@ -53,6 +53,8 @@ aw add git@github.com:your-org/data.git --json
 
 On an eligible human terminal, `aw add` offers optional repository configuration and hook initialization after it inspects the cloned repository and setup state. The offer defaults to **No**. `--force`, `--json`, or a run without both terminal stdin and stdout suppresses the offer and persists only the minimal repository entry.
 
+When repository file mode onboards a remove hook, it creates the qualified configuration-root path `<configurationRoot>/.arashi/hooks/<lifecycle>.<repo><ext>`: concretely `<configurationRoot>/.arashi/hooks/pre-remove.<repo><ext>` or `<configurationRoot>/.arashi/hooks/post-remove.<repo><ext>`. An existing child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>` blocks creating a duplicate repository claim; `add` does not overwrite or choose between aliases.
+
 ## SSH Remote Forms
 
 Arashi accepts Git's `[user@]host:path` SCP syntax, including an omitted user, and `ssh://[user@]host/path`. The host is opaque: it may be a hostname or an OpenSSH `Host` alias. For example, `git@work-github:acme/api.git`, `work-github:acme/api.git`, and `ssh://git@work-github/acme/api.git` are supported.

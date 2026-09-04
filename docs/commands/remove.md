@@ -83,6 +83,10 @@ aw remove feature-login --no-hook-input
 
 For each configured target repository, `remove` evaluates repository, workspace, global-targeted, and global-shared `pre-remove`/`post-remove` hooks in that order. Every scope is evaluated once per target repository, so workspace and shared hooks must be idempotent and use the current target's context. POSIX uses `.sh`; Windows uses one unambiguous native `.ps1`, `.cmd`, or `.bat` script at each location.
 
+The repository slot accepts inline `repos.<repo>.hooks.<lifecycle>`, workspace-owned `<configurationRoot>/.arashi/hooks/<lifecycle>.<repo><ext>`, or compatible child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>`. These are three aliases for one repository logical slot. The qualified active paths are `<configurationRoot>/.arashi/hooks/pre-remove.<repo><ext>` and `<configurationRoot>/.arashi/hooks/post-remove.<repo><ext>`. Two or more claims are ambiguous and fail before hook execution or removal mutation; aliases never compose and have no precedence.
+
+Whichever alias is selected retains repository scope and a plain lifecycle hook name. A native result reports the exact selected source path, while cwd is the active target checkout rather than the script's storage directory. Scope order remains repository → workspace → global-targeted → global-shared. Doctor and dry-run use the same runtime candidate discovery and report selection or ambiguity without mutation or execution.
+
 Behavior:
 
 - Any failing or timed-out `pre-remove` hook aborts destructive remove actions.

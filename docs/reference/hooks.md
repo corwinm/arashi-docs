@@ -39,6 +39,8 @@ Workspace owners configure `hooks.scripts.<lifecycle>`, while repository owners 
 
 Inline sources occupy the same lifecycle locations as native files; they are alternatives, not extra hooks. If inline and file sources claim the same logical location, Arashi reports an inline/file ambiguity and runs neither. Different scopes still compose in the lifecycle order below.
 
+For configured repository remove, `repos.<repo>.hooks.<lifecycle>`, the workspace-owned `<configurationRoot>/.arashi/hooks/<lifecycle>.<repo><ext>`, and the compatible child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>` are three aliases for one repository logical slot. The qualified active paths are `<configurationRoot>/.arashi/hooks/pre-remove.<repo><ext>` and `<configurationRoot>/.arashi/hooks/post-remove.<repo><ext>`. If two or more aliases or native extensions claim that slot, ambiguity fails before hook execution or removal mutation: the aliases never compose, and none takes precedence.
+
 Inline snippets are non-portable unless compatible interpreter variants are supplied. Interpreter selection is deterministic rather than terminal-dependent. On POSIX, Arashi uses configured Bash and scans non-empty `PATH` entries in order for the first executable `bash`. On Windows, it tries configured PowerShell, then cmd, then Bash. `SystemRoot` supplies the fixed PowerShell and cmd paths, while `PATH` order selects `bash.exe`. If no configured compatible executable is found, the hook fails preflight as `interpreter_unavailable` before lifecycle mutation.
 
 Keep inline commands fail-fast so a later success does not mask an earlier failure. Inline snippets must not contain secrets, tokens, or passwords: configuration is shared and outcomes, previews, diagnostics, and logs do not reveal snippet or command text.
@@ -55,7 +57,7 @@ Keep inline commands fail-fast so a later success does not mask an earlier failu
 | Configured `post-remove` | Repository → workspace → global-targeted → global-shared for each target | After removal attempts, including partial failures | Scope-dependent; see below | Outcomes are retained and the command exits nonzero on hook failure. |
 | Standalone create/remove | User-global targeted before shared, once at each applicable location | At the matching pre/post lifecycle point | Resolved standalone main root | Create uses rollback; remove preserves pre-abort and post-finalization behavior. |
 
-For configured remove, all four scopes are evaluated separately for every target repository. Workspace and global-shared hooks therefore run once per target repository, not once per command. Repository-local, global-targeted, and global-shared remove hooks run from the current target's configured source checkout; workspace hooks run from the configured workspace root.
+For configured remove, all four scopes are evaluated separately for every target repository in the exact order repository → workspace → global-targeted → global-shared. Workspace and global-shared hooks therefore run once per target repository, not once per command. A selected qualified, inline, or child-local source retains repository scope and a plain lifecycle hook name; its exact selected file is the source path, and its working directory is the active target repository checkout. Global-targeted and global-shared remove hooks also run from the current target's configured source checkout; workspace hooks run from the configured workspace root.
 
 Create and remove results retain evaluated hook outcomes, including skips, successes, validation failures, timeouts, and nonzero exits. Human output and JSON output derive from that outcome ledger. Configured-create human output summarizes the ledger with succeeded, skipped, and failed counts, collapses routine success and skip rows, and prints attributed detail blocks for failures. Nonzero hook stdout and stderr remain on their original streams instead of being duplicated into the summary. JSON success places every outcome in `data.hookOutcomes`; failure places every evaluated fail-fast outcome in `error.details.hookOutcomes`, while hook stdout and stderr stay off JSON stdout.
 
@@ -113,22 +115,26 @@ Lifecycle hooks are trusted executable programs, but prompt answers are not a se
 
 ## Configured Repository Deletion
 
-`aw delete` does not execute create/remove lifecycle hooks as cleanup actions; it may remove only the canonical repository-targeted `pre-create.<repository>` and `post-create.<repository>` hook files and their concrete templates when ownership is unambiguous. Shared hooks and user-global hooks are preserved, as are workspace-wide hook files and unrelated repository-targeted hooks. Plans and results may name logical identity, path, and status, but never include hook file contents or inline command bodies. See the [delete command](/commands/delete/) for the complete safety and retry workflow.
+`aw delete` does not execute create/remove lifecycle hooks as cleanup actions. For canonical repository-targeted hook cleanup, it owns only exact qualified `pre-create.<repository>`, `post-create.<repository>`, `pre-remove.<repo><ext>`, and `post-remove.<repo><ext>` files and their concrete `.example` templates when ownership is unambiguous. Shared hooks and user-global hooks are preserved, along with lookalikes and child-local hook policy outside the selected clone's ordinary ownership. Plans and results may name logical identity, path, and status, but never include hook file contents or inline command bodies. See the [delete command](/commands/delete/) for the complete safety and retry workflow.
 
 ## Discovery by mode and platform
 
 Configured create discovers either inline configuration or native files as alternatives at the workspace and repository-specific logical locations shown above. It does not activate similarly named repository-local or user-global create scripts.
 
-Configured remove searches each target in this order:
+Configured remove evaluates these logical scopes in order:
 
-1. `repos/<repo>/.arashi/hooks/<lifecycle><ext>`
-2. `.arashi/hooks/<lifecycle><ext>`
+1. Repository: inline `repos.<repo>.hooks.<lifecycle>`, workspace-owned `.arashi/hooks/<lifecycle>.<repo><ext>`, or compatible child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>` as three aliases for one slot.
+2. Workspace: inline `hooks.scripts.<lifecycle>` or `.arashi/hooks/<lifecycle><ext>`.
 3. `~/.arashi/hooks/<repo>/<lifecycle><ext>`
 4. `~/.arashi/hooks/<lifecycle><ext>`
 
+Direct non-bare, configured bare, ordinary linked, and bare-backed linked workspaces keep configuration authority storage for the qualified file, while remove cwd remains the active target child checkout. Storage follows the configuration root, not whichever checkout invoked the command. `aw doctor` and `aw remove --dry-run` use the same runtime candidate discovery and report the selected source or ambiguity without mutation or execution.
+
 Standalone create and remove search only the repository-targeted and shared user-global locations. Targeted lookup uses the resolved main-root basename even when the command starts in a linked worktree. Configless repository-local and workspace hooks remain inactive; adopt configured mode when you need those scopes.
 
-On POSIX, `<ext>` is `.sh`. On Windows, extension matching is case-insensitive and `<ext>` is `.ps1`, `.cmd`, or `.bat`. Windows does not discover `.sh` or execute it through implicit Git Bash. If a logical location has more than one extension supported by the current platform, Arashi reports every candidate and fails before lifecycle mutation rather than choosing by extension or filesystem order. Missing native interpreters likewise fail preflight before mutation.
+On POSIX, `<ext>` is `.sh`. On Windows, extension matching is case-insensitive and `<ext>` is `.ps1`, `.cmd`, or `.bat`. Windows does not discover `.sh` or execute it through implicit Git Bash. Multiple Windows extensions at one path or native candidates across repository aliases are one ambiguity and fail before lifecycle mutation rather than choosing by extension, location, or filesystem order. Missing native interpreters likewise fail preflight before mutation.
+
+When `aw add` or `aw configure` repository file mode onboards `pre-remove` or `post-remove`, it creates `.arashi/hooks/<lifecycle>.<repo><ext>` under the configuration root. An existing child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>` blocks that duplicate; Arashi does not overwrite or silently supersede the compatible source.
 
 ## Activate exactly one example
 

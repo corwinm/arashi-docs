@@ -10,6 +10,7 @@
   "check-kitty-session-docs.ts",
   "check-lifecycle-hook-docs.ts",
   "check-managed-ignore-docs.ts",
+  "check-repository-remove-hook-docs.ts",
   "check-shell-completion-docs.ts",
   "check-ssh-host-alias-docs.ts",
   "check-standalone-docs.ts",
