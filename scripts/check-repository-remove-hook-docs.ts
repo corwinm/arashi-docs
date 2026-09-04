@@ -130,13 +130,13 @@ const llmsRequirements = [
 ];
 
 const root = path.resolve(process.cwd());
-runControlledDriftSelfTest(root);
 const errors = checkRoot(root);
 if (errors.length > 0) {
   console.error("Repository remove-hook documentation contract failed:");
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
+runControlledDriftSelfTest(root);
 
 console.log(
   `Repository remove-hook documentation contract passed for ${pageRequirements.size} canonical pages, their generated Markdown routes, and both agent exports.`,
