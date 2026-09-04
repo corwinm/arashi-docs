@@ -158,6 +158,10 @@ See [Configured file materialization](/commands/create/#configured-file-material
 
 Short lifecycle commands can live in `hooks.scripts` for the workspace or `repos.<name>.hooks` for one repository. For script files, platform-specific commands, execution order, and timeout settings, see the [Lifecycle Hooks reference](/reference/hooks/).
 
+For configured repository remove hooks, inline `repos.<repo>.hooks.<lifecycle>`, the workspace-owned `<configurationRoot>/.arashi/hooks/<lifecycle>.<repo><ext>`, and compatible child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>` are three aliases for one repository slot. The qualified active files are `<configurationRoot>/.arashi/hooks/pre-remove.<repo><ext>` and `<configurationRoot>/.arashi/hooks/post-remove.<repo><ext>`. If multiple aliases overlap and claim the slot, ambiguity fails before hook or remove mutation; aliases never compose and none has precedence.
+
+`aw doctor` and remove dry-run use the same runtime candidate resolver and report the selected source or ambiguity without mutation or hook execution.
+
 ## Related references
 
 - [init command](/commands/init/) for workspace setup and managed path ignore scope
