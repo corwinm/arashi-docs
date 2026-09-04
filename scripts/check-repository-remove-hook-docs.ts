@@ -98,7 +98,7 @@ const onboarding: Requirement = {
 const deletion: Requirement = {
   label: "delete owns exact qualified remove files and templates only",
   pattern:
-    /delete[\s\S]{0,180}(?:exact|only)[\s\S]{0,160}(?:pre-remove\.<repo><ext>|pre-remove\.<repository>)[\s\S]{0,160}(?:post-remove\.<repo><ext>|post-remove\.<repository>)[\s\S]{0,180}(?:templates?|\.example)[\s\S]{0,220}(?:preserv|never|not)[\s\S]{0,160}(?:lookalike|shared|user-global|child-local)/i,
+    /delete[\s\S]{0,180}(?:exact|only)[\s\S]{0,160}(?:pre-remove\.<repo><ext>|pre-remove\.<repository>)[\s\S]{0,160}(?:post-remove\.<repo><ext>|post-remove\.<repository>)[\s\S]{0,180}(?:templates?|\.example)[\s\S]{0,220}(?:preserv(?:e|es|ed|ing)|(?:(?:do|does|will|must) not|never) (?:remove|delete))[\s\S]{0,160}(?:lookalike|shared|user-global|child-local)/i,
   valid:
     "Delete owns only exact pre-remove.<repo><ext> and post-remove.<repo><ext> files and their .example templates; it preserves lookalikes, shared, user-global, and child-local hook policy outside clone ownership.",
   drift: "Delete removes every matching remove hook recursively.",
@@ -130,7 +130,7 @@ const llmsRequirements = [
 ];
 
 const root = path.resolve(process.cwd());
-runControlledDriftSelfTest();
+runControlledDriftSelfTest(root);
 const errors = checkRoot(root);
 if (errors.length > 0) {
   console.error("Repository remove-hook documentation contract failed:");
@@ -166,7 +166,7 @@ function checkFile(
     found.push(`${relativePath} is missing`);
     return;
   }
-  const normalized = content.replaceAll("`", "").replace(/\\/g, "/").replace(/\s+/g, " ");
+  const normalized = normalize(content);
   for (const requirement of requirements) {
     if (!requirement.pattern.test(normalized)) {
       found.push(`${relativePath} is missing ${requirement.label}`);
@@ -182,19 +182,30 @@ function checkContradictions(
 ): void {
   const statements = content.split(/(?<=[.!?])\s+/);
   for (const statement of statements) {
-    const composition =
-      /(?:qualified|workspace-owned|child-local|inline)[\s\S]{0,220}\b(compose|run together|both execute)\b/i.exec(
-        statement,
-      );
-    if (composition?.index !== undefined && !isNegated(statement, composition)) {
+    const hasAliasContext = /(?:aliases?|repository(?:-| )slot|child-local|inline)/i.test(statement);
+    const hasRepositoryAlias = /(?:qualified|workspace-owned|child-local|inline)/i.test(statement);
+    if (
+      hasAliasContext &&
+      hasRepositoryAlias &&
+      hasAffirmativeAction(statement, /\b(?:compose|run together|both execute)\b/gi)
+    ) {
       found.push(`${relativePath} must not compose repository-slot aliases`);
     }
-    const precedence =
-      /(?:qualified|workspace-owned)[\s\S]{0,220}\b(takes precedence|wins|preferred over|falls back to)\b[\s\S]{0,120}(?:child-local|inline)/i.exec(
+    if (
+      hasAliasContext &&
+      /(?:qualified|workspace-owned)/i.test(statement) &&
+      hasAffirmativeAction(
         statement,
-      );
-    if (precedence?.index !== undefined && !isNegated(statement, precedence)) {
+        /\b(?:takes? precedence|wins?|(?:is |are )?preferred over|falls? back to)\b/gi,
+      )
+    ) {
       found.push(`${relativePath} must not assign precedence among repository-slot aliases`);
+    }
+    if (hasNegatedPreservationOfProtectedHooks(statement)) {
+      found.push(`${relativePath} must preserve hooks outside exact delete ownership`);
+    }
+    if (hasAffirmativeDeletionOfProtectedHooks(statement)) {
+      found.push(`${relativePath} must not broaden delete ownership to protected hooks`);
     }
     if (
       /(?:qualified|workspace-owned)[^.]{0,160}(?:workspace scope|runs? from (?:the )?configuration root|cwd is (?:the )?configuration root)/i.test(
@@ -213,40 +224,95 @@ function checkContradictions(
   }
 }
 
-function isNegated(statement: string, match: RegExpExecArray): boolean {
-  const action = match[1] ?? match[0];
-  const actionIndex = match.index + match[0].toLowerCase().lastIndexOf(action.toLowerCase());
-  const prefix = statement.slice(Math.max(0, actionIndex - 48), actionIndex);
-  return /(?:\bnever|\bnone|\bno|\bnot|\b(?:do|does|will|can|may|must|should)\s+not)\b[^,;:.]{0,32}$/i.test(
-    prefix,
+function hasAffirmativeAction(statement: string, pattern: RegExp): boolean {
+  return [...statement.matchAll(pattern)].some(
+    (match) => match.index !== undefined && !isNegatedAt(statement, match.index),
   );
 }
 
-function runControlledDriftSelfTest(): void {
+function isNegatedAt(statement: string, actionIndex: number): boolean {
+  const prefix = statement.slice(0, actionIndex);
+  const boundaries = [
+    ...prefix.matchAll(/[,;:]|\b(?:and|or|but|except|however|yet|unless)\b/gi),
+  ];
+  const boundary = boundaries.at(-1);
+  const clausePrefix = prefix.slice((boundary?.index ?? -1) + (boundary?.[0].length ?? 1));
+  return /(?:\bnever\b|\bnone\b|\bno\b|\bnot\b|\b(?:do|does|will|can|may|must|should)\s+not\b|\b(?:don't|doesn't|won't|can't|mayn't|mustn't|shouldn't|don’t|doesn’t|won’t|can’t|mayn’t|mustn’t|shouldn’t)\b)[^.!?]{0,48}$/i.test(
+    clausePrefix,
+  );
+}
+
+function hasNegatedPreservationOfProtectedHooks(statement: string): boolean {
+  return [...statement.matchAll(/\bpreserv(?:e|es|ed|ing)\b/gi)].some((match) => {
+    if (match.index === undefined || !isNegatedAt(statement, match.index)) return false;
+    return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
+      statement.slice(match.index + match[0].length, match.index + match[0].length + 180),
+    );
+  });
+}
+
+function hasAffirmativeDeletionOfProtectedHooks(statement: string): boolean {
+  const active = [
+    ...statement.matchAll(/\b(?:deletes|removes|(?:will|may|can|must)\s+(?:delete|remove))\b/gi),
+  ].some((match) => {
+    if (match.index === undefined || isNegatedAt(statement, match.index)) return false;
+    return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
+      statement.slice(match.index + match[0].length, match.index + match[0].length + 180),
+    );
+  });
+  if (active) return true;
+
+  return [...statement.matchAll(/\b(?:deleted|removed)\b/gi)].some((match) => {
+    if (match.index === undefined || isNegatedAt(statement, match.index)) return false;
+    return /\b(?:lookalikes?|shared|user-global|child-local)\b/i.test(
+      statement.slice(Math.max(0, match.index - 180), match.index),
+    );
+  });
+}
+
+function normalize(content: string): string {
+  return content.replaceAll("`", "").replace(/\\/g, "/").replace(/\s+/g, " ");
+}
+
+function runControlledDriftSelfTest(rootPath: string): void {
   for (const requirement of llmsRequirements) {
-    const valid = requirement.valid.replaceAll("`", "").replace(/\\/g, "/").replace(/\s+/g, " ");
-    const drift = requirement.drift.replaceAll("`", "").replace(/\\/g, "/").replace(/\s+/g, " ");
+    const valid = normalize(requirement.valid);
+    const drift = normalize(requirement.drift);
     assert.match(valid, requirement.pattern, `valid fixture failed: ${requirement.label}`);
     assert.doesNotMatch(drift, requirement.pattern, `controlled drift was accepted: ${requirement.label}`);
   }
 
+  const hooksSurface = normalize(readFileSync(path.join(rootPath, "docs/reference/hooks.md"), "utf8"));
   const contradictions = [
     "Workspace-owned and child-local aliases both execute together.",
     "The workspace-owned file takes precedence over the child-local file.",
+    `${hooksSurface} Aliases never compose and have no precedence, except the workspace-owned file wins under --force.`,
+    `${hooksSurface} The workspace-owned alias does not take precedence over the child-local alias, but wins under --force.`,
     "The qualified workspace-owned file has workspace scope and runs from the configuration root.",
     "Configure creates <activeRepo>/.arashi/hooks/<lifecycle><ext> for repository file onboarding.",
+    `${hooksSurface} Delete owns only exact pre-remove.<repo><ext> and post-remove.<repo><ext> files and their .example templates; it does not preserve lookalikes, shared, user-global, or child-local hook policy outside clone ownership.`,
+    `${hooksSurface} Delete removes child-local remove hooks outside clone ownership.`,
+    `${hooksSurface} Child-local remove hooks outside clone ownership are deleted during cleanup.`,
   ];
   const contradictionErrors: string[] = [];
   for (const claim of contradictions) {
-    checkContradictions("fixture.md", claim, contradictionErrors);
+    const claimErrors: string[] = [];
+    checkContradictions("fixture.md", claim, claimErrors);
+    if (claimErrors.length !== 1) contradictionErrors.push(claim);
   }
-  assert.equal(contradictionErrors.length, contradictions.length);
+  assert.deepEqual(contradictionErrors, [], "controlled contradiction fixture was accepted or overcounted");
 
   const truthful = [
     "The workspace-owned and child-local aliases never compose.",
     "The workspace-owned alias does not take precedence over the child-local alias.",
+    `${hooksSurface} Under --force, ambiguity still fails before hook execution or removal mutation.`,
+    `${hooksSurface} The workspace-owned alias does not take precedence over the child-local alias and never wins under --force.`,
     "The qualified file has repository scope and runs from the active target checkout.",
     "Configure creates .arashi/hooks/<lifecycle>.<repo><ext> under the configuration root.",
+    deletion.valid,
+    `${hooksSurface} Delete does not remove lookalikes or shared, user-global, or child-local hook policy outside clone ownership.`,
+    `${hooksSurface} Delete never deletes child-local hooks outside the selected clone's ordinary ownership.`,
+    `${hooksSurface} Child-local remove hooks outside clone ownership are not deleted during cleanup.`,
   ];
   const truthfulErrors: string[] = [];
   for (const claim of truthful) checkContradictions("fixture.md", claim, truthfulErrors);
