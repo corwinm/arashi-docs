@@ -23,23 +23,26 @@ for (const [index, match] of commandLines.entries()) {
   }
 }
 
-if (!/\.terminal-line \.typing\s*\{[^}]*display:\s*inline-grid;[^}]*grid-template-columns:\s*max-content auto;/s.test(theme)) {
-  failures.push("the typing wrapper must size its reveal track from intrinsic command content");
+if (!/@property --typing-progress\s*\{[^}]*syntax:\s*"<percentage>";[^}]*inherits:\s*true;[^}]*initial-value:\s*100%;[^}]*\}/s.test(theme)) {
+  failures.push("typing progress must remain a responsive percentage of the rendered command width");
 }
-if (!/\.terminal-line \.typed\s*\{[^}]*min-width:\s*0;[^}]*overflow:\s*hidden;/s.test(theme)) {
-  failures.push("typed content must be clipped by the shared reveal track");
+if (!/\.terminal-line \.typing\s*\{[^}]*display:\s*inline-block;[^}]*position:\s*relative;/s.test(theme)) {
+  failures.push("the typing wrapper must establish the full intrinsic command width for responsive progress");
+}
+if (!/\.terminal-line \.typed\s*\{[^}]*display:\s*block;[^}]*clip-path:\s*inset\(0 calc\(100% - var\(--typing-progress\)\) 0 0\);/s.test(theme)) {
+  failures.push("typed content must be clipped by responsive percentage progress");
+}
+if (!/\.terminal-line \.cursor\s*\{[^}]*position:\s*absolute;[^}]*left:\s*var\(--typing-progress\);/s.test(theme)) {
+  failures.push("the cursor must follow responsive percentage progress");
 }
 if (!/\.demo-sequence\.typing-ready \.terminal-line \.typing\s*\{[^}]*animation-name:\s*type-command;/s.test(theme)) {
   failures.push("the initialized typing wrapper must own command typing progress");
 }
-if (!/@keyframes type-command\s*\{[\s\S]*?grid-template-columns:\s*0px auto;[\s\S]*?grid-template-columns:\s*calc\(var\(--steps\) \* 1ch\) auto;[\s\S]*?\}/s.test(theme)) {
-  failures.push("typing progress must reveal one monospace character width per content-derived step");
+if (!/@keyframes type-command\s*\{[\s\S]*?--typing-progress:\s*0%;[\s\S]*?--typing-progress:\s*100%;[\s\S]*?\}/s.test(theme)) {
+  failures.push("typing progress must reveal the full responsive command width");
 }
-if (/--typed-width/.test(homepage) || /--typed-width/.test(theme)) {
-  failures.push("typing distance must respond to font and viewport changes without stale pixel measurements");
-}
-if (/grid-template-columns:\s*(?:0fr|1fr) auto;/.test(theme)) {
-  failures.push("fractional grid tracks must not distort content-derived typing steps");
+if (/--typed-width/.test(homepage) || /--typed-width/.test(theme) || /grid-template-columns:\s*(?:0fr|1fr|0px|calc\(var\(--steps\) \* 1ch\)) auto;/.test(theme)) {
+  failures.push("typing distance must not use stale pixel, character-unit, or fractional track measurements");
 }
 if (/--chars\s*:|calc\(var\(--chars\)\s*\*\s*1ch\)/.test(theme)) {
   failures.push("cursor distance must not depend on a separately maintained command character width");
