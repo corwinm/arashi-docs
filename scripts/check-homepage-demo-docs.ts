@@ -23,7 +23,7 @@ for (const [index, match] of commandLines.entries()) {
   }
 }
 
-if (!/\.terminal-line \.typing\s*\{[^}]*display:\s*inline-grid;[^}]*grid-template-columns:\s*1fr auto;/s.test(theme)) {
+if (!/\.terminal-line \.typing\s*\{[^}]*display:\s*inline-grid;[^}]*grid-template-columns:\s*max-content auto;/s.test(theme)) {
   failures.push("the typing wrapper must size its reveal track from intrinsic command content");
 }
 if (!/\.terminal-line \.typed\s*\{[^}]*min-width:\s*0;[^}]*overflow:\s*hidden;/s.test(theme)) {
@@ -32,8 +32,14 @@ if (!/\.terminal-line \.typed\s*\{[^}]*min-width:\s*0;[^}]*overflow:\s*hidden;/s
 if (!/\.demo-sequence\.typing-ready \.terminal-line \.typing\s*\{[^}]*animation-name:\s*type-command;/s.test(theme)) {
   failures.push("the initialized typing wrapper must own command typing progress");
 }
-if (!/@keyframes type-command\s*\{[\s\S]*?grid-template-columns:\s*0fr auto;[\s\S]*?grid-template-columns:\s*1fr auto;[\s\S]*?\}/s.test(theme)) {
-  failures.push("typing progress must move the cursor with the intrinsic typed-content track");
+if (!/@keyframes type-command\s*\{[\s\S]*?grid-template-columns:\s*0px auto;[\s\S]*?grid-template-columns:\s*calc\(var\(--steps\) \* 1ch\) auto;[\s\S]*?\}/s.test(theme)) {
+  failures.push("typing progress must reveal one monospace character width per content-derived step");
+}
+if (/--typed-width/.test(homepage) || /--typed-width/.test(theme)) {
+  failures.push("typing distance must respond to font and viewport changes without stale pixel measurements");
+}
+if (/grid-template-columns:\s*(?:0fr|1fr) auto;/.test(theme)) {
+  failures.push("fractional grid tracks must not distort content-derived typing steps");
 }
 if (/--chars\s*:|calc\(var\(--chars\)\s*\*\s*1ch\)/.test(theme)) {
   failures.push("cursor distance must not depend on a separately maintained command character width");
