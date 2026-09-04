@@ -206,6 +206,9 @@ function checkContradictions(
     if (hasRemoveDryRunDiscoverySkip(statement)) {
       found.push(`${relativePath} remove dry-run must use native candidate discovery`);
     }
+    if (hasNegatedCollisionFailure(statement)) {
+      found.push(`${relativePath} repository-slot ambiguity must fail before hook execution or removal mutation`);
+    }
     if (hasNegatedPreservationOfProtectedHooks(statement)) {
       found.push(`${relativePath} must preserve hooks outside exact delete ownership`);
     }
@@ -277,6 +280,16 @@ function hasRemoveDryRunDiscoverySkip(statement: string): boolean {
     const clause = clauseAt(statement, match.index);
     return /\bremove\s+(?:--)?dry-run\b/i.test(clause.text) &&
       /\bnative\s+(?:hook\s+)?candidate\s+discovery\b/i.test(clause.text);
+  });
+}
+
+function hasNegatedCollisionFailure(statement: string): boolean {
+  return [...statement.matchAll(/\b(?:fail|fails)\b/gi)].some((match) => {
+    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
+    const clause = clauseAt(statement, match.index).text;
+    return /\b(?:two|multiple|more than one)\b[^.!?]{0,180}\b(?:claim|claims|source|sources|alias|aliases)\b/i.test(clause) &&
+      /\b(?:ambiguity|ambiguous|collision|overlap)\b/i.test(clause) &&
+      /\bbefore\b[^.!?]{0,120}\b(?:hook execution|hook mutation|removal mutation|remove mutation|mutation)\b/i.test(clause);
   });
 }
 
@@ -382,6 +395,7 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} With repository-slot aliases in contention, --force selects the child-local file over the workspace-owned file.`,
     `${hooksSurface} Doctor checks only inline configuration for repository remove hooks.`,
     `${hooksSurface} Remove dry-run skips native candidate discovery.`,
+    `${hooksSurface} When multiple repository-slot aliases claim this slot, ambiguity does not fail before hook execution or removal mutation.`,
   ];
   const contradictionErrors: string[] = [];
   for (const claim of contradictions) {
@@ -409,6 +423,7 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Repository-slot aliases do not select or choose one file over another under --force.`,
     `${hooksSurface} Doctor does not check only inline configuration; it also discovers native repository remove candidates.`,
     `${hooksSurface} Remove dry-run does not skip native candidate discovery.`,
+    `${hooksSurface} A single repository-slot alias does not fail; multiple claims still fail as ambiguity before hook execution or removal mutation.`,
   ];
   const truthfulErrors: string[] = [];
   for (const claim of truthful) checkContradictions("fixture.md", claim, truthfulErrors);
