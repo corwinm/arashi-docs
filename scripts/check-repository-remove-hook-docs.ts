@@ -40,13 +40,23 @@ const collision: Requirement = {
 };
 
 const identityAndCwd: Requirement = {
-  label: "repository identity, selected source path, and active checkout cwd",
+  label: "repository identity, native source path, and active checkout cwd",
   pattern:
-    /repository scope[\s\S]{0,160}(?:plain|unqualified)[\s\S]{0,80}(?:lifecycle|hook) name[\s\S]{0,180}(?:selected|exact)[\s\S]{0,100}source path[\s\S]{0,220}(?:(?:cwd|working directory)[\s\S]{0,140}(?:active|target)[\s\S]{0,80}(?:checkout|repository)|(?:active|target)[\s\S]{0,80}(?:checkout|repository)[\s\S]{0,100}(?:cwd|working directory))/i,
+    /(?:qualified|child-local)[\s\S]{0,100}native[\s\S]{0,180}repository scope[\s\S]{0,160}(?:plain|unqualified)[\s\S]{0,80}(?:lifecycle|hook) name[\s\S]{0,180}(?:selected|exact)[\s\S]{0,100}(?:sourceScriptPath|source path)[\s\S]{0,220}(?:(?:cwd|working directory)[\s\S]{0,140}(?:active|target)[\s\S]{0,80}(?:checkout|repository)|(?:active|target)[\s\S]{0,80}(?:checkout|repository)[\s\S]{0,100}(?:cwd|working directory))/i,
   valid:
-    "It retains repository scope and a plain lifecycle name, reports the selected source path, and uses the active target checkout as cwd.",
+    "A qualified or child-local native source retains repository scope and a plain lifecycle name, reports the selected sourceScriptPath, and uses the active target checkout as cwd.",
   drift:
-    "It uses workspace scope and runs from the configuration root.",
+    "An inline source retains repository scope and reports a selected sourceScriptPath while running from the target checkout.",
+};
+
+const sourcePathMetadata: Requirement = {
+  label: "inline null source path and ordered native ambiguity paths",
+  pattern:
+    /sourceKind[\s\S]{0,100}inline-config[\s\S]{0,180}sourceScriptPath[\s\S]{0,80}null[\s\S]{0,220}ambigu(?:ity|ous)[\s\S]{0,180}ordered[\s\S]{0,100}native[\s\S]{0,80}sourceScriptPaths/i,
+  valid:
+    "For sourceKind inline-config, sourceScriptPath is null; ambiguity can expose ordered native sourceScriptPaths.",
+  drift:
+    "For sourceKind inline-config, sourceScriptPath contains the selected inline configuration path.",
 };
 
 const order: Requirement = {
@@ -107,9 +117,9 @@ const deletion: Requirement = {
 const pageRequirements = new Map<string, Requirement[]>([
   [
     "reference/hooks.md",
-    [canonicalPath, aliasSlot, collision, identityAndCwd, order, windows, inspection, topology, onboarding, deletion],
+    [canonicalPath, aliasSlot, collision, identityAndCwd, sourcePathMetadata, order, windows, inspection, topology, onboarding, deletion],
   ],
-  ["commands/remove.md", [canonicalPath, aliasSlot, collision, identityAndCwd, order, inspection]],
+  ["commands/remove.md", [canonicalPath, aliasSlot, collision, identityAndCwd, sourcePathMetadata, order, inspection]],
   ["reference/configuration.md", [canonicalPath, aliasSlot, collision, inspection]],
   ["commands/add.md", [canonicalPath, onboarding]],
   ["commands/configure.md", [canonicalPath, onboarding]],
@@ -121,6 +131,7 @@ const llmsRequirements = [
   aliasSlot,
   collision,
   identityAndCwd,
+  sourcePathMetadata,
   order,
   windows,
   inspection,
@@ -209,6 +220,9 @@ function checkContradictions(
     if (hasRemoveDryRunDiscoverySkip(statement)) {
       found.push(`${relativePath} remove dry-run must use native candidate discovery`);
     }
+    if (hasNegatedInspectionParity(statement)) {
+      found.push(`${relativePath} doctor and remove dry-run must share the runtime candidate resolver`);
+    }
     if (hasNegatedCollisionFailure(statement)) {
       found.push(`${relativePath} repository-slot ambiguity must fail before hook execution or removal mutation`);
     }
@@ -293,6 +307,16 @@ function hasRemoveDryRunDiscoverySkip(statement: string): boolean {
     const clause = clauseAt(statement, match.index);
     return /\bremove\s+(?:--)?dry-run\b/i.test(clause.text) &&
       /\bnative\s+(?:hook\s+)?candidate\s+discovery\b/i.test(clause.text);
+  });
+}
+
+function hasNegatedInspectionParity(statement: string): boolean {
+  return [...statement.matchAll(/\b(?:use|uses|share|shares)\b/gi)].some((match) => {
+    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
+    const clause = clauseAt(statement, match.index).text;
+    return /\bdoctor\b/i.test(clause) &&
+      /\bremove\s+(?:--)?dry-run\b/i.test(clause) &&
+      /\b(?:same|shared)\s+runtime\s+candidate\s+(?:resolver|discovery|model)\b/i.test(clause);
   });
 }
 
@@ -418,6 +442,23 @@ function runControlledDriftSelfTest(rootPath: string): void {
     if (affirmationErrors.length !== 0) aliasPolarityErrors.push(`${relativePath}: truthful control rejected`);
   }
   assert.deepEqual(aliasPolarityErrors, [], "repository-slot alias polarity fixture failed");
+
+  const inspectionDenial =
+    "Doctor and remove dry-run do not use the same runtime candidate resolver.";
+  const inspectionAffirmation =
+    "Doctor and remove dry-run use the same runtime candidate resolver.";
+  const inspectionPolarityErrors: string[] = [];
+  for (const relativePath of maintainedSurfacePaths) {
+    const surface = normalize(readFileSync(path.join(rootPath, relativePath), "utf8"));
+    const denialErrors: string[] = [];
+    checkContradictions("fixture.md", `${surface} ${inspectionDenial}`, denialErrors);
+    if (denialErrors.length !== 1) inspectionPolarityErrors.push(`${relativePath}: denial accepted or overcounted`);
+
+    const affirmationErrors: string[] = [];
+    checkContradictions("fixture.md", `${surface} ${inspectionAffirmation}`, affirmationErrors);
+    if (affirmationErrors.length !== 0) inspectionPolarityErrors.push(`${relativePath}: truthful control rejected`);
+  }
+  assert.deepEqual(inspectionPolarityErrors, [], "runtime candidate resolver polarity fixture failed");
 
   const contradictions = [
     "Workspace-owned and child-local aliases both execute together.",
