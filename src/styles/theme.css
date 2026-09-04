@@ -485,9 +485,15 @@
   color: hsl(172 78% 70%);
 }
 
+@property --typing-progress {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
 .terminal-line .typing {
-  display: inline-grid;
-  grid-template-columns: 1fr auto;
+  display: inline-block;
+  position: relative;
   vertical-align: bottom;
   line-height: 1.2;
   white-space: nowrap;
@@ -503,15 +509,17 @@
 }
 
 .terminal-line .typed {
-  min-width: 0;
-  overflow: hidden;
+  display: block;
+  clip-path: inset(0 calc(100% - var(--typing-progress)) 0 0);
   padding-bottom: 0.08em;
   margin-bottom: -0.08em;
   color: hsl(165 90% 79%);
 }
 
 .terminal-line .cursor {
-  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: var(--typing-progress);
   width: 0.62ch;
   height: 1.05em;
   margin-left: 0.12rem;
@@ -678,10 +686,11 @@
 
 @keyframes type-command {
   from {
-    grid-template-columns: 0fr auto;
+    --typing-progress: 0%;
   }
-  to {
-    grid-template-columns: 1fr auto;
+  99%,
+  100% {
+    --typing-progress: 100%;
   }
 }
 
@@ -1030,7 +1039,8 @@
   }
 
   .demo-toggle:not(:checked) ~ .demo-terminal .terminal-line .typed {
-    overflow: visible;
+    display: inline;
+    clip-path: none;
     padding-bottom: 0;
     margin-bottom: 0;
   }
@@ -1059,12 +1069,11 @@
   }
 
   .demo-toggle:checked ~ .demo-terminal .terminal-line .typing {
-    display: inline-grid;
-    grid-template-columns: 0fr auto;
+    display: inline-block;
   }
 
   .demo-toggle:checked ~ .demo-terminal .terminal-line .typed {
-    overflow: hidden;
+    clip-path: inset(0 calc(100% - var(--typing-progress)) 0 0);
     padding-bottom: 0.08em;
     margin-bottom: -0.08em;
   }
