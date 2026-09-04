@@ -57,6 +57,7 @@ Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl`
 - **Keep** preserves the stored field, **Edit** validates and replaces it, and **Clear** removes an optional stored field. Required `reposDir` cannot be cleared, and blank input does not mean Clear.
 - The final preview is the exact canonical JSON that will be saved. Any active-file plan is shown separately and lists paths without file contents or inline command bodies.
 - Existing active native hook files are preserved. If the JSON is unchanged and there is no active-file plan, Arashi exits without confirmation or a write.
+- Repository native-file onboarding creates `<configurationRoot>/.arashi/hooks/<lifecycle>.<repo><ext>`, including `<configurationRoot>/.arashi/hooks/pre-remove.<repo><ext>` and `<configurationRoot>/.arashi/hooks/post-remove.<repo><ext>`. An existing child-local `<activeRepo>/.arashi/hooks/<lifecycle><ext>` blocks the duplicate; `configure` preserves it rather than adding a competing claim.
 
 ## Notes
 

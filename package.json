@@ -24,6 +24,7 @@
     "validate:inline-lifecycle-hook-docs": "pnpm sync:content && node scripts/check-inline-lifecycle-hook-docs.ts",
     "validate:standalone-docs": "pnpm sync:content && node scripts/check-standalone-docs.ts",
     "validate:lifecycle-hook-docs": "pnpm sync:content && node scripts/check-lifecycle-hook-docs.ts",
+    "validate:repository-remove-hook-docs": "pnpm sync:content && node scripts/check-repository-remove-hook-docs.ts",
     "validate:switch-mode-docs": "pnpm sync:content && node scripts/check-switch-mode-docs.ts",
     "validate:tmux-launch-docs": "pnpm sync:content && node scripts/check-tmux-launch-docs.ts",
     "validate:tab-launch-docs": "pnpm sync:content && node scripts/check-tab-launch-docs.ts",
