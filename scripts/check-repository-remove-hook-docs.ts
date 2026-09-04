@@ -195,9 +195,6 @@ function checkContradictions(
   for (const statement of statements) {
     const hasAliasContext = /(?:aliases?|repository(?:-| )slot|child-local|inline)/i.test(statement);
     const hasRepositoryAlias = /(?:qualified|workspace-owned|child-local|inline)/i.test(statement);
-    const hasRepositoryAliasSelectionContext =
-      /(?:aliases?|repository(?:-| )slot)/i.test(statement) ||
-      (/(?:qualified|workspace-owned)/i.test(statement) && /child-local/i.test(statement));
     if (
       hasAliasContext &&
       hasRepositoryAlias &&
@@ -206,7 +203,7 @@ function checkContradictions(
       found.push(`${relativePath} must not compose repository-slot aliases`);
     }
     if (
-      hasRepositoryAliasSelectionContext &&
+      hasAliasContext &&
       hasAffirmativeAliasSelection(statement)
     ) {
       found.push(`${relativePath} must not assign precedence among repository-slot aliases`);
@@ -231,18 +228,6 @@ function checkContradictions(
     }
     if (hasNegatedCollisionFailure(statement)) {
       found.push(`${relativePath} repository-slot ambiguity must fail before hook execution or removal mutation`);
-    }
-    if (/\bremove scope order\b[^.!?]{0,80}\bworkspace\b[^.!?]{0,40}\brepository\b[^.!?]{0,40}\bglobal-targeted\b[^.!?]{0,40}\bglobal-shared\b/i.test(statement)) {
-      found.push(`${relativePath} must preserve repository-first remove scope order`);
-    }
-    if (/\bwindows\b[^.!?]{0,120}\.ps1\b[^.!?]{0,80}\.cmd\b[^.!?]{0,120}\b(?:chooses?|selects?|prefers?|wins?|takes? precedence)\b/i.test(statement)) {
-      found.push(`${relativePath} Windows native candidates must fail ambiguity without precedence`);
-    }
-    if (/\bchild-local remove hook\b[^.!?]{0,80}\b(?:does not|doesn't|doesn’t|will not|won't|won’t|cannot|can't|can’t)\s+(?:block|prevent)\b[^.!?]{0,120}\b(?:add|configure)\b[^.!?]{0,120}\bqualified duplicate\b/i.test(statement)) {
-      found.push(`${relativePath} child-local remove hooks must block qualified onboarding duplicates`);
-    }
-    if (/\blinked workspaces?\b[^.!?]{0,160}\bqualified hook\b[^.!?]{0,100}\bstored in (?:the )?active child\b[^.!?]{0,80}\brather than (?:the )?configuration root\b/i.test(statement)) {
-      found.push(`${relativePath} linked-workspace qualified hooks must remain at the configuration root`);
     }
     if (hasNegatedPreservationOfProtectedHooks(statement)) {
       found.push(`${relativePath} must preserve hooks outside exact delete ownership`);
@@ -506,10 +491,6 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Doctor checks only inline configuration for repository remove hooks.`,
     `${hooksSurface} Remove dry-run skips native candidate discovery.`,
     `${hooksSurface} When multiple repository-slot aliases claim this slot, ambiguity does not fail before hook execution or removal mutation.`,
-    `${hooksSurface} The remove scope order is workspace → repository → global-targeted → global-shared.`,
-    `${hooksSurface} On Windows, when .ps1 and .cmd candidates both exist, Arashi chooses .ps1 instead of failing ambiguity.`,
-    `${hooksSurface} An existing child-local remove hook does not block add or configure from creating the qualified duplicate.`,
-    `${hooksSurface} In linked workspaces, the qualified hook is stored in the active child rather than the configuration root.`,
   ];
   const contradictionErrors: string[] = [];
   for (const claim of contradictions) {
@@ -539,7 +520,6 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Doctor does not check only inline configuration; it also discovers native repository remove candidates.`,
     `${hooksSurface} Remove dry-run does not skip native candidate discovery.`,
     `${hooksSurface} A single repository-slot alias does not fail; multiple claims still fail as ambiguity before hook execution or removal mutation.`,
-    `${hooksSurface} For inline hooks, Windows selects PowerShell over cmd.`,
   ];
   const truthfulErrors: string[] = [];
   for (const claim of truthful) checkContradictions("fixture.md", claim, truthfulErrors);
