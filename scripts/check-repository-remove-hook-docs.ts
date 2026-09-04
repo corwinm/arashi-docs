@@ -223,11 +223,7 @@ function checkContradictions(
     if (hasNegatedInspectionParity(statement)) {
       found.push(`${relativePath} doctor and remove dry-run must share the runtime candidate resolver`);
     }
-    if (
-      /\bqualified configuration-root remove hook paths?\s+(?:are|is)\s+not\b[^.!?]{0,100}<configurationRoot>\/\.arashi\/hooks\/(?:pre|post)-remove\.<repo><ext>/i.test(
-        statement,
-      )
-    ) {
+    if (hasNegatedQualifiedConfigurationRootRemovePath(statement)) {
       found.push(`${relativePath} must preserve the qualified configuration-root remove hook paths`);
     }
     if (hasNegatedCollisionFailure(statement)) {
@@ -324,6 +320,17 @@ function hasNegatedInspectionParity(statement: string): boolean {
     return /\bdoctor\b/i.test(clause) &&
       /\bremove\s+(?:--)?dry-run\b/i.test(clause) &&
       /\b(?:same|shared)\s+runtime\s+candidate\s+(?:resolver|discovery|model)\b/i.test(clause);
+  });
+}
+
+function hasNegatedQualifiedConfigurationRootRemovePath(statement: string): boolean {
+  return [...statement.matchAll(
+    /<configurationRoot>\/\.arashi\/hooks\/(?:pre|post)-remove\.<repo><ext>/gi,
+  )].some((match) => {
+    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
+    return /\bqualified configuration-root remove hook paths?\b/i.test(
+      clauseAt(statement, match.index).text,
+    );
   });
 }
 
@@ -501,6 +508,7 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Under --force, ambiguity still fails before hook execution or removal mutation.`,
     `${hooksSurface} The workspace-owned alias does not take precedence over the child-local alias and never wins under --force.`,
     "The qualified file has repository scope and runs from the active target checkout.",
+    "The qualified configuration-root remove hook paths are not child-local; they are <configurationRoot>/.arashi/hooks/pre-remove.<repo><ext> and <configurationRoot>/.arashi/hooks/post-remove.<repo><ext>.",
     "Configure creates .arashi/hooks/<lifecycle>.<repo><ext> under the configuration root.",
     deletion.valid,
     `${hooksSurface} Delete does not remove lookalikes or shared, user-global, or child-local hook policy outside clone ownership.`,
