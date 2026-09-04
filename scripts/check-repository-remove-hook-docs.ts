@@ -193,13 +193,18 @@ function checkContradictions(
     }
     if (
       hasAliasContext &&
-      /(?:qualified|workspace-owned)/i.test(statement) &&
-      hasAffirmativeAction(
-        statement,
-        /\b(?:takes? precedence|wins?|(?:is |are )?preferred over|falls? back to)\b/gi,
-      )
+      hasAffirmativeAliasSelection(statement)
     ) {
       found.push(`${relativePath} must not assign precedence among repository-slot aliases`);
+    }
+    if (hasAffirmativeLossOfChildLocalRemoveSupport(statement)) {
+      found.push(`${relativePath} must preserve compatible child-local repository remove file support`);
+    }
+    if (hasDoctorInlineOnlyClaim(statement)) {
+      found.push(`${relativePath} doctor must inspect inline and native repository remove candidates`);
+    }
+    if (hasRemoveDryRunDiscoverySkip(statement)) {
+      found.push(`${relativePath} remove dry-run must use native candidate discovery`);
     }
     if (hasNegatedPreservationOfProtectedHooks(statement)) {
       found.push(`${relativePath} must preserve hooks outside exact delete ownership`);
@@ -222,6 +227,82 @@ function checkContradictions(
       found.push(`${relativePath} must onboard repository remove files at the qualified configuration-root path`);
     }
   }
+}
+
+function hasAffirmativeAliasSelection(statement: string): boolean {
+  return hasAffirmativeClauseAction(
+    statement,
+    /\b(?:takes? precedence|wins?|(?:is|are)\s+preferred over|falls? back to|(?:selects?|chooses?)[^.!?]{0,100}\bover)\b/gi,
+  );
+}
+
+function hasAffirmativeLossOfChildLocalRemoveSupport(statement: string): boolean {
+  const actions = [
+    /\b(?:no longer supported|unsupported)\b/gi,
+    /\b(?:drops?|removes?|ends?|discontinues?)\s+support\b/gi,
+    /\b(?:dropped|removed|ended|discontinued)\b/gi,
+  ];
+  return actions.some((pattern) =>
+    [...statement.matchAll(pattern)].some((match) => {
+      if (match.index === undefined || isNegatedInClauseAt(statement, match.index)) return false;
+      const clause = clauseAt(statement, match.index);
+      return /\bcompatible\b/i.test(clause.text) &&
+        /\bchild-local\b/i.test(clause.text) &&
+        /\brepository\s+remove\s+(?:files?|hooks?)\b/i.test(clause.text) &&
+        (/\bsupport\b/i.test(clause.text) || /\b(?:no longer supported|unsupported)\b/i.test(match[0]));
+    }),
+  );
+}
+
+function hasDoctorInlineOnlyClaim(statement: string): boolean {
+  const active = [...statement.matchAll(
+    /\b(?:checks?|inspects?|considers?|uses?)\s+only\s+(?:the\s+)?inline(?:\s+(?:configuration|config))?\b/gi,
+  )].some((match) =>
+    match.index !== undefined &&
+    !isNegatedInClauseAt(statement, match.index) &&
+    /\bdoctor\b/i.test(clauseAt(statement, match.index).text),
+  );
+  if (active) return true;
+
+  return [...statement.matchAll(
+    /\bonly\s+(?:the\s+)?inline(?:\s+(?:configuration|config))?[^.!?]{0,60}\b(?:is|are)\s+(?:checked|inspected|considered|used)\s+by\s+(?:the\s+)?doctor\b/gi,
+  )].some(
+    (match) => match.index !== undefined && !isNegatedInClauseAt(statement, match.index),
+  );
+}
+
+function hasRemoveDryRunDiscoverySkip(statement: string): boolean {
+  return [...statement.matchAll(/\b(?:skips?|omits?|bypasses?)\b/gi)].some((match) => {
+    if (match.index === undefined || isNegatedInClauseAt(statement, match.index)) return false;
+    const clause = clauseAt(statement, match.index);
+    return /\bremove\s+(?:--)?dry-run\b/i.test(clause.text) &&
+      /\bnative\s+(?:hook\s+)?candidate\s+discovery\b/i.test(clause.text);
+  });
+}
+
+function hasAffirmativeClauseAction(statement: string, pattern: RegExp): boolean {
+  return [...statement.matchAll(pattern)].some(
+    (match) => match.index !== undefined && !isNegatedInClauseAt(statement, match.index),
+  );
+}
+
+function isNegatedInClauseAt(statement: string, actionIndex: number): boolean {
+  const clause = clauseAt(statement, actionIndex);
+  const localActionIndex = actionIndex - clause.start;
+  return /(?:\bnever\b|\bnone\b|\bno\b|\bnot\b|\b(?:do|does|will|can|may|must|should)\s+not\b|\b(?:don't|doesn't|won't|can't|mayn't|mustn't|shouldn't|don’t|doesn’t|won’t|can’t|mayn’t|mustn’t|shouldn’t)\b)[^.!?]{0,80}$/i.test(
+    clause.text.slice(0, localActionIndex),
+  );
+}
+
+function clauseAt(statement: string, index: number): { start: number; text: string } {
+  const boundaries = [
+    ...statement.matchAll(/[.;:!?]|\b(?:but|except|however|yet|unless|although|whereas)\b/gi),
+  ];
+  const before = boundaries.filter((boundary) => (boundary.index ?? -1) < index).at(-1);
+  const after = boundaries.find((boundary) => (boundary.index ?? statement.length) > index);
+  const start = (before?.index ?? -1) + (before?.[0].length ?? 1);
+  const end = after?.index ?? statement.length;
+  return { start, text: statement.slice(start, end) };
 }
 
 function hasAffirmativeAction(statement: string, pattern: RegExp): boolean {
@@ -283,6 +364,9 @@ function runControlledDriftSelfTest(rootPath: string): void {
   }
 
   const hooksSurface = normalize(readFileSync(path.join(rootPath, "docs/reference/hooks.md"), "utf8"));
+  const baselineErrors: string[] = [];
+  checkContradictions("fixture.md", hooksSurface, baselineErrors);
+  assert.deepEqual(baselineErrors, [], "truthful maintained surface produced contradictions");
   const contradictions = [
     "Workspace-owned and child-local aliases both execute together.",
     "The workspace-owned file takes precedence over the child-local file.",
@@ -293,12 +377,19 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Delete owns only exact pre-remove.<repo><ext> and post-remove.<repo><ext> files and their .example templates; it does not preserve lookalikes, shared, user-global, or child-local hook policy outside clone ownership.`,
     `${hooksSurface} Delete removes child-local remove hooks outside clone ownership.`,
     `${hooksSurface} Child-local remove hooks outside clone ownership are deleted during cleanup.`,
+    `${hooksSurface} Compatible child-local repository remove files are no longer supported.`,
+    `${hooksSurface} When repository-slot aliases collide under --force, Arashi chooses the workspace-owned file over the child-local file.`,
+    `${hooksSurface} With repository-slot aliases in contention, --force selects the child-local file over the workspace-owned file.`,
+    `${hooksSurface} Doctor checks only inline configuration for repository remove hooks.`,
+    `${hooksSurface} Remove dry-run skips native candidate discovery.`,
   ];
   const contradictionErrors: string[] = [];
   for (const claim of contradictions) {
     const claimErrors: string[] = [];
     checkContradictions("fixture.md", claim, claimErrors);
-    if (claimErrors.length !== 1) contradictionErrors.push(claim);
+    if (claimErrors.length !== 1) {
+      contradictionErrors.push(claim.slice(hooksSurface.length).trim() || claim);
+    }
   }
   assert.deepEqual(contradictionErrors, [], "controlled contradiction fixture was accepted or overcounted");
 
@@ -313,6 +404,11 @@ function runControlledDriftSelfTest(rootPath: string): void {
     `${hooksSurface} Delete does not remove lookalikes or shared, user-global, or child-local hook policy outside clone ownership.`,
     `${hooksSurface} Delete never deletes child-local hooks outside the selected clone's ordinary ownership.`,
     `${hooksSurface} Child-local remove hooks outside clone ownership are not deleted during cleanup.`,
+    `${hooksSurface} Compatible child-local repository remove files remain supported.`,
+    `${hooksSurface} Support for compatible child-local repository remove files is not removed.`,
+    `${hooksSurface} Repository-slot aliases do not select or choose one file over another under --force.`,
+    `${hooksSurface} Doctor does not check only inline configuration; it also discovers native repository remove candidates.`,
+    `${hooksSurface} Remove dry-run does not skip native candidate discovery.`,
   ];
   const truthfulErrors: string[] = [];
   for (const claim of truthful) checkContradictions("fixture.md", claim, truthfulErrors);
