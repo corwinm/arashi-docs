@@ -197,6 +197,9 @@ function checkContradictions(
     ) {
       found.push(`${relativePath} must not assign precedence among repository-slot aliases`);
     }
+    if (hasNegatedRepositorySlotAliasRelationship(statement)) {
+      found.push(`${relativePath} must preserve the one-slot relationship among repository remove hook aliases`);
+    }
     if (hasAffirmativeLossOfChildLocalRemoveSupport(statement)) {
       found.push(`${relativePath} must preserve compatible child-local repository remove file support`);
     }
@@ -237,6 +240,16 @@ function hasAffirmativeAliasSelection(statement: string): boolean {
     statement,
     /\b(?:takes? precedence|wins?|(?:is|are)\s+preferred over|falls? back to|(?:selects?|chooses?)[^.!?]{0,100}\bover)\b/gi,
   );
+}
+
+function hasNegatedRepositorySlotAliasRelationship(statement: string): boolean {
+  return [...statement.matchAll(/\baliases?\s+for\s+one\s+repository\s+slot\b/gi)].some((match) => {
+    if (match.index === undefined || !isNegatedInClauseAt(statement, match.index)) return false;
+    const clause = clauseAt(statement, match.index).text;
+    return /\binline\b[^.!?]{0,80}\bqualified workspace-owned\b[^.!?]{0,80}\bchild-local\b[^.!?]{0,80}\brepository remove hook paths\b/i.test(
+      clause,
+    );
+  });
 }
 
 function hasAffirmativeLossOfChildLocalRemoveSupport(statement: string): boolean {
@@ -380,6 +393,32 @@ function runControlledDriftSelfTest(rootPath: string): void {
   const baselineErrors: string[] = [];
   checkContradictions("fixture.md", hooksSurface, baselineErrors);
   assert.deepEqual(baselineErrors, [], "truthful maintained surface produced contradictions");
+
+  const aliasDenial =
+    "The inline, qualified workspace-owned, and child-local repository remove hook paths are not aliases for one repository slot.";
+  const aliasAffirmation =
+    "The inline, qualified workspace-owned, and child-local repository remove hook paths are aliases for one repository slot.";
+  const maintainedSurfacePaths = [
+    ...[...pageRequirements.keys()].flatMap((relativePath) => [
+      `docs/${relativePath}`,
+      `public/${relativePath}`,
+    ]),
+    "public/llms.txt",
+    "public/llms-full.txt",
+  ];
+  const aliasPolarityErrors: string[] = [];
+  for (const relativePath of maintainedSurfacePaths) {
+    const surface = normalize(readFileSync(path.join(rootPath, relativePath), "utf8"));
+    const denialErrors: string[] = [];
+    checkContradictions("fixture.md", `${surface} ${aliasDenial}`, denialErrors);
+    if (denialErrors.length !== 1) aliasPolarityErrors.push(`${relativePath}: denial accepted or overcounted`);
+
+    const affirmationErrors: string[] = [];
+    checkContradictions("fixture.md", `${surface} ${aliasAffirmation}`, affirmationErrors);
+    if (affirmationErrors.length !== 0) aliasPolarityErrors.push(`${relativePath}: truthful control rejected`);
+  }
+  assert.deepEqual(aliasPolarityErrors, [], "repository-slot alias polarity fixture failed");
+
   const contradictions = [
     "Workspace-owned and child-local aliases both execute together.",
     "The workspace-owned file takes precedence over the child-local file.",
