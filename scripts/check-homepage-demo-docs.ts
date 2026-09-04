@@ -48,6 +48,10 @@ if (/--chars\s*:|calc\(var\(--chars\)\s*\*\s*1ch\)/.test(theme)) {
   failures.push("cursor distance must not depend on a separately maintained command character width");
 }
 
+if (!/\.demo-toggle:not\(:checked\) ~ \.demo-terminal \.terminal-line \.typed\s*\{[^}]*display:\s*inline;[^}]*clip-path:\s*none;/s.test(theme)) {
+  failures.push("the reduced-motion command must stay inline with its prompt");
+}
+
 if (/\.cmd-\d+\s*\{[^}]*--steps\s*:/s.test(theme)) {
   failures.push("command selectors must not hardcode independently maintained typing step counts");
 }

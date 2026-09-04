@@ -1038,6 +1038,7 @@
   }
 
   .demo-toggle:not(:checked) ~ .demo-terminal .terminal-line .typed {
+    display: inline;
     clip-path: none;
     padding-bottom: 0;
     margin-bottom: 0;
