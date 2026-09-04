@@ -38,8 +38,8 @@ if (!/\.terminal-line \.cursor\s*\{[^}]*position:\s*absolute;[^}]*left:\s*var\(-
 if (!/\.demo-sequence\.typing-ready \.terminal-line \.typing\s*\{[^}]*animation-name:\s*type-command;/s.test(theme)) {
   failures.push("the initialized typing wrapper must own command typing progress");
 }
-if (!/@keyframes type-command\s*\{[\s\S]*?--typing-progress:\s*0%;[\s\S]*?--typing-progress:\s*100%;[\s\S]*?\}/s.test(theme)) {
-  failures.push("typing progress must reveal the full responsive command width");
+if (!/@keyframes type-command\s*\{[\s\S]*?--typing-progress:\s*0%;[\s\S]*?99%,\s*100%\s*\{\s*--typing-progress:\s*100%;[\s\S]*?\}/s.test(theme)) {
+  failures.push("typing progress must reach the full command width before WebKit's exact end boundary");
 }
 if (/--typed-width/.test(homepage) || /--typed-width/.test(theme) || /grid-template-columns:\s*(?:0fr|1fr|0px|calc\(var\(--steps\) \* 1ch\)) auto;/.test(theme)) {
   failures.push("typing distance must not use stale pixel, character-unit, or fractional track measurements");
