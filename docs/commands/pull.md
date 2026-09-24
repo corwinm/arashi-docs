@@ -29,6 +29,7 @@ aw pull [options]
 
 - `-o, --only <repo>` limit pull to repositories; repeat it, use commas, or mix both forms.
 - `-g, --group <group>` limit pull to groups; repeat it, use commas, or mix both forms.
+- `--jobs <n>` pull up to `n` independent children concurrently (positive safe integer; default `1`).
 - `-v, --verbose` print full git output.
 - `-j, --json` output machine-readable pull results.
 
@@ -43,6 +44,9 @@ aw pull --only api --only web
 
 # Pull infrastructure repositories only
 aw pull --group infra
+
+# Pull selected repositories with at most three independent children at once
+aw pull --only api,web,docs --jobs 3
 
 # Pull with detailed command output
 aw pull --verbose
@@ -61,6 +65,7 @@ aw pull --only api --json
 - After a selected parent pull succeeds, Arashi reloads `.arashi/config.json`, reapplies the original filters to the post-pull repositories and groups, reconciles the resulting `reposDir` and `worktreesDir`, and then pulls the selected children. An unfiltered run uses all children in the reloaded config.
 - If an original name or group filter no longer resolves after reload, `pull` stops before remaining child pulls with a structured selection failure. A newly configured child that is absent locally is not cloned implicitly; it is skipped with `aw clone` guidance.
 - If the parent is excluded, or its pull fails and rolls back, child selection and reconciliation continue from the pre-pull configuration snapshot.
+- `--jobs` applies only after parent handling, configuration reload, and managed-ignore reconciliation. Arashi runs children serially when it cannot establish independent Git identities; results retain configured order even if concurrent pulls finish out of order. On the first child failure, it starts no further children, lets already-started pulls finish, and returns a failure.
 - Reconciliation honors effective tracked, repository-local, or global ignore rules. Missing safe rules use the clone's stored scope or the repository-local default; scope `none` leaves files unchanged and reports unignored paths. Arashi never writes global Git configuration.
 - If a later child fails after a new parent configuration remains active, the managed ignore state required by that configuration is retained. State needed only by an abandoned, rolled-back parent update is restored.
 - Pull failures or manual-update states return a non-zero exit code.
