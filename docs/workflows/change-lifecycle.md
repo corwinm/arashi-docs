@@ -53,11 +53,11 @@ Report validation only after it has run. Put pending work under `--todo` or `--r
 ```bash
 aw status
 aw push --set-upstream
-aw remove feature-auth --dry-run
-aw remove feature-auth
+aw finish feature-auth --dry-run
+aw finish feature-auth
 ```
 
-Each repository still owns its commits, CI, and pull request. Use `remove` for branch worktrees. Use [`delete`](/commands/delete/) only to remove a configured repository dependency.
+Each repository still owns its commits, CI, and pull request. Check that each change is actually complete before cleanup; [`finish`](/commands/finish/) assesses integration and asks for manual judgment where proof is unavailable. Use [`remove`](/commands/remove/) for branch worktrees when you want direct cleanup, including abandoned work. Use [`delete`](/commands/delete/) only to remove a configured repository dependency.
 
 ## Related
 
@@ -66,3 +66,4 @@ Each repository still owns its commits, CI, and pull request. Use `remove` for b
 - [create](/commands/create/)
 - [switch](/commands/switch/)
 - [remove](/commands/remove/)
+- [finish](/commands/finish/)

@@ -12,6 +12,8 @@ Clean up feature branches and worktrees when work is done or abandoned.
 
 `remove` deletes branch worktrees (and optionally their branches). To delete a configured repository dependency instead, use the separate [delete command](/commands/delete/); `delete` can remove one explicit or multiple interactively selected configured repositories and is not a `remove` alias.
 
+To assess integration and discard risk before retiring one coordinated workspace, use [`finish`](/commands/finish/). `remove` remains the direct worktree/branch cleanup command, including standalone worktrees.
+
 ## What It Does
 
 - Removes matching worktree directories from the workspace.
@@ -104,5 +106,6 @@ See the [Lifecycle Hooks reference](/reference/hooks/) for discovery paths, stru
 
 - [list](/commands/list/)
 - [create](/commands/create/)
+- [finish](/commands/finish/)
 - [prune](/commands/prune/)
 - [Herdr workflow guide](/workflows/herdr/)

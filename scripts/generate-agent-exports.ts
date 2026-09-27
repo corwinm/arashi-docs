@@ -43,6 +43,7 @@ const coreOrder = [
   "commands/push.md",
   "commands/sync.md",
   "commands/delete.md",
+  "commands/finish.md",
   "commands/remove.md",
   "commands/prune.md",
   "commands/shell.md",
@@ -85,6 +86,7 @@ const requiredRoutes = [
   "commands/status.md",
   "commands/configure.md",
   "commands/delete.md",
+  "commands/finish.md",
   "commands/completion.md",
   "commands/uninstall.md",
   "contributing.md"
