@@ -53,6 +53,8 @@ Repository identity fields such as `repos.<name>.path` and `repos.<name>.gitUrl`
 
 ## Editing Behavior
 
+Cancelling before the final confirmation leaves your settings unchanged.
+
 - **Configured** means the field is stored. **Effective** shows an inherited or built-in value without saving it.
 - **Keep** preserves the stored field, **Edit** validates and replaces it, and **Clear** removes an optional stored field. Required `reposDir` cannot be cleared, and blank input does not mean Clear.
 - The final preview is the exact canonical JSON that will be saved. Any active-file plan is shown separately and lists paths without file contents or inline command bodies.
