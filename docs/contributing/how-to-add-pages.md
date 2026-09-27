@@ -44,5 +44,6 @@ When the CLI adds, removes, or renames a top-level command, keep the canonical c
 1. Add, remove, or rename `docs/commands/<command>.md`.
 2. Update the command list in `docs/commands/index.md`.
 3. Add the page to `coreOrder` in `scripts/generate-agent-exports.ts` when it belongs in the curated command sequence. The generated files under `public/` are outputs, not canonical command catalogs.
-4. Coordinate the companion skills coverage manifest and cross-repository contract check with the CLI change.
+4. Coordinate the companion skills coverage manifest and contract updates with the CLI change.
 5. Run the complete `pnpm validate` check before review.
+6. After the coordinated changes merge, manually run the cross-repository contract assessment in `arashi-arashi` against the actual `main` revisions. Report drift without making this assessment a child-repository merge gate.
