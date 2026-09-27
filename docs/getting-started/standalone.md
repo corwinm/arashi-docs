@@ -47,6 +47,8 @@ aw create feature/docs --base main
 
 ## Limits
 
+An existing malformed or invalid `.arashi/config.json` produces an error rather than falling back to standalone mode; fix the configuration before retrying.
+
 Standalone mode supports the single-repository lifecycle: `create`, `list`, `status`, `switch`, `remove`, `prune`, `doctor`, `move`, and `handoff`.
 
 Repository filters, groups, workspace hooks, persisted defaults, and multi-repository commands require configured mode. Standalone hooks come only from applicable user-global hook locations.

@@ -91,6 +91,12 @@ Inspect the workspace after installation:
 aw status
 ```
 
+## Manual macOS/Linux fallback
+
+Download `arashi-macos-arm64` (Apple Silicon) or `arashi-linux-x64` (Linux x64), plus `arashi`, `aw`, and `arashi-checksums.txt` from the same [GitHub release](https://github.com/corwinm/arashi/releases/latest). Compare each payload’s SHA-256 hash with the manifest using `shasum -a 256` on macOS or `sha256sum` on Linux; stop if any differs.
+
+Rename the native binary to `arashi.bin`, place it beside `arashi` and `aw` in a user-writable directory on PATH, and run `chmod +x arashi.bin arashi aw` there. Open a new shell, run `aw --version`, and confirm both installed executable entrypoints report the same version. Manual installs must be removed manually; [`aw uninstall`](/commands/uninstall/#installation-ownership) does not remove them.
+
 ## Manual Windows fallback
 
 If you do not want to pipe a remote script into PowerShell, download these assets from the same [GitHub release](https://github.com/corwinm/arashi/releases/latest):

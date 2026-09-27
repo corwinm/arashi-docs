@@ -65,6 +65,7 @@ aw remove feature-login --no-hook-input
 ## Notes
 
 - Main worktrees are skipped automatically.
+- Removing a configured parent worktree also removes its nested configured descendant worktrees, even when they use different branch names. Their branches are deleted from their owning repositories unless you pass `--keep-branches`; preview the full scope with `--dry-run`.
 - If both `--keep-worktrees` and `--keep-branches` are set, no operation is performed.
 - Dirty worktrees require explicit confirmation unless `--no-check-dirty` is used.
 - `--dry-run` suppresses confirmation prompts and reports the planned worktree removals, branch deletions, dirty-worktree blockers, skipped main worktrees, missing branches, and configured remove hooks without mutating anything.

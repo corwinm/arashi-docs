@@ -21,10 +21,11 @@ For settings that are not available in the interactive editor, edit `.arashi/con
 
 ## Workspace layout
 
-The smallest configured workspace names the directories where Arashi keeps repositories and worktrees:
+The smallest configured workspace names the directories where Arashi keeps repositories and worktrees. Include `$schema` for JSON validation and editor autocomplete:
 
 ```json
 {
+  "$schema": "https://unpkg.com/arashi/schema/config.schema.json",
   "version": "1.0.0",
   "reposDir": "repos",
   "worktreesDir": ".arashi/worktrees",
@@ -168,4 +169,4 @@ For configured repository remove hooks, inline `repos.<repo>.hooks.<lifecycle>`,
 - [configure command](/commands/configure/)
 - [create command](/commands/create/)
 - [switch command](/commands/switch/)
-- [Full configuration reference](https://github.com/corwinm/arashi/blob/main/docs/configuration.md)
+- [Lifecycle Hooks reference](/reference/hooks/)
