@@ -126,6 +126,8 @@ The permission default is `full-access`, and Arashi always passes and reports th
 
 Human output reports the workspace, effective permission, environment, project, thread, dispatch, and UI stages. Successful `--json` output returns the same sanitized stages at `data.t3Handoff`; a handoff error returns them at `error.details.t3Handoff` alongside the successful creation results. Neither form returns task text, task-derived titles, credentials, authenticated URLs, or raw bridge commands/output. A post-create handoff failure exits nonzero but preserves every successfully created worktree.
 
+Local receipt-storage or prompt-cleanup errors preserve the known dispatch outcome and any project/thread IDs. JSON includes local recovery details at `error.details.t3HandoffRecovery`. If saving the final receipt fails, reconcile the reported outcome before retrying because the durable receipt may still say `dispatching`. If prompt cleanup fails, remove the reported private prompt directory; a successful dispatch remains successful and must not be repeated.
+
 Arashi keeps a private receipt under the parent repository's Git common directory. A definite pre-dispatch failure can be retried against the exact workspace with the same task and permission:
 
 ```bash
