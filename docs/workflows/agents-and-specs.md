@@ -69,6 +69,27 @@ aw exec --only arashi-docs -- pnpm validate
 
 Use `--only` or `--group` for expensive or mutating work unless the task needs every repository.
 
+## Start a new T3 task in the feature workspace
+
+When the current conversation is attached to main, use optional T3 handoff to create the coordinated feature workspace and start a separate thread in that exact parent checkout:
+
+```bash
+aw create feature/t3-handoff --t3 --prompt-file task.md
+```
+
+Write `task.md` as a self-contained task. Include:
+
+- the objective and expected user-visible outcome;
+- decisions and constraints already accepted;
+- repository, issue, specification, or file context the new thread needs;
+- completion expectations, including tests, documentation, and reporting.
+
+Do not ask Arashi to infer or scrape conversation history. The handoff initiates a new task; it does not complete or monitor it, and the original conversation stays attached to main. By default Arashi explicitly requests `full-access` and opens no host UI. Use `--permission approval-required` or `--permission auto-accept-edits` when the task needs a narrower mode.
+
+After success, report the exact parent checkout, effective permission, environment, project, thread, dispatch, and UI outcomes. The user manually selects that project/thread in a desktop or mobile T3 client connected to the same reachable host environment. A mobile client does not run the CLI locally, and a browser opened on the host cannot navigate the phone.
+
+If workspace creation succeeds but handoff fails, preserve the workspace. Retry with `--conflict REUSE_EXISTING` only when Arashi marks the receipt safe; if dispatch is indeterminate, reconcile the reported workspace in T3 before trying again. See [`create`](/commands/create/#hand-off-to-t3-code) for bridge installation, exact retry syntax, result fields, and tested-platform limits.
+
 ## Hand off
 
 ```bash

@@ -45,6 +45,9 @@ aw create <branch> [options]
 - `--no-progress` hide progress indicators.
 - `-n, --dry-run` generate a plan without creating worktrees.
 - `--move-changes` move compatible uncommitted changes from the current workspace into the new worktree after create.
+- `--t3 [task]` hand the exact created parent workspace and an optional inline task to a new T3 Code thread.
+- `--prompt-file <path>` read a multiline UTF-8 T3 task file; requires `--t3` without an inline task.
+- `--permission <mode>` set T3 access to `approval-required`, `auto-accept-edits`, or `full-access` (default).
 - `-j, --json` output machine-readable create results or structured unsupported-mode errors.
 
 ## Examples
@@ -97,7 +100,46 @@ aw create feature-auth-refresh --move-changes
 
 # Run hooks without allowing them to read from the terminal
 aw create feature-auth-refresh --no-hook-input
+
+# Create the coordinated workspace and start a T3 task in its exact parent checkout
+aw create feature-auth-refresh --t3 "Implement the accepted design"
+
+# Use a larger self-contained task and a narrower permission mode
+aw create feature-auth-refresh --t3 --prompt-file task.md --permission approval-required
 ```
+
+## Hand off to T3 Code
+
+T3 handoff is optional and configured-workspace-only. Install the evaluated bridge explicitly on the repository host; Arashi never downloads a moving package during create:
+
+```bash
+# Requires Node.js 22.16 or newer
+npm install --global @bvdm/t3code-cli@0.1.2
+t3code --json doctor
+```
+
+Arashi supports the bridge's reported 0.1.x command/result contract. The published 0.1.2 package has a known embedded `--version` value of `0.1.0`, which Arashi accepts. Later compatibility lines require an Arashi update rather than an implicit latest-version download.
+
+Supply exactly one nonempty prompt source. `--t3 "task"` is convenient for a concise task; `--t3 --prompt-file task.md` preserves multiline content without shell quoting or command-length problems. Arashi reads files as strict UTF-8 and validates missing, conflicting, unreadable, empty, or whitespace-only input before hooks, managed-ignore changes, Git refs, or worktrees. `--prompt-file` and `--permission` without `--t3` are errors.
+
+The permission default is `full-access`, and Arashi always passes and reports the effective value explicitly. It invokes the installed bridge with the exact created parent path, folder resolution, `--checkout current`, and `--open none`. T3 therefore uses the Arashi checkout instead of creating another worktree, and no browser or desktop window opens by default. An explicit T3 handoff suppresses configured create switch/launch defaults; combining it with explicit `--switch`, `--launch`, `--tab`, `--tmux`, `--sesh`, or `--herdr` is rejected before mutation.
+
+Human output reports the workspace, effective permission, environment, project, thread, dispatch, and UI stages. Successful `--json` output returns the same sanitized stages at `data.t3Handoff`; a handoff error returns them at `error.details.t3Handoff` alongside the successful creation results. Neither form returns task text, task-derived titles, credentials, authenticated URLs, or raw bridge commands/output. A post-create handoff failure exits nonzero but preserves every successfully created worktree.
+
+Local receipt-storage or prompt-cleanup errors preserve the known dispatch outcome and any project/thread IDs. JSON includes local recovery details at `error.details.t3HandoffRecovery`. If saving the final receipt fails, reconcile the reported outcome before retrying because the durable receipt may still say `dispatching`. If prompt cleanup fails, remove the reported private prompt directory; a successful dispatch remains successful and must not be repeated.
+
+When combined with `--move-changes`, T3 dispatch starts only after every attempted move succeeds. A move failure preserves the workspace and move recovery instructions and returns `T3_WORKSPACE_PREPARATION_FAILED` without starting a T3 task.
+
+Arashi keeps a private receipt under the parent repository's Git common directory. A definite pre-dispatch failure can be retried against the exact workspace with the same task and permission:
+
+```bash
+aw create feature-auth-refresh --conflict REUSE_EXISTING \
+  --t3 --prompt-file task.md --permission approval-required
+```
+
+A successful, active, or indeterminate receipt blocks another automatic dispatch. If interruption or malformed bridge output might have succeeded server-side, inspect T3 for the reported workspace/project/thread before retrying; Arashi does not blindly create a duplicate thread. If reconciliation proves that no thread exists, remove only the exact reported receipt and its adjacent `.lock` file if present, then rerun against the reusable workspace. Receipts store a task digest and sanitized identifiers, never task text or credentials.
+
+The initiating conversation remains attached to its original workspace. The command runs on the host containing Arashi, the repositories, and the reachable T3 environment. Select the reported project/thread manually in a desktop or mobile client connected to that same environment; host browser opening cannot navigate a phone. The initial end-to-end spike covered macOS, Arashi 1.36.0, T3 server 0.0.42, and bridge handoff. Platform-specific privacy branches and argv construction have automated coverage, but Windows, Linux, and mobile were not validated end to end for this release.
 
 ## Worktree locations
 
@@ -186,6 +228,7 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 ## Notes
 
 - In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [One Repository](/getting-started/standalone/).
+- T3 handoff requires configured mode and the coordinating parent repository; ordinary create remains independent of T3, Node.js, its server, and credentials.
 - `create` validates branch names and repository readiness.
 - Configured create runs workspace `pre-create` once before branch/worktree mutation, then each repository's retained-name `pre-create.<repo>` after Git worktree creation and before configured file materialization/setup, followed by `post-create.<repo>`. Workspace `post-create` runs once after coordinated Git creation and before move-changes or switch/launch handling. Repository hooks run in the new child worktree; workspace hooks run at the workspace root.
 - Any create-hook validation failure, timeout, or nonzero exit fails create and enters the owned Git rollback boundary. Configured-create human results summarize the complete hook outcome ledger with status counts and per-failure details; JSON results preserve every outcome record. Rollback warnings remain visible in the applicable result. See the [Lifecycle Hooks reference](/reference/hooks/) for scope, environment, platform, timeout, and outcome details.
