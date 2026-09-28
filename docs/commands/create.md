@@ -128,6 +128,8 @@ Human output reports the workspace, effective permission, environment, project, 
 
 Local receipt-storage or prompt-cleanup errors preserve the known dispatch outcome and any project/thread IDs. JSON includes local recovery details at `error.details.t3HandoffRecovery`. If saving the final receipt fails, reconcile the reported outcome before retrying because the durable receipt may still say `dispatching`. If prompt cleanup fails, remove the reported private prompt directory; a successful dispatch remains successful and must not be repeated.
 
+When combined with `--move-changes`, T3 dispatch starts only after every attempted move succeeds. A move failure preserves the workspace and move recovery instructions and returns `T3_WORKSPACE_PREPARATION_FAILED` without starting a T3 task.
+
 Arashi keeps a private receipt under the parent repository's Git common directory. A definite pre-dispatch failure can be retried against the exact workspace with the same task and permission:
 
 ```bash
