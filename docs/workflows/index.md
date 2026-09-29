@@ -22,6 +22,7 @@ sidebar:
 ## Integrations
 
 - [VS Code](/workflows/vscode/)
+- [T3 Code](/workflows/t3-code/)
 - [tmux and sesh](/workflows/tmux-and-sesh/)
 - [Herdr](/workflows/herdr/)
 - [cmux](/workflows/cmux/)
