@@ -84,6 +84,8 @@ const contradictions = [
   ["existing-worktree relocation", /(?:changing|naming)[^.\n]*(?<!not )(?:relocates?|renames?|moves?)[^.\n]*existing[^.\n]*worktrees?/i],
   ["coordinated-child policy reapplication", /coordinated child[^.\n]*(?:reappl(?:y|ies)|independent)[^.\n]*naming/i],
   ["obsolete standalone isolation", /Standalone `\.worktrees\/<branch>` placement is unchanged/i],
+  ["standalone ignores personal naming", /standalone[^.\n]*(?:ignores?|disregards?)[^.\n]*worktreeNaming/i, true],
+  ["standalone budget shortening", /standalone[^.\n]*(?:shortens?|truncates?)[^.\n]*(?:names?|namespace|paths?)/i, true],
   [
     "component-only budget scope",
     /(?:(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*(?:applies?|limits?|measures?|counts?)[^.\n]*only[^.\n]*(?:folder|directory|namespace)\s+component|only[^.\n]*(?:folder|directory|namespace)\s+component[^.\n]*(?:counts?|contributes?)[^.\n]*(?:configured\s+limit|path\s+budget))/i,
