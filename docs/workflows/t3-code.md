@@ -10,6 +10,8 @@ Start a separate T3 Code thread in a new coordinated workspace while your origin
 
 ## Set up the bridge
 
+Arashi currently requires the third-party [`@bvdm/t3code-cli` bridge](https://github.com/MajesteitBart/t3code-cli), maintained separately from Arashi and T3 Code. It is not the official T3 CLI and must be installed separately; Arashi does not install it automatically.
+
 Run these commands on the host containing Arashi, your repositories, and a reachable T3 environment. T3 handoff requires a configured Arashi workspace; ordinary worktree creation does not require T3 or Node.js.
 
 ```bash
