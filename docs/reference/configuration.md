@@ -7,13 +7,18 @@ sidebar:
   order: 2
 ---
 
-`aw init` creates `.arashi/config.json`. Commit this file when the workspace configuration should be shared with your team.
+Arashi has two separate configuration files. Their filenames match, but their locations, scope, and priority differ:
 
-Personal defaults belong in `~/.arashi/config.json`. They apply in configured and standalone repositories without creating workspace configuration or requiring `aw init`.
+| File | Scope and priority |
+| --- | --- |
+| `<workspace>/.arashi/config.json` | In-repo configuration for this project. Its explicit settings take priority over user defaults. Commit it when the team should share the configuration. |
+| `~/.arashi/config.json` | Optional user defaults in your home directory. Supplies personal preferences only for fields the in-repo config leaves unset, across the repositories you use. |
+
+`aw init` creates the in-repo configuration. The user defaults file is an optional extra that you create separately; Arashi does not require it or copy it into a repository. Configured workspaces use the in-repo settings first. Standalone repositories can use the optional user defaults without adopting in-repo configuration.
 
 ## User configuration
 
-Create the file with the dedicated user schema and version metadata:
+If you want personal fallback preferences, create `~/.arashi/config.json` in your home directory with the dedicated user schema and version metadata. This example is for the separate user defaults file:
 
 ```json
 {
@@ -38,7 +43,7 @@ Create the file with the dedicated user schema and version metadata:
 
 The user file is intentionally partial. It accepts only `defaults.create`, `defaults.switch`, `defaults.editors`, `worktreesDir`, and `worktreeNaming`; repository definitions, groups, base branches, materialization, and hooks remain workspace-owned. `version` is required and currently must be `1.0.0`; `$schema` is optional but recommended.
 
-Resolution is field-by-field: an explicit command option wins over an explicit workspace field, then the user field, then the mode's built-in default. Nested objects do not replace one another wholesale. Explicit `false` and `"none"` values are authored overrides. Use `aw config effective` or `aw config effective --json` to inspect every supported value, its `cli`, `workspace`, `user`, or `built-in` source, and the files used. The inspection command also accepts create, switch, and worktree-directory options to preview CLI precedence without changing files.
+Resolution is field-by-field: **explicit command option > explicit in-repo setting > optional user default > built-in default**. The in-repo config is authoritative for each field it sets. For example, in-repo `defaults.create.switch: false` wins over user `true`, while an unrelated user naming preference still fills an unset in-repo field. Nested objects do not replace one another wholesale. Explicit `false` and `"none"` values override user defaults. Use `aw config effective` or `aw config effective --json` to inspect every supported value, its `cli`, `workspace`, `user`, or `built-in` source, and the files used. The inspection command also accepts create, switch, and worktree-directory options to preview CLI precedence without changing files.
 
 Relative user `worktreesDir` values resolve from the primary repository/workspace root, so main and linked worktree invocations agree. An absolute user directory is treated as a shared root; Arashi appends `<repository-name>-<8-character-path-hash>` before the generated worktree name to isolate unrelated repositories with the same name. Naming changes affect only newly created worktrees. Existing worktrees remain discoverable through Git and are never relocated.
 
@@ -46,7 +51,7 @@ A missing user file preserves existing behavior. Malformed JSON, unsupported fie
 
 ## Edit configuration
 
-Run `aw configure` to inspect and edit common settings interactively:
+Run `aw configure` to inspect and edit common settings in the in-repo `<workspace>/.arashi/config.json` interactively:
 
 ```bash
 aw configure

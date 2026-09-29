@@ -17,7 +17,7 @@ aw config effective
 aw config effective --json
 ```
 
-The output identifies configured or standalone mode, the workspace and user configuration files used, the resolved worktree base, and every supported personal setting with its source: `cli`, `workspace`, `user`, or `built-in`.
+The output identifies configured or standalone mode, the separate in-repo `<workspace>/.arashi/config.json` and optional home-directory `~/.arashi/config.json` files used, the resolved worktree base, and every supported personal setting with its source: `cli`, `workspace`, `user`, or `built-in`. Explicit in-repo settings take priority over user defaults; the optional user file fills only unset fields. Explicit command options take highest priority.
 
 Use inspection-only overrides to verify precedence:
 
