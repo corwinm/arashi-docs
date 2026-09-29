@@ -7,14 +7,19 @@ sidebar:
   order: 2
 ---
 
-Arashi has two separate configuration files. Their filenames match, but their locations, scope, and priority differ:
+Arashi has two separate configuration files. The in-repo config is primary; the user defaults file is an optional extra.
 
-| File | Scope and priority |
-| --- | --- |
-| `<workspace>/.arashi/config.json` | In-repo configuration for this project. Its explicit settings take priority over user defaults. Commit it when the team should share the configuration. |
-| `~/.arashi/config.json` | Optional user defaults in your home directory. Supplies personal preferences only for fields the in-repo config leaves unset, across the repositories you use. |
+## In-repo configuration (primary)
 
-`aw init` creates the in-repo configuration. The user defaults file is an optional extra that you create separately; Arashi does not require it or copy it into a repository. Configured workspaces use the in-repo settings first. Standalone repositories can use the optional user defaults without adopting in-repo configuration.
+File: `.arashi/config.json` inside your workspace.
+
+`aw init` creates this project's configuration. Its explicit settings take priority over user defaults. Commit it when the team should share the configuration.
+
+## User defaults (optional)
+
+File: `~/.arashi/config.json` in your home directory, separate from the repository.
+
+Create this file only if you want personal preferences across repositories. It supplies defaults for fields the in-repo config leaves unset. Arashi does not require it or copy it into a repository. Standalone repositories can use these optional defaults without adopting in-repo configuration.
 
 ## User configuration
 
