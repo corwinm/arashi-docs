@@ -27,7 +27,7 @@ aw init [options]
 ## Key Options
 
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
-- `--worktrees-dir <path>` set a custom worktree base directory (when omitted, bare repositories use `..` and non-bare repositories use `.arashi/worktrees`).
+- `--worktrees-dir <path>` set and save a shared repo worktree base directory. When omitted, optional user defaults apply; without them, bare repositories use `..` and non-bare repositories use `.arashi/worktrees`.
 - `--ignore-scope <local|tracked|none>` choose repository-local rules, tracked rules, or no ignore-file writes.
 - `-f, --force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.

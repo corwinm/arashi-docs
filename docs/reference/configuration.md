@@ -15,6 +15,8 @@ File: `.arashi/config.json` inside your workspace.
 
 `aw init` creates this project's configuration. Its explicit settings take priority over user defaults. Commit it when the team should share the configuration.
 
+Fresh non-bare initialization leaves `worktreesDir` unset unless you pass `--worktrees-dir`. This lets optional user defaults apply now or later, without copying a personal path into shared repo configuration. Pass the flag when the team should share a specific worktree directory.
+
 ## User defaults (optional)
 
 File: `~/.arashi/config.json` in your home directory, separate from the repository.
