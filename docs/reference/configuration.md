@@ -9,6 +9,41 @@ sidebar:
 
 `aw init` creates `.arashi/config.json`. Commit this file when the workspace configuration should be shared with your team.
 
+Personal defaults belong in `~/.arashi/config.json`. They apply in configured and standalone repositories without creating workspace configuration or requiring `aw init`.
+
+## User configuration
+
+Create the file with the dedicated user schema and version metadata:
+
+```json
+{
+  "$schema": "https://unpkg.com/arashi/schema/user-config.schema.json",
+  "version": "1.0.0",
+  "defaults": {
+    "create": {
+      "switch": true,
+      "launch": "none"
+    },
+    "switch": {
+      "mode": "cd"
+    }
+  },
+  "worktreesDir": ".worktrees",
+  "worktreeNaming": {
+    "style": "repo-branch",
+    "branchSlashes": "flatten"
+  }
+}
+```
+
+The user file is intentionally partial. It accepts only `defaults.create`, `defaults.switch`, `defaults.editors`, `worktreesDir`, and `worktreeNaming`; repository definitions, groups, base branches, materialization, and hooks remain workspace-owned. `version` is required and currently must be `1.0.0`; `$schema` is optional but recommended.
+
+Resolution is field-by-field: an explicit command option wins over an explicit workspace field, then the user field, then the mode's built-in default. Nested objects do not replace one another wholesale. Explicit `false` and `"none"` values are authored overrides. Use `aw config effective` or `aw config effective --json` to inspect every supported value, its `cli`, `workspace`, `user`, or `built-in` source, and the files used. The inspection command also accepts create, switch, and worktree-directory options to preview CLI precedence without changing files.
+
+Relative user `worktreesDir` values resolve from the primary repository/workspace root, so main and linked worktree invocations agree. An absolute user directory is treated as a shared root; Arashi appends `<repository-name>-<8-character-path-hash>` before the generated worktree name to isolate unrelated repositories with the same name. Naming changes affect only newly created worktrees. Existing worktrees remain discoverable through Git and are never relocated.
+
+A missing user file preserves existing behavior. Malformed JSON, unsupported fields or versions, and invalid values fail with the user file path and field diagnostics. Arashi does not copy user settings into `.arashi/config.json`; `aw configure` and ordinary initialization continue to edit workspace state only.
+
 ## Edit configuration
 
 Run `aw configure` to inspect and edit common settings interactively:
@@ -91,7 +126,7 @@ A repository may belong to more than one group. Combining `--group` with `--only
 
 ## Create and switch defaults
 
-Set defaults when you want the same behavior without repeating flags:
+Set shared workspace defaults when the team wants the same behavior. Put personal choices in the user file described above:
 
 ```json
 {
@@ -131,7 +166,7 @@ Customize newly created configured-worktree paths with `worktreeNaming`:
 - `branchSlashes`: `preserve` or `flatten`.
 - `maxPathLength`: optional positive integer from 1 through 2,147,483,647.
 
-These fields affect newly planned configured-worktree destinations; they do not rename existing worktrees or change Git branch names. See [Worktree locations](/commands/create/#worktree-locations) for the topology mapping, path-budget behavior, and create-time failures.
+These fields affect newly planned configured or standalone worktree destinations; they do not rename existing worktrees or change Git branch names. See [Worktree locations](/commands/create/#worktree-locations) for the topology mapping, path-budget behavior, and create-time failures.
 
 ## Copy or share worktree files
 

@@ -14,6 +14,7 @@ Use this section when you want command-level guidance.
 - [add](/commands/add/) - add a repository to management.
 - [clone](/commands/clone/) - clone missing configured repositories.
 - [configure](/commands/configure/) - inspect supported configuration or make a confirmed TTY edit.
+- [config](/commands/config/) - inspect effective personal and workspace settings with provenance.
 - [create](/commands/create/) - create a coordinated or standalone worktree.
 - [move](/commands/move/) - move uncommitted changes between worktrees.
 - [doctor](/commands/doctor/) - diagnose workspace health without making changes.

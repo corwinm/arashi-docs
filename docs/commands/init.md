@@ -34,7 +34,7 @@ aw init [options]
 - `-n, --dry-run` preview changes without writing files.
 - `-v, --verbose` print detailed initialization steps.
 - `-j, --json` output machine-readable initialization results.
-- `--zero-config` bootstrap the root `.worktrees/` convention for ad hoc use in a non-bare Git project that has not adopted Arashi configuration.
+- `--zero-config` bootstrap the effective standalone worktree location for ad hoc use in a non-bare Git project that has not adopted workspace configuration.
 
 ## Examples
 
@@ -100,7 +100,7 @@ aw init --zero-config --dry-run --json
 - Reconciliation updates only Arashi-owned ignore blocks and removes stale owned entries in the active writable scope. User-authored rules remain untouched; `none` freezes existing ignore content.
 - `--dry-run` includes planned scope, preference, and ignore changes without modifying them. JSON results expose effective sources, planned or applied rules, warnings, unsafe skips, and final changed/restored state under structured managed ignore data.
 - Prefer ordinary `aw init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
-- `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It is an ad hoc path for otherwise-unconfigured projects and never writes tracked or global ignore state, `.arashi/`, hooks, or config.
+- `--zero-config` creates the effective standalone directory (built-in `.worktrees/`, or the user `worktreesDir` fallback) and adds its repository-relative rule to the Git-resolved local exclude only when the location is inside the repository and no effective rule covers it. External locations need no Git ignore rule. It never writes tracked/global ignore state, `.arashi/`, hooks, workspace config, or user config.
 - Zero-config mode accepts `--dry-run`, `--verbose`, and `--json`; it rejects configured-init options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` before mutation.
 - Use the [One Repository](/getting-started/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
 
