@@ -120,6 +120,17 @@ t3code --json doctor
 
 Arashi supports the bridge's reported 0.1.x command/result contract. The published 0.1.2 package has a known embedded `--version` value of `0.1.0`, which Arashi accepts. Later compatibility lines require an Arashi update rather than an implicit latest-version download.
 
+Arashi does not pass a model or reasoning-effort override to the bridge. To choose personal defaults for future handoffs, configure the `t3code` CLI on the repository host. For example, with a Codex provider that supports this model and effort:
+
+```sh
+t3code config set provider codex
+t3code config set model gpt-6.1-sol
+t3code config set thinkingEffort medium
+t3code config show
+```
+
+The model and effort above are examples, not Arashi requirements. These are T3 CLI preferences, separate from Arashi workspace configuration and the T3 app's current model selection. Saved CLI preferences override the project's default selection for new handoffs; without them, the bridge uses the project selection or its own fallback. Changing these preferences does not change existing threads. See the [T3 CLI documentation](https://github.com/MajesteitBart/t3code-cli#readme) for its full configuration reference.
+
 Supply exactly one nonempty prompt source. `--t3 "task"` is convenient for a concise task; `--t3 --prompt-file task.md` preserves multiline content without shell quoting or command-length problems. Arashi reads files as strict UTF-8 and validates missing, conflicting, unreadable, empty, or whitespace-only input before hooks, managed-ignore changes, Git refs, or worktrees. `--prompt-file` and `--permission` without `--t3` are errors.
 
 The permission default is `full-access`, and Arashi always passes and reports the effective value explicitly. It invokes the installed bridge with the exact created parent path, folder resolution, `--checkout current`, and `--open none`. T3 therefore uses the Arashi checkout instead of creating another worktree, and no browser or desktop window opens by default. An explicit T3 handoff suppresses configured create switch/launch defaults; combining it with explicit `--switch`, `--launch`, `--tab`, `--tmux`, `--sesh`, or `--herdr` is rejected before mutation.
