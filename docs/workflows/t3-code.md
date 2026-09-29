@@ -34,7 +34,7 @@ aw create feature-auth-refresh --t3 --prompt-file task.md \
   --t3-provider codex --t3-model gpt-6.1-sol --t3-effort medium
 ```
 
-These values are examples. Arashi validates the selection against T3's live catalog. `--t3-provider` accepts a configured instance ID, or a driver name when it identifies exactly one available instance. Model aliases are resolved to the catalog slug. Effort uses the advertised `reasoningEffort` or `effort` option and must be supported by that model.
+These values are examples. Arashi validates the selection against T3's live catalog. `--t3-provider` accepts a configured instance ID, or a driver name when it identifies exactly one available instance. Model aliases are resolved to the catalog slug. Effort uses the advertised `reasoningEffort` or `effort` option and must be supported by that model. Pinning the same provider and model (including an alias) preserves T3's saved options; an explicit effort overrides its saved value. Changing provider or model uses the new model's catalog defaults for options you omit.
 
 Save personal preferences under `defaults.t3` in `~/.arashi/config.json`:
 
