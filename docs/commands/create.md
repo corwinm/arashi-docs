@@ -46,6 +46,7 @@ aw create <branch> [options]
 - `-n, --dry-run` generate a plan without creating worktrees.
 - `--move-changes` move compatible uncommitted changes from the current workspace into the new worktree after create.
 - `--t3 [task]` hand the exact created parent workspace and an optional inline task to a new T3 Code thread.
+- `--t3-provider <id>`, `--t3-model <model>`, and `--t3-effort <effort>` choose supported catalog settings; `--t3-base-dir <path>` and `--t3-cli <path>` select the installed official local environment/CLI. All require `--t3`.
 - `--prompt-file <path>` read a multiline UTF-8 T3 task file; requires `--t3` without an inline task.
 - `--permission <mode>` set T3 access to `approval-required`, `auto-accept-edits`, or `full-access` (default).
 - `-j, --json` output machine-readable create results or structured unsupported-mode errors.
