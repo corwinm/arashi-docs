@@ -88,6 +88,8 @@ An explicit T3 handoff suppresses configured create launch/switch defaults. Comb
 
 With `--move-changes`, dispatch waits until every attempted move succeeds. A move failure preserves the workspace and recovery instructions without starting a T3 task.
 
+`--dry-run` checks the installed CLI version and read-only runtime metadata without issuing a session, creating worktrees, or dispatching a task. Authentication and live catalog validation happen on the actual handoff.
+
 ## Find the new thread
 
 Use the environment, project, and thread identifiers reported by Arashi to select the new thread in a connected T3 desktop or mobile client. The client must reach the same host environment. The command runs on the repository host, not on the phone. UI mode is `none`: desktop reveal and exact-thread navigation are both skipped. Revealing an app would not prove navigation to the new thread; core dispatch is independent of UI.
@@ -96,14 +98,15 @@ Arashi reports workspace creation and task dispatch separately. If creation succ
 
 ## Recover a failed handoff
 
-For a definite pre-dispatch failure that Arashi marks safe to retry, reuse the exact workspace with the same task and permission:
+For a definite pre-dispatch failure that Arashi marks safe to retry, reuse the exact workspace with the same task, permission, and selection. Repeat the original overrides; for example, if the original command used these values:
 
 ```bash
 aw create feature-auth-refresh --conflict REUSE_EXISTING \
-  --t3 --prompt-file task.md --permission approval-required
+  --t3 --prompt-file task.md --permission approval-required \
+  --t3-provider codex --t3-model gpt-6.1-sol --t3-effort medium
 ```
 
-A native preparation retry first locates the recorded project/thread identifiers, preserving partial success. If task acceptance is uncertain (for example, the server accepted it before a timeout), rerunning with the same intent can confirm the saved message in the saved thread, but never submits that uncertain task again. Missing/deleted/changed identifiers, or changed prompt, permissions, model, or effort, require reconciliation. A successful receipt blocks another handoff.
+An existing native receipt retains its saved model/provider/effort selection. Conflicting values from flags or Arashi user/workspace defaults block retry and require reconciliation; repeat the original overrides to keep the same intent. Changes to T3 defaults do not replace the saved selection. A native preparation retry first locates the recorded project/thread identifiers, preserving partial success. If task acceptance is uncertain (for example, the server accepted it before a timeout), rerunning with the same intent can confirm the saved message in the saved thread, but never submits that uncertain task again. Missing/deleted/changed identifiers, or changed prompt, permissions, model, or effort, require reconciliation. A successful receipt blocks another handoff.
 
 Receipts live in the parent repository's Git common directory with owner-only permissions. A retained `.lock` may represent an active process or an interrupted run. Confirm that the owning process has stopped and reconcile the reported T3 identifiers before removing only that exact lock; Arashi never steals it automatically. Bridge-era receipts block native retries, including old failed receipts. Only after verifying that the original task was never accepted should you remove the exact reported receipt (and stale lock, if present) and begin a fresh handoff. Never remove receipts or locks for other workspaces.
 
