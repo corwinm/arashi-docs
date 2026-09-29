@@ -9,7 +9,7 @@ sidebar:
 
 Arashi has two separate configuration files. The in-repo config is primary; the user defaults file is an optional extra.
 
-## In-repo configuration (primary)
+## Repo Configuration
 
 File: `.arashi/config.json` inside your workspace.
 
