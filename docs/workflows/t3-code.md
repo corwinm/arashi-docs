@@ -84,7 +84,7 @@ Add `defaults.t3` to your personal `~/.arashi/config.json`. A user configuration
 
 Use the same section in workspace `.arashi/config.json` for shared preferences. Optional `baseDir` (absolute path) and `cli` fields select the profile and executable. Keep credentials out of these files.
 
-Precedence applies per field: flags → workspace preferences → personal preferences → T3 project selection → T3 server selection → unambiguous catalog defaults. Changing preferences affects future handoffs, not existing threads.
+See [T3 Code preferences in the configuration reference](/reference/configuration/#t3-code-preferences) for all fields, validation, precedence, and effective-value diagnostics. Changing preferences affects future handoffs, not existing threads.
 
 ## Find the new thread
 

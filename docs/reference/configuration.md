@@ -48,7 +48,7 @@ If you want personal fallback preferences, create `~/.arashi/config.json` in you
 }
 ```
 
-The user file is intentionally partial. It accepts only `defaults.create`, `defaults.switch`, `defaults.editors`, `worktreesDir`, and `worktreeNaming`; repository definitions, groups, base branches, materialization, and hooks remain workspace-owned. `version` is required and currently must be `1.0.0`; `$schema` is optional but recommended.
+The user file is intentionally partial. It accepts only `defaults.create`, `defaults.switch`, `defaults.editors`, `defaults.t3`, `worktreesDir`, and `worktreeNaming`; repository definitions, groups, base branches, materialization, and hooks remain workspace-owned. `version` is required and currently must be `1.0.0`; `$schema` is optional but recommended.
 
 Resolution is field-by-field: **explicit command option > explicit in-repo setting > optional user default > built-in default**. The in-repo config is authoritative for each field it sets. For example, in-repo `defaults.create.switch: false` wins over user `true`, while an unrelated user naming preference still fills an unset in-repo field. Nested objects do not replace one another wholesale. Explicit `false` and `"none"` values override user defaults. Use `aw config effective` or `aw config effective --json` to inspect every supported value, its `cli`, `workspace`, `user`, or `built-in` source, and the files used. The inspection command also accepts create, switch, and worktree-directory options to preview CLI precedence without changing files.
 
@@ -159,6 +159,39 @@ Set shared workspace defaults when the team wants the same behavior. Put persona
 - `defaults.switch.mode` accepts `auto | cd | launch | sesh | herdr`.
 
 Editor integrations use their own matching scope under `defaults.editors.<editor>.create`. Install [shell integration](/commands/shell/) when `auto` or `cd` should change the current shell directory.
+
+## T3 Code preferences
+
+Set `defaults.t3` in the personal user file or shared workspace configuration for future `aw create --t3` handoffs:
+
+```json
+{
+  "version": "1.0.0",
+  "defaults": {
+    "t3": {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    }
+  }
+}
+```
+
+All five fields are optional:
+
+| Field | Meaning | Command override |
+| --- | --- | --- |
+| `provider` | Configured T3 provider instance ID, or a driver identifying exactly one available instance | `--t3-provider` |
+| `model` | Model slug or alias available in T3's catalog | `--t3-model` |
+| `effort` | Reasoning effort supported by the selected model | `--t3-effort` |
+| `baseDir` | Absolute path to the local T3 data directory | `--t3-base-dir` |
+| `cli` | Installed official `t3` command name or absolute executable path | `--t3-cli` |
+
+Values must be nonempty strings without control characters. Keep credentials out of configuration. Arashi validates provider, model, and effort against the selected environment's live catalog.
+
+Precedence applies independently to each field: **explicit T3 flag > workspace preference > personal preference**. Unset provider/model/effort values then use T3's project selection, server selection, and unambiguous catalog defaults. Pinning the same provider/model preserves its saved options; explicit effort overrides its saved value. Changing provider/model uses catalog defaults for omitted options. `baseDir` falls back to `T3CODE_HOME`, then `~/.t3`; `cli` defaults to `t3` on `PATH`.
+
+Use `aw config effective` to inspect Arashi preference values and their sources. Unset T3 fields appear as `null`; the command does not connect to T3 to resolve its live defaults. See [T3 Code integration](/workflows/t3-code/) for setup, permissions, handoff, and recovery.
 
 ## Worktree paths
 
