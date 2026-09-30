@@ -349,6 +349,8 @@ for (const fixture of fixtures) {
 }
 
 const truthfulClaims = [
+  "Configured create handles path budgets and shortens long namespaces when needed, while standalone create rejects over-limit paths.",
+  "Standalone create rejects over-limit paths, while configured create handles budgets and shortens long namespaces when needed.",
   "Standalone create applies personal naming, but does not shorten new paths to meet maxPathLength.",
   "Standalone create does not shorten paths, while configured create shortens new paths to meet maxPathLength.",
   "For a bare workspace, default with preserve does not yield wrong-example-feature-auth for feature/auth.",
