@@ -253,6 +253,10 @@ for (const [id, claim] of [
     "standalone-budget-application-mixed-polarity",
     "Standalone create does not shorten names, but standalone create truncates paths to fit the limit.",
   ],
+  ["standalone-inherited-but", "Standalone create does not rename existing paths, but shortens new paths to meet maxPathLength."],
+  ["standalone-inherited-while", "Standalone create does not rename existing paths, while truncates new paths to meet maxPathLength."],
+  ["standalone-inherited-and", "Standalone create does not rename existing paths, and shortens new paths to meet maxPathLength."],
+  ["standalone-inherited-semicolon", "Standalone create does not rename existing paths; shortens new paths to meet maxPathLength."],
   [
     "component-only-budget-coordinating-conjunction",
     "The path budget does not apply only to one folder component, and the configured limit counts only one folder component.",
@@ -345,6 +349,8 @@ for (const fixture of fixtures) {
 }
 
 const truthfulClaims = [
+  "Standalone create applies personal naming, but does not shorten new paths to meet maxPathLength.",
+  "Standalone create does not shorten paths, while configured create shortens new paths to meet maxPathLength.",
   "For a bare workspace, default with preserve does not yield wrong-example-feature-auth for feature/auth.",
   "For a bare workspace with default and preserve, the destination for feature/auth is not wrong-example-feature-auth.",
   "On collision, create cannot choose another destination.",

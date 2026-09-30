@@ -128,12 +128,17 @@ const truthfulNegation =
 
 function contradictionClauses(content: string): string[] {
   return content
-    .split(/(?<=[.!?])\s+|\n+|;\s*/u)
-    .flatMap((fragment) =>
-      fragment.split(
-        /(?:\s*,?\s*\b(?:but|while|whereas|however|yet)\b\s*|\s*,?\s*\band\b\s*(?=(?:`|[A-Z]|\b(?:the|this|that|each|standalone|existing|coordinated|maxPathLength)\b)))/u,
-      ),
-    )
+    .split(/(?<=[.!?])\s+|\n+/u)
+    .flatMap((fragment) => {
+      const subject = fragment.match(/\bstandalone(?:\s+create)?\b/iu)?.[0];
+      return fragment.split(
+        /(?:;\s*|\s*,?\s*\b(?:but|while|whereas|however|yet)\b\s*|\s*,?\s*\band\b\s*(?=(?:`|[A-Z]|\b(?:the|this|that|each|standalone|existing|coordinated|maxPathLength|shortens?|truncates?|ignores?)\b)))/u,
+      ).map((clause) =>
+        subject && /^\s*(?:also\s+)?(?:shortens?|truncates?|ignores?|applies?|renames?|uses?|honors?|respects?|enforces?|does|do|can|will|must|never)\b/iu.test(clause)
+          ? `${subject} ${clause.trim()}`
+          : clause,
+      );
+    })
     .flatMap((fragment) => {
       if (!/^\s*(?:although|though|even\s+though)\b/iu.test(fragment)) return [fragment];
       const comma = fragment.indexOf(",");
