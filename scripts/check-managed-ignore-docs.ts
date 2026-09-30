@@ -96,7 +96,7 @@ const generatedRequirements = new Map<string, string[]>([
   ["public/commands/doctor.md", ["managed ignore", "does not repair"]],
   [
     "public/llms.txt",
-    ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)"]
+    ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)", "The built-in `.worktrees/<branch>` layout applies only without personal overrides"]
   ],
   [
     "public/llms-full.txt",

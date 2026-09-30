@@ -311,7 +311,7 @@ function renderLlmsTxt(): string {
 
 - Start by inspecting workspace state with \`aw status\`.
 - The \`arashi\` executable remains supported for existing scripts and workflows. See [Getting started](${site}/getting-started/) for installation and collision guidance.
-- In a single repository, use \`aw init --zero-config\` and the root \`.worktrees/<branch>\` convention; use ordinary \`aw init\` for configured coordination.
+- In a single repository, use \`aw init --zero-config\` with the effective personal or built-in worktree layout. The built-in \`.worktrees/<branch>\` layout applies only without personal overrides; use ordinary \`aw init\` for configured coordination.
 - Use the meta-repo for shared context, OpenSpec proposals, planning, and cross-repo coordination.
 - Put implementation, tests, and repo-specific docs in the owning child repository under \`repos/<project>/\`.
 - Prefer machine-readable command output such as \`aw status --json\` when automating decisions.
