@@ -18,6 +18,7 @@ Arashi owns Git worktrees. Your development tool owns the context where you work
 | [Herdr](/workflows/herdr/) | Persistent workspaces with Git provenance |
 | [cmux](/workflows/cmux/) | cmux-managed terminals |
 | [Kitty](/workflows/kitty/) | Reusable live Kitty tabs |
+| [T3 Code](/workflows/t3-code/) | A separate agent task in a coordinated workspace |
 | Ordinary terminal | New windows or current-shell navigation |
 
 ## Use automatic detection

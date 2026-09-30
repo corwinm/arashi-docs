@@ -110,36 +110,15 @@ aw create feature-auth-refresh --t3 --prompt-file task.md --permission approval-
 
 ## Hand off to T3 Code
 
-T3 handoff is optional and configured-workspace-only. Install the evaluated bridge explicitly on the repository host; Arashi never downloads a moving package during create:
+Use `--t3` in a configured workspace to start a new T3 thread in the created parent checkout:
 
 ```bash
-# Requires Node.js 22.16 or newer
-npm install --global @bvdm/t3code-cli@0.1.2
-t3code --json doctor
+aw create feature-auth-refresh --t3 --prompt-file task.md
 ```
 
-Arashi supports the bridge's reported 0.1.x command/result contract. The published 0.1.2 package has a known embedded `--version` value of `0.1.0`, which Arashi accepts. Later compatibility lines require an Arashi update rather than an implicit latest-version download.
+Include the coordinating parent repository when filtering repositories. Supply either an inline task or `--prompt-file`, and use `--permission` to override the default `full-access`. T3 handoff suppresses configured launch/switch defaults and cannot be combined with explicit launch or switch flags.
 
-Supply exactly one nonempty prompt source. `--t3 "task"` is convenient for a concise task; `--t3 --prompt-file task.md` preserves multiline content without shell quoting or command-length problems. Arashi reads files as strict UTF-8 and validates missing, conflicting, unreadable, empty, or whitespace-only input before hooks, managed-ignore changes, Git refs, or worktrees. `--prompt-file` and `--permission` without `--t3` are errors.
-
-The permission default is `full-access`, and Arashi always passes and reports the effective value explicitly. It invokes the installed bridge with the exact created parent path, folder resolution, `--checkout current`, and `--open none`. T3 therefore uses the Arashi checkout instead of creating another worktree, and no browser or desktop window opens by default. An explicit T3 handoff suppresses configured create switch/launch defaults; combining it with explicit `--switch`, `--launch`, `--tab`, `--tmux`, `--sesh`, or `--herdr` is rejected before mutation.
-
-Human output reports the workspace, effective permission, environment, project, thread, dispatch, and UI stages. Successful `--json` output returns the same sanitized stages at `data.t3Handoff`; a handoff error returns them at `error.details.t3Handoff` alongside the successful creation results. Neither form returns task text, task-derived titles, credentials, authenticated URLs, or raw bridge commands/output. A post-create handoff failure exits nonzero but preserves every successfully created worktree.
-
-Local receipt-storage or prompt-cleanup errors preserve the known dispatch outcome and any project/thread IDs. JSON includes local recovery details at `error.details.t3HandoffRecovery`. If saving the final receipt fails, reconcile the reported outcome before retrying because the durable receipt may still say `dispatching`. If prompt cleanup fails, remove the reported private prompt directory; a successful dispatch remains successful and must not be repeated.
-
-When combined with `--move-changes`, T3 dispatch starts only after every attempted move succeeds. A move failure preserves the workspace and move recovery instructions and returns `T3_WORKSPACE_PREPARATION_FAILED` without starting a T3 task.
-
-Arashi keeps a private receipt under the parent repository's Git common directory. A definite pre-dispatch failure can be retried against the exact workspace with the same task and permission:
-
-```bash
-aw create feature-auth-refresh --conflict REUSE_EXISTING \
-  --t3 --prompt-file task.md --permission approval-required
-```
-
-A successful, active, or indeterminate receipt blocks another automatic dispatch. If interruption or malformed bridge output might have succeeded server-side, inspect T3 for the reported workspace/project/thread before retrying; Arashi does not blindly create a duplicate thread. If reconciliation proves that no thread exists, remove only the exact reported receipt and its adjacent `.lock` file if present, then rerun against the reusable workspace. Receipts store a task digest and sanitized identifiers, never task text or credentials.
-
-The initiating conversation remains attached to its original workspace. The command runs on the host containing Arashi, the repositories, and the reachable T3 environment. Select the reported project/thread manually in a desktop or mobile client connected to that same environment; host browser opening cannot navigate a phone. The initial end-to-end spike covered macOS, Arashi 1.36.0, T3 server 0.0.42, and bridge handoff. Platform-specific privacy branches and argv construction have automated coverage, but Windows, Linux, and mobile were not validated end to end for this release.
+See [T3 Code](/workflows/t3-code/) for installation, model defaults, permissions, finding the thread, and recovery after a failed handoff.
 
 ## Worktree locations
 

@@ -49,6 +49,7 @@ export default defineConfig({
               items: [
                 { label: "Overview", link: "/workflows/environment-integrations/" },
                 { label: "VS Code", link: "/workflows/vscode/" },
+                { label: "T3 Code", link: "/workflows/t3-code/" },
                 { label: "tmux and sesh", link: "/workflows/tmux-and-sesh/" },
                 { label: "Herdr", link: "/workflows/herdr/" },
                 { label: "cmux", link: "/workflows/cmux/" },
