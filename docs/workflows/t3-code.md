@@ -51,7 +51,7 @@ aw create feature-auth-refresh --t3 --prompt-file task.md \
   --permission approval-required
 ```
 
-T3 handoff suppresses configured create launch/switch defaults. It cannot be combined with explicit editor, terminal, launch, or switch options. See the [create command](/commands/create/#hand-off-to-t3-code) for the full flag contract.
+T3 handoff suppresses configured create launch/switch defaults. Do not combine it with `--launch`, `--switch`, `--tab`, `--tmux`, `--sesh`, or `--herdr`. See the [create command](/commands/create/#hand-off-to-t3-code) for the full flag contract.
 
 ## Choose a model
 
