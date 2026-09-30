@@ -109,7 +109,7 @@ For automation, `--json` returns handoff stages at `data.t3Handoff`, or `error.d
 
 ## Compatibility
 
-The current adapter supports T3 0.0.43 and orchestration protocol 1. End-to-end handoff has been verified on macOS arm64 using `gpt-6.1-sol` with medium effort. Windows, Linux, and mobile have not been validated end to end against a real provider.
+The adapter accepts stable T3 releases from 0.0.43 onward when the CLI and server versions match and the environment provides orchestration protocol 1 with the required authentication and model catalog. Compatibility is checked during each handoff. Nightly/prerelease builds and incompatible protocols are rejected. End-to-end handoff has been verified on macOS arm64 using `gpt-6.1-sol` with medium effort. Windows, Linux, and mobile have not been validated end to end against a real provider.
 
 ## Related
 
