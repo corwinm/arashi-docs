@@ -19,7 +19,7 @@ Configured mode is preferred when the project can adopt it. Standalone mode prov
 aw init --zero-config
 ```
 
-This creates `.worktrees/` and ensures Git ignores it, adding a repository-local rule only when needed. It does not create `.arashi/config.json`.
+This creates the effective worktree directory and ensures an in-repository directory is ignored, adding a repository-local rule only when needed. The built-in location is `.worktrees/`; a personal `~/.arashi/config.json` may supply `worktreesDir` and naming/create/switch defaults. Bootstrap never creates `.arashi/config.json`.
 
 <span id="create-and-use-a-worktree"></span>
 
@@ -33,7 +33,7 @@ aw status
 aw remove feat/docs
 ```
 
-Worktrees use `.worktrees/<branch>`. Commands run from the main or a linked worktree discover the same repository.
+Without a user override, worktrees use `.worktrees/<branch>`. Relative user paths anchor at the main repository, while absolute shared roots receive a repository-qualified directory. Commands run from the main or a linked worktree resolve the same destination root.
 
 <span id="choose-a-base-for-one-create"></span>
 
@@ -47,11 +47,11 @@ aw create feature/docs --base main
 
 ## Limits
 
-An existing malformed or invalid `.arashi/config.json` produces an error rather than falling back to standalone mode; fix the configuration before retrying.
+An existing malformed or invalid workspace or user config produces an error rather than falling back or silently changing modes; fix the named file and field before retrying. Use `aw config effective` to inspect effective values and sources.
 
 Standalone mode supports the single-repository lifecycle: `create`, `list`, `status`, `switch`, `remove`, `prune`, `doctor`, `move`, and `handoff`.
 
-Repository filters, groups, workspace hooks, persisted defaults, and multi-repository commands require configured mode. Standalone hooks come only from applicable user-global hook locations.
+Repository filters, groups, workspace hooks, and multi-repository commands require configured mode. Personal create, switch, editor, worktree-directory, and naming defaults work in standalone mode. Standalone hooks continue to come only from applicable user-global hook locations.
 
 <span id="upgrade-to-configured-mode"></span>
 

@@ -108,7 +108,7 @@ for (const [id, from, to] of [
   ["metadata-authority", "Existing worktree paths are metadata-authoritative", "Naming configuration is authoritative for existing worktree paths"],
   ["no-rename", "never renamed by this setting", "may be renamed by this setting"],
   ["coordinated-child", "Coordinated children remain under the planned parent path using their configured child paths", "Coordinated children move to independently named roots"],
-  ["standalone", "Standalone `.worktrees/<branch>` placement is unchanged", "Standalone placement follows `worktreeNaming`"],
+  ["standalone", "Standalone create uses optional user `worktreeNaming` under the effective worktree root", "Standalone placement ignores `worktreeNaming`"],
   ["no-persist", "does not auto-persist either default", "auto-persists both defaults"],
   ["no-migrate", "does not migrate existing configuration", "migrates existing configuration"],
   ["configure-exclusion", "not available in interactive `aw configure`", "available in interactive `aw configure`"],
@@ -204,7 +204,7 @@ for (const [id, claim] of [
   ["collision-carveout-selects-distinct", "On collision, create selects a distinct destination."],
   ["metadata-additive-contradiction", "Changing this setting relocates existing registered worktrees."],
   ["coordinated-additive-contradiction", "Each coordinated child reapplies naming policy independently."],
-  ["standalone-additive-contradiction", "Standalone create also honors worktreeNaming."],
+  ["standalone-additive-contradiction", "Standalone create ignores worktreeNaming."],
   ["component-only-budget-contradiction", "The path budget applies only to one folder component."],
   ["automatic-windows-default-contradiction", "On Windows, Arashi automatically defaults maxPathLength to 260."],
   ["non-utf16-measurement-contradiction", "The path budget is measured in UTF-8 bytes."],
@@ -212,7 +212,7 @@ for (const [id, claim] of [
   ["independent-child-shortening-contradiction", "Each coordinated child shortens its parent independently."],
   ["repository-file-guarantee-contradiction", "Enabling the budget guarantees all repository files fit."],
   ["existing-budget-rename-contradiction", "Changing maxPathLength renames existing worktrees."],
-  ["standalone-budget-application-contradiction", "Standalone create applies maxPathLength."],
+  ["standalone-budget-application-contradiction", "Standalone create shortens names to fit maxPathLength."],
   ["component-only-budget-synonym", "Only one folder component counts toward the configured limit."],
   ["automatic-windows-default-synonym", "Windows chooses 260 automatically when the setting is absent."],
   ["non-utf16-measurement-synonym", "Arashi measures the configured limit in UTF-8 bytes."],
@@ -220,7 +220,7 @@ for (const [id, claim] of [
   ["independent-child-shortening-synonym", "Each child computes its own shortened parent."],
   ["repository-file-guarantee-synonym", "This setting guarantees that all repository files fit."],
   ["existing-budget-rename-synonym", "Existing worktrees are renamed when the budget changes."],
-  ["standalone-budget-application-synonym", "Standalone configured worktrees use the limit."],
+  ["standalone-budget-application-synonym", "Standalone create truncates paths to fit the limit."],
   [
     "component-only-budget-mixed-polarity",
     "The path budget does not apply only to one folder component, but the configured limit counts only one folder component.",
@@ -251,8 +251,12 @@ for (const [id, claim] of [
   ],
   [
     "standalone-budget-application-mixed-polarity",
-    "Standalone create does not apply maxPathLength, but standalone configured worktrees use the limit.",
+    "Standalone create does not shorten names, but standalone create truncates paths to fit the limit.",
   ],
+  ["standalone-inherited-but", "Standalone create does not rename existing paths, but shortens new paths to meet maxPathLength."],
+  ["standalone-inherited-while", "Standalone create does not rename existing paths, while truncates new paths to meet maxPathLength."],
+  ["standalone-inherited-and", "Standalone create does not rename existing paths, and shortens new paths to meet maxPathLength."],
+  ["standalone-inherited-semicolon", "Standalone create does not rename existing paths; shortens new paths to meet maxPathLength."],
   [
     "component-only-budget-coordinating-conjunction",
     "The path budget does not apply only to one folder component, and the configured limit counts only one folder component.",
@@ -345,6 +349,10 @@ for (const fixture of fixtures) {
 }
 
 const truthfulClaims = [
+  "Configured create handles path budgets and shortens long namespaces when needed, while standalone create rejects over-limit paths.",
+  "Standalone create rejects over-limit paths, while configured create handles budgets and shortens long namespaces when needed.",
+  "Standalone create applies personal naming, but does not shorten new paths to meet maxPathLength.",
+  "Standalone create does not shorten paths, while configured create shortens new paths to meet maxPathLength.",
   "For a bare workspace, default with preserve does not yield wrong-example-feature-auth for feature/auth.",
   "For a bare workspace with default and preserve, the destination for feature/auth is not wrong-example-feature-auth.",
   "On collision, create cannot choose another destination.",
@@ -357,7 +365,7 @@ const truthfulClaims = [
   "Coordinated children do not shorten their parents independently.",
   "The path budget cannot guarantee repository-internal files fit.",
   "Changing maxPathLength does not rename existing worktrees.",
-  "Standalone create does not apply maxPathLength.",
+  "Standalone create does not shorten names to fit maxPathLength.",
 ] as const;
 for (const claim of truthfulClaims) {
   const fixtureRoot = mkdtempSync(path.join(tmpdir(), "arashi-docs-worktree-naming-green-"));

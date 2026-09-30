@@ -27,14 +27,14 @@ aw init [options]
 ## Key Options
 
 - `--repos-dir <path>` set a custom repos directory (default `./repos`).
-- `--worktrees-dir <path>` set a custom worktree base directory (when omitted, bare repositories use `..` and non-bare repositories use `.arashi/worktrees`).
+- `--worktrees-dir <path>` set and save a shared repo worktree base directory. When omitted, optional user defaults apply; without them, bare repositories use `..` and non-bare repositories use `.arashi/worktrees`.
 - `--ignore-scope <local|tracked|none>` choose repository-local rules, tracked rules, or no ignore-file writes.
 - `-f, --force` overwrite an existing Arashi config (with backup).
 - `--no-discover` skip automatic repository discovery.
 - `-n, --dry-run` preview changes without writing files.
 - `-v, --verbose` print detailed initialization steps.
 - `-j, --json` output machine-readable initialization results.
-- `--zero-config` bootstrap the root `.worktrees/` convention for ad hoc use in a non-bare Git project that has not adopted Arashi configuration.
+- `--zero-config` bootstrap the effective standalone worktree location for ad hoc use in a non-bare Git project that has not adopted workspace configuration.
 
 ## Examples
 
@@ -87,7 +87,7 @@ aw init --zero-config --dry-run --json
 - Non-bare repositories default to `.arashi/worktrees`; bare repositories default to `..`.
 - With the bare default, Arashi namespaces linked worktrees beside the source: `/projects/example.git` and branch `feature/auth` produce `/projects/example/feature/auth` rather than checked-out files inside the bare Git directory.
 - An explicit `--worktrees-dir` takes precedence in either repository type. New and forced initialization normalizes the selected value, which is persisted as `worktreesDir` in `.arashi/config.json`; later commands use that configured value instead of re-inferring the repository type.
-- Existing configurations are not migrated automatically. If an older config omits `worktreesDir`, `.arashi/worktrees` remains its compatibility fallback; preference-only init reports that configured value or fallback without rewriting the config.
+- Existing configurations are not migrated automatically. If a config omits `worktreesDir`, an optional user value applies first; when no user value exists, the built-in fallback is `..` for bare repositories and `.arashi/worktrees` for non-bare repositories. Removing a personal default restores this repository-type fallback without rewriting repo configuration. Preference-only init reports the effective configured, user, or built-in value without rewriting the config. See [Configuration precedence](/reference/configuration/#user-configuration).
 - `local` is the default ignore scope. Missing safe `reposDir` and `worktreesDir` rules are written to the common repository's exclude file resolved through Git, normally `.git/info/exclude`; tracked `.gitignore` is unchanged.
 - `tracked` writes missing safe rules to the workspace-root `.gitignore`. `none` does not write tracked, local, or global ignore files and warns when a safe path remains unignored.
 - Explicit `tracked` and `none` choices are stored as `arashi.ignoreScope` in clone-local Git configuration, not shared `.arashi/config.json`. Selecting `local` removes the stored non-default preference.
@@ -99,8 +99,8 @@ aw init --zero-config --dry-run --json
 - Only normalized repository-relative subdirectories are safe to write. Repository root (`.`/`./`), absolute paths, and parent traversal (`../` variants) are reported and skipped.
 - Reconciliation updates only Arashi-owned ignore blocks and removes stale owned entries in the active writable scope. User-authored rules remain untouched; `none` freezes existing ignore content.
 - `--dry-run` includes planned scope, preference, and ignore changes without modifying them. JSON results expose effective sources, planned or applied rules, warnings, unsafe skips, and final changed/restored state under structured managed ignore data.
-- Prefer ordinary `aw init` whenever the project can adopt Arashi, including single-repository projects that benefit from repository/workspace hooks, persisted defaults, or custom paths.
-- `--zero-config` creates the main-root `.worktrees/` directory and adds the literal `.worktrees/` rule to the Git-resolved repository-local exclude only when no effective tracked, local, or global rule already covers the bootstrap probe. It is an ad hoc path for otherwise-unconfigured projects and never writes tracked or global ignore state, `.arashi/`, hooks, or config.
+- Prefer ordinary `aw init` when the project needs shared repo policy, repository/workspace hooks, or coordinated repositories. Optional personal defaults and custom worktree paths also work in standalone mode and do not require repo configuration.
+- `--zero-config` creates the effective standalone directory (built-in `.worktrees/`, or the user `worktreesDir` fallback) and adds its repository-relative rule to the Git-resolved local exclude only when the location is inside the repository and no effective rule covers it. External locations need no Git ignore rule. It never writes tracked/global ignore state, `.arashi/`, hooks, workspace config, or user config.
 - Zero-config mode accepts `--dry-run`, `--verbose`, and `--json`; it rejects configured-init options such as `--repos-dir`, `--worktrees-dir`, `--ignore-scope`, `--force`, and `--no-discover` before mutation.
 - Use the [One Repository](/getting-started/standalone/) for lifecycle scope, exact-destination ignore checks, and upgrading through ordinary `aw init`.
 
