@@ -164,7 +164,9 @@ The mapping changes only the filesystem path; the Git branch remains exactly `fe
 
 Arashi sizes one parent against all selected coordinated child paths, even when selection excludes the parent; child-relative paths remain unchanged. Coordinated children remain under the planned parent path using their configured child paths. If the fixed base and child topology cannot leave room for the collision-resistant suffix, create reports `WORKTREE_PATH_LENGTH_EXCEEDED` before mutation.
 
-Existing worktree paths are metadata-authoritative and are never renamed by this setting. Standalone `.worktrees/<branch>` placement is unchanged. The budget reserves space only for each worktree root; it cannot guarantee repository-internal files fit.
+Existing worktree paths are metadata-authoritative and are never renamed by this setting. The budget reserves space only for each worktree root; it cannot guarantee repository-internal files fit.
+
+Standalone create uses optional user `worktreeNaming` under the effective worktree root. For repository `example` and branch `feature/auth`, `default` and `branch` produce `feature/auth`, while `repo-branch` produces `example-feature/auth`; `flatten` produces `feature-auth` or `example-feature-auth` respectively. Without user preferences, placement remains `.worktrees/<branch>`. Standalone `maxPathLength` checks the full absolute destination in UTF-16 code units and rejects an over-limit path before mutation; it does not shorten the namespace. The shortening algorithm described above applies to configured workspaces.
 
 ## Choosing a base branch
 
@@ -206,7 +208,7 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 
 ## Notes
 
-- In standalone mode, `create` makes one worktree at the main root's `.worktrees/<branch>` path from either the main or a linked worktree. Before any mutation, Git must report the exact destination as effectively ignored; repository/group filters and interactive multi-repository selection are rejected. See the [One Repository](/getting-started/standalone/).
+- In standalone mode, `create` makes one worktree under the effective user or built-in worktree root from either the main or a linked worktree. In-repository destinations must be effectively ignored before mutation; external absolute user roots are repository-qualified instead. Repository/group filters and interactive multi-repository selection are rejected. See the [One Repository](/getting-started/standalone/).
 - T3 handoff requires configured mode and the coordinating parent repository; ordinary create remains independent of T3, Node.js, its server, and credentials.
 - `create` validates branch names and repository readiness.
 - Configured create runs workspace `pre-create` once before branch/worktree mutation, then each repository's retained-name `pre-create.<repo>` after Git worktree creation and before configured file materialization/setup, followed by `post-create.<repo>`. Workspace `post-create` runs once after coordinated Git creation and before move-changes or switch/launch handling. Repository hooks run in the new child worktree; workspace hooks run at the workspace root.
@@ -222,7 +224,7 @@ Missing sources are skipped with a visible non-fatal outcome. Arashi never overw
 - `--group` targets configured semantic sets such as `core`, `docs`, `extensions`, `agents`, or `infra`.
 - When combined with `--only`, `--group` narrows the explicit repository list by intersection. Empty intersections fail before creating worktrees.
 - A partial coordinated worktree is valid. Add omitted child repositories later with [`aw clone`](/commands/clone/) from inside that worktree.
-- Configure one post-create choice in `.arashi/config.json` at `defaults.create.launch`: `none | auto | sesh | herdr`. The independent `switch` boolean can still select the new primary worktree without launching; every launch mode except `none` selects it too, so launch implies switch.
+- Configure the project's post-create choice in in-repo `<workspace>/.arashi/config.json` at `defaults.create.launch`: `none | auto | sesh | herdr`. A separate optional `~/.arashi/config.json` supplies personal defaults only when the in-repo field is unset. Explicit command options win, then in-repo settings, optional user defaults, and built-in values are resolved per field. The independent `switch` boolean can still select the new primary worktree without launching; every launch mode except `none` selects it too, so launch implies switch.
 - `--tmux` is a per-invocation-only override and is not persisted in the generic or editor-scoped create configuration. Configured `auto` can still choose tmux contextually when launch runs inside tmux.
 - `--tab` is a CLI-only, one-invocation disposition. It implies launch and switch, bypasses configured generic or editor-scoped launch defaults, and wins over `--no-launch` and `--no-switch`; automatic contextual launcher resolution applies unless `--tmux`, `--sesh`, or `--herdr` explicitly chooses the adapter. Knowable unsupported requests fail before mutation, while runtime failures after creation preserve the worktrees and never fall back to a window. See the [Launching](/reference/launching/) for the complete matrix and JSON exit behavior.
 - Explicit `--tmux` takes precedence over generic and editor-scoped create defaults and automatic Herdr, cmux, or IDE detection. `--tmux` + `--no-launch` still implies post-create launch, and `--tmux` + `--no-switch` still selects and launches the primary created worktree.

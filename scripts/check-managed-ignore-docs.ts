@@ -23,7 +23,8 @@ const sourceRequirements = new Map<string, string[]>([
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
       "Existing configurations are not migrated automatically",
-      "`.arashi/worktrees` remains its compatibility fallback",
+      "an optional user value applies first",
+      "when no user value exists, the built-in fallback is `..` for bare repositories and `.arashi/worktrees` for non-bare repositories",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files",
@@ -72,7 +73,8 @@ const generatedRequirements = new Map<string, string[]>([
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
       "Existing configurations are not migrated automatically",
-      "`.arashi/worktrees` remains its compatibility fallback",
+      "an optional user value applies first",
+      "when no user value exists, the built-in fallback is `..` for bare repositories and `.arashi/worktrees` for non-bare repositories",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files",
@@ -94,7 +96,7 @@ const generatedRequirements = new Map<string, string[]>([
   ["public/commands/doctor.md", ["managed ignore", "does not repair"]],
   [
     "public/llms.txt",
-    ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)"]
+    ["repository-local", "global Git configuration", "linked parent worktree", "[Add command Markdown](https://arashi.haphazard.dev/commands/add.md)", "The built-in `.worktrees/<branch>` layout applies only without personal overrides"]
   ],
   [
     "public/llms-full.txt",
@@ -106,7 +108,8 @@ const generatedRequirements = new Map<string, string[]>([
       "An explicit `--worktrees-dir` takes precedence",
       "persisted as `worktreesDir` in `.arashi/config.json`",
       "Existing configurations are not migrated automatically",
-      "`.arashi/worktrees` remains its compatibility fallback",
+      "an optional user value applies first",
+      "when no user value exists, the built-in fallback is `..` for bare repositories and `.arashi/worktrees` for non-bare repositories",
       "external and unsafe",
       "non-applicable to working-tree ignore rules",
       "does not run `git check-ignore` or write ignore files",

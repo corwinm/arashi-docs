@@ -68,7 +68,9 @@ const requiredClaims = [
   ["metadata-authoritative existing paths", "Existing worktree paths are metadata-authoritative"],
   ["no rename", "never renamed by this setting"],
   ["coordinated-child placement", "Coordinated children remain under the planned parent path using their configured child paths"],
-  ["standalone isolation", "Standalone `.worktrees/<branch>` placement is unchanged"],
+  ["standalone personal naming", "Standalone create uses optional user `worktreeNaming` under the effective worktree root"],
+  ["standalone budget", "Standalone `maxPathLength` checks the full absolute destination in UTF-16 code units and rejects an over-limit path before mutation"],
+  ["standalone budget does not shorten", "it does not shorten the namespace"],
 ] as const;
 
 const contradictions = [
@@ -81,7 +83,9 @@ const contradictions = [
   ["collision suffix fallback", /(?:^|[.!?]\s+)On\s+(?:a\s+)?collision[^.\n]*(?:retries?|appends?|uses?)[^.\n]*(?:numeric\s+)?suffix/im],
   ["existing-worktree relocation", /(?:changing|naming)[^.\n]*(?<!not )(?:relocates?|renames?|moves?)[^.\n]*existing[^.\n]*worktrees?/i],
   ["coordinated-child policy reapplication", /coordinated child[^.\n]*(?:reappl(?:y|ies)|independent)[^.\n]*naming/i],
-  ["standalone policy expansion", /standalone[^.\n]*(?:also\s+)?(?:honors?|uses?|follows?)[^.\n]*worktreeNaming/i],
+  ["obsolete standalone isolation", /Standalone `\.worktrees\/<branch>` placement is unchanged/i],
+  ["standalone ignores personal naming", /standalone[^.\n]*(?:ignores?|disregards?)[^.\n]*worktreeNaming/i, true],
+  ["standalone budget shortening", /standalone[^.\n]*(?:shortens?|truncates?)[^.\n]*(?:names?|namespace|paths?)/i, true],
   [
     "component-only budget scope",
     /(?:(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*(?:applies?|limits?|measures?|counts?)[^.\n]*only[^.\n]*(?:folder|directory|namespace)\s+component|only[^.\n]*(?:folder|directory|namespace)\s+component[^.\n]*(?:counts?|contributes?)[^.\n]*(?:configured\s+limit|path\s+budget))/i,
@@ -117,11 +121,6 @@ const contradictions = [
     /(?:(?:changing|setting|adding)[^.\n]*(?:maxPathLength|path\s+budget|configured\s+limit)[^.\n]*renames?[^.\n]*existing[^.\n]*worktrees?|existing[^.\n]*worktrees?[^.\n]*(?:are\s+)?renamed[^.\n]*(?:budget|limit|maxPathLength)[^.\n]*changes?)/i,
     true,
   ],
-  [
-    "standalone budget application",
-    /standalone[^.\n]*(?:applies?|honors?|uses?|follows?)[^.\n]*(?:maxPathLength|configured\s+limit|path\s+(?:budget|limit)|the\s+limit)/i,
-    true,
-  ],
 ] as const;
 
 const truthfulNegation =
@@ -129,12 +128,19 @@ const truthfulNegation =
 
 function contradictionClauses(content: string): string[] {
   return content
-    .split(/(?<=[.!?])\s+|\n+|;\s*/u)
-    .flatMap((fragment) =>
-      fragment.split(
-        /(?:\s*,?\s*\b(?:but|while|whereas|however|yet)\b\s*|\s*,?\s*\band\b\s*(?=(?:`|[A-Z]|\b(?:the|this|that|each|standalone|existing|coordinated|maxPathLength)\b)))/u,
-      ),
-    )
+    .split(/(?<=[.!?])\s+|\n+/u)
+    .flatMap((fragment) => {
+      let subject: string | undefined;
+      return fragment.split(
+        /(?:;\s*|\s*,?\s*\b(?:but|while|whereas|however|yet)\b\s*|\s*,?\s*\band\b\s*(?=(?:`|[A-Z]|\b(?:the|this|that|each|standalone|existing|coordinated|maxPathLength|shortens?|truncates?|ignores?)\b)))/u,
+      ).map((clause) => {
+        const explicitSubject = clause.match(/\b(standalone|configured)(?:\s+create)?\b/iu);
+        const predicate = /^\s*(?:also\s+)?(?:shortens?|truncates?|ignores?|applies?|renames?|uses?|honors?|respects?|enforces?|does|do|can|will|must|never)\b/iu.test(clause);
+        if (explicitSubject) subject = explicitSubject[1].toLowerCase() === "standalone" ? explicitSubject[0] : undefined;
+        else if (!predicate) subject = undefined;
+        return !explicitSubject && subject && predicate ? `${subject} ${clause.trim()}` : clause;
+      });
+    })
     .flatMap((fragment) => {
       if (!/^\s*(?:although|though|even\s+though)\b/iu.test(fragment)) return [fragment];
       const comma = fragment.indexOf(",");
