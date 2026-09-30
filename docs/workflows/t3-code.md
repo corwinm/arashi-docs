@@ -67,10 +67,11 @@ These are example values; the provider, model, and effort must be available in T
 
 ### Save preferences
 
-Add `defaults.t3` to your existing personal `~/.arashi/config.json`:
+Add `defaults.t3` to your personal `~/.arashi/config.json`. A user configuration file requires `version` metadata:
 
 ```json
 {
+  "version": "1.0.0",
   "defaults": {
     "t3": {
       "provider": "codex",
