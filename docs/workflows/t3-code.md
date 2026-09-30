@@ -10,18 +10,17 @@ Start a T3 Code thread in a new coordinated workspace while your original conver
 
 ## Set up T3 Code
 
-Run Arashi on the host containing your repositories and a running local T3 environment. You need a configured coordinated Arashi workspace and matching **T3 0.0.43 CLI and server**, using orchestration protocol 1.
+Run Arashi on the host containing your repositories and a running local T3 environment. You need a configured coordinated Arashi workspace and matching supported T3 CLI and server versions. See [Compatibility](#compatibility) for adapter requirements.
 
-Install [official T3](https://github.com/pingdotgg/t3code/releases/tag/v0.0.43) and check the CLI:
+Install a compatible release from the [official T3 releases](https://github.com/pingdotgg/t3code/releases) and check the CLI:
 
 ```bash
 t3 --version
-# Expected: t3 v0.0.43
 ```
 
 The official CLI is required for authentication, including when the desktop app manages the server. Arashi creates a five-minute session for the handoff and revokes it when finished.
 
-Set up and authenticate your provider on the same host using T3's [provider setup](https://github.com/pingdotgg/t3code/blob/v0.0.43/docs/user/install.md).
+Set up and authenticate your provider on the same host using T3's [provider setup](https://github.com/pingdotgg/t3code/blob/main/docs/user/install.md).
 
 Arashi uses `~/.t3`, or `T3CODE_HOME` when set. For another profile, pass `--t3-base-dir /absolute/path/to/t3-data`. For a CLI outside `PATH`, pass `--t3-cli /absolute/path/to/t3`. The selected profile must belong to a running local environment on the repository host. Remote environments and custom development layouts without T3's runtime file are unsupported. If preflight fails, check the selected profile, CLI/server versions, authentication, and whether the intended environment is running.
 
@@ -110,7 +109,7 @@ For automation, `--json` returns handoff stages at `data.t3Handoff`, or `error.d
 
 ## Compatibility
 
-The supported combination is T3 0.0.43 and orchestration protocol 1. End-to-end handoff has been verified on macOS arm64 using `gpt-6.1-sol` with medium effort. Windows, Linux, and mobile have not been validated end to end against a real provider.
+The current adapter supports T3 0.0.43 and orchestration protocol 1. End-to-end handoff has been verified on macOS arm64 using `gpt-6.1-sol` with medium effort. Windows, Linux, and mobile have not been validated end to end against a real provider.
 
 ## Related
 
