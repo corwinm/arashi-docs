@@ -6,7 +6,7 @@ sidebar:
   hidden: false
 ---
 
-Start a T3 Code thread in a new coordinated workspace while your original conversation stays in its current checkout. Arashi creates the worktrees and starts your task; it does not monitor or complete that task.
+Start a T3 Code thread in a new coordinated workspace with `aw create --t3`, or an existing checkout with `aw switch --t3`. Create makes the worktrees; switch reuses the selected checkout without creating or moving anything. Your original conversation stays in its current checkout. Arashi starts the task but does not monitor or complete it.
 
 ## Set up T3 Code
 
