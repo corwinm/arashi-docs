@@ -162,7 +162,7 @@ Editor integrations use their own matching scope under `defaults.editors.<editor
 
 ## T3 Code preferences
 
-Set `defaults.t3` in the personal user file or shared workspace configuration for future `aw create --t3` handoffs:
+Set `defaults.t3` in the personal user file or shared workspace configuration for initial `aw create --t3` and `aw switch --t3` handoffs. The command overrides below apply to both commands. Same-intent switch retries retain their saved settings; omitted flags do not resolve new defaults.
 
 ```json
 {

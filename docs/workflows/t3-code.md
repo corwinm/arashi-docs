@@ -1,16 +1,16 @@
 ---
 title: T3 Code
-description: Create an Arashi workspace and start a T3 Code task with your preferred model.
+description: Start a T3 Code task in a new workspace or an existing checkout.
 draft: false
 sidebar:
   hidden: false
 ---
 
-Start a T3 Code thread in a new coordinated workspace while your original conversation stays in its current checkout. Arashi creates the worktrees and starts your task; it does not monitor or complete that task.
+Start a T3 Code thread in a new coordinated workspace with `aw create --t3`, or an existing checkout with `aw switch --t3`. Create makes the worktrees; switch reuses the selected checkout without creating or moving anything. Your original conversation stays in its current checkout. Arashi starts the task but does not monitor or complete it.
 
 ## Set up T3 Code
 
-Run Arashi on the host containing your repositories and a running local T3 environment. You need a configured coordinated Arashi workspace and matching supported T3 CLI and server versions. See [Compatibility](#compatibility) for adapter requirements.
+Run Arashi on the host containing your repositories and a running local T3 environment. Creating a coordinated workspace requires configured Arashi; switching to an existing checkout also supports standalone repositories. You need matching supported T3 CLI and server versions. See [Compatibility](#compatibility) for adapter requirements.
 
 Install a compatible release from the [official T3 releases](https://github.com/pingdotgg/t3code/releases) and check the CLI:
 
@@ -24,7 +24,24 @@ Set up and authenticate your provider on the same host using T3's [provider setu
 
 Arashi uses `~/.t3`, or `T3CODE_HOME` when set. For another profile, pass `--t3-base-dir /absolute/path/to/t3-data`. For a CLI outside `PATH`, pass `--t3-cli /absolute/path/to/t3`. The selected profile must belong to a running local environment on the repository host. Remote environments and custom development layouts without T3's runtime file are unsupported. If preflight fails, check the selected profile, CLI/server versions, authentication, and whether the intended environment is running.
 
+## Use an existing checkout
+
+Select an existing parent, child, or standalone checkout and start a task there:
+
+```bash
+aw switch --path /path/to/worktree --t3 --prompt-file task.md
+
+# Start a deliberate later session after the previous handoff is resolved
+aw switch --path /path/to/worktree --t3 "Review the changes" --t3-intent review-1
+```
+
+Switch creates no worktrees and moves no changes. Omitted `--t3-intent` means `default`; reuse of the same intent is a retry, not a new session. An accepted retry returns the saved outcome without resubmitting. Choose another literal ID only for a deliberate new session, never to bypass an uncertain handoff. Retries retain the saved environment, model/options, and permission even when defaults change.
+
+Use `--repos` for child-only selection or `--all` for both scopes in configured workspaces. Only the selected checkout receives the task. Switch bypasses configured launch modes and does not change the parent shell directory. See the [switch command](/commands/switch/#hand-off-to-t3-code) for options, exact selection, portable intent IDs, JSON output, and recovery. Switch has no `--dry-run`.
+
 ## Start a task
+
+To create a new coordinated workspace:
 
 Supply exactly one prompt, either inline or through a nonempty UTF-8 file:
 
@@ -88,9 +105,11 @@ See [T3 Code preferences in the configuration reference](/reference/configuratio
 
 ## Find the new thread
 
-Arashi reports the workspace path, effective permission and model selection, environment, project, and thread identifiers. Select the reported thread manually in a T3 desktop or mobile client connected to that same host environment. No browser or desktop window opens automatically. The command runs on the repository host, including when you initiate it from a connected phone.
+Arashi reports the workspace path, effective permission and model selection, environment, project, and thread identifiers. Select the reported project/thread manually in a T3 desktop, web, or mobile client connected to that same host environment. No browser or desktop window opens automatically. The original conversation remains attached to its original checkout; changing a terminal directory does not move it. The command runs on the repository host, including when you initiate it from a connected phone.
 
 ## Recover a failed handoff
+
+For switch recovery, follow the [saved intent guidance](/commands/switch/#prerequisites-output-and-recovery). The following recovery procedure applies to create.
 
 Arashi reports workspace creation and task dispatch separately. If creation succeeds but handoff fails, it preserves the worktrees and exits nonzero.
 
@@ -110,10 +129,11 @@ For automation, `--json` returns handoff stages at `data.t3Handoff`, or `error.d
 
 ## Compatibility
 
-The adapter accepts stable T3 releases from 0.0.43 onward when the CLI and server versions match and the environment provides orchestration protocol 1 with the required authentication and model catalog. Compatibility is checked during each handoff. Nightly/prerelease builds and incompatible protocols are rejected. End-to-end handoff has been verified on macOS arm64 using `gpt-6.1-sol` with medium effort. Windows, Linux, and mobile have not been validated end to end against a real provider.
+The adapter accepts stable T3 releases from 0.0.43 onward when the CLI and server versions match and the environment provides orchestration protocol 1 with the required authentication and model catalog. Compatibility is checked during each handoff. Nightly/prerelease builds and incompatible protocols are rejected. Create handoff has been verified end to end on macOS arm64 using `gpt-6.1-sol` with medium effort; this is not evidence for switch handoff. Windows, Linux, and mobile have not been validated end to end against a real provider.
 
 ## Related
 
 - [create command](/commands/create/#hand-off-to-t3-code)
+- [switch command](/commands/switch/#hand-off-to-t3-code)
 - [Agents and specifications](/workflows/agents-and-specs/)
 - [Integrations](/workflows/environment-integrations/)

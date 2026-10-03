@@ -425,6 +425,7 @@ function deprecatedGuidanceErrors(relativePath: string, content: string): string
   const findings: string[] = [];
   const deprecated = ["--no-cd", "--no-default-launch", "--markdown"];
   const allowedMetadata = new Set([
+    "In T3 mode, deprecated `--no-cd` conflicts with `--t3`; deprecated `--no-default-launch` is accepted but redundant.",
     "Markdown is the default human output, so preferred help and examples omit `--markdown`. The explicit spelling remains a hidden, deprecated compatibility option throughout Arashi 1.x and produces the same report; JSON remains authoritative if both are supplied. Removal may happen no earlier than Arashi 2.0 and requires a separately approved breaking-change issue.",
     "The legacy `--no-cd` maps to `--launch`, and `--no-default-launch` maps to `--ignore-configured-launcher`. They remain parseable only as deprecated compatibility metadata throughout Arashi 1.x; preferred options, examples, and automation should use the canonical spellings above. Removal may happen no earlier than Arashi 2.0 and requires a separately approved breaking-change issue."
   ]);
@@ -490,7 +491,20 @@ function checkContract(): void {
       cdConflicts: ["launch", "tab", "explicit-launcher"],
       explicitLauncherWithTabAuthoritative: true,
       jsonGuardPrecedenceUnchanged: true,
-      noFallbackUnchanged: true
+      noFallbackUnchanged: true,
+      t3: {
+        options: ["--t3", "--prompt-file", "--permission", "--t3-base-dir", "--t3-cli", "--t3-provider", "--t3-model", "--t3-effort", "--t3-intent"],
+        requiresExplicitT3: true,
+        conflicts: ["--cd", "--launch", "--no-cd", "--tab", "--tmux", "--sesh", "--herdr", "--vscode", "--cursor", "--kiro"],
+        redundantOptOuts: ["--ignore-configured-launcher", "--no-default-launch"],
+        configuredModesBypassed: ["auto", "cd", "launch", "sesh", "herdr"],
+        intent: { default: "default", grammar: "[A-Za-z0-9][A-Za-z0-9._-]{0,63}", caseSensitive: true, acceptedRetry: "saved-success-no-submission", newSession: "distinct-intent-after-reconciliation" },
+        initialPermission: "full-access",
+        retryOmission: "receipt-pinned",
+        json: true,
+        ui: "none",
+        dryRun: false
+      }
     },
     selectors: {
       options: ["--only", "--group"],
