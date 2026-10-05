@@ -81,6 +81,8 @@ Replace `/path/to/checkout` with an existing parent, child, or standalone Git ch
 
 This mode skips ordinary workspace-health collectors. It does not repair or migrate configuration, create worktrees or projects, create threads or tasks, dispatch messages, or write handoff receipts. Ordinary `aw doctor` remains unchanged.
 
+Workspace and personal configuration documents are limited to **1 MiB of UTF-8 bytes** during T3 diagnostics, including tracked workspace configuration. Local files must be regular files or symlinks to regular files. Nonregular or oversized files block readiness without changing configuration; ordinary configuration loaders are unaffected.
+
 ### Preview and consent
 
 Preview checks the selected checkout/settings, CLI, local runtime, and public version/protocol compatibility. It does not acquire an authenticated session. Authentication, the live catalog, project defaults, and effective selection remain deferred; `preview_passed` is not authenticated readiness.
