@@ -162,7 +162,7 @@ Editor integrations use their own matching scope under `defaults.editors.<editor
 
 ## T3 Code preferences
 
-Set `defaults.t3` in the personal user file or shared workspace configuration for initial `aw create --t3` and `aw switch --t3` handoffs. The command overrides below apply to both commands. Same-intent switch retries retain their saved settings; omitted flags do not resolve new defaults.
+Set `defaults.t3` in the personal user file or shared workspace configuration for initial `aw create --t3` and `aw switch --t3` handoffs, and for `aw doctor --t3` diagnostics. The command overrides below apply to all three commands. Doctor resolves workspace preferences from the selected checkout's configuration context. Same-intent switch retries retain their saved settings; omitted flags do not resolve new defaults.
 
 ```json
 {
@@ -187,9 +187,9 @@ All five fields are optional:
 | `baseDir` | Absolute path to the local T3 data directory | `--t3-base-dir` |
 | `cli` | Installed official `t3` command name or absolute executable path | `--t3-cli` |
 
-Values must be nonempty strings without control characters. Keep credentials out of configuration. Arashi validates provider, model, and effort against the selected environment's live catalog.
+Values must be nonempty strings without control characters. Keep credentials out of configuration. Handoffs validate provider, model, and effort against the selected environment's live catalog. Doctor's default preview defers authentication, live-catalog validation, project defaults, and effective selection; `--t3-authenticated` authorizes administrative authentication for bounded live reads and selection validation after preview passes. See [T3 readiness](/commands/doctor/#t3-readiness).
 
-Precedence applies independently to each field: **explicit T3 flag > workspace preference > personal preference**. Unset provider/model/effort values then use T3's project selection, server selection, and unambiguous catalog defaults. Pinning the same provider/model preserves its saved options; explicit effort overrides its saved value. Changing provider/model uses catalog defaults for omitted options. `baseDir` falls back to `T3CODE_HOME`, then `~/.t3`; `cli` defaults to `t3` on `PATH`.
+Precedence applies independently to each field: **explicit T3 flag > workspace preference > personal preference**. During handoff or authenticated diagnostics, unset provider/model/effort values then use T3's project selection, server selection, and unambiguous catalog defaults. Pinning the same provider/model preserves its saved options; explicit effort overrides its saved value. Changing provider/model uses catalog defaults for omitted options. `baseDir` falls back to `T3CODE_HOME`, then `~/.t3`; `cli` defaults to `t3` on `PATH`.
 
 Use `aw config effective` to inspect Arashi preference values and their sources. Unset T3 fields appear as `null`; the command does not connect to T3 to resolve its live defaults. See [T3 Code integration](/workflows/t3-code/) for setup, permissions, handoff, and recovery.
 
