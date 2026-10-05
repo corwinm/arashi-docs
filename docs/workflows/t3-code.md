@@ -24,6 +24,16 @@ Set up and authenticate your provider on the same host using T3's [provider setu
 
 Arashi uses `~/.t3`, or `T3CODE_HOME` when set. For another profile, pass `--t3-base-dir /absolute/path/to/t3-data`. For a CLI outside `PATH`, pass `--t3-cli /absolute/path/to/t3`. The selected profile must belong to a running local environment on the repository host. Remote environments and custom development layouts without T3's runtime file are unsupported. If preflight fails, check the selected profile, CLI/server versions, authentication, and whether the intended environment is running.
 
+## Check readiness
+
+Before starting a task, preview prerequisites for an existing checkout:
+
+```bash
+aw doctor --t3 --path /path/to/checkout
+```
+
+For live catalog and exact-project checks, add `--t3-authenticated` only when you consent to the selected profile's administrative authority. Doctor creates no task; it issues and cleans up only its own temporary read session. A passing preview is not authenticated readiness, and a missing T3 project leaves selection provisional. See [doctor readiness](/commands/doctor/#t3-readiness) for options, selection, output, and cleanup failures.
+
 ## Use an existing checkout
 
 Select an existing parent, child, or standalone checkout and start a task there:
