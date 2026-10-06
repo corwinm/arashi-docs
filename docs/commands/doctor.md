@@ -41,6 +41,16 @@ aw doctor [options]
 ## Options
 
 - `-j, --json` emit one machine-readable JSON envelope instead of grouped human output.
+- `--t3` check only T3 prerequisites, in preview mode by default.
+- `--t3-authenticated` explicitly consent to administrative authentication for bounded T3 reads.
+- `--path <existing-checkout>` select one existing registered Git checkout root.
+- `--t3-cli <executable>` select a command name or absolute executable path.
+- `--t3-base-dir <absolute-directory>` select the local T3 profile directory.
+- `--t3-provider <instance-or-unambiguous-driver>` select a provider instance or an unambiguous driver name.
+- `--t3-model <slug-or-alias>` select a catalog model slug or alias.
+- `--t3-effort <catalog-value>` select a supported catalog effort value.
+
+All T3-specific options, including `--path`, require `--t3`. Doctor accepts no positional arguments.
 
 ## Examples
 
@@ -58,6 +68,51 @@ aw status --verbose
 aw prune --dry-run
 ```
 
+## T3 Readiness
+
+Check prerequisites for an existing checkout without creating a task:
+
+```bash
+aw doctor --t3 --path /path/to/checkout
+aw doctor --t3 --path /path/to/checkout --t3-authenticated --json
+```
+
+Replace `/path/to/checkout` with an existing parent, child, or standalone Git checkout root, not a future worktree or a subdirectory. Without `--path`, doctor selects the current Git checkout; outside a checkout it checks global T3 prerequisites without claiming checkout readiness.
+
+This mode skips ordinary workspace-health collectors. It does not repair or migrate configuration, create worktrees or projects, create threads or tasks, dispatch messages, or write handoff receipts. Ordinary `aw doctor` remains unchanged.
+
+Workspace and personal configuration documents are limited to **1 MiB of UTF-8 bytes** during T3 diagnostics, including tracked workspace configuration. Local files must be regular files or symlinks to regular files. Nonregular or oversized files block readiness without changing configuration; ordinary configuration loaders are unaffected.
+
+### Preview and consent
+
+Preview checks the selected checkout/settings, CLI, local runtime, and public version/protocol compatibility. It does not acquire an authenticated session. Authentication, the live catalog, project defaults, and effective selection remain deferred; `preview_passed` is not authenticated readiness.
+
+`--t3-authenticated` explicitly authorizes use of the selected profile's **administrator authority** to issue a short-lived read session. After a passing preview and identity recheck, doctor performs bounded authenticated reads of the live catalog and the exact existing project's defaults. No separate confirmation prompt is required, including in JSON mode. Use a profile whose administrative authority you intend to authorize; see [T3 setup](/workflows/t3-code/#set-up-t3-code).
+
+### Settings and selection
+
+For each authored setting, precedence is explicit doctor flags > workspace `defaults.t3` > personal `defaults.t3`. The profile falls back to `T3CODE_HOME`, then `~/.t3`; the CLI defaults to `t3` on `PATH`. Keep credentials out of Arashi configuration. See [T3 preferences](/reference/configuration/#t3-code-preferences).
+
+Authenticated selection uses applicable authored provider/model/effort choices over the exact project's saved selection, then server selection and eligible catalog defaults. A provider instance ID binds that exact instance: an unavailable or disabled instance is not rerouted to a driver alias. A driver name must identify exactly one supported eligible instance. Ambiguous providers, unavailable models, and unsupported effort/options block the check. Keeping the same provider/model preserves applicable saved options; changing either uses catalog defaults for omitted options.
+
+If the checkout has no matching existing T3 project, doctor does not create one. Project defaults stay deferred and the resolved selection is **provisional**, even after authentication; this cannot establish checkout readiness. Provider warnings, unknown authentication, or stale/unknown provider observations also leave readiness unknown rather than guaranteeing a task can run.
+
+### Cleanup and results
+
+Doctor revokes only its own temporary session and verifies that exact session ID is absent from a validated session list. A successful revoke alone is not verified cleanup. Cleanup uses an independent bounded attempt after check failure, timeout, or recoverable interruption; forced process termination cannot guarantee cleanup.
+
+Check observations and cleanup are reported independently. Successful observations remain visible when cleanup fails or cannot be verified, but the command exits **`1`** in either case. Do not revoke unrelated sessions or treat the session's expiry as proof of cleanup.
+
+Human and JSON output report `checkMode`, readiness, bounded stage findings, selection provenance, provider prerequisites, and cleanup state. JSON uses `data` on success and `error.details` on failure; `mode` is `t3`. Output is screened rather than exposing tokens, administrative credentials, or raw server responses.
+
+- `preview_passed`: public prerequisite checks passed; authenticated checks remain deferred.
+- `checkout_verified`: the exact existing project, effective selection, and fresh provider prerequisites were verified.
+- `global_verified`: global authenticated prerequisites were verified, with no selected checkout.
+- `unknown`: required checkout/project or provider evidence remains deferred or unknown.
+- `blocked`: a prerequisite check failed.
+
+Always inspect cleanup separately: `not_attempted`, `verified`, `failed`, or `unknown`. Exit status is `0` when there are no blocking findings and cleanup has not failed or become unknown; otherwise it is `1`. Warnings or unknown readiness can therefore coexist with exit `0`. Neither exit `0` nor verified prerequisites guarantee task execution.
+
 ## Finding Severities
 
 Every finding has a severity:
@@ -70,7 +125,7 @@ Human output groups findings by severity or diagnostic category and shows the fi
 
 ## Exit Behavior
 
-`aw doctor` is non-mutating: it does not change configuration, repositories, worktrees, hooks, shell startup files, install state, or update state.
+Ordinary `aw doctor` is non-mutating: it does not change configuration, repositories, worktrees, hooks, shell startup files, install state, or update state. T3 preview is read-only; authenticated T3 mode additionally issues and cleans up its own temporary session as described above.
 
 The command exits with status code `0` when it completes required checks and finds no blocking `error` findings. It exits non-zero when one or more `error` findings are present or when a required diagnostic phase cannot complete.
 
