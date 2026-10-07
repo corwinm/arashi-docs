@@ -4,3 +4,4 @@ allowBuilds:
 overrides:
   astro>svgo: 4.1.0
   markdownlint-cli>js-yaml: 5.4.1
+  markdownlint-cli>smol-toml: 1.9.0
