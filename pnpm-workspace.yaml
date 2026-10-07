@@ -4,3 +4,4 @@ allowBuilds:
 overrides:
   astro>svgo: 4.1.0
   markdownlint-cli>js-yaml: 5.4.1
+  micromark-extension-math>katex: 0.18.2
